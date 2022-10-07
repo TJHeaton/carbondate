@@ -16,7 +16,8 @@ CalibrateSingleDetermination(
 \item{rc_uncertainty}{The uncertainty of the radiocarbon determination}
 
 \item{calibration_data}{A dataframe which should contain one column entitled
-c14_age and one column entitled c14_sig}
+c14_age and one column entitled c14_sig.
+This format matches \link{intcal20}.}
 }
 \value{
 A vector containing the probability for each calendar age in the
@@ -24,4 +25,7 @@ calibration data
 }
 \description{
 Calibrates a single radiocarbon determination
+}
+\examples{
+CalibrateSingleDetermination(51020, 35, intcal20)
 }

@@ -15,3 +15,7 @@ test_that("single determination probabilities sum to one", {
   probabilities = CalibrateSingleDetermination(4, 0.1, test_calibration_data)
   expect_equal(sum(probabilities), 1)
 })
+
+test_that("single calibration probabilities work with intcal20 data", {
+  expect_silent(CalibrateSingleDetermination(51020, 35, intcal20))
+})

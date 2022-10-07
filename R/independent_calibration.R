@@ -3,12 +3,15 @@
 #' @param rc_determination A single observed radiocarbon determination (c14 age)
 #' @param rc_uncertainty The uncertainty of the radiocarbon determination
 #' @param calibration_data A dataframe which should contain one column entitled
-#' c14_age and one column entitled c14_sig
+#' c14_age and one column entitled c14_sig.
+#' This format matches [carbondate::intcal20].
 #'
 #' @return A vector containing the probability for each calendar age in the
 #' calibration data
 #' @export
 #'
+#' @examples
+#' CalibrateSingleDetermination(51020, 35, intcal20)
 CalibrateSingleDetermination <- function(
     rc_determination,
     rc_uncertainty,
