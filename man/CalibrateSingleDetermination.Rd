@@ -7,7 +7,7 @@
 CalibrateSingleDetermination(
   c14_determination,
   c14_uncertainty,
-  calibration_data
+  calibration_curve
 )
 }
 \arguments{
@@ -15,7 +15,7 @@ CalibrateSingleDetermination(
 
 \item{c14_uncertainty}{The uncertainty of the radiocarbon determination}
 
-\item{calibration_data}{A dataframe which should contain one column entitled
+\item{calibration_curve}{A dataframe which should contain one column entitled
 c14_age and one column entitled c14_sig.
 This format matches \link{intcal20}.}
 }

@@ -2,7 +2,7 @@
 #'
 #' @param c14_determination A single observed radiocarbon determination (c14 age)
 #' @param c14_uncertainty The uncertainty of the radiocarbon determination
-#' @param calibration_data A dataframe which should contain one column entitled
+#' @param calibration_curve A dataframe which should contain one column entitled
 #' c14_age and one column entitled c14_sig.
 #' This format matches [carbondate::intcal20].
 #'
@@ -15,10 +15,10 @@
 CalibrateSingleDetermination <- function(
     c14_determination,
     c14_uncertainty,
-    calibration_data) {
+    calibration_curve) {
 
-  c14_ages = calibration_data$c14_age
-  c14_sigs = calibration_data$c14_sig
+  c14_ages = calibration_curve$c14_age
+  c14_sigs = calibration_curve$c14_sig
 
   probabilities <- stats::dnorm(
     c14_determination, mean=c14_ages, sd=sqrt(c14_sigs^2 + c14_uncertainty^2))
@@ -34,7 +34,7 @@ CalibrateSingleDetermination <- function(
 #' @param c14_determinations An array of observed radiocarbon determinations
 #' @param c14_uncertainties An array of the radiocarbon determinations
 #' uncertainties. Must be the same length as `c14_determinations`.
-#' @param calibration_data A dataframe which should contain one column entitled
+#' @param calibration_curve A dataframe which should contain one column entitled
 #' c14_age and one column entitled c14_sig.
 #' This format matches [carbondate::intcal20].
 #'
@@ -48,16 +48,16 @@ CalibrateSingleDetermination <- function(
 #'    calendar_age_range=c(600, 1600),
 #'    c14_determinations=c(602, 805, 1554),
 #'    c14_uncertainties=c(35, 34, 45),
-#'    calibration_data=intcal20)
+#'    calibration_curve=intcal20)
 FindSPD <- function(
     calendar_age_range,
     c14_determinations,
     c14_uncertainties,
-    calibration_data) {
+    calibration_curve) {
 
   # TODO(error-handling): check determinations and uncertainties are same length
 
-  calibration_data_range = range(calibration_data$calendar_age)
+  calibration_data_range = range(calibration_curve$calendar_age)
   range_margin = 400
 
   new_calendar_ages <- seq(
@@ -66,14 +66,14 @@ FindSPD <- function(
     by = 1)
 
   interpolated_calibration_data <- InterpolateCalibrationCurve(
-    new_calendar_ages, calibration_data)
+    new_calendar_ages, calibration_curve)
 
   # Each column of matrix gives probabilities per calendar age for a given determination
   individual_probabilities <- mapply(
     CalibrateSingleDetermination,
     c14_determinations,
     c14_uncertainties,
-    MoreArgs = list(calibration_data = interpolated_calibration_data))
+    MoreArgs = list(calibration_curve = interpolated_calibration_data))
 
   probabilities_per_calendar_age = apply(individual_probabilities, 1, sum) / dim(individual_probabilities)[2]
 
