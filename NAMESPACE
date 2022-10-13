@@ -3,3 +3,4 @@
 export(CalibrateSingleDetermination)
 export(FindSPD)
 export(InterpolateCalibrationCurve)
+export(WalkerBivarDirichlet)

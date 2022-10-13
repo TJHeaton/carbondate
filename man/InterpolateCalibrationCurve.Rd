@@ -4,13 +4,13 @@
 \alias{InterpolateCalibrationCurve}
 \title{Interpolate calendar ages for a calibration curve}
 \usage{
-InterpolateCalibrationCurve(new_calendar_ages, calibration_data)
+InterpolateCalibrationCurve(new_calendar_ages, calibration_curve)
 }
 \arguments{
 \item{new_calendar_ages}{A scalar or vector containing calendar ages to
 interpolate the calibration curve to}
 
-\item{calibration_data}{A dataframe which should contain one column entitled
+\item{calibration_curve}{A dataframe which should contain one column entitled
 c14_age and one column entitled c14_sig.
 This format matches \link{intcal20}.}
 }

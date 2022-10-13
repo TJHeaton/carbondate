@@ -8,7 +8,7 @@ FindSPD(
   calendar_age_range,
   c14_determinations,
   c14_uncertainties,
-  calibration_data
+  calibration_curve
 )
 }
 \arguments{
@@ -20,7 +20,7 @@ calendar age to calculate the SPD over}
 \item{c14_uncertainties}{An array of the radiocarbon determinations
 uncertainties. Must be the same length as \code{c14_determinations}.}
 
-\item{calibration_data}{A dataframe which should contain one column entitled
+\item{calibration_curve}{A dataframe which should contain one column entitled
 c14_age and one column entitled c14_sig.
 This format matches \link{intcal20}.}
 }
@@ -37,5 +37,5 @@ FindSPD(
    calendar_age_range=c(600, 1600),
    c14_determinations=c(602, 805, 1554),
    c14_uncertainties=c(35, 34, 45),
-   calibration_data=intcal20)
+   calibration_curve=intcal20)
 }
