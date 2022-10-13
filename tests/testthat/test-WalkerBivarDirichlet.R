@@ -20,8 +20,8 @@ test_that("WalkerBivarDirichlet gives expected result", {
     n_iter=niter,
     n_thin=nthin,
     calendar_ages=inittheta,
-    slicew=slicew,
-    m=m,
+    slice_width=slicew,
+    slice_multiplier=m,
     kstar=kstar,
     show_progress = TRUE)
 

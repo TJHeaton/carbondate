@@ -16,8 +16,8 @@
 #' @param A,B  Prior on \eqn{\mu_{\phi}} giving the mean and precision of the
 #' overall centering \eqn{\mu_{\phi} \sim N(A, B^{-1})} i.e.
 #' B small is uninformative.
-#' @param cprshape,cprrate Hyperparameters for the shape and rate on prior for DP
-#' concentration, \eqn{c}, determining the number of clusters we expect to
+#' @param cprshape,cprrate Hyperparameters for the shape and rate on prior for
+#' DP concentration, \eqn{c}, determining the number of clusters we expect to
 #' observe amongst our n sampled objects
 #' \eqn{c \sim \Gamma(\eta_1, \eta_2)} where \eqn{\eta_1, \eta_2} are
 #' the `cprshape` and `cprrate`.
@@ -31,8 +31,9 @@
 #' (optional). If supplied it must be a vector with the same length as
 #' `c14_determinations`. Will be overridden if `sensible_initialisation` is
 #' `TRUE`.
-#' @param slicew  Parameter for slice sampling (optional). Default is 1000.
-#' @param m  Parameter for slice sampling (optional). Default is 10.
+#' @param slice_width  Parameter for slice sampling (optional). Default is 1000.
+#' @param slice_multiplier  Integer parameter for slice sampling (optional).
+#' Default is 10. Limits the slice size to `slice_multiplier * slice_width`.
 #' @param kstar The initial number of clusters (optional). Default is 10.
 #' @param sensible_initialisation Whether to use sensible start values and
 #' adaptive prior on \eqn{\mu_{\phi}} and  (A, B).
@@ -93,8 +94,8 @@ WalkerBivarDirichlet <- function(
     n_iter = 100,
     n_thin = 10,
     calendar_ages = NA,
-    slicew = 1000,
-    m = 10,
+    slice_width = 1000,
+    slice_multiplier = 10,
     kstar = 10,
     sensible_initialisation = TRUE,
     show_progress = TRUE) {
@@ -159,8 +160,8 @@ WalkerBivarDirichlet <- function(
   ## Interpolate cal curve onto single year grid to speed up updating thetas
   integer_cal_year_curve <- InterpolateCalibrationCurve(
     1:pkg.globals$MAX_YEAR_BP, calibration_curve)
-  mucalallyr <- integer_cal_year_curve$c14_age
-  sigcalallyr <- integer_cal_year_curve$c14_sig
+  interpolated_c14_age <- integer_cal_year_curve$c14_age
+  interpolated_c14_sig <- integer_cal_year_curve$c14_sig
 
   ##############################################################################
   # Now the calibration and DPMM
@@ -202,15 +203,15 @@ WalkerBivarDirichlet <- function(
       calendar_ages[k] <- .SliceSample(
         TARGET = .ThetaLogLikelihood,
         x0 = calendar_ages[k],
-        w = slicew,
-        m = m,
+        slice_width = slice_width,
+        slice_multiplier = slice_multiplier,
         type = "log",
         prmean = phi[delta[k]],
         prsig = 1 / sqrt(tau[delta[k]]),
         c14obs = c14_determinations[k],
         c14sig = c14_uncertainties[k],
-        mucalallyr = mucalallyr,
-        sigcalallyr = sigcalallyr)
+        mucalallyr = interpolated_c14_age,
+        sigcalallyr = interpolated_c14_sig)
     }
 
     if (MH_iter %% n_thin == 0) {

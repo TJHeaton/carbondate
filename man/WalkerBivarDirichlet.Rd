@@ -16,11 +16,11 @@ WalkerBivarDirichlet(
   B,
   cprshape,
   cprrate,
-  niter = 100,
-  nthin = 10,
+  n_iter = 100,
+  n_thin = 10,
   calendar_ages = NA,
-  slicew = 1000,
-  m = 10,
+  slice_width = 1000,
+  slice_multiplier = 10,
   kstar = 10,
   sensible_initialisation = TRUE,
   show_progress = TRUE
@@ -47,17 +47,17 @@ cluster \eqn{j}.
 overall centering \eqn{\mu_{\phi} \sim N(A, B^{-1})} i.e.
 B small is uninformative.}
 
-\item{cprshape, cprrate}{Hyperparameters for the shape and rate on prior for DP
-concentration, \eqn{c}, determining the number of clusters we expect to
+\item{cprshape, cprrate}{Hyperparameters for the shape and rate on prior for
+DP concentration, \eqn{c}, determining the number of clusters we expect to
 observe amongst our n sampled objects
 \eqn{c \sim \Gamma(\eta_1, \eta_2)} where \eqn{\eta_1, \eta_2} are
 the \code{cprshape} and \code{cprrate}.}
 
-\item{niter}{The number of MCMC iterations (optional). Default is 100.}
+\item{n_iter}{The number of MCMC iterations (optional). Default is 100.}
 
-\item{nthin}{How much to thin the output (optional). 1 is no thinning,
+\item{n_thin}{How much to thin the output (optional). 1 is no thinning,
 a larger number is more thinning. Default is 10. Must choose an integer more
-than 1 and not too close to \code{niter}, since after burn-in there are
+than 1 and not too close to \code{n_iter}, since after burn-in there are
 \eqn{(n_{\textrm{iter}}/n_{\textrm{thin}})/2} samples from posterior to
 potentially use.}
 
@@ -66,9 +66,10 @@ potentially use.}
 \code{c14_determinations}. Will be overridden if \code{sensible_initialisation} is
 \code{TRUE}.}
 
-\item{slicew}{Parameter for slice sampling (optional). Default is 1000.}
+\item{slice_width}{Parameter for slice sampling (optional). Default is 1000.}
 
-\item{m}{Parameter for slice sampling (optional). Default is 10.}
+\item{slice_multiplier}{Integer parameter for slice sampling (optional).
+Default is 10. Limits the slice size to \code{slice_multiplier * slice_width}.}
 
 \item{kstar}{The initial number of clusters (optional). Default is 10.}
 
@@ -91,17 +92,17 @@ n_{\textrm{thin}}) + 1}, each row storing the result from every
 matrix. Gives the cluster allocation for each observation.}
 \item{\code{c}}{A double vector of length \eqn{n_{\textrm{out}}} giving the DP
 concentration parameter.}
-\item{\code{nclust}}{An integer vector of length \eqn{n_{\textrm{out}}} giving
+\item{\code{n_clust}}{An integer vector of length \eqn{n_{\textrm{out}}} giving
 the number of clusters.}
 \item{\code{phi}}{A list of length \eqn{n_{\textrm{out}}} each entry giving
 a vector [of length nclust???] of the cluster means \eqn{\phi_j}.}
 \item{\code{tau}}{A list of length \eqn{n_{\textrm{out}}} each entry giving
 a vector [of length nclust???] of the cluster uncertainties \eqn{\tau_j}.}
-\item{\code{w}}{A list of length \eqn{n_{\textrm{out}}} each entry giving
+\item{\code{weight}}{A list of length \eqn{n_{\textrm{out}}} each entry giving
 the mixing weights of each cluster.}
-\item{\verb{calendar ages}}{An \eqn{n_{\textrm{out}}} by \eqn{n_{\textrm{obs}}}
+\item{\code{calendar_ages}}{An \eqn{n_{\textrm{out}}} by \eqn{n_{\textrm{obs}}}
 integer matrix. Gives the calendar age for each observation.}
-\item{\code{muphi}}{A vector of length \eqn{n_{\textrm{out}}} giving the overall
+\item{\code{mu_phi}}{A vector of length \eqn{n_{\textrm{out}}} giving the overall
 centering \eqn{\mu_{\phi}} of the clusters.}
 }
 where \eqn{n_{\textrm{obs}}} is the number of radiocarbon observations i.e.

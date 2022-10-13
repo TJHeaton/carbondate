@@ -8,7 +8,8 @@
 # tau - the current cluster precisions
 # kstar - current kstar
 # c, mu_phi, lambda, nu1, nu2 - the current DP parameters (not updated here)
-.DPWalkerUpdate <- function(theta, w, v, delta, phi, tau, kstar, c, mu_phi, lambda, nu1, nu2) {
+.DPWalkerUpdate <- function(
+    theta, w, v, delta, phi, tau, kstar, c, mu_phi, lambda, nu1, nu2) {
   # Create relevant variables
   n <- length(theta)
 
@@ -26,8 +27,12 @@
   # Iteratively update the weights until we have all we need
   # To update v[j] we do the following
   while (sum(wnew) < 1 - ustar) {
-    if (j <= kstar) { # We have to work out alpha and beta and sample a new v[j] by inverse cdf
-      # Find the indices we need to search over i.e. which are in cluster j and which are above cluster j
+
+    if (j <= kstar) {
+      # We have to work out alpha and beta and sample a new v[j] by inverse cdf
+
+      # Find the indices we need to search over i.e. which are in cluster j and
+      # which are above cluster j
       clustj <- which(delta == j)
       aboveclj <- which(delta > j)
 
@@ -42,9 +47,11 @@
       if (length(aboveclj) == 0) {
         beta <- 1
       } else {
-        # Find beta_j
-        prodvtemp <- cumprod(1 - v) / (1 - v[j]) # Vector to aid denominator. The ith entry is Prod_{l < i, l != j} (1- v_l)
-        beta <- 1 - max(u[aboveclj] / (v[delta[aboveclj]] * prodvtemp[delta[aboveclj] - 1]))
+        # Vector to aid denominator: ith entry is Prod_{l < i, l != j} (1- v_l)
+        prodvtemp <- cumprod(1 - v) / (1 - v[j])
+        beta <- 1 -
+          max(
+            u[aboveclj] / (v[delta[aboveclj]] * prodvtemp[delta[aboveclj] - 1]))
       }
 
       # Now sample from the correct posterior by inversion
@@ -52,7 +59,9 @@
       B <- A - (1 - beta)^c
       utemp <- stats::runif(1)
       v[j] <- 1 - (A - B * utemp)^(1 / c)
-    } else { # We are in the case that j > k^star (for current kstar) and v[j] is just from the prior beta
+    } else {
+      # We are in the case that j > k^star (for current kstar) and v[j] is just
+      # from the prior beta
       v[j] <- stats::rbeta(1, 1, c)
     }
 
@@ -70,20 +79,26 @@
     j <- j + 1
   }
 
-  # Now update kstar (the number of weights we have) and truncate w and v at the correct values
+  # Now update kstar (the number of weights we have) and truncate w and v at the
+  # correct values
   kstar <- length(wnew)
   w <- wnew
   v <- v[1:kstar]
 
-  # Now update the cluster means and precisions (note we have to introduce new ones for the new states without observations)
+  # Now update the cluster means and precisions (note we have to introduce new
+  # ones for the new states without observations)
   for (i in 1:kstar) {
     # Find which observations belong to this cluster
     clusti <- which(delta == i)
-    if (length(clusti) == 0) { # No observations in this cluster so sample from the prior
+    if (length(clusti) == 0) {
+      # No observations in this cluster so sample from the prior
       tau[i] <- stats::rgamma(1, shape = nu1, rate = nu2)
-      phi[i] <- stats::rnorm(1, mean = mu_phi, sd = 1 / sqrt(lambda * tau[i])) # sampnewphi(mu = mu_phi, sigma = 1/sqrt(lambda*tau)) # stats::rnorm(1, mean = mu_phi, sd = 1/sqrt(lambda*tau))
-    } else { # There are some observations we need to update the phi and tau for this cluster (conjugate according to NormalGamma prior)
-      gibbs_parameters <- .UpdatePhiTau(theta[clusti], mu_phi = mu_phi, lambda = lambda, nu1 = nu1, nu2 = nu2)
+      phi[i] <- stats::rnorm(1, mean = mu_phi, sd = 1 / sqrt(lambda * tau[i]))
+    } else {
+      # There are some observations we need to update the phi and tau for this
+      # cluster (conjugate according to NormalGamma prior)
+      gibbs_parameters <- .UpdatePhiTau(
+        theta[clusti], mu_phi = mu_phi, lambda = lambda, nu1 = nu1, nu2 = nu2)
       phi[i] <- gibbs_parameters$phi
       tau[i] <- gibbs_parameters$tau
     }
@@ -95,14 +110,16 @@
   # Now update the allocations for each observation by sampling from them
   for (i in 1:n) {
     possid <- which(w > u[i])
-    dens <- stats::dnorm(phi[possid], mean = theta[i], sd = 1 / sqrt(tau[possid]))
+    dens <- stats::dnorm(
+      phi[possid], mean = theta[i], sd = 1 / sqrt(tau[possid]))
     dens[is.na(dens)] <- 0 # Fudge to remove erroneous problems
     delta[i] <- possid[sample.int(length(possid), 1, prob = dens)]
   }
 
   # Return w, v, delta, phi and tau
-  retlist <- list(w = w, v = v, delta = delta, phi = phi, tau = tau, kstar = kstar)
-  return(retlist)
+  return_list <- list(
+    w = w, v = v, delta = delta, phi = phi, tau = tau, kstar = kstar)
+  return(return_list)
 }
 
 # Function which updates the Dirichlet process parameter c
@@ -124,9 +141,13 @@
   d <- length(unique(delta))
   n <- length(delta)
   # Now find the likelihood and prior
-  logprrat <- stats::dgamma(cnew, shape = prshape, rate = prrate, log = TRUE) - stats::dgamma(c, shape = prshape, rate = prrate, log = TRUE)
-  loglikrat <- .WalkerLogLikc(d = d, c = cnew, n = n) - .WalkerLogLikc(d = d, c = c, n = n)
-  logproprat <- stats::pnorm(c / propsd, log.p = TRUE) - stats::pnorm(cnew / propsd, log.p = TRUE) # Adjust for non-symmetric truncated normal proposal
+  logprrat <- stats::dgamma(cnew, shape = prshape, rate = prrate, log = TRUE) -
+    stats::dgamma(c, shape = prshape, rate = prrate, log = TRUE)
+  loglikrat <- .WalkerLogLikc(d = d, c = cnew, n = n) -
+    .WalkerLogLikc(d = d, c = c, n = n)
+  # Adjust for non-symmetric truncated normal proposal
+  logproprat <- stats::pnorm(c / propsd, log.p = TRUE) -
+    stats::pnorm(cnew / propsd, log.p = TRUE)
   HR <- exp(logprrat + loglikrat + logproprat)
   if (stats::runif(1) < HR) {
     return(cnew) # Accept cnew
@@ -141,7 +162,7 @@
     newphi <- stats::rnorm(1, mu, sigma)
     inrange <- (newphi < max(range)) & (newphi > min(range))
   }
-  newphi
+  return(newphi)
 }
 
 
