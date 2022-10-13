@@ -7,8 +7,8 @@
 # phi - the current cluster means
 # tau - the current cluster precisions
 # kstar - current kstar
-# c, muphi, lambda, nu1, nu2 - the current DP parameters (not updated here)
-.DPWalkerUpdate <- function(theta, w, v, delta, phi, tau, kstar, c, muphi, lambda, nu1, nu2) {
+# c, mu_phi, lambda, nu1, nu2 - the current DP parameters (not updated here)
+.DPWalkerUpdate <- function(theta, w, v, delta, phi, tau, kstar, c, mu_phi, lambda, nu1, nu2) {
   # Create relevant variables
   n <- length(theta)
 
@@ -81,9 +81,9 @@
     clusti <- which(delta == i)
     if (length(clusti) == 0) { # No observations in this cluster so sample from the prior
       tau[i] <- stats::rgamma(1, shape = nu1, rate = nu2)
-      phi[i] <- stats::rnorm(1, mean = muphi, sd = 1 / sqrt(lambda * tau[i])) # sampnewphi(mu = muphi, sigma = 1/sqrt(lambda*tau)) # stats::rnorm(1, mean = muphi, sd = 1/sqrt(lambda*tau))
+      phi[i] <- stats::rnorm(1, mean = mu_phi, sd = 1 / sqrt(lambda * tau[i])) # sampnewphi(mu = mu_phi, sigma = 1/sqrt(lambda*tau)) # stats::rnorm(1, mean = mu_phi, sd = 1/sqrt(lambda*tau))
     } else { # There are some observations we need to update the phi and tau for this cluster (conjugate according to NormalGamma prior)
-      gibbs_parameters <- .Updatephitau(theta[clusti], muphi = muphi, lambda = lambda, nu1 = nu1, nu2 = nu2)
+      gibbs_parameters <- .UpdatePhiTau(theta[clusti], mu_phi = mu_phi, lambda = lambda, nu1 = nu1, nu2 = nu2)
       phi[i] <- gibbs_parameters$phi
       tau[i] <- gibbs_parameters$tau
     }
@@ -112,7 +112,7 @@
 # c - current c parameter in Dir(c)
 # prshape and prrate - prior on c ~ Gamma(shape, rate)
 # propsd - proposal sd for new c
-.WalkerUpdatec <- function(delta, c, prshape = 0.5, prrate = 1, propsd = 1) {
+.WalkerUpdateC <- function(delta, c, prshape = 0.5, prrate = 1, propsd = 1) {
   # Sample new c from truncated normal distribution
   repeat {
     cnew <- stats::rnorm(1, c, propsd)
@@ -134,8 +134,8 @@
   return(c) # Or reject and keep c
 }
 
-# Fudge function which makes sure when we sample a new phi it has to lie within [0,50000]
-.SampleNewPhi <- function(mu, sigma, range = c(0, 50000)) {
+
+.SampleNewPhi <- function(mu, sigma, range = c(0, pkg.globals$MAX_YEAR_BP)) {
   inrange <- FALSE
   while (!inrange) {
     newphi <- stats::rnorm(1, mu, sigma)

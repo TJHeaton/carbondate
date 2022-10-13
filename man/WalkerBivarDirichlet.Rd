@@ -2,11 +2,12 @@
 % Please edit documentation in R/WalkerBivarDirichlet.R
 \name{WalkerBivarDirichlet}
 \alias{WalkerBivarDirichlet}
-\title{Implements calibration using Walker updating of the DPMM}
+\title{Implements calibration using Walker updating of the Dirichlet Process Mixture
+Model}
 \usage{
 WalkerBivarDirichlet(
-  x,
-  xsig,
+  c14_determinations,
+  c14_uncertainties,
   calibration_curve,
   lambda,
   nu1,
@@ -17,70 +18,109 @@ WalkerBivarDirichlet(
   cprrate,
   niter = 100,
   nthin = 10,
-  theta = NA,
+  calendar_ages = NA,
   slicew = 1000,
   m = 10,
   kstar = 10,
-  sensibleinit = TRUE,
-  showprogress = TRUE
+  sensible_initialisation = TRUE,
+  show_progress = TRUE
 )
 }
 \arguments{
-\item{x}{A vector containing the radiocarbon determinations}
+\item{c14_determinations}{A vector containing the radiocarbon determinations.}
 
-\item{xsig}{A vector containing the radiocarbon determination uncertainties.
-Must be the same length as \code{x}.}
+\item{c14_uncertainties}{A vector containing the radiocarbon determination
+uncertainties. Must be the same length as \code{c14_determinations}.}
 
 \item{calibration_curve}{A dataframe which should contain one column entitled
 c14_age and one column entitled c14_sig.
 This format matches \link{intcal20}.}
 
-\item{lambda}{TODO}
+\item{lambda, nu1, nu2}{A hyperparameter for the prior on the means
+\eqn{\phi_j} and precision \eqn{\tau_j} of each individual calendar age
+cluster \eqn{j}.
+\deqn{(\phi_j, \tau_j)|\mu_{\phi} \sim
+\textrm{NormalGamma}(\mu_{\phi}, \lambda, \nu_1, \nu_2)} where
+\eqn{\mu_{\phi}} is the overall cluster centering.}
 
-\item{nu1}{TODO}
+\item{A, B}{Prior on \eqn{\mu_{\phi}} giving the mean and precision of the
+overall centering \eqn{\mu_{\phi} \sim N(A, B^{-1})} i.e.
+B small is uninformative.}
 
-\item{nu2}{TODO}
+\item{cprshape, cprrate}{Hyperparameters for the shape and rate on prior for DP
+concentration, \eqn{c}, determining the number of clusters we expect to
+observe amongst our n sampled objects
+\eqn{c \sim \Gamma(\eta_1, \eta_2)} where \eqn{\eta_1, \eta_2} are
+the \code{cprshape} and \code{cprrate}.}
 
-\item{A}{TODO}
+\item{niter}{The number of MCMC iterations (optional). Default is 100.}
 
-\item{B}{TODO}
+\item{nthin}{How much to thin the output (optional). 1 is no thinning,
+a larger number is more thinning. Default is 10. Must choose an integer more
+than 1 and not too close to \code{niter}, since after burn-in there are
+\eqn{(n_{\textrm{iter}}/n_{\textrm{thin}})/2} samples from posterior to
+potentially use.}
 
-\item{cprshape}{TODO}
+\item{calendar_ages}{The initial estimate for the underlying calendar ages
+(optional). If supplied it must be a vector with the same length as
+\code{c14_determinations}. Will be overridden if \code{sensible_initialisation} is
+\code{TRUE}.}
 
-\item{cprrate}{TODO}
+\item{slicew}{Parameter for slice sampling (optional). Default is 1000.}
 
-\item{niter}{TODO}
+\item{m}{Parameter for slice sampling (optional). Default is 10.}
 
-\item{nthin}{TODO}
+\item{kstar}{The initial number of clusters (optional). Default is 10.}
 
-\item{theta}{TODO}
+\item{sensible_initialisation}{Whether to use sensible start values and
+adaptive prior on \eqn{\mu_{\phi}} and  (A, B).
+If this is \code{TRUE} (the default), then \code{calendar_ages}, \code{A} and \code{B} will be
+overridden from any values passed in the arguments.}
 
-\item{slicew}{TODO}
-
-\item{m}{TODO}
-
-\item{kstar}{TODO}
-
-\item{sensibleinit}{TODO}
-
-\item{showprogress}{TODO}
+\item{show_progress}{Whether to show a progress bar in the console during
+execution. Default is \code{TRUE}.}
 }
 \value{
-a list TODO add more
+A list, containing 8 items, each of which having one dimension of
+size \eqn{n_{\textrm{out}} = \textrm{floor}( n_{\textrm{iter}}/
+n_{\textrm{thin}}) + 1}, each row storing the result from every
+\eqn{n_{\textrm{thin}}}th iteration:
+
+\describe{
+\item{\code{delta}}{An \eqn{n_{\textrm{out}}} by \eqn{n_{\textrm{obs}}} integer
+matrix. Gives the cluster allocation for each observation.}
+\item{\code{c}}{A double vector of length \eqn{n_{\textrm{out}}} giving the DP
+concentration parameter.}
+\item{\code{nclust}}{An integer vector of length \eqn{n_{\textrm{out}}} giving
+the number of clusters.}
+\item{\code{phi}}{A list of length \eqn{n_{\textrm{out}}} each entry giving
+a vector [of length nclust???] of the cluster means \eqn{\phi_j}.}
+\item{\code{tau}}{A list of length \eqn{n_{\textrm{out}}} each entry giving
+a vector [of length nclust???] of the cluster uncertainties \eqn{\tau_j}.}
+\item{\code{w}}{A list of length \eqn{n_{\textrm{out}}} each entry giving
+the mixing weights of each cluster.}
+\item{\verb{calendar ages}}{An \eqn{n_{\textrm{out}}} by \eqn{n_{\textrm{obs}}}
+integer matrix. Gives the calendar age for each observation.}
+\item{\code{muphi}}{A vector of length \eqn{n_{\textrm{out}}} giving the overall
+centering \eqn{\mu_{\phi}} of the clusters.}
+}
+where \eqn{n_{\textrm{obs}}} is the number of radiocarbon observations i.e.
+the length of \code{c14_determinations}.
 }
 \description{
-Implements calibration using Walker updating of the DPMM
+Implements calibration using Walker updating of the Dirichlet Process Mixture
+Model
 }
 \examples{
 WalkerBivarDirichlet(
-  x=c(602, 805, 1554),
-  xsig=c(35, 34, 45),
+  c14_determinations=c(602, 805, 1554),
+  c14_uncertainties=c(35, 34, 45),
   calibration_curve=intcal20,
-  lambda=1,
-  nu1=1,
-  nu2=1,
-  A=1,
-  B=1,
+  lambda=0.1,
+  nu1=0.25,
+  nu2=10,
+  A=1000,
+  B=0.1,
   cprshape=1,
   cprrate=1)
 }
