@@ -7,7 +7,7 @@
 #' @param calibration_curve A dataframe which should contain one column entitled
 #' c14_age and one column entitled c14_sig.
 #' This format matches [carbondate::intcal20].
-#' @param lambda,nu1,nu2  A hyperparameter for the prior on the means
+#' @param lambda,nu1,nu2  Hyperparameters for the prior on the means
 #' \eqn{\phi_j} and precision \eqn{\tau_j} of each individual calendar age
 #' cluster \eqn{j}.
 #' \deqn{(\phi_j, \tau_j)|\mu_{\phi} \sim

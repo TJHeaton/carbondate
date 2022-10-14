@@ -36,7 +36,7 @@ uncertainties. Must be the same length as \code{c14_determinations}.}
 c14_age and one column entitled c14_sig.
 This format matches \link{intcal20}.}
 
-\item{lambda, nu1, nu2}{A hyperparameter for the prior on the means
+\item{lambda, nu1, nu2}{Hyperparameters for the prior on the means
 \eqn{\phi_j} and precision \eqn{\tau_j} of each individual calendar age
 cluster \eqn{j}.
 \deqn{(\phi_j, \tau_j)|\mu_{\phi} \sim
