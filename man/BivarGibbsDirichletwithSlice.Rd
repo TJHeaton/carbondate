@@ -6,33 +6,38 @@
 a set of observations using a Dirichlet Mixture Density}
 \usage{
 BivarGibbsDirichletwithSlice(
-  x,
-  xsig,
+  c14_determinations,
+  c14_uncertainties,
+  calibration_curve,
   lambda,
   nu1,
   nu2,
   A,
   B,
-  mualpha,
-  sigalpha,
-  alphaprshape,
-  alphaprrate,
-  niter = 100,
-  nthin = 10,
-  theta = NA,
-  alphapr = "gamma",
-  w = 200,
-  m = 50,
-  calibration_curve,
-  nclusinit = 10,
-  sensibleinit = TRUE,
-  showprogress = TRUE
+  alpha_type = "gamma",
+  alpha_mu = NA,
+  alpha_sigma = NA,
+  alpha_shape = NA,
+  alpha_rate = NA,
+  n_iter = 100,
+  n_thin = 10,
+  calendar_ages = NA,
+  slice_width = 200,
+  slice_multiplier = 50,
+  n_clust = 10,
+  sensible_initialisation = TRUE,
+  show_progress = TRUE
 )
 }
 \arguments{
-\item{x}{TODO}
+\item{c14_determinations}{A vector containing the radiocarbon determinations.}
 
-\item{xsig}{TODO}
+\item{c14_uncertainties}{A vector containing the radiocarbon determination
+uncertainties. Must be the same length as \code{c14_determinations}.}
+
+\item{calibration_curve}{A dataframe which should contain one column entitled
+c14_age and one column entitled c14_sig.
+This format matches \link{intcal20}.}
 
 \item{lambda, nu1, nu2}{Hyperparameters for the prior on the means
 \eqn{\phi_j} and precision \eqn{\tau_j} of each individual calendar age
@@ -45,44 +50,78 @@ cluster \eqn{j}.
 overall centering \eqn{\mu_{\phi} \sim N(A, B^{-1})} i.e.
 B small is uninformative.}
 
-\item{mualpha}{TODO}
+\item{alpha_type}{The type of prior on alpha - choose \code{"lognorm"} or
+\code{"gamma"}.  Default is \code{"gamma"}.}
 
-\item{sigalpha}{TODO}
+\item{alpha_mu, alpha_sigma}{Hyperparameters for the mean and sd on prior
+for DP concentration, \eqn{\alpha}, determining the number of clusters we
+expect to observe among our n sampled objects.
+\eqn{\alpha \sim \textrm{Lognormal}(\mu, \sigma^2)} where \eqn{\mu, \sigma}
+are the \code{alpha_mu} and \code{alpha_sigma}. Note these are only used if
+\code{alpha_type} is \code{"lognorm"}.}
 
-\item{alphaprshape}{TODO}
+\item{alpha_shape, alpha_rate}{Hyperparameters for the shape and rate on prior
+for DP concentration, \eqn{\alpha}, determining the number of clusters we
+expect to observe among our n sampled objects.
+\eqn{\alpha \sim \Gamma(\eta_1, \eta_2)} where \eqn{\eta_1, \eta_2} are
+the \code{alpha_shape} and \code{alpha_rate}. Note these are only used if
+\code{alpha_type} is \code{"gamma"}. \link{TODO WE DON'T ACTUALLY USE THESE}}
 
-\item{alphaprrate}{TODO}
+\item{n_iter}{The number of MCMC iterations (optional). Default is 100.}
 
-\item{niter}{The number of MCMC iterations (optional). Default is 100.}
-
-\item{nthin}{How much to thin the output (optional). 1 is no thinning,
+\item{n_thin}{How much to thin the output (optional). 1 is no thinning,
 a larger number is more thinning. Default is 10. Must choose an integer more
 than 1 and not too close to \code{n_iter}, since after burn-in there are
 \eqn{(n_{\textrm{iter}}/n_{\textrm{thin}})/2} samples from posterior to
 potentially use.}
 
-\item{theta}{The initial estimate for the underlying calendar ages
+\item{calendar_ages}{The initial estimate for the underlying calendar ages
 (optional). If supplied it must be a vector with the same length as
 \code{c14_determinations}. Will be overridden if \code{sensible_initialisation} is
 \code{TRUE}.}
 
-\item{alphapr}{TODO}
+\item{slice_width}{Parameter for slice sampling (optional). Default is 200.}
 
-\item{w}{TODO}
+\item{slice_multiplier}{Integer parameter for slice sampling (optional).
+Default is 50. Limits the slice size to \code{slice_multiplier * slice_width}.}
 
-\item{m}{TODO}
+\item{n_clust}{The initial number of clusters (optional). Default is 10.}
 
-\item{calibration_curve}{TODO}
+\item{sensible_initialisation}{Whether to use sensible start values and
+adaptive prior on \eqn{\mu_{\phi}} and  (A, B).
+If this is \code{TRUE} (the default), then \code{calendar_ages}, \code{A} and \code{B} will be
+overridden from any values passed in the arguments.}
 
-\item{nclusinit}{TODO}
-
-\item{sensibleinit}{TODO}
-
-\item{showprogress}{Whether to show a progress bar in the console during
+\item{show_progress}{Whether to show a progress bar in the console during
 execution. Default is \code{TRUE}.}
 }
 \value{
-A list containing 6 items
+A list, containing 8 items, each of which having one dimension of
+size \eqn{n_{\textrm{out}} = \textrm{floor}( n_{\textrm{iter}}/
+n_{\textrm{thin}}) + 1}, each row storing the result from every
+\eqn{n_{\textrm{thin}}}th iteration:
+
+\describe{
+\item{\code{cluster_identifiers}}{An \eqn{n_{\textrm{out}}} by
+\eqn{n_{\textrm{obs}}} integer matrix. Gives the cluster allocation
+- an integer between 1 and n_clust - for each observation.}
+\item{\code{alpha}}{A double vector of length \eqn{n_{\textrm{out}}} giving the DP
+concentration parameter.}
+\item{\code{n_clust}}{An integer vector of length \eqn{n_{\textrm{out}}} giving
+the number of clusters.}
+\item{\code{phi}}{A list of length \eqn{n_{\textrm{out}}} each entry giving
+a vector of length n_clust of the cluster means \eqn{\phi_j}.}
+\item{\code{tau}}{A list of length \eqn{n_{\textrm{out}}} each entry giving
+a vector of length n_clust of the cluster uncertainties \eqn{\tau_j}.}
+\item{\code{calendar_ages}}{An \eqn{n_{\textrm{out}}} by \eqn{n_{\textrm{obs}}}
+integer matrix. Gives the calendar age for each observation.}
+\item{\code{mu_phi}}{A vector of length \eqn{n_{\textrm{out}}} giving the overall
+centering \eqn{\mu_{\phi}} of the clusters.}
+\item{\code{update_type}}{A string that always has the value "neal". This is
+needed if the output is used as an input for post-processing functions.}
+}
+where \eqn{n_{\textrm{obs}}} is the number of radiocarbon observations i.e.
+the length of \code{c14_determinations}.
 }
 \description{
 THIS CONSIDERS BOTH MEAN AND VARIANCE OF THE CLUSTERS TO BE UNKNOWN

@@ -14,14 +14,14 @@ WalkerBivarDirichlet(
   nu2,
   A,
   B,
-  cprshape,
-  cprrate,
+  alpha_shape,
+  alpha_rate,
   n_iter = 100,
   n_thin = 10,
   calendar_ages = NA,
   slice_width = 1000,
   slice_multiplier = 10,
-  kstar = 10,
+  n_clust = 10,
   sensible_initialisation = TRUE,
   show_progress = TRUE
 )
@@ -47,11 +47,11 @@ cluster \eqn{j}.
 overall centering \eqn{\mu_{\phi} \sim N(A, B^{-1})} i.e.
 B small is uninformative.}
 
-\item{cprshape, cprrate}{Hyperparameters for the shape and rate on prior for
-DP concentration, \eqn{c}, determining the number of clusters we expect to
-observe amongst our n sampled objects
-\eqn{c \sim \Gamma(\eta_1, \eta_2)} where \eqn{\eta_1, \eta_2} are
-the \code{cprshape} and \code{cprrate}.}
+\item{alpha_shape, alpha_rate}{Hyperparameters for the shape and rate on prior
+for DP concentration, \eqn{\alpha}, determining the number of clusters we
+expect to observe among our n sampled objects.
+\eqn{\alpha \sim \Gamma(\eta_1, \eta_2)} where \eqn{\eta_1, \eta_2} are
+the \code{alpha_shape} and \code{alpha_rate}.}
 
 \item{n_iter}{The number of MCMC iterations (optional). Default is 100.}
 
@@ -71,7 +71,7 @@ potentially use.}
 \item{slice_multiplier}{Integer parameter for slice sampling (optional).
 Default is 10. Limits the slice size to \code{slice_multiplier * slice_width}.}
 
-\item{kstar}{The initial number of clusters (optional). Default is 10.}
+\item{n_clust}{The initial number of clusters (optional). Default is 10.}
 
 \item{sensible_initialisation}{Whether to use sensible start values and
 adaptive prior on \eqn{\mu_{\phi}} and  (A, B).
@@ -82,15 +82,16 @@ overridden from any values passed in the arguments.}
 execution. Default is \code{TRUE}.}
 }
 \value{
-A list, containing 8 items, each of which having one dimension of
+A list, containing 9 items, each of which having one dimension of
 size \eqn{n_{\textrm{out}} = \textrm{floor}( n_{\textrm{iter}}/
 n_{\textrm{thin}}) + 1}, each row storing the result from every
 \eqn{n_{\textrm{thin}}}th iteration:
 
 \describe{
-\item{\code{delta}}{An \eqn{n_{\textrm{out}}} by \eqn{n_{\textrm{obs}}} integer
-matrix. Gives the cluster allocation for each observation.}
-\item{\code{c}}{A double vector of length \eqn{n_{\textrm{out}}} giving the DP
+\item{\code{cluster_identifiers}}{An \eqn{n_{\textrm{out}}} by
+\eqn{n_{\textrm{obs}}} integer matrix. Gives the cluster allocation
+- an integer between 1 and n_clust - for each observation.}
+\item{\code{alpha}}{A double vector of length \eqn{n_{\textrm{out}}} giving the DP
 concentration parameter.}
 \item{\code{n_clust}}{An integer vector of length \eqn{n_{\textrm{out}}} giving
 the number of clusters.}
@@ -104,6 +105,8 @@ the mixing weights of each cluster.}
 integer matrix. Gives the calendar age for each observation.}
 \item{\code{mu_phi}}{A vector of length \eqn{n_{\textrm{out}}} giving the overall
 centering \eqn{\mu_{\phi}} of the clusters.}
+\item{\code{update_type}}{A string that always has the value "walker". This is
+needed if the output is used as an input for post-processing functions.}
 }
 where \eqn{n_{\textrm{obs}}} is the number of radiocarbon observations i.e.
 the length of \code{c14_determinations}.
@@ -122,6 +125,6 @@ WalkerBivarDirichlet(
   nu2=10,
   A=1000,
   B=0.1,
-  cprshape=1,
-  cprrate=1)
+  alpha_shape=1,
+  alpha_rate=1)
 }

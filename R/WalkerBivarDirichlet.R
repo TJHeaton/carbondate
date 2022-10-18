@@ -16,11 +16,11 @@
 #' @param A,B  Prior on \eqn{\mu_{\phi}} giving the mean and precision of the
 #' overall centering \eqn{\mu_{\phi} \sim N(A, B^{-1})} i.e.
 #' B small is uninformative.
-#' @param cprshape,cprrate Hyperparameters for the shape and rate on prior for
-#' DP concentration, \eqn{c}, determining the number of clusters we expect to
-#' observe amongst our n sampled objects
-#' \eqn{c \sim \Gamma(\eta_1, \eta_2)} where \eqn{\eta_1, \eta_2} are
-#' the `cprshape` and `cprrate`.
+#' @param alpha_shape,alpha_rate Hyperparameters for the shape and rate on prior
+#' for DP concentration, \eqn{\alpha}, determining the number of clusters we
+#' expect to observe among our n sampled objects.
+#' \eqn{\alpha \sim \Gamma(\eta_1, \eta_2)} where \eqn{\eta_1, \eta_2} are
+#' the `alpha_shape` and `alpha_rate`.
 #' @param n_iter  The number of MCMC iterations (optional). Default is 100.
 #' @param n_thin  How much to thin the output (optional). 1 is no thinning,
 #' a larger number is more thinning. Default is 10. Must choose an integer more
@@ -34,7 +34,7 @@
 #' @param slice_width  Parameter for slice sampling (optional). Default is 1000.
 #' @param slice_multiplier  Integer parameter for slice sampling (optional).
 #' Default is 10. Limits the slice size to `slice_multiplier * slice_width`.
-#' @param kstar The initial number of clusters (optional). Default is 10.
+#' @param n_clust The initial number of clusters (optional). Default is 10.
 #' @param sensible_initialisation Whether to use sensible start values and
 #' adaptive prior on \eqn{\mu_{\phi}} and  (A, B).
 #' If this is `TRUE` (the default), then `calendar_ages`, `A` and `B` will be
@@ -42,15 +42,16 @@
 #' @param show_progress Whether to show a progress bar in the console during
 #' execution. Default is `TRUE`.
 #'
-#' @return A list, containing 8 items, each of which having one dimension of
+#' @return A list, containing 9 items, each of which having one dimension of
 #' size \eqn{n_{\textrm{out}} = \textrm{floor}( n_{\textrm{iter}}/
 #' n_{\textrm{thin}}) + 1}, each row storing the result from every
 #' \eqn{n_{\textrm{thin}}}th iteration:
 #'
 #' \describe{
-#'  \item{`delta`}{An \eqn{n_{\textrm{out}}} by \eqn{n_{\textrm{obs}}} integer
-#'     matrix. Gives the cluster allocation for each observation.}
-#'  \item{`c`}{A double vector of length \eqn{n_{\textrm{out}}} giving the DP
+#'  \item{`cluster_identifiers`}{An \eqn{n_{\textrm{out}}} by
+#'     \eqn{n_{\textrm{obs}}} integer matrix. Gives the cluster allocation
+#'      - an integer between 1 and n_clust - for each observation.}
+#'  \item{`alpha`}{A double vector of length \eqn{n_{\textrm{out}}} giving the DP
 #'     concentration parameter.}
 #'  \item{`n_clust`}{An integer vector of length \eqn{n_{\textrm{out}}} giving
 #'      the number of clusters.}
@@ -64,6 +65,8 @@
 #'     integer matrix. Gives the calendar age for each observation.}
 #'  \item{`mu_phi`}{A vector of length \eqn{n_{\textrm{out}}} giving the overall
 #'      centering \eqn{\mu_{\phi}} of the clusters.}
+#'  \item{`update_type`}{A string that always has the value "walker". This is
+#'      needed if the output is used as an input for post-processing functions.}
 #' }
 #' where \eqn{n_{\textrm{obs}}} is the number of radiocarbon observations i.e.
 #' the length of `c14_determinations`.
@@ -78,8 +81,8 @@
 #'   nu2=10,
 #'   A=1000,
 #'   B=0.1,
-#'   cprshape=1,
-#'   cprrate=1)
+#'   alpha_shape=1,
+#'   alpha_rate=1)
 WalkerBivarDirichlet <- function(
     c14_determinations,
     c14_uncertainties,
@@ -89,14 +92,14 @@ WalkerBivarDirichlet <- function(
     nu2,
     A,
     B,
-    cprshape,
-    cprrate,
+    alpha_shape,
+    alpha_rate,
     n_iter = 100,
     n_thin = 10,
     calendar_ages = NA,
     slice_width = 1000,
     slice_multiplier = 10,
-    kstar = 10,
+    n_clust = 10,
     sensible_initialisation = TRUE,
     show_progress = TRUE) {
 
@@ -126,15 +129,15 @@ WalkerBivarDirichlet <- function(
     if (is.na(calendar_ages[1])) calendar_ages <- c14_determinations * scale_val
   }
 
-  # do not allow v small values of c as this causes crashes
-  c <- 2
+  # do not allow very small values of alpha as this causes crashes
+  alpha <- 2
 
-  tau <- stats::rgamma(kstar, shape = nu1, rate = nu2)
-  phi <- stats::rnorm(kstar, mean = mu_phi, sd = 1 / sqrt(lambda * tau))
+  tau <- stats::rgamma(n_clust, shape = nu1, rate = nu2)
+  phi <- stats::rnorm(n_clust, mean = mu_phi, sd = 1 / sqrt(lambda * tau))
 
-  v <- stats::rbeta(kstar, 1, c)
-  weight <- v * c(1, cumprod(1 - v)[-kstar])
-  delta <- sample(1:kstar, num_observations, replace = TRUE)
+  v <- stats::rbeta(n_clust, 1, alpha)
+  weight <- v * c(1, cumprod(1 - v)[-n_clust])
+  cluster_identifiers <- sample(1:n_clust, num_observations, replace = TRUE)
 
   ##############################################################################
   # Create storage for output
@@ -143,16 +146,16 @@ WalkerBivarDirichlet <- function(
   phi_out <- list(phi)
   tau_out <- list(tau)
   w_out <- list(weight)
-  delta_out <- matrix(NA, nrow = n_out, ncol = num_observations)
-  c_out <- rep(NA, length = n_out)
+  cluster_identifiers_out <- matrix(NA, nrow = n_out, ncol = num_observations)
+  alpha_out <- rep(NA, length = n_out)
   n_clust_out <- rep(NA, length = n_out)
   mu_phi_out <- rep(NA, length = n_out)
   theta_out <- matrix(NA, nrow = n_out, ncol = num_observations)
 
   output_index <- 1
-  delta_out[output_index, ] <- delta
-  c_out[output_index] <- c
-  n_clust_out[output_index] <- length(unique(delta))
+  cluster_identifiers_out[output_index, ] <- cluster_identifiers
+  alpha_out[output_index] <- alpha
+  n_clust_out[output_index] <- length(unique(cluster_identifiers))
   mu_phi_out[output_index] <- mu_phi
   theta_out[output_index, ] <- calendar_ages
 
@@ -168,35 +171,37 @@ WalkerBivarDirichlet <- function(
   if (show_progress) {
     progress_bar <- utils::txtProgressBar(min = 0, max = n_iter, style = 3)
   }
-
-  for (MH_iter in 1:n_iter) {
+  for (iter in 1:n_iter) {
     if (show_progress) {
-      if (MH_iter %% 100 == 0) {
-        utils::setTxtProgressBar(progress_bar, MH_iter)
+      if (iter %% 100 == 0) {
+        utils::setTxtProgressBar(progress_bar, iter)
       }
     }
     DPMM_update <- .DPWalkerUpdate(
       theta = calendar_ages,
       w = weight,
       v = v,
-      delta = delta,
+      delta = cluster_identifiers,
       phi = phi,
       tau = tau,
-      kstar = kstar,
-      c = c,
+      n_clust = n_clust,
+      c = alpha,
       mu_phi = mu_phi,
       lambda = lambda,
       nu1 = nu1,
       nu2 = nu2)
     weight <- DPMM_update$w
-    delta <- DPMM_update$delta
+    cluster_identifiers <- DPMM_update$delta
     phi <- DPMM_update$phi
     tau <- DPMM_update$tau
     v <- DPMM_update$v
-    kstar <- DPMM_update$kstar
+    n_clust <- DPMM_update$n_clust
 
-    c <- .WalkerUpdateC(
-      delta = delta, c = c, prshape = cprshape, prrate = cprrate)
+    alpha <- .WalkerUpdateAlpha(
+      delta = cluster_identifiers,
+      alpha = alpha,
+      prshape = alpha_shape,
+      prrate = alpha_rate)
     mu_phi <- .UpdateMuPhi(phi = phi, tau = tau, lambda = lambda, A = A, B = B)
 
     for (k in 1:num_observations) {
@@ -206,19 +211,19 @@ WalkerBivarDirichlet <- function(
         slice_width = slice_width,
         slice_multiplier = slice_multiplier,
         type = "log",
-        prmean = phi[delta[k]],
-        prsig = 1 / sqrt(tau[delta[k]]),
+        prmean = phi[cluster_identifiers[k]],
+        prsig = 1 / sqrt(tau[cluster_identifiers[k]]),
         c14obs = c14_determinations[k],
         c14sig = c14_uncertainties[k],
         mucalallyr = interpolated_c14_age,
         sigcalallyr = interpolated_c14_sig)
     }
 
-    if (MH_iter %% n_thin == 0) {
+    if (iter %% n_thin == 0) {
       output_index <- output_index + 1
-      delta_out[output_index, ] <- delta
-      c_out[output_index] <- c
-      n_clust_out[output_index] <- length(unique(delta))
+      cluster_identifiers_out[output_index, ] <- cluster_identifiers
+      alpha_out[output_index] <- alpha
+      n_clust_out[output_index] <- length(unique(cluster_identifiers))
       phi_out[[output_index]] <- phi
       tau_out[[output_index]] <- tau
       theta_out[output_index, ] <- calendar_ages
@@ -227,14 +232,15 @@ WalkerBivarDirichlet <- function(
     }
   }
   return_list <- list(
-    delta = delta_out,
-    c = c_out,
+    cluster_identifiers = cluster_identifiers_out,
+    alpha = alpha_out,
     n_clust = n_clust_out,
     phi = phi_out,
     tau = tau_out,
     weight = w_out,
     calendar_ages = theta_out,
-    mu_phi = mu_phi_out)
+    mu_phi = mu_phi_out,
+    update_type="walker")
   if (show_progress) close(progress_bar)
   return(return_list)
 }

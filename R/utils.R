@@ -32,16 +32,3 @@ InterpolateCalibrationCurve <- function(
     c14_sig=new_c14_sigs)
   return(new_calibration_curve)
 }
-
-
-# The as.row function which we will use to count number of different clusters
-as.row <- function(x) {
-  y <- NULL
-  x <- as.matrix(x)
-  if (nrow(x) > ncol(x)) {
-    y <- t(x)
-  } else {
-    y <- x
-  }
-  y
-}

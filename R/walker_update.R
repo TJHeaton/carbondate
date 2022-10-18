@@ -6,10 +6,10 @@
 # delta - the current cluster allocations
 # phi - the current cluster means
 # tau - the current cluster precisions
-# kstar - current kstar
+# n_clust - current n_clust
 # c, mu_phi, lambda, nu1, nu2 - the current DP parameters (not updated here)
 .DPWalkerUpdate <- function(
-    theta, w, v, delta, phi, tau, kstar, c, mu_phi, lambda, nu1, nu2) {
+    theta, w, v, delta, phi, tau, n_clust, c, mu_phi, lambda, nu1, nu2) {
   # Create relevant variables
   n <- length(theta)
 
@@ -28,7 +28,7 @@
   # To update v[j] we do the following
   while (sum(wnew) < 1 - ustar) {
 
-    if (j <= kstar) {
+    if (j <= n_clust) {
       # We have to work out alpha and beta and sample a new v[j] by inverse cdf
 
       # Find the indices we need to search over i.e. which are in cluster j and
@@ -60,7 +60,7 @@
       utemp <- stats::runif(1)
       v[j] <- 1 - (A - B * utemp)^(1 / c)
     } else {
-      # We are in the case that j > k^star (for current kstar) and v[j] is just
+      # We are in the case that j > k^star (for current n_clust) and v[j] is just
       # from the prior beta
       v[j] <- stats::rbeta(1, 1, c)
     }
@@ -71,7 +71,7 @@
 
     if (sum(is.na(wnew)) != 0) {
       cat("c = ", c, "\n")
-      cat("j < k^star is", j <= kstar, "\n")
+      cat("j < k^star is", j <= n_clust, "\n")
       cat("v[j] = ", v[j], "\n")
       browser()
       stop("Weird weights")
@@ -79,15 +79,15 @@
     j <- j + 1
   }
 
-  # Now update kstar (the number of weights we have) and truncate w and v at the
+  # Now update n_clust (the number of weights we have) and truncate w and v at the
   # correct values
-  kstar <- length(wnew)
+  n_clust <- length(wnew)
   w <- wnew
-  v <- v[1:kstar]
+  v <- v[1:n_clust]
 
   # Now update the cluster means and precisions (note we have to introduce new
   # ones for the new states without observations)
-  for (i in 1:kstar) {
+  for (i in 1:n_clust) {
     # Find which observations belong to this cluster
     clusti <- which(delta == i)
     if (length(clusti) == 0) {
@@ -104,8 +104,8 @@
     }
   }
   # Only store the values we need
-  phi <- phi[1:kstar]
-  tau <- tau[1:kstar]
+  phi <- phi[1:n_clust]
+  tau <- tau[1:n_clust]
 
   # Now update the allocations for each observation by sampling from them
   for (i in 1:n) {
@@ -118,22 +118,23 @@
 
   # Return w, v, delta, phi and tau
   return_list <- list(
-    w = w, v = v, delta = delta, phi = phi, tau = tau, kstar = kstar)
+    w = w, v = v, delta = delta, phi = phi, tau = tau, n_clust = n_clust)
   return(return_list)
 }
 
-# Function which updates the Dirichlet process parameter c
-# Does this via MH with truncated proposal distribution
+# Function which updates the Dirichlet process parameter alpha
+# Does this via Metropolis-Hastings with truncated proposal distribution
 # Arguments are:
 # delta - vector of the classes of each observation
-# c - current c parameter in Dir(c)
-# prshape and prrate - prior on c ~ Gamma(shape, rate)
-# propsd - proposal sd for new c
-.WalkerUpdateC <- function(delta, c, prshape = 0.5, prrate = 1, propsd = 1) {
-  # Sample new c from truncated normal distribution
+# alpha - current alpha parameter in Dir(alpha)
+# prshape and prrate - prior on alpha ~ Gamma(shape, rate)
+# propsd - proposal sd for new alpha
+.WalkerUpdateAlpha <- function(
+    delta, alpha, prshape = 0.5, prrate = 1, propsd = 1) {
+  # Sample new alpha from truncated normal distribution
   repeat {
-    cnew <- stats::rnorm(1, c, propsd)
-    if (cnew > 0) {
+    alpha_new <- stats::rnorm(1, alpha, propsd)
+    if (alpha_new > 0) {
       break
     }
   }
@@ -141,18 +142,18 @@
   d <- length(unique(delta))
   n <- length(delta)
   # Now find the likelihood and prior
-  logprrat <- stats::dgamma(cnew, shape = prshape, rate = prrate, log = TRUE) -
-    stats::dgamma(c, shape = prshape, rate = prrate, log = TRUE)
-  loglikrat <- .WalkerLogLikc(d = d, c = cnew, n = n) -
-    .WalkerLogLikc(d = d, c = c, n = n)
+  logprrat <- stats::dgamma(alpha_new, shape = prshape, rate = prrate, log = TRUE) -
+    stats::dgamma(alpha, shape = prshape, rate = prrate, log = TRUE)
+  loglikrat <- .WalkerAlphaLogLiklihood(d = d, alpha = alpha_new, n = n) -
+    .WalkerAlphaLogLiklihood(d = d, alpha = alpha, n = n)
   # Adjust for non-symmetric truncated normal proposal
-  logproprat <- stats::pnorm(c / propsd, log.p = TRUE) -
-    stats::pnorm(cnew / propsd, log.p = TRUE)
+  logproprat <- stats::pnorm(alpha / propsd, log.p = TRUE) -
+    stats::pnorm(alpha_new / propsd, log.p = TRUE)
   HR <- exp(logprrat + loglikrat + logproprat)
   if (stats::runif(1) < HR) {
-    return(cnew) # Accept cnew
+    return(alpha_new) # Accept alpha_new
   }
-  return(c) # Or reject and keep c
+  return(alpha) # Or reject and keep alpha
 }
 
 
@@ -166,6 +167,6 @@
 }
 
 
-.WalkerLogLikc <- function(d, c, n) {
-  return(d * log(c) + lgamma(c) - lgamma(c + n))
+.WalkerAlphaLogLiklihood <- function(d, alpha, n) {
+  return(d * log(alpha) + lgamma(alpha) - lgamma(alpha + n))
 }
