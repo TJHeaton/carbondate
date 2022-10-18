@@ -68,3 +68,17 @@ pkg.globals$MAX_YEAR_BP <- 50000
       c14obs, mean = mucal, sd = sqrt(sigcal^2 + c14sig^2), log = TRUE)
   return(loglik)
 }
+
+
+
+# Function which works out the marginal of theta when
+# theta ~ N(phi, sd = sqrt(1/tau)) and (phi,tau) are NormalGamma
+.LogMarginalNormalGamma <- function(theta, mu_phi, lambda, nu1, nu2) {
+  margprec <- (nu1 * lambda) / (nu2 * (lambda + 1))
+  margdf <- 2 * nu1
+
+  A <- lgamma((margdf + 1) / 2) - lgamma(margdf / 2)
+  B <- 0.5 * (log(margprec) - log(margdf) - log(pi))
+  C <- -((margdf + 1) / 2) * log(1 + (margprec * (theta - mu_phi)^2) / margdf)
+  logden <- A + B + C
+}

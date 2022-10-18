@@ -27,11 +27,7 @@
     cminus[cminus > ci] <- cminus[cminus > ci] - 1 # Adjust labelling
     nc <- nc - 1 # Adjust n levels
   }
-  nci <- apply(
-    t(as.matrix(1:nc)), # A row vector
-    2,
-    function(x, cminus) sum(cminus == x),
-    cminus = cminus)
+  nci <- .NumberOfObservationsInEachCluster(cminus)
 
   # Likelihood of theta given phi and tau
   cprob <- stats::dnorm(theta, mean = phi, sd = 1 / sqrt(tau))
@@ -60,18 +56,6 @@
   c[i] <- class
   retlist <- list(c = c, phi = phi, tau = tau)
   return(retlist)
-}
-
-# Function which works out the marginal of theta when
-# theta ~ N(phi, sd = sqrt(1/tau)) and (phi,tau) are NormalGamma
-.LogMarginalNormalGamma <- function(theta, mu_phi, lambda, nu1, nu2) {
-  margprec <- (nu1 * lambda) / (nu2 * (lambda + 1))
-  margdf <- 2 * nu1
-
-  A <- lgamma((margdf + 1) / 2) - lgamma(margdf / 2)
-  B <- 0.5 * (log(margprec) - log(margdf) - log(pi))
-  C <- -((margdf + 1) / 2) * log(1 + (margprec * (theta - mu_phi)^2) / margdf)
-  logden <- A + B + C
 }
 
 
@@ -137,11 +121,7 @@
 .AlphaLogLiklihood <- function(c, alpha) {
   n <- length(c)
   nc <- max(c)
-  nci <- apply(
-    t(as.matrix(1:nc)), # A row vector
-    2,
-    function(x, c) sum(c == x),
-    c = c)
+  nci <- .NumberOfObservationsInEachCluster(c)
   # Note we have to use pmax(nci-1, 1) here to account for clusters of
   # size 1 have 0! = 1
   loglik <- nc*log(alpha) + sum(
@@ -149,4 +129,14 @@
       pmax(nci-1, 1),
       function(x) sum(log(1:x)))) - sum(log(alpha:(alpha+n-1)))
   return(loglik)
+}
+
+
+.NumberOfObservationsInEachCluster <- function(cluster_identifiers) {
+  n_clust <- max(cluster_identifiers)
+  nci <- apply(
+    t(as.matrix(1:n_clust)), # A row vector
+    2,
+    function(x, c) sum(c == x),
+    c = cluster_identifiers)
 }
