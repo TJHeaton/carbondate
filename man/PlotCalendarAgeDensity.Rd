@@ -53,8 +53,9 @@ that the maximum SPD density will be at 1/3 of the height of the plot.
 TODO: base on the output data.}
 }
 \value{
-A dataframe containing the \code{calendar_age} and the \code{density_estimate}
-from the output data.
+A dataframe containing the \code{calendar_age}, the \code{density_mean}
+and the 95\% confidence intervals for the density \code{density_ci_lower} and
+\code{density_ci_upper}.
 }
 \description{
 Plots the input radiocarbon determinations and calibration curve, with the

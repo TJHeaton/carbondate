@@ -28,8 +28,9 @@
 #' that the maximum SPD density will be at 1/3 of the height of the plot.
 #' TODO: base on the output data.
 #'
-#' @return A dataframe containing the `calendar_age` and the `density_estimate`
-#' from the output data.
+#' @return A dataframe containing the `calendar_age`, the `density_mean`
+#' and the 95% confidence intervals for the density `density_ci_lower` and
+#' `density_ci_upper`.
 #'
 #' @export
 PlotCalendarAgeDensity <- function(
@@ -46,7 +47,13 @@ PlotCalendarAgeDensity <- function(
     ylimscal = 1,
     denscale = 3) {
 
-  # TODO: Check inputs
+  ##############################################################################
+  # Check input parameters
+
+  # TODO
+
+  ##############################################################################
+  # Initialise plotting parameters
 
   SPD_colour <- grDevices::grey(0.1, alpha = 0.5)
   calibration_curve_colour <- "blue"
@@ -55,19 +62,8 @@ PlotCalendarAgeDensity <- function(
 
   calendar_age_sequence <- .CreateRangeToPlotDensity(output_data)
 
-  xlim <- .ScaleLimit(rev(range(calendar_age_sequence)), xlimscal)
-  ylim <- .ScaleLimit(
-    range(c14_determinations) +
-      c(-2, 2) * stats::quantile(c14_uncertainties, 0.9),
-    ylimscal)
-
-  .PlotCalibrationCurveAndInputData(
-    xlim,
-    ylim,
-    calibration_curve,
-    c14_determinations,
-    calibration_curve_colour,
-    calibration_curve_bg)
+  ##############################################################################
+  # Calculate density distributions
 
   if (show_SPD){
     SPD = FindSPD(
@@ -75,25 +71,49 @@ PlotCalendarAgeDensity <- function(
       c14_determinations = c14_determinations,
       c14_uncertainties = c14_uncertainties,
       calibration_curve = calibration_curve)
-    .PlotSPDEstimateOnCurrentPlot(SPD, SPD_colour, denscale, xlim)
   }
 
-  posterior_density_mean = .PlotDensityEstimateOnCurrentPlot(
+  posterior_density = .FindPosteriorDensityMeanAndCI(
     output_data,
-    output_colour,
     calendar_age_sequence,
     n_posterior_samples,
     lambda,
     nu1,
     nu2)
 
+  ##############################################################################
+  # Calculate plot scaling
+
+  xlim <- .ScaleLimit(rev(range(calendar_age_sequence)), xlimscal)
+  ylim_calibration <- .ScaleLimit(
+    range(c14_determinations) +
+      c(-2, 2) * stats::quantile(c14_uncertainties, 0.9),
+    ylimscal)
+  ylim_density = c(0, denscale * max(posterior_density$density_mean))
+
+  ##############################################################################
+  # Plot curves
+
+  .PlotCalibrationCurveAndInputData(
+    xlim,
+    ylim_calibration,
+    calibration_curve,
+    c14_determinations,
+    calibration_curve_colour,
+    calibration_curve_bg)
+
+  .SetUpDensityPlot(xlim, ylim_density)
+
+  if (show_SPD){
+    .PlotSPDEstimateOnCurrentPlot(SPD, SPD_colour, xlim, ylim_density)
+  }
+
+  .PlotDensityEstimateOnCurrentPlot(posterior_density, output_colour)
+
   .AddLegendToDensityPlot(
     output_data, show_SPD, calibration_curve_colour, output_colour, SPD_colour)
 
-  invisible(
-    data.frame(
-      calendar_age=calendar_age_sequence,
-      density_estimate=posterior_density_mean))
+  invisible(posterior_density)
 }
 
 
@@ -156,19 +176,21 @@ PlotCalendarAgeDensity <- function(
 }
 
 
-.PlotSPDEstimateOnCurrentPlot <- function(SPD, SPD_colour, denscale, xlim) {
+.SetUpDensityPlot <- function(xlim, ylim) {
   graphics::par(new = TRUE)
   graphics::plot.default(
-    SPD$calendar_age,
-    SPD$probability,
-    lty = 1,
-    col = SPD_colour,
+    c(),
+    c(),
     type = "n",
-    ylim = c(0, denscale * max(SPD$prob)),
+    ylim = ylim,
     xlim = xlim,
     axes = FALSE,
     xlab = NA,
     ylab = NA)
+}
+
+
+.PlotSPDEstimateOnCurrentPlot <- function(SPD, SPD_colour, xlim, ylim) {
   graphics::polygon(
     c(SPD$calendar_age, rev(SPD$calendar_age)),
     c(SPD$probability, rep(0, length(SPD$probability))),
@@ -177,16 +199,13 @@ PlotCalendarAgeDensity <- function(
 }
 
 
-.PlotDensityEstimateOnCurrentPlot <- function(
+.FindPosteriorDensityMeanAndCI <- function(
     output_data,
-    output_colour,
     calendar_age_sequence,
     n_posterior_samples,
     lambda,
     nu1,
-    donu2) {
-
-  # each column is the density for a particular sample id
+    nu2) {
   posterier_density_matrix <- .FindDensityPerSampleID(
     output_data, calendar_age_sequence, n_posterior_samples, lambda, nu1, nu2)
 
@@ -194,20 +213,11 @@ PlotCalendarAgeDensity <- function(
     posterier_density_matrix, 1, stats::quantile, probs = c(0.025, 0.975))
   posterier_density_mean <- apply(posterier_density_matrix, 1, mean)
 
-  graphics::lines(
-    calendar_age_sequence, posterier_density_mean, col = output_colour)
-  graphics::lines(
-    calendar_age_sequence,
-    posterier_density_confidence_intervals[1, ],
-    col = output_colour,
-    lty = 2)
-  graphics::lines(
-    calendar_age_sequence,
-    posterier_density_confidence_intervals[2, ],
-    col = output_colour,
-    lty = 2)
-
-  return(posterier_density_mean)
+  return(data.frame(
+    calendar_age=calendar_age_sequence,
+    density_mean=posterier_density_mean,
+    density_ci_lower=posterier_density_confidence_intervals[1, ],
+    density_ci_upper=posterier_density_confidence_intervals[2, ]))
 }
 
 
@@ -256,6 +266,29 @@ PlotCalendarAgeDensity <- function(
     nu2 = nu2)
   return(posterior_density_matrix)
 }
+
+
+.PlotDensityEstimateOnCurrentPlot <- function(
+    posterior_density,
+    output_colour) {
+
+  graphics::lines(
+    posterior_density$calendar_age,
+    posterior_density$density_mean,
+    col = output_colour
+    )
+  graphics::lines(
+    posterior_density$calendar_age,
+    posterior_density$density_ci_lower,
+    col = output_colour,
+    lty = 2)
+  graphics::lines(
+    posterior_density$calendar_age,
+    posterior_density$density_ci_upper,
+    col = output_colour,
+    lty = 2)
+}
+
 
 .AddLegendToDensityPlot <- function(
     output_data,

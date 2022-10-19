@@ -20,7 +20,9 @@
 #' for DP concentration, \eqn{\alpha}, determining the number of clusters we
 #' expect to observe among our n sampled objects.
 #' \eqn{\alpha \sim \Gamma(\eta_1, \eta_2)} where \eqn{\eta_1, \eta_2} are
-#' the `alpha_shape` and `alpha_rate`.
+#' the `alpha_shape` and `alpha_rate`. A small alpha means more concentrated
+#' (i.e. few clusters) while a large alpha means not concentrated (i.e. many
+#' clusters).
 #' @param n_iter  The number of MCMC iterations (optional). Default is 100.
 #' @param n_thin  How much to thin the output (optional). 1 is no thinning,
 #' a larger number is more thinning. Default is 10. Must choose an integer more

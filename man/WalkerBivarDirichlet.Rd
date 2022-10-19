@@ -51,7 +51,9 @@ B small is uninformative.}
 for DP concentration, \eqn{\alpha}, determining the number of clusters we
 expect to observe among our n sampled objects.
 \eqn{\alpha \sim \Gamma(\eta_1, \eta_2)} where \eqn{\eta_1, \eta_2} are
-the \code{alpha_shape} and \code{alpha_rate}.}
+the \code{alpha_shape} and \code{alpha_rate}. A small alpha means more concentrated
+(i.e. few clusters) while a large alpha means not concentrated (i.e. many
+clusters).}
 
 \item{n_iter}{The number of MCMC iterations (optional). Default is 100.}
 
