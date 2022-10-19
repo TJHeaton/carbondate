@@ -65,7 +65,7 @@ for DP concentration, \eqn{\alpha}, determining the number of clusters we
 expect to observe among our n sampled objects.
 \eqn{\alpha \sim \Gamma(\eta_1, \eta_2)} where \eqn{\eta_1, \eta_2} are
 the \code{alpha_shape} and \code{alpha_rate}. Note these are only used if
-\code{alpha_type} is \code{"gamma"}. \link{TODO WE DON'T ACTUALLY USE THESE}}
+\code{alpha_type} is \code{"gamma"}. [TODO WE DON'T ACTUALLY USE THESE]}
 
 \item{n_iter}{The number of MCMC iterations (optional). Default is 100.}
 

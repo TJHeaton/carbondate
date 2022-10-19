@@ -11,8 +11,10 @@
 #' c14_age and one column entitled c14_sig.
 #' This format matches [carbondate::intcal20].
 #' @param output_data Data returned from one of the updating functions e.g.
-#' [carbondate::WalkerBicarDirichlet] or [carbondate::BivarDirichletwithSlice].
-#' @param npostsum
+#' [carbondate::WalkerBivarDirichlet] or
+#' [carbondate::BivarGibbsDirichletwithSlice].
+#' @param n_posterior_samples Current number of samples it will draw from this
+#' posterior to estimate the calendar age density (possibly repeats).
 #' @param lambda,nu1,nu2  Hyperparameters used in the updating function for the
 #' prior on the means \eqn{\phi_j} and precision \eqn{\tau_j} of each individual
 #' calendar age cluster \eqn{j}.
@@ -35,7 +37,7 @@ PlotCalendarAgeDensity <- function(
     c14_uncertainties,
     calibration_curve,
     output_data,
-    npostsum,
+    n_posterior_samples,
     lambda,
     nu1,
     nu2,
@@ -44,21 +46,28 @@ PlotCalendarAgeDensity <- function(
     ylimscal = 1,
     denscale = 3) {
 
-  SPD_colour <- grey(0.1, alpha = 0.5)
+  # TODO: Check inputs
+
+  SPD_colour <- grDevices::grey(0.1, alpha = 0.5)
   calibration_curve_colour <- "blue"
+  calibration_curve_bg <- grDevices::rgb(0, 0, 1, .3)
   output_colour <- "purple"
 
-  tempx <- .CreateRangeToPlotDensity(output_data)
+  calendar_age_sequence <- .CreateRangeToPlotDensity(output_data)
 
-  xlim <- .ScaleLimit(rev(range(tempx)), xlimscal)
-  ylim <- .ScaleLimit(range(x) + c(-2, 2) * quantile(xsig, 0.9), ylimscal)
+  xlim <- .ScaleLimit(rev(range(calendar_age_sequence)), xlimscal)
+  ylim <- .ScaleLimit(
+    range(c14_determinations) +
+      c(-2, 2) * stats::quantile(c14_uncertainties, 0.9),
+    ylimscal)
 
   .PlotCalibrationCurveAndInputData(
     xlim,
     ylim,
     calibration_curve,
     c14_determinations,
-    calibration_curve_colour)
+    calibration_curve_colour,
+    calibration_curve_bg)
 
   if (show_SPD){
     SPD = FindSPD(
@@ -70,23 +79,31 @@ PlotCalendarAgeDensity <- function(
   }
 
   posterior_density_mean = .PlotDensityEstimateOnCurrentPlot(
-    output_data, output_colour, tempx, npostsum, lambda, nu1, nu2)
+    output_data,
+    output_colour,
+    calendar_age_sequence,
+    n_posterior_samples,
+    lambda,
+    nu1,
+    nu2)
 
   .AddLegendToDensityPlot(
-    output_data, show_SPD, calibration_curve_colour, output_colout, SPD_colour)
+    output_data, show_SPD, calibration_curve_colour, output_colour, SPD_colour)
 
   invisible(
-    data.frame(calendar_age=tempx, density_estimate=posterior_density_mean))
+    data.frame(
+      calendar_age=calendar_age_sequence,
+      density_estimate=posterior_density_mean))
 }
 
 
 .CreateRangeToPlotDensity <- function(output_data) {
-  tempx <- seq(
+  calendar_age_sequence <- seq(
     floor(min(output_data$calendar_ages, na.rm = TRUE)),
     ceiling(max(output_data$calendar_ages, na.rm = TRUE)),
     by = 1,
   )
-  return(tempx)
+  return(calendar_age_sequence)
 }
 
 
@@ -101,7 +118,8 @@ PlotCalendarAgeDensity <- function(
     ylim,
     calibration_curve,
     c14_determinations,
-    calibration_curve_colour){
+    calibration_curve_colour,
+    calibration_curve_bg){
   graphics::par(mar = c(5, 4.5, 4, 2) + 0.1, las = 1)
   graphics::plot.default(
     calibration_curve$calendar_age,
@@ -132,9 +150,8 @@ PlotCalendarAgeDensity <- function(
   graphics::polygon(
     c(rev(calibration_curve$calendar_age), calibration_curve$calendar_age),
     c(rev(calibration_curve$lb), calibration_curve$ub),
-    col = rgb(0, 0, 1, .3),
-    border = NA,
-  )
+    col = calibration_curve_bg,
+    border = NA)
   graphics::rug(c14_determinations, side = 2)
 }
 
@@ -161,24 +178,31 @@ PlotCalendarAgeDensity <- function(
 
 
 .PlotDensityEstimateOnCurrentPlot <- function(
-    output_data, output_colour, tempx, npostsum, lambda, nu1, nu2) {
+    output_data,
+    output_colour,
+    calendar_age_sequence,
+    n_posterior_samples,
+    lambda,
+    nu1,
+    donu2) {
 
   # each column is the density for a particular sample id
   posterier_density_matrix <- .FindDensityPerSampleID(
-    output_data, tempx, npostsum, lambda, nu1, nu2)
+    output_data, calendar_age_sequence, n_posterior_samples, lambda, nu1, nu2)
 
   posterier_density_confidence_intervals <- apply(
-    posterier_density_matrix, 1, quantile, probs = c(0.025, 0.975))
+    posterier_density_matrix, 1, stats::quantile, probs = c(0.025, 0.975))
   posterier_density_mean <- apply(posterier_density_matrix, 1, mean)
 
-  graphics::lines(tempx, posterier_density_mean, col = output_colour)
   graphics::lines(
-    tempx,
+    calendar_age_sequence, posterier_density_mean, col = output_colour)
+  graphics::lines(
+    calendar_age_sequence,
     posterier_density_confidence_intervals[1, ],
     col = output_colour,
     lty = 2)
   graphics::lines(
-    tempx,
+    calendar_age_sequence,
     posterier_density_confidence_intervals[2, ],
     col = output_colour,
     lty = 2)
@@ -188,22 +212,24 @@ PlotCalendarAgeDensity <- function(
 
 
 .FindDensityPerSampleID <- function(
-    output_data, tempx, npostsum, lambda, nu1, nu2) {
+    output_data, calendar_age_sequence, n_posterior_samples, lambda, nu1, nu2) {
   n_out <- length(output_data$alpha)
   n_burn <- floor(n_out / 2)
 
   posterior_sample_ids <- sample(
-    x = nburn:npost, size = npostsum, replace = npostsum > (n_out - n_burn))
+    x = n_burn:n_out,
+    size = n_posterior_samples,
+    replace = n_posterior_samples > (n_out - n_burn))
 
   # Create a matrix where each column is the density for a particular sample id
   posterior_density_matrix <- apply(
-    matrix(posterior_sample_ids, 1, npostsum),
+    matrix(posterior_sample_ids, 1, n_posterior_samples),
     2,
-    function(i, out, x, lambda, nu1, nu2) {
-      if (output_data$type == "walker") {
+    function(i, output_data, x, lambda, nu1, nu2) {
+      if (output_data$update_type == "walker") {
         .FindPredictedDensityWalker(
           x,
-          w = output_data$weight[[i]],
+          weight = output_data$weight[[i]],
           phi = output_data$phi[[i]],
           tau = output_data$tau[[i]],
           mu_phi = output_data$mu_phi[i],
@@ -213,7 +239,7 @@ PlotCalendarAgeDensity <- function(
       } else {
         .FindPredictedDensityNeal(
           x,
-          c = output_data$c[i, ],
+          cluster_identifiers = output_data$cluster_identifiers[i, ],
           phi = output_data$phi[[i]],
           tau = output_data$tau[[i]],
           alpha = output_data$alpha[i],
@@ -223,8 +249,11 @@ PlotCalendarAgeDensity <- function(
           nu2 = nu2)
       }
     },
-    output_data = output_data, x = tempx, lambda = lambda, nu1 = nu1, nu2 = nu2
-  )
+    output_data = output_data,
+    x = calendar_age_sequence,
+    lambda = lambda,
+    nu1 = nu1,
+    nu2 = nu2)
   return(posterior_density_matrix)
 }
 

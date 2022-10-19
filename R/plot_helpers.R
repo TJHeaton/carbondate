@@ -1,21 +1,22 @@
 .FindPredictedDensityNeal <- function(
-    x, c, phi, tau, alpha, mu_phi, lambda, nu1, nu2) {
-  nci <- .NumberOfObservationsInEachCluster(c)
+    x, cluster_identifiers, phi, tau, alpha, mu_phi, lambda, nu1, nu2) {
+  n_clust <- length(phi)
+  nci <- .NumberOfObservationsInEachCluster(cluster_identifiers)
 
-  # Find probability that new theta[i+1] lies in a particular cluster or a new one
+  # Find probability that new theta[i+1] is in a particular cluster or a new one
   pci <- c(nci, alpha) # Could form new cluster
   pci <- pci / sum(pci)
 
-  dens <- .MixtureDens(x, w = pci[1:nc], mu = phi, sd = 1 / sqrt(tau)) +
-    .PredNewDens(x, w = pci[nc + 1], mu_phi, lambda, nu1, nu2)
+  dens <- .MixtureDens(x, w = pci[1:n_clust], mu = phi, sd = 1 / sqrt(tau)) +
+    .PredNewDens(x, w = pci[n_clust + 1], mu_phi, lambda, nu1, nu2)
 }
 
 
 .FindPredictedDensityWalker <- function(
-    x, w, phi, tau, mu_phi, lambda, nu1, nu2) {
-  prob_new_clust <- 1 - sum(w)
+    x, weight, phi, tau, mu_phi, lambda, nu1, nu2) {
+  prob_new_clust <- 1 - sum(weight)
 
-  dens <- .MixtureDens(x, w = w, mu = phi, sd = 1 / sqrt(tau)) +
+  dens <- .MixtureDens(x, w = weight, mu = phi, sd = 1 / sqrt(tau)) +
     .PredNewDens(x, w = prob_new_clust, mu_phi, lambda, nu1, nu2)
   return(dens)
 }
@@ -31,7 +32,7 @@
 # sd - the sds
 .MixtureDens <- function(x, w, mu, sd) {
   DTemp <- mapply(
-    function(mu, sig, w, x) w * dnorm(x, mean = mu, sd = sig),
+    function(mu, sig, w, x) w * stats::dnorm(x, mean = mu, sd = sig),
     mu,
     sd,
     w,

@@ -17,5 +17,6 @@ Depends:
 LazyData: true
 Imports: 
     graphics,
+    grDevices,
     stats,
     utils
