@@ -1,4 +1,4 @@
-#' Plots the predicted calendar age density from the output data.
+#' Plots the predicted calendar age density from the output data
 #'
 #' Plots the input radiocarbon determinations and calibration curve, with the
 #' output predicted density on the same plot. Can also optionally show the
@@ -10,16 +10,15 @@
 #' @param calibration_curve A dataframe which should contain one column entitled
 #' c14_age and one column entitled c14_sig.
 #' This format matches [carbondate::intcal20].
-#' @param output_data Data returned from one of the updating functions e.g.
+#' @param output_data The return value from one of the updating functions e.g.
 #' [carbondate::WalkerBivarDirichlet] or
 #' [carbondate::BivarGibbsDirichletwithSlice].
 #' @param n_posterior_samples Current number of samples it will draw from this
 #' posterior to estimate the calendar age density (possibly repeats).
-#' @param lambda,nu1,nu2  Hyperparameters used in the updating function for the
-#' prior on the means \eqn{\phi_j} and precision \eqn{\tau_j} of each individual
-#' calendar age cluster \eqn{j}.
 #' @param show_SPD Whether to calculate and show the summed probability function
 #' on the plot (optional). Default is `TRUE`.
+#' @param show_confidence_intervals Whether to show the 95% confidence intervals
+#' of the posterior density on the plot. Default is `TRUE`.
 #' @param xlimscal,ylimscal Whether to scale the x or y limits (optional).
 #' Default is 1. Values more than 1 will increase range of the limits,
 #' values less than 1 will decrease the range of the limits.
@@ -28,9 +27,9 @@
 #' that the maximum SPD density will be at 1/3 of the height of the plot.
 #' TODO: base on the output data.
 #'
-#' @return A dataframe containing the `calendar_age`, the `density_mean`
-#' and the 95% confidence intervals for the density `density_ci_lower` and
-#' `density_ci_upper`.
+#' @return A list, each item containing a data frame of the `calendar_age`, the
+#' `density_mean` and the 95% confidence intervals for the density
+#' `density_ci_lower` and `density_ci_upper` for each set of output data.
 #'
 #' @export
 PlotCalendarAgeDensity <- function(
@@ -39,10 +38,8 @@ PlotCalendarAgeDensity <- function(
     calibration_curve,
     output_data,
     n_posterior_samples,
-    lambda,
-    nu1,
-    nu2,
     show_SPD = TRUE,
+    show_confidence_intervals = TRUE,
     xlimscal = 1,
     ylimscal = 1,
     denscale = 3) {
@@ -50,37 +47,42 @@ PlotCalendarAgeDensity <- function(
   ##############################################################################
   # Check input parameters
 
-  # TODO
+  # Treat single output data as a list of length 1
+  if (!is.null(output_data$update_type)) output_data = list(output_data)
+
+  for (single_output_data in output_data) {
+    if (is.null(single_output_data$label)) {
+      single_output_data$label <- single_output_data$update_type
+    }
+  }
 
   ##############################################################################
   # Initialise plotting parameters
 
-  SPD_colour <- grDevices::grey(0.1, alpha = 0.5)
+  SPD_colour <- grDevices::grey(0.1, alpha = 0.3)
   calibration_curve_colour <- "blue"
   calibration_curve_bg <- grDevices::rgb(0, 0, 1, .3)
-  output_colour <- "purple"
+  output_colours <- grDevices::hcl.colors(
+    n = length(output_data), palette = "Dark 3")
 
-  calendar_age_sequence <- .CreateRangeToPlotDensity(output_data)
+  calendar_age_sequence <- .CreateRangeToPlotDensity(output_data[[1]])
 
   ##############################################################################
   # Calculate density distributions
 
   if (show_SPD){
     SPD = FindSPD(
-      calendar_age_range = floor(range(output_data$calendar_ages)),
+      calendar_age_range = floor(range(output_data[[1]]$calendar_ages)),
       c14_determinations = c14_determinations,
       c14_uncertainties = c14_uncertainties,
       calibration_curve = calibration_curve)
   }
 
-  posterior_density = .FindPosteriorDensityMeanAndCI(
-    output_data,
-    calendar_age_sequence,
-    n_posterior_samples,
-    lambda,
-    nu1,
-    nu2)
-
+  posterior_density <- list()
+  for (i in 1:length(output_data)) {
+    posterior_density[[i]] <- .FindPosteriorDensityMeanAndCI(
+      output_data[[i]], calendar_age_sequence, n_posterior_samples)
+  }
   ##############################################################################
   # Calculate plot scaling
 
@@ -89,7 +91,7 @@ PlotCalendarAgeDensity <- function(
     range(c14_determinations) +
       c(-2, 2) * stats::quantile(c14_uncertainties, 0.9),
     ylimscal)
-  ylim_density = c(0, denscale * max(posterior_density$density_mean))
+  ylim_density = c(0, denscale * max(posterior_density[[1]]$density_mean))
 
   ##############################################################################
   # Plot curves
@@ -108,10 +110,18 @@ PlotCalendarAgeDensity <- function(
     .PlotSPDEstimateOnCurrentPlot(SPD, SPD_colour, xlim, ylim_density)
   }
 
-  .PlotDensityEstimateOnCurrentPlot(posterior_density, output_colour)
+  for (i in 1:length(output_data)) {
+    .PlotDensityEstimateOnCurrentPlot(
+      posterior_density[[i]], output_colours[[i]], show_confidence_intervals)
+  }
 
   .AddLegendToDensityPlot(
-    output_data, show_SPD, calibration_curve_colour, output_colour, SPD_colour)
+    output_data,
+    show_SPD,
+    show_confidence_intervals,
+    calibration_curve_colour,
+    output_colours,
+    SPD_colour)
 
   invisible(posterior_density)
 }
@@ -150,7 +160,7 @@ PlotCalendarAgeDensity <- function(
     xlab = "Calendar Age (cal yr BP)",
     ylab = expression(paste(""^14, "C", " age (", ""^14, "C yr BP)")),
     type = "l",
-    main = expression(paste(""^14, "C Calibration")),
+    main = expression(paste("Posterior calendar age density")),
   )
   calibration_curve$ub <- calibration_curve$c14_age +
     1.96 * calibration_curve$c14_sig
@@ -199,117 +209,55 @@ PlotCalendarAgeDensity <- function(
 }
 
 
-.FindPosteriorDensityMeanAndCI <- function(
-    output_data,
-    calendar_age_sequence,
-    n_posterior_samples,
-    lambda,
-    nu1,
-    nu2) {
-  posterier_density_matrix <- .FindDensityPerSampleID(
-    output_data, calendar_age_sequence, n_posterior_samples, lambda, nu1, nu2)
-
-  posterier_density_confidence_intervals <- apply(
-    posterier_density_matrix, 1, stats::quantile, probs = c(0.025, 0.975))
-  posterier_density_mean <- apply(posterier_density_matrix, 1, mean)
-
-  return(data.frame(
-    calendar_age=calendar_age_sequence,
-    density_mean=posterier_density_mean,
-    density_ci_lower=posterier_density_confidence_intervals[1, ],
-    density_ci_upper=posterier_density_confidence_intervals[2, ]))
-}
-
-
-.FindDensityPerSampleID <- function(
-    output_data, calendar_age_sequence, n_posterior_samples, lambda, nu1, nu2) {
-  n_out <- length(output_data$alpha)
-  n_burn <- floor(n_out / 2)
-
-  posterior_sample_ids <- sample(
-    x = n_burn:n_out,
-    size = n_posterior_samples,
-    replace = n_posterior_samples > (n_out - n_burn))
-
-  # Create a matrix where each column is the density for a particular sample id
-  posterior_density_matrix <- apply(
-    matrix(posterior_sample_ids, 1, n_posterior_samples),
-    2,
-    function(i, output_data, x, lambda, nu1, nu2) {
-      if (output_data$update_type == "walker") {
-        .FindPredictedDensityWalker(
-          x,
-          weight = output_data$weight[[i]],
-          phi = output_data$phi[[i]],
-          tau = output_data$tau[[i]],
-          mu_phi = output_data$mu_phi[i],
-          lambda = lambda,
-          nu1 = nu1,
-          nu2 = nu2)
-      } else {
-        .FindPredictedDensityNeal(
-          x,
-          cluster_identifiers = output_data$cluster_identifiers[i, ],
-          phi = output_data$phi[[i]],
-          tau = output_data$tau[[i]],
-          alpha = output_data$alpha[i],
-          mu_phi = output_data$mu_phi[i],
-          lambda = lambda,
-          nu1 = nu1,
-          nu2 = nu2)
-      }
-    },
-    output_data = output_data,
-    x = calendar_age_sequence,
-    lambda = lambda,
-    nu1 = nu1,
-    nu2 = nu2)
-  return(posterior_density_matrix)
-}
-
-
 .PlotDensityEstimateOnCurrentPlot <- function(
-    posterior_density,
-    output_colour) {
+    posterior_density, output_colour, show_confidence_intervals) {
 
   graphics::lines(
     posterior_density$calendar_age,
     posterior_density$density_mean,
     col = output_colour
     )
-  graphics::lines(
-    posterior_density$calendar_age,
-    posterior_density$density_ci_lower,
-    col = output_colour,
-    lty = 2)
-  graphics::lines(
-    posterior_density$calendar_age,
-    posterior_density$density_ci_upper,
-    col = output_colour,
-    lty = 2)
+  if (show_confidence_intervals) {
+    graphics::lines(
+      posterior_density$calendar_age,
+      posterior_density$density_ci_lower,
+      col = output_colour,
+      lty = 2)
+    graphics::lines(
+      posterior_density$calendar_age,
+      posterior_density$density_ci_upper,
+      col = output_colour,
+      lty = 2)
+  }
 }
 
 
 .AddLegendToDensityPlot <- function(
     output_data,
     show_SPD,
+    show_confidence_intervals,
     calibration_curve_colour,
-    output_colour,
+    output_colours,
     SPD_colour) {
   legend_labels = "IntCal20"
   lty = 1
   pch = NA
   col = calibration_curve_colour
-  if (output_data$update_type == "walker") {
-    legend_labels <- c(legend_labels, "Walker DP", "Walker 95% prob interval")
-  } else if (output_data$update_type == "neal") {
-    legend_labels <- c(legend_labels, "Neal DP", "Neal 95% prob interval")
-  } else {
-    stop("Unknown update type")
+
+  for (i in 1:length(output_data)) {
+    legend_labels <- c(legend_labels, output_data[[i]]$label)
+    lty <- c(lty, 1)
+    pch <- c(pch, NA)
+    col <- c(col, output_colours[[i]])
+
+    if (show_confidence_intervals) {
+      legend_labels <- c(
+        legend_labels, paste(output_data[[i]]$label, " 95% prob interval"))
+      lty <- c(lty, 2)
+      pch <- c(pch, NA)
+      col <- c(col, output_colours[[i]])
+    }
   }
-    lty <- c(lty, 1, 2)
-    pch <- c(pch, NA, NA)
-    col <- c(col, output_colour, output_colour)
 
   if (show_SPD) {
     legend_labels <- c(legend_labels, "SPD Estimate")

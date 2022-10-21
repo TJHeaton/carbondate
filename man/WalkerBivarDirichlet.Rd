@@ -84,10 +84,10 @@ overridden from any values passed in the arguments.}
 execution. Default is \code{TRUE}.}
 }
 \value{
-A list, containing 9 items, each of which having one dimension of
-size \eqn{n_{\textrm{out}} = \textrm{floor}( n_{\textrm{iter}}/
-n_{\textrm{thin}}) + 1}, each row storing the result from every
-\eqn{n_{\textrm{thin}}}th iteration:
+A list with 12 items. The first 8 items contain output data, each of
+which have one dimension of size \eqn{n_{\textrm{out}} =
+\textrm{floor}( n_{\textrm{iter}}/n_{\textrm{thin}}) + 1}, each row storing
+the result from every \eqn{n_{\textrm{thin}}}th iteration:
 
 \describe{
 \item{\code{cluster_identifiers}}{An \eqn{n_{\textrm{out}}} by
@@ -107,11 +107,19 @@ the mixing weights of each cluster.}
 integer matrix. Gives the calendar age for each observation.}
 \item{\code{mu_phi}}{A vector of length \eqn{n_{\textrm{out}}} giving the overall
 centering \eqn{\mu_{\phi}} of the clusters.}
-\item{\code{update_type}}{A string that always has the value "walker". This is
-needed if the output is used as an input for post-processing functions.}
 }
 where \eqn{n_{\textrm{obs}}} is the number of radiocarbon observations i.e.
 the length of \code{c14_determinations}.
+
+The remaining 4 items contain information that is used for later
+post-processing of the output data:
+
+\describe{
+\item{\code{update_type}}{A string that always has the value "neal"}
+\item{\code{lambda}}{The fixed hypeparameter lambda.}
+\item{\code{nu1}}{The fixed hypeparameter nu1}
+\item{\code{nu2}}{The fixed hypeparameter nu2}
+}
 }
 \description{
 Implements calibration using Walker updating of the Dirichlet Process Mixture

@@ -44,10 +44,10 @@
 #' @param show_progress Whether to show a progress bar in the console during
 #' execution. Default is `TRUE`.
 #'
-#' @return A list, containing 9 items, each of which having one dimension of
-#' size \eqn{n_{\textrm{out}} = \textrm{floor}( n_{\textrm{iter}}/
-#' n_{\textrm{thin}}) + 1}, each row storing the result from every
-#' \eqn{n_{\textrm{thin}}}th iteration:
+#' @return A list with 12 items. The first 8 items contain output data, each of
+#' which have one dimension of size \eqn{n_{\textrm{out}} =
+#' \textrm{floor}( n_{\textrm{iter}}/n_{\textrm{thin}}) + 1}, each row storing
+#' the result from every \eqn{n_{\textrm{thin}}}th iteration:
 #'
 #' \describe{
 #'  \item{`cluster_identifiers`}{An \eqn{n_{\textrm{out}}} by
@@ -67,11 +67,19 @@
 #'     integer matrix. Gives the calendar age for each observation.}
 #'  \item{`mu_phi`}{A vector of length \eqn{n_{\textrm{out}}} giving the overall
 #'      centering \eqn{\mu_{\phi}} of the clusters.}
-#'  \item{`update_type`}{A string that always has the value "walker". This is
-#'      needed if the output is used as an input for post-processing functions.}
 #' }
 #' where \eqn{n_{\textrm{obs}}} is the number of radiocarbon observations i.e.
 #' the length of `c14_determinations`.
+#'
+#' The remaining 4 items contain information that is used for later
+#' post-processing of the output data:
+#'
+#' \describe{
+#'  \item{`update_type`}{A string that always has the value "neal"}
+#'  \item{`lambda`}{The fixed hypeparameter lambda.}
+#'  \item{`nu1`}{The fixed hypeparameter nu1}
+#'  \item{`nu2`}{The fixed hypeparameter nu2}
+#' }
 #' @export
 #'
 #' @examples WalkerBivarDirichlet(
@@ -242,7 +250,10 @@ WalkerBivarDirichlet <- function(
     weight = w_out,
     calendar_ages = theta_out,
     mu_phi = mu_phi_out,
-    update_type="walker")
+    update_type="walker",
+    lambda = lambda,
+    nu1 = nu1,
+    nu2 = nu2)
   if (show_progress) close(progress_bar)
   return(return_list)
 }

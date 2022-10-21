@@ -37,11 +37,10 @@ PlotIndividualCalendarAgeDensity <- function(
   }
 
   # Find the calendar age range to plot
-  xrange <- range(calendar_age)
-  calendar_age_range_indices <- c(
-    which.min(abs(calibration_curve$calendar_age - xrange[1])),
-    which.min(abs(calibration_curve$calendar_age - xrange[2])))
-  calendar_age_indices <- calendar_age_range_indices[1]:calendar_age_range_indices[2]
+  xrange <- range(calendar_age) + c(-1, 1) * 10
+  cal_age_ind_min <- which.min(abs(calibration_curve$calendar_age - xrange[1]))
+  cal_age_ind_max <- which.min(abs(calibration_curve$calendar_age - xrange[2]))
+  calendar_age_indices <- cal_age_ind_min:cal_age_ind_max
 
   calibration_curve$ub <- calibration_curve$c14_age +
     1.96 * calibration_curve$c14_sig
@@ -49,9 +48,9 @@ PlotIndividualCalendarAgeDensity <- function(
     1.96 * calibration_curve$c14_sig
   yrange <- range(
     calibration_curve$ub[calendar_age_indices],
-    calibration_curve$lb[calendar_age_indices])
+    calibration_curve$lb[calendar_age_indices] - 10)
 
-  plot(calibration_curve$calendar_age, calibration_curve$c14_age,
+  graphics::plot(calibration_curve$calendar_age, calibration_curve$c14_age,
        col = "blue",
        ylim = yrange,
        xlim = rev(xrange),
@@ -71,26 +70,28 @@ PlotIndividualCalendarAgeDensity <- function(
          list(i = ident, c14_age = c14_age, c14_sig = c14_sig)),
        xaxs = "i",
        yaxs = "i")
-  lines(
+  graphics::lines(
     calibration_curve$calendar_age, calibration_curve$ub, lty = 2, col = "blue")
-  lines(
+  graphics::lines(
     calibration_curve$calendar_age, calibration_curve$lb, lty = 2, col = "blue")
 
   # Plot the 14C determination on the y-axis
-  yfromto <- seq(c14_age - 3 * c14_sig, c14_age + 3 * c14_sig, by = 1)
+  yfromto <- seq(c14_age - 4 * c14_sig, c14_age + 4 * c14_sig, by = 1)
   radpol <- cbind(
-    c(0, dnorm(yfromto, mean = c14_age, sd = c14_sig), 0),
+    c(0, stats::dnorm(yfromto, mean = c14_age, sd = c14_sig), 0),
     c(min(yfromto), yfromto, max(yfromto))
   )
-  radpol[, 1] <- radpol[, 1] * 0.1 * (xrange[2] - xrange[1]) / max(radpol[, 1])
+  relative_height = 0.1
+  radpol[, 1] <- radpol[, 1] * (xrange[2] - xrange[1]) / max(radpol[, 1])
+  radpol[, 1] <- radpol[, 1] * relative_height
   radpol[, 1] <- xrange[2] - radpol[, 1]
-  polygon(radpol, col = rgb(1, 0, 0, .5))
+  graphics::polygon(radpol, col = grDevices::rgb(1, 0, 0, .5))
 
   # Plot the posterior cal age on the x-axis
-  par(new = TRUE, las = 1)
-  # Create hist but do not plot - works out senssible ylim
-  temphist <- hist(calendar_age, breaks = n_breaks, plot = FALSE)
-  hist(
+  graphics::par(new = TRUE, las = 1)
+  # Create hist but do not plot - works out sensible ylim
+  temphist <- graphics::hist(calendar_age, breaks = n_breaks, plot = FALSE)
+  graphics::hist(
     calendar_age,
     prob = TRUE,
     breaks = n_breaks,

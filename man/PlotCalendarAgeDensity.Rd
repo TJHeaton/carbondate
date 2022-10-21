@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_calendar_age_density.R
 \name{PlotCalendarAgeDensity}
 \alias{PlotCalendarAgeDensity}
-\title{Plots the predicted calendar age density from the output data.}
+\title{Plots the predicted calendar age density from the output data}
 \usage{
 PlotCalendarAgeDensity(
   c14_determinations,
@@ -10,9 +10,6 @@ PlotCalendarAgeDensity(
   calibration_curve,
   output_data,
   n_posterior_samples,
-  lambda,
-  nu1,
-  nu2,
   show_SPD = TRUE,
   xlimscal = 1,
   ylimscal = 1,
@@ -29,16 +26,12 @@ uncertainties. Must be the same length as \code{c14_determinations}.}
 c14_age and one column entitled c14_sig.
 This format matches \link{intcal20}.}
 
-\item{output_data}{Data returned from one of the updating functions e.g.
+\item{output_data}{The return value from one of the updating functions e.g.
 \link{WalkerBivarDirichlet} or
 \link{BivarGibbsDirichletwithSlice}.}
 
 \item{n_posterior_samples}{Current number of samples it will draw from this
 posterior to estimate the calendar age density (possibly repeats).}
-
-\item{lambda, nu1, nu2}{Hyperparameters used in the updating function for the
-prior on the means \eqn{\phi_j} and precision \eqn{\tau_j} of each individual
-calendar age cluster \eqn{j}.}
 
 \item{show_SPD}{Whether to calculate and show the summed probability function
 on the plot (optional). Default is \code{TRUE}.}
