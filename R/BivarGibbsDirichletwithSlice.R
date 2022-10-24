@@ -31,7 +31,7 @@
 #' expect to observe among our n sampled objects.
 #' \eqn{\alpha \sim \Gamma(\eta_1, \eta_2)} where \eqn{\eta_1, \eta_2} are
 #' the `alpha_shape` and `alpha_rate`. Note these are only used if
-#' `alpha_type` is `"gamma"`. [TODO WE DON'T ACTUALLY USE THESE]
+#' `alpha_type` is `"gamma"`. \[TODO WE DON'T ACTUALLY USE THESE\]
 #' @param n_iter  The number of MCMC iterations (optional). Default is 100.
 #' @param n_thin  How much to thin the output (optional). 1 is no thinning,
 #' a larger number is more thinning. Default is 10. Must choose an integer more
