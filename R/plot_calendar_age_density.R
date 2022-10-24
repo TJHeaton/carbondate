@@ -19,6 +19,9 @@
 #' on the plot (optional). Default is `TRUE`.
 #' @param show_confidence_intervals Whether to show the 95% confidence intervals
 #' of the posterior density on the plot. Default is `TRUE`.
+#' @param true_density The true calendar age density (optional). Expects a data
+#' frame with two columns, the first column being calendar age and the right
+#' column being the normalized density.
 #' @param xlimscal,ylimscal Whether to scale the x or y limits (optional).
 #' Default is 1. Values more than 1 will increase range of the limits,
 #' values less than 1 will decrease the range of the limits.
@@ -40,6 +43,7 @@ PlotCalendarAgeDensity <- function(
     n_posterior_samples,
     show_SPD = TRUE,
     show_confidence_intervals = TRUE,
+    true_density = NA,
     xlimscal = 1,
     ylimscal = 1,
     denscale = 3) {
@@ -50,9 +54,11 @@ PlotCalendarAgeDensity <- function(
   # Treat single output data as a list of length 1
   if (!is.null(output_data$update_type)) output_data = list(output_data)
 
-  for (single_output_data in output_data) {
-    if (is.null(single_output_data$label)) {
-      single_output_data$label <- single_output_data$update_type
+  num_data = length(output_data)
+  for (i in 1:num_data) {
+    if (is.null(output_data[[i]]$label)) {
+      output_data[[i]]$label <- stringr::str_to_title(
+        output_data[[i]]$update_type)
     }
   }
 
@@ -62,8 +68,11 @@ PlotCalendarAgeDensity <- function(
   SPD_colour <- grDevices::grey(0.1, alpha = 0.3)
   calibration_curve_colour <- "blue"
   calibration_curve_bg <- grDevices::rgb(0, 0, 1, .3)
-  output_colours <- grDevices::hcl.colors(
-    n = length(output_data), palette = "Dark 3")
+  output_colours <- c("purple", "darkgreen", "darkorange2", "deeppink3")
+  if (num_data > 4) {
+    output_colours <- c(output_colours, grDevices::hcl.colors(n=num_data-4))
+  }
+  true_density_colour = "red"
 
   calendar_age_sequence <- .CreateRangeToPlotDensity(output_data[[1]])
 
@@ -79,7 +88,7 @@ PlotCalendarAgeDensity <- function(
   }
 
   posterior_density <- list()
-  for (i in 1:length(output_data)) {
+  for (i in 1:num_data) {
     posterior_density[[i]] <- .FindPosteriorDensityMeanAndCI(
       output_data[[i]], calendar_age_sequence, n_posterior_samples)
   }
@@ -110,18 +119,24 @@ PlotCalendarAgeDensity <- function(
     .PlotSPDEstimateOnCurrentPlot(SPD, SPD_colour, xlim, ylim_density)
   }
 
-  for (i in 1:length(output_data)) {
+  for (i in 1:num_data) {
     .PlotDensityEstimateOnCurrentPlot(
       posterior_density[[i]], output_colours[[i]], show_confidence_intervals)
+  }
+
+  if (is.data.frame(true_density)) {
+    .PlotTrueDensityOnCurrentPlot(true_density, true_density_colour)
   }
 
   .AddLegendToDensityPlot(
     output_data,
     show_SPD,
+    is.data.frame(true_density),
     show_confidence_intervals,
     calibration_curve_colour,
     output_colours,
-    SPD_colour)
+    SPD_colour,
+    true_density_colour)
 
   invisible(posterior_density)
 }
@@ -215,8 +230,7 @@ PlotCalendarAgeDensity <- function(
   graphics::lines(
     posterior_density$calendar_age,
     posterior_density$density_mean,
-    col = output_colour
-    )
+    col = output_colour)
   if (show_confidence_intervals) {
     graphics::lines(
       posterior_density$calendar_age,
@@ -232,13 +246,21 @@ PlotCalendarAgeDensity <- function(
 }
 
 
+.PlotTrueDensityOnCurrentPlot <- function(true_density, true_density_colour) {
+  graphics::lines(
+    true_density[[1]], true_density[[2]], col = true_density_colour)
+}
+
+
 .AddLegendToDensityPlot <- function(
     output_data,
     show_SPD,
+    show_true_density,
     show_confidence_intervals,
     calibration_curve_colour,
     output_colours,
-    SPD_colour) {
+    SPD_colour,
+    true_density_colour) {
   legend_labels = "IntCal20"
   lty = 1
   pch = NA
@@ -257,6 +279,13 @@ PlotCalendarAgeDensity <- function(
       pch <- c(pch, NA)
       col <- c(col, output_colours[[i]])
     }
+  }
+
+  if (show_true_density) {
+    legend_labels <- c(legend_labels, "True density")
+    lty <- c(lty, 1)
+    pch <- c(pch, NA)
+    col <- c(col, true_density_colour)
   }
 
   if (show_SPD) {

@@ -11,6 +11,8 @@ PlotCalendarAgeDensity(
   output_data,
   n_posterior_samples,
   show_SPD = TRUE,
+  show_confidence_intervals = TRUE,
+  true_density = NA,
   xlimscal = 1,
   ylimscal = 1,
   denscale = 3
@@ -36,6 +38,13 @@ posterior to estimate the calendar age density (possibly repeats).}
 \item{show_SPD}{Whether to calculate and show the summed probability function
 on the plot (optional). Default is \code{TRUE}.}
 
+\item{show_confidence_intervals}{Whether to show the 95\% confidence intervals
+of the posterior density on the plot. Default is \code{TRUE}.}
+
+\item{true_density}{The true calendar age density (optional). Expects a data
+frame with two columns, the first column being calendar age and the right
+column being the normalized density.}
+
 \item{xlimscal, ylimscal}{Whether to scale the x or y limits (optional).
 Default is 1. Values more than 1 will increase range of the limits,
 values less than 1 will decrease the range of the limits.}
@@ -46,9 +55,9 @@ that the maximum SPD density will be at 1/3 of the height of the plot.
 TODO: base on the output data.}
 }
 \value{
-A dataframe containing the \code{calendar_age}, the \code{density_mean}
-and the 95\% confidence intervals for the density \code{density_ci_lower} and
-\code{density_ci_upper}.
+A list, each item containing a data frame of the \code{calendar_age}, the
+\code{density_mean} and the 95\% confidence intervals for the density
+\code{density_ci_lower} and \code{density_ci_upper} for each set of output data.
 }
 \description{
 Plots the input radiocarbon determinations and calibration curve, with the
