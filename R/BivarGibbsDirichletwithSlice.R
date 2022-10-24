@@ -1,5 +1,7 @@
-#' Implements calibration using Walker updating of the Dirichlet Process Mixture
-#' Model
+#' Performs the Gibbs sampler to estimate the density of
+#' a set of observations using a Dirichlet Mixture Density
+#'
+#' THIS CONSIDERS BOTH MEAN AND VARIANCE OF THE CLUSTERS TO BE UNKNOWN
 #'
 #' @param c14_determinations A vector containing the radiocarbon determinations.
 #' @param c14_uncertainties A vector containing the radiocarbon determination
@@ -16,26 +18,35 @@
 #' @param A,B  Prior on \eqn{\mu_{\phi}} giving the mean and precision of the
 #' overall centering \eqn{\mu_{\phi} \sim N(A, B^{-1})} i.e.
 #' B small is uninformative.
+#' @param alpha_type The type of prior on alpha - choose `"lognorm"` or
+#' `"gamma"`.  Default is `"gamma"`.
+#' @param alpha_mu,alpha_sigma Hyperparameters for the mean and sd on prior
+#' for DP concentration, \eqn{\alpha}, determining the number of clusters we
+#' expect to observe among our n sampled objects.
+#' \eqn{\alpha \sim \textrm{Lognormal}(\mu, \sigma^2)} where \eqn{\mu, \sigma}
+#' are the `alpha_mu` and `alpha_sigma`. Note these are only used if
+#' `alpha_type` is `"lognorm"`.
 #' @param alpha_shape,alpha_rate Hyperparameters for the shape and rate on prior
 #' for DP concentration, \eqn{\alpha}, determining the number of clusters we
 #' expect to observe among our n sampled objects.
 #' \eqn{\alpha \sim \Gamma(\eta_1, \eta_2)} where \eqn{\eta_1, \eta_2} are
-#' the `alpha_shape` and `alpha_rate`. A small alpha means more concentrated
+#' the `alpha_shape` and `alpha_rate`. Note these are only used if
+#' `alpha_type` is `"gamma"`. A small alpha means more concentrated
 #' (i.e. few clusters) while a large alpha means not concentrated (i.e. many
-#' clusters).
+#' clusters). \[TODO WE DON'T ACTUALLY USE THESE\]
 #' @param n_iter  The number of MCMC iterations (optional). Default is 100.
 #' @param n_thin  How much to thin the output (optional). 1 is no thinning,
 #' a larger number is more thinning. Default is 10. Must choose an integer more
 #' than 1 and not too close to `n_iter`, since after burn-in there are
 #' \eqn{(n_{\textrm{iter}}/n_{\textrm{thin}})/2} samples from posterior to
 #' potentially use.
-#' @param calendar_ages  The initial estimate for the underlying calendar ages
+#' @param calendar_ages The initial estimate for the underlying calendar ages
 #' (optional). If supplied it must be a vector with the same length as
 #' `c14_determinations`. Will be overridden if `sensible_initialisation` is
 #' `TRUE`.
-#' @param slice_width  Parameter for slice sampling (optional). Default is 1000.
+#' @param slice_width  Parameter for slice sampling (optional). Default is 200.
 #' @param slice_multiplier  Integer parameter for slice sampling (optional).
-#' Default is 10. Limits the slice size to `slice_multiplier * slice_width`.
+#' Default is 50. Limits the slice size to `slice_multiplier * slice_width`.
 #' @param n_clust The initial number of clusters (optional). Default is 10.
 #' @param sensible_initialisation Whether to use sensible start values and
 #' adaptive prior on \eqn{\mu_{\phi}} and  (A, B).
@@ -44,7 +55,7 @@
 #' @param show_progress Whether to show a progress bar in the console during
 #' execution. Default is `TRUE`.
 #'
-#' @return A list with 12 items. The first 8 items contain output data, each of
+#' @return A list with 11 items. The first 7 items contain output data, each of
 #' which have one dimension of size \eqn{n_{\textrm{out}} =
 #' \textrm{floor}( n_{\textrm{iter}}/n_{\textrm{thin}}) + 1}, each row storing
 #' the result from every \eqn{n_{\textrm{thin}}}th iteration:
@@ -58,11 +69,9 @@
 #'  \item{`n_clust`}{An integer vector of length \eqn{n_{\textrm{out}}} giving
 #'      the number of clusters.}
 #'  \item{`phi`}{A list of length \eqn{n_{\textrm{out}}} each entry giving
-#'      a vector \[of length nclust???\] of the cluster means \eqn{\phi_j}.}
+#'      a vector of length n_clust of the cluster means \eqn{\phi_j}.}
 #'  \item{`tau`}{A list of length \eqn{n_{\textrm{out}}} each entry giving
-#'      a vector \[of length nclust???\] of the cluster uncertainties \eqn{\tau_j}.}
-#'  \item{`weight`}{A list of length \eqn{n_{\textrm{out}}} each entry giving
-#'      the mixing weights of each cluster.}
+#'      a vector of length n_clust of the cluster uncertainties \eqn{\tau_j}.}
 #'  \item{`calendar_ages`}{An \eqn{n_{\textrm{out}}} by \eqn{n_{\textrm{obs}}}
 #'     integer matrix. Gives the calendar age for each observation.}
 #'  \item{`mu_phi`}{A vector of length \eqn{n_{\textrm{out}}} giving the overall
@@ -80,20 +89,10 @@
 #'  \item{`nu1`}{The fixed hypeparameter nu1}
 #'  \item{`nu2`}{The fixed hypeparameter nu2}
 #' }
+#'
 #' @export
 #'
-#' @examples WalkerBivarDirichlet(
-#'   c14_determinations=c(602, 805, 1554),
-#'   c14_uncertainties=c(35, 34, 45),
-#'   calibration_curve=intcal20,
-#'   lambda=0.1,
-#'   nu1=0.25,
-#'   nu2=10,
-#'   A=1000,
-#'   B=0.1,
-#'   alpha_shape=1,
-#'   alpha_rate=1)
-WalkerBivarDirichlet <- function(
+BivarGibbsDirichletwithSlice <- function(
     c14_determinations,
     c14_uncertainties,
     calibration_curve,
@@ -102,13 +101,16 @@ WalkerBivarDirichlet <- function(
     nu2,
     A,
     B,
-    alpha_shape,
-    alpha_rate,
+    alpha_type = "gamma",
+    alpha_mu = NA,
+    alpha_sigma = NA,
+    alpha_shape = NA,
+    alpha_rate = NA,
     n_iter = 100,
     n_thin = 10,
     calendar_ages = NA,
-    slice_width = 1000,
-    slice_multiplier = 10,
+    slice_width = 200,
+    slice_multiplier = 50,
     n_clust = 10,
     sensible_initialisation = TRUE,
     show_progress = TRUE) {
@@ -121,6 +123,12 @@ WalkerBivarDirichlet <- function(
   ##############################################################################
   # Initialise parameters
   num_observations <- length(c14_determinations)
+
+  all_clusters_represented <- FALSE
+  while (!all_clusters_represented) {
+    cluster_identifiers <- sample(1:n_clust, num_observations, replace = TRUE)
+    all_clusters_represented <- (length(unique(cluster_identifiers)) == n_clust)
+  }
 
   if (sensible_initialisation) {
     initial_probabilities <- mapply(
@@ -139,15 +147,15 @@ WalkerBivarDirichlet <- function(
     if (is.na(calendar_ages[1])) calendar_ages <- c14_determinations * scale_val
   }
 
-  # do not allow very small values of alpha as this causes crashes
-  alpha <- 2
+  alpha <- switch(
+    alpha_type,
+    lognorm = exp(stats::rnorm(1, alpha_mu, sd = alpha_sigma)),
+    gamma = 0.0001, # stats::rgamma(1, shape = alpha_shape, rate = alpha_rate),
+    stop("Unknown form for prior on gamma"))
 
-  tau <- stats::rgamma(n_clust, shape = nu1, rate = nu2)
-  phi <- stats::rnorm(n_clust, mean = mu_phi, sd = 1 / sqrt(lambda * tau))
-
-  v <- stats::rbeta(n_clust, 1, alpha)
-  weight <- v * c(1, cumprod(1 - v)[-n_clust])
-  cluster_identifiers <- sample(1:n_clust, num_observations, replace = TRUE)
+  tau <- rep(n_clust, 1 / (diff(range(c14_determinations)) / 4)^2)
+  phi <- stats::rnorm(
+    n_clust, mean = mu_phi, sd = diff(range(c14_determinations)) / 2)
 
   ##############################################################################
   # Create storage for output
@@ -155,19 +163,18 @@ WalkerBivarDirichlet <- function(
 
   phi_out <- list(phi)
   tau_out <- list(tau)
-  w_out <- list(weight)
   cluster_identifiers_out <- matrix(NA, nrow = n_out, ncol = num_observations)
+  calendar_ages_out <- matrix(NA, nrow = n_out, ncol = num_observations)
   alpha_out <- rep(NA, length = n_out)
-  n_clust_out <- rep(NA, length = n_out)
   mu_phi_out <- rep(NA, length = n_out)
-  theta_out <- matrix(NA, nrow = n_out, ncol = num_observations)
+  n_clust_out <- rep(NA, length = n_out)
 
   output_index <- 1
   cluster_identifiers_out[output_index, ] <- cluster_identifiers
+  calendar_ages_out[output_index, ] <- calendar_ages
   alpha_out[output_index] <- alpha
-  n_clust_out[output_index] <- length(unique(cluster_identifiers))
   mu_phi_out[output_index] <- mu_phi
-  theta_out[output_index, ] <- calendar_ages
+  n_clust_out[output_index] <- length(unique(cluster_identifiers))
 
   ##############################################################################
   ## Interpolate cal curve onto single year grid to speed up updating thetas
@@ -177,7 +184,7 @@ WalkerBivarDirichlet <- function(
   interpolated_c14_sig <- integer_cal_year_curve$c14_sig
 
   ##############################################################################
-  # Now the calibration and DPMM
+  # Now the calibration
   if (show_progress) {
     progress_bar <- utils::txtProgressBar(min = 0, max = n_iter, style = 3)
   }
@@ -187,31 +194,34 @@ WalkerBivarDirichlet <- function(
         utils::setTxtProgressBar(progress_bar, iter)
       }
     }
-    DPMM_update <- .DPWalkerUpdate(
-      theta = calendar_ages,
-      w = weight,
-      v = v,
-      delta = cluster_identifiers,
-      phi = phi,
-      tau = tau,
-      n_clust = n_clust,
-      c = alpha,
-      mu_phi = mu_phi,
-      lambda = lambda,
-      nu1 = nu1,
-      nu2 = nu2)
-    weight <- DPMM_update$w
-    cluster_identifiers <- DPMM_update$delta
-    phi <- DPMM_update$phi
-    tau <- DPMM_update$tau
-    v <- DPMM_update$v
-    n_clust <- DPMM_update$n_clust
+    for (i in 1:num_observations) {
+      newclusters <- .BivarUpdateClusterIdentifier(
+        i,
+        c = cluster_identifiers,
+        phi = phi,
+        tau = tau,
+        theta = calendar_ages[i],
+        lambda = lambda,
+        nu1 = nu1,
+        nu2 = nu2,
+        mu_phi = mu_phi,
+        alpha = alpha)
+      cluster_identifiers <- newclusters$c
+      phi <- newclusters$phi
+      tau <- newclusters$tau
+      if (max(cluster_identifiers) != length(phi)) stop("Lengths do not match")
+    }
 
-    alpha <- .WalkerUpdateAlpha(
-      delta = cluster_identifiers,
-      alpha = alpha,
-      prshape = alpha_shape,
-      prrate = alpha_rate)
+    for (j in 1:length(phi)) {
+      GibbsParams <- .UpdatePhiTau(
+        theta = calendar_ages[cluster_identifiers == j],
+        mu_phi = mu_phi,
+        lambda = lambda,
+        nu1 = nu1,
+        nu2 = nu2)
+      phi[j] <- GibbsParams$phi
+      tau[j] <- GibbsParams$tau
+    }
     mu_phi <- .UpdateMuPhi(phi = phi, tau = tau, lambda = lambda, A = A, B = B)
 
     for (k in 1:num_observations) {
@@ -229,31 +239,38 @@ WalkerBivarDirichlet <- function(
         sigcalallyr = interpolated_c14_sig)
     }
 
+    alpha <- switch(
+      alpha_type,
+      lognorm = .UpdateAlphaLognormPrior(
+        cluster_identifiers, alpha, mualpha = alpha_mu, sigalpha = alpha_sigma),
+      gamma = .UpdateAlphaGammaPrior(
+        cluster_identifiers, alpha, prshape = alpha_shape, prrate = alpha_rate),
+      stop("Unknown form for prior on gamma"))
+
     if (iter %% n_thin == 0) {
       output_index <- output_index + 1
-      cluster_identifiers_out[output_index, ] <- cluster_identifiers
-      alpha_out[output_index] <- alpha
-      n_clust_out[output_index] <- length(unique(cluster_identifiers))
       phi_out[[output_index]] <- phi
       tau_out[[output_index]] <- tau
-      theta_out[output_index, ] <- calendar_ages
-      w_out[[output_index]] <- weight
+      cluster_identifiers_out[output_index, ] <- cluster_identifiers
+      calendar_ages_out[output_index, ] <- calendar_ages
+      alpha_out[output_index] <- alpha
       mu_phi_out[output_index] <- mu_phi
+      n_clust_out[output_index] <- max(cluster_identifiers)
     }
   }
   return_list <- list(
     cluster_identifiers = cluster_identifiers_out,
-    alpha = alpha_out,
-    n_clust = n_clust_out,
     phi = phi_out,
     tau = tau_out,
-    weight = w_out,
-    calendar_ages = theta_out,
+    calendar_ages = calendar_ages_out,
+    alpha = alpha_out,
     mu_phi = mu_phi_out,
-    update_type="walker",
+    n_clust = n_clust_out,
+    update_type="neal",
     lambda = lambda,
     nu1 = nu1,
     nu2 = nu2)
+
   if (show_progress) close(progress_bar)
   return(return_list)
 }

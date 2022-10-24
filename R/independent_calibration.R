@@ -75,7 +75,8 @@ FindSPD <- function(
     c14_uncertainties,
     MoreArgs = list(calibration_curve = interpolated_calibration_data))
 
-  probabilities_per_calendar_age = apply(individual_probabilities, 1, sum) / dim(individual_probabilities)[2]
+  probabilities_per_calendar_age = apply(individual_probabilities, 1, sum) /
+    dim(individual_probabilities)[2]
 
   SPD <- data.frame(
     calendar_age=new_calendar_ages,

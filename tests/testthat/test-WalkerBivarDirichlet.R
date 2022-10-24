@@ -15,19 +15,18 @@ test_that("WalkerBivarDirichlet gives expected result", {
     nu2=nu2,
     A=A,
     B=B,
-    cprshape=cprshape,
-    cprrate=cprrate,
+    alpha_shape=cprshape,
+    alpha_rate=cprrate,
     n_iter=niter,
     n_thin=nthin,
     calendar_ages=inittheta,
     slice_width=slicew,
     slice_multiplier=m,
-    kstar=kstar,
-    show_progress = TRUE)
+    n_clust=kstar)
 
   load(test_path("testdata", "NPWalker_output.rda"))
-  expect_equal(calculated_walker_temp$delta, WalkerTemp$delta)
-  expect_equal(calculated_walker_temp$c, WalkerTemp$c)
+  expect_equal(calculated_walker_temp$cluster_identifiers, WalkerTemp$delta)
+  expect_equal(calculated_walker_temp$alpha, WalkerTemp$c)
   expect_equal(calculated_walker_temp$n_clust, WalkerTemp$nclust)
   expect_equal(calculated_walker_temp$phi, WalkerTemp$phi)
   expect_equal(calculated_walker_temp$tau, WalkerTemp$tau)
