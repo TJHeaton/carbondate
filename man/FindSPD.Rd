@@ -30,7 +30,8 @@ ages, and the other column \code{probability} containing the probability at that
 calendar age
 }
 \description{
-Find the summed probability function (SPD) for a set of observations
+Takes a set of radiocarbon determinations and uncertainties and independently
+calibrates each one, and then averages them to give the SPD estimate.
 }
 \examples{
 FindSPD(

@@ -1,5 +1,9 @@
 #' Calibrate a single radiocarbon determination
 #'
+#' Uses the supplied calibration curve to take a single radiocardbon
+#' determination and uncertainty and calculate the calendar age probability
+#' density for it.
+#'
 #' @param c14_determination A single observed radiocarbon determination (c14 age)
 #' @param c14_uncertainty The uncertainty of the radiocarbon determination
 #' @param calibration_curve A dataframe which should contain one column entitled
@@ -28,6 +32,9 @@ CalibrateSingleDetermination <- function(
 
 
 #' Find the summed probability function (SPD) for a set of observations
+#'
+#' Takes a set of radiocarbon determinations and uncertainties and independently
+#' calibrates each one, and then averages them to give the SPD estimate.
 #'
 #' @param calendar_age_range An array of length 2 with the start and end
 #' calendar age to calculate the SPD over

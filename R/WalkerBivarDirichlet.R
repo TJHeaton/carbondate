@@ -1,5 +1,15 @@
-#' Implements calibration using Walker updating of the Dirichlet Process Mixture
-#' Model
+#' Calibration of a set of individual radiocarbon samples using Walker updating
+#' of the DPMM
+#'
+#' This function takes as an input a set of radiocarbon determinations and
+#' associated 1-sigma uncertainties, as well as the calibration curve which
+#' should be used, and returns output data that can be sampled to estimate the
+#' joint calendar age density and cluster.
+#'
+#' @details In this method slice sampling is used to update the DPMM.
+#'  \[TODO Do we want to include more detail about the algorith
+#' here? Or refer to the paper.\]
+#'
 #'
 #' @param c14_determinations A vector containing the radiocarbon determinations.
 #' @param c14_uncertainties A vector containing the radiocarbon determination
@@ -82,17 +92,17 @@
 #' }
 #' @export
 #'
-#' @examples WalkerBivarDirichlet(
-#'   c14_determinations=c(602, 805, 1554),
-#'   c14_uncertainties=c(35, 34, 45),
-#'   calibration_curve=intcal20,
-#'   lambda=0.1,
-#'   nu1=0.25,
-#'   nu2=10,
-#'   A=1000,
-#'   B=0.1,
-#'   alpha_shape=1,
-#'   alpha_rate=1)
+#' @examples
+#' # Basic usage making use of sensible initialisation to set most values
+#' WalkerBivarDirichlet(
+#'   c14_determinations = c(602, 805, 1554),
+#'   c14_uncertainties = c(35, 34, 45),
+#'   calibration_curve = intcal20,
+#'   lambda = 0.1,
+#'   nu1 = 0.25,
+#'   nu2 = 10,
+#'   alpha_shape = 1,
+#'   alpha_rate = 1)
 WalkerBivarDirichlet <- function(
     c14_determinations,
     c14_uncertainties,

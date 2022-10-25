@@ -2,8 +2,8 @@
 % Please edit documentation in R/WalkerBivarDirichlet.R
 \name{WalkerBivarDirichlet}
 \alias{WalkerBivarDirichlet}
-\title{Implements calibration using Walker updating of the Dirichlet Process Mixture
-Model}
+\title{Calibration of a set of individual radiocarbon samples using Walker updating
+of the DPMM}
 \usage{
 WalkerBivarDirichlet(
   c14_determinations,
@@ -122,19 +122,25 @@ post-processing of the output data:
 }
 }
 \description{
-Implements calibration using Walker updating of the Dirichlet Process Mixture
-Model
+This function takes as an input a set of radiocarbon determinations and
+associated 1-sigma uncertainties, as well as the calibration curve which
+should be used, and returns output data that can be sampled to estimate the
+joint calendar age density and cluster.
+}
+\details{
+In this method slice sampling is used to update the DPMM.
+[TODO Do we want to include more detail about the algorith
+here? Or refer to the paper.]
 }
 \examples{
+# Basic usage making use of sensible initialisation to set most values
 WalkerBivarDirichlet(
-  c14_determinations=c(602, 805, 1554),
-  c14_uncertainties=c(35, 34, 45),
-  calibration_curve=intcal20,
-  lambda=0.1,
-  nu1=0.25,
-  nu2=10,
-  A=1000,
-  B=0.1,
-  alpha_shape=1,
-  alpha_rate=1)
+  c14_determinations = c(602, 805, 1554),
+  c14_uncertainties = c(35, 34, 45),
+  calibration_curve = intcal20,
+  lambda = 0.1,
+  nu1 = 0.25,
+  nu2 = 10,
+  alpha_shape = 1,
+  alpha_rate = 1)
 }
