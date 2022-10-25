@@ -2,8 +2,8 @@
 % Please edit documentation in R/BivarGibbsDirichletwithSlice.R
 \name{BivarGibbsDirichletwithSlice}
 \alias{BivarGibbsDirichletwithSlice}
-\title{Performs the Gibbs sampler to estimate the density of
-a set of observations using a Dirichlet Mixture Density}
+\title{Calibration of a set of individual radiocarbon samples by performing the
+Gibbs sampler using a DPMM}
 \usage{
 BivarGibbsDirichletwithSlice(
   c14_determinations,
@@ -12,8 +12,8 @@ BivarGibbsDirichletwithSlice(
   lambda,
   nu1,
   nu2,
-  A,
-  B,
+  A = NA,
+  B = NA,
   alpha_type = "gamma",
   alpha_mu = NA,
   alpha_sigma = NA,
@@ -87,7 +87,9 @@ potentially use.}
 \item{slice_multiplier}{Integer parameter for slice sampling (optional).
 Default is 50. Limits the slice size to \code{slice_multiplier * slice_width}.}
 
-\item{n_clust}{The initial number of clusters (optional). Default is 10.}
+\item{n_clust}{The initial number of clusters (optional). Default is 10. If
+it is set to a value larger than the number of c14 determinations, it will be
+reduced to the number of c14 observations.}
 
 \item{sensible_initialisation}{Whether to use sensible start values and
 adaptive prior on \eqn{\mu_{\phi}} and  (A, B).
@@ -107,8 +109,8 @@ the result from every \eqn{n_{\textrm{thin}}}th iteration:
 \item{\code{cluster_identifiers}}{An \eqn{n_{\textrm{out}}} by
 \eqn{n_{\textrm{obs}}} integer matrix. Gives the cluster allocation
 - an integer between 1 and n_clust - for each observation.}
-\item{\code{alpha}}{A double vector of length \eqn{n_{\textrm{out}}} giving the DP
-concentration parameter.}
+\item{\code{alpha}}{A double vector of length \eqn{n_{\textrm{out}}} giving the
+DP concentration parameter.}
 \item{\code{n_clust}}{An integer vector of length \eqn{n_{\textrm{out}}} giving
 the number of clusters.}
 \item{\code{phi}}{A list of length \eqn{n_{\textrm{out}}} each entry giving
@@ -134,5 +136,37 @@ post-processing of the output data:
 }
 }
 \description{
-THIS CONSIDERS BOTH MEAN AND VARIANCE OF THE CLUSTERS TO BE UNKNOWN
+This function takes as an input a set of radiocarbon determinations and
+associated 1-sigma uncertainties, as well as the calibration curve which
+should be used, and returns output data that can be sampled to estimate the
+joint calendar age density and cluster.
+}
+\details{
+This method considers both the mean and the variance of the clusters
+to be unknown. [TODO Do we want to include more detail about the algorith
+here? Or refer to the paper.]
+}
+\examples{
+# Basic usage making use of sensible initialisation to set most values
+BivarGibbsDirichletwithSlice(
+  c14_determinations = c(602, 805, 1554),
+  c14_uncertainties = c(35, 34, 45),
+  calibration_curve = intcal20,
+  lambda = 0.1,
+  nu1 = 0.25,
+  nu2 = 10,
+  alpha_shape = 1,
+  alpha_rate = 1)
+
+# Use sensible initialisation values but use lognorm prior on alpha
+BivarGibbsDirichletwithSlice(
+  c14_determinations = c(602, 805, 1554),
+  c14_uncertainties = c(35, 34, 45),
+  calibration_curve = intcal20,
+  lambda = 0.1,
+  nu1 = 0.25,
+  nu2 = 10,
+  alpha_type = "lognorm",
+  alpha_mu = 1,
+  alpha_sigma = 1)
 }

@@ -37,5 +37,31 @@ given then it is set to the max of 100 and 1/tenth of post burn-in chain.}
 No return value
 }
 \description{
-Plots the posterior calendar ages for an individual determination
+Once a function has been run to calibrate a set of radiocarbon
+determinations, the posterior density for a single determination can be
+plotted using this function.
+}
+\examples{
+# First generate some output data
+c14_determinations = c(602, 805, 954)
+c14_uncertainties = c(35, 34, 45)
+walker_temp = WalkerBivarDirichlet(
+  c14_determinations = c14_determinations,
+  c14_uncertainties = c14_uncertainties,
+  calibration_curve = intcal20,
+  lambda = 0.1,
+  nu1 = 0.25,
+  nu2 = 10,
+  alpha_shape = 1,
+  alpha_rate = 1)
+
+# Plot results for the second determinations
+PlotIndividualCalendarAgeDensity(
+  ident = 2,
+  c14_determinations = c14_determinations,
+  c14_uncertainties = c14_uncertainties,
+  calibration_curve = intcal20,
+  output_data = walker_temp,
+  n_breaks = 10)
+
 }

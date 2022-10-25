@@ -1,7 +1,15 @@
-#' Performs the Gibbs sampler to estimate the density of
-#' a set of observations using a Dirichlet Mixture Density
+#' Calibration of a set of individual radiocarbon samples by performing the
+#' Gibbs sampler using a DPMM
 #'
-#' THIS CONSIDERS BOTH MEAN AND VARIANCE OF THE CLUSTERS TO BE UNKNOWN
+#'
+#' @description This function takes as an input a set of radiocarbon determinations and
+#' associated 1-sigma uncertainties, as well as the calibration curve which
+#' should be used, and returns output data that can be sampled to estimate the
+#' joint calendar age density and cluster.
+#'
+#' @details This method considers both the mean and the variance of the clusters
+#' to be unknown. \[TODO Do we want to include more detail about the algorith
+#' here? Or refer to the paper.\]
 #'
 #' @param c14_determinations A vector containing the radiocarbon determinations.
 #' @param c14_uncertainties A vector containing the radiocarbon determination
@@ -47,7 +55,9 @@
 #' @param slice_width  Parameter for slice sampling (optional). Default is 200.
 #' @param slice_multiplier  Integer parameter for slice sampling (optional).
 #' Default is 50. Limits the slice size to `slice_multiplier * slice_width`.
-#' @param n_clust The initial number of clusters (optional). Default is 10.
+#' @param n_clust The initial number of clusters (optional). Default is 10. If
+#' it is set to a value larger than the number of c14 determinations, it will be
+#' reduced to the number of c14 observations.
 #' @param sensible_initialisation Whether to use sensible start values and
 #' adaptive prior on \eqn{\mu_{\phi}} and  (A, B).
 #' If this is `TRUE` (the default), then `calendar_ages`, `A` and `B` will be
@@ -64,8 +74,8 @@
 #'  \item{`cluster_identifiers`}{An \eqn{n_{\textrm{out}}} by
 #'     \eqn{n_{\textrm{obs}}} integer matrix. Gives the cluster allocation
 #'      - an integer between 1 and n_clust - for each observation.}
-#'  \item{`alpha`}{A double vector of length \eqn{n_{\textrm{out}}} giving the DP
-#'     concentration parameter.}
+#'  \item{`alpha`}{A double vector of length \eqn{n_{\textrm{out}}} giving the
+#'      DP concentration parameter.}
 #'  \item{`n_clust`}{An integer vector of length \eqn{n_{\textrm{out}}} giving
 #'      the number of clusters.}
 #'  \item{`phi`}{A list of length \eqn{n_{\textrm{out}}} each entry giving
@@ -92,6 +102,29 @@
 #'
 #' @export
 #'
+#' @examples
+#' # Basic usage making use of sensible initialisation to set most values
+#' BivarGibbsDirichletwithSlice(
+#'   c14_determinations = c(602, 805, 1554),
+#'   c14_uncertainties = c(35, 34, 45),
+#'   calibration_curve = intcal20,
+#'   lambda = 0.1,
+#'   nu1 = 0.25,
+#'   nu2 = 10,
+#'   alpha_shape = 1,
+#'   alpha_rate = 1)
+#'
+#' # Use sensible initialisation values but use lognorm prior on alpha
+#' BivarGibbsDirichletwithSlice(
+#'   c14_determinations = c(602, 805, 1554),
+#'   c14_uncertainties = c(35, 34, 45),
+#'   calibration_curve = intcal20,
+#'   lambda = 0.1,
+#'   nu1 = 0.25,
+#'   nu2 = 10,
+#'   alpha_type = "lognorm",
+#'   alpha_mu = 1,
+#'   alpha_sigma = 1)
 BivarGibbsDirichletwithSlice <- function(
     c14_determinations,
     c14_uncertainties,
@@ -99,8 +132,8 @@ BivarGibbsDirichletwithSlice <- function(
     lambda,
     nu1,
     nu2,
-    A,
-    B,
+    A=NA,
+    B=NA,
     alpha_type = "gamma",
     alpha_mu = NA,
     alpha_sigma = NA,
@@ -117,12 +150,24 @@ BivarGibbsDirichletwithSlice <- function(
 
   ##############################################################################
   # Check input parameters
+  num_observations <- length(c14_determinations)
+
+  if (n_clust > length(c14_determinations)) {
+    message(
+      paste(
+        "Initial value of n_clust being reduced from ",
+        n_clust,
+        " to ",
+        num_observations))
+    n_clust <- num_observations
+  }
 
   # TODO
 
+
   ##############################################################################
   # Initialise parameters
-  num_observations <- length(c14_determinations)
+
 
   all_clusters_represented <- FALSE
   while (!all_clusters_represented) {
@@ -138,6 +183,7 @@ BivarGibbsDirichletwithSlice <- function(
       MoreArgs = list(calibration_curve=calibration_curve))
     indices_of_max_probability = apply(initial_probabilities, 2, which.max)
     calendar_ages <- calibration_curve$calendar_age[indices_of_max_probability]
+
     mu_phi <- stats::median(calendar_ages)
     A <- stats::median(calendar_ages)
     B <- 1 / (max(calendar_ages) - min(calendar_ages))^2
@@ -151,7 +197,7 @@ BivarGibbsDirichletwithSlice <- function(
     alpha_type,
     lognorm = exp(stats::rnorm(1, alpha_mu, sd = alpha_sigma)),
     gamma = 0.0001, # stats::rgamma(1, shape = alpha_shape, rate = alpha_rate),
-    stop("Unknown form for prior on gamma"))
+    stop("Unknown form for prior on alpha"))
 
   tau <- rep(n_clust, 1 / (diff(range(c14_determinations)) / 4)^2)
   phi <- stats::rnorm(

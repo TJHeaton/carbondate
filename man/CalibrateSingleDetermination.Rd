@@ -24,7 +24,9 @@ A vector containing the probability for each calendar age in the
 calibration data
 }
 \description{
-Calibrate a single radiocarbon determination
+Uses the supplied calibration curve to take a single radiocardbon
+determination and uncertainty and calculate the calendar age probability
+density for it.
 }
 \examples{
 CalibrateSingleDetermination(51020, 35, intcal20)

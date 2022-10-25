@@ -62,5 +62,38 @@ A list, each item containing a data frame of the \code{calendar_age}, the
 \description{
 Plots the input radiocarbon determinations and calibration curve, with the
 output predicted density on the same plot. Can also optionally show the
-SPD estimate.
+SPD estimate
+}
+\examples{
+# First generate some output data  for plotting using two update methods.
+c14_determinations = c(602, 805, 954)
+c14_uncertainties = c(35, 34, 45)
+neal_temp = BivarGibbsDirichletwithSlice(
+  c14_determinations = c14_determinations,
+  c14_uncertainties = c14_uncertainties,
+  calibration_curve = intcal20,
+  lambda = 0.1,
+  nu1 = 0.25,
+  nu2 = 10,
+  alpha_shape = 1,
+  alpha_rate = 1)
+
+walker_temp = WalkerBivarDirichlet(
+  c14_determinations = c14_determinations,
+  c14_uncertainties = c14_uncertainties,
+  calibration_curve = intcal20,
+  lambda = 0.1,
+  nu1 = 0.25,
+  nu2 = 10,
+  alpha_shape = 1,
+  alpha_rate = 1)
+
+# Plot results for both on the same graph
+PlotCalendarAgeDensity(
+  c14_determinations = c14_determinations,
+  c14_uncertainties = c14_uncertainties,
+  calibration_curve = intcal20,
+  output_data = list(neal_temp, walker_temp),
+  n_posterior_samples = 20)
+
 }
