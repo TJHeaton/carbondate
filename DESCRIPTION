@@ -6,12 +6,16 @@ Authors@R: c(
            comment = c(ORCID = "0000-0002-9994-142X")),
     person("Sara", "Al-assam", , "sarassam@gmail.com", role = c("aut"),
            comment = c(ORCID = "0000-0001-7280-6802")))       
-Description: What the package does (one paragraph).
+Description: 
+  Performs non-parametric calibration of multiple related radiocarbon 
+  determinations. Functions are also included for summarising the calendar age 
+  information to plot the calendar age density.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
 Suggests: 
+    covr,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Depends: 

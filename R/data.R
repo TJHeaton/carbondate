@@ -79,3 +79,18 @@
 #' }
 #' @source <http://doi.org/10.1073/pnas.1408028111>
 "armit"
+
+
+#' Example output from Walker calibration
+#'
+#' This output has been provided for trying out the plotting amd summarisations
+#' functions without having to first run a calibration. It shows the output from
+#' running [carbondate::WalkerBivarDirichlet] with the [carbondate::kerr]
+#' radiocarbon input data and the [carbondate::intcal20] calibration curve for
+#' 10,000 iterations.
+#'
+#' @format ## `walker_example_output`
+#' A list with 12 items, as described in [carbondate::WalkerBivarDirichlet]. In
+#' this case \eqn{n_{\textrm{out}}} is 1001 and \eqn{n_{\textrm{obs}}} is 255.
+"walker_example_output"
+
