@@ -16,6 +16,8 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
 Suggests: 
     covr,
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Depends: 
@@ -29,3 +31,4 @@ Imports:
     utils
 URL: https://github.com/TJHeaton/carbondate
 BugReports: https://github.com/TJHeaton/carbondate/issues
+VignetteBuilder: knitr

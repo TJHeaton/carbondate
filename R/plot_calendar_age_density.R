@@ -1,4 +1,4 @@
-#' Plots the predicted calendar age density from the output data
+#' Plots the calendar age density of all objects from the output data
 #'
 #' Plots the input radiocarbon determinations and calibration curve, with the
 #' output predicted density on the same plot. Can also optionally show the
@@ -185,7 +185,7 @@ PlotCalendarAgeDensity <- function(
     xlab = "Calendar Age (cal yr BP)",
     ylab = expression(paste(""^14, "C", " age (", ""^14, "C yr BP)")),
     type = "l",
-    main = expression(paste("Posterior calendar age density")),
+    main = expression(paste("Calendar age density estimate")),
   )
   calibration_curve$ub <- calibration_curve$c14_age +
     1.96 * calibration_curve$c14_sig
