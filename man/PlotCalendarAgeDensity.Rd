@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_calendar_age_density.R
 \name{PlotCalendarAgeDensity}
 \alias{PlotCalendarAgeDensity}
-\title{Plots the predicted calendar age density from the output data}
+\title{Plots the calendar age density of all objects from the output data}
 \usage{
 PlotCalendarAgeDensity(
   c14_determinations,

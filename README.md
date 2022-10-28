@@ -6,8 +6,6 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/TJHeaton/carbondate/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/TJHeaton/carbondate/actions/workflows/R-CMD-check.yaml)
-[![Codecov test
-coverage](https://codecov.io/gh/TJHeaton/carbondate/branch/main/graph/badge.svg)](https://app.codecov.io/gh/TJHeaton/carbondate?branch=main)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/carbondate)](https://CRAN.R-project.org/package=carbondate)
 <!-- badges: end -->
@@ -49,13 +47,28 @@ walker_temp = WalkerBivarDirichlet(
    nu2 = 10,
    alpha_shape = 1,
    alpha_rate = 1)
-#>   |                                                                              |                                                                      |   0%  |                                                                              |======================================================================| 100%
 ```
 
 Once the calibration has been run, the calendar age density can be
-plotted. Here instead of plotting the output from the example above, we
-plot example output `walker_example_output` which has been run with the
-`kerr` data and 10,000 iterations. This example output is also available
-as a data set in the package.
+plotted.
+
+``` r
+PlotCalendarAgeDensity(
+  c14_determinations = kerr$c14_ages,
+  c14_uncertainties = kerr$c14_sig,
+  calibration_curve = intcal20,
+  output_data = walker_example_output,
+  n_posterior_samples = 500)
+```
+
+Here, instead of plotting the output from the example above, we plot
+output which has been run with the `kerr` data and 100,000 iterations,
+and with slightly different input values.
 
 <img src="man/figures/README-calendar_age-1.png" width="100%" />
+
+For a full example run-through, load the vignette:
+
+``` r
+browseVignettes(package="carbondate")
+```
