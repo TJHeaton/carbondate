@@ -21,7 +21,7 @@ A data frame with 2021 rows and 2 columns:
 armit
 }
 \description{
-2021 radiocarbon determinations collated by Armit et al. from archaelogical
+2021 radiocarbon determinations collated by Armit et al. from archaeological
 groups operating in Ireland, to investigate whether a wetter environment
 around 2700 cal yr BP led to a population collapse. Ref:
 Armit, I., Swindles, G.T., Becker, K., Plunkett, G., Blaauw, M., 2014. Rapid

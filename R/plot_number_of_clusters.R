@@ -12,19 +12,8 @@
 #' @export
 #'
 #' @examples
-#' # First generate some output data
-#' walker_temp = WalkerBivarDirichlet(
-#'   c14_determinations = c(602, 805, 954),
-#'   c14_uncertainties = c(35, 34, 45),
-#'   calibration_curve = intcal20,
-#'   lambda = 0.1,
-#'   nu1 = 0.25,
-#'   nu2 = 10,
-#'   alpha_shape = 1,
-#'   alpha_rate = 1)
-#'
 #' # Plot results for the number of clusters
-#' PlotNumberOfClusters(output_data = walker_temp)
+#' PlotNumberOfClusters(output_data = walker_example_output)
 PlotNumberOfClusters <- function(output_data) {
   n_out <- length(output_data$n_clust)
   n_burn <- floor(n_out / 2)

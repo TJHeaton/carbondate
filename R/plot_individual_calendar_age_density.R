@@ -22,27 +22,13 @@
 #' @export
 #'
 #' @examples
-#' # First generate some output data
-#' c14_determinations = c(602, 805, 954)
-#' c14_uncertainties = c(35, 34, 45)
-#' walker_temp = WalkerBivarDirichlet(
-#'   c14_determinations = c14_determinations,
-#'   c14_uncertainties = c14_uncertainties,
-#'   calibration_curve = intcal20,
-#'   lambda = 0.1,
-#'   nu1 = 0.25,
-#'   nu2 = 10,
-#'   alpha_shape = 1,
-#'   alpha_rate = 1)
-#'
-#' # Plot results for the second determinations
+#' # Plot results for the 10th determinations
 #' PlotIndividualCalendarAgeDensity(
-#'   ident = 2,
-#'   c14_determinations = c14_determinations,
-#'   c14_uncertainties = c14_uncertainties,
+#'   ident = 10,
+#'   c14_determinations = kerr$c14_ages,
+#'   c14_uncertainties = kerr$c14_sig,
 #'   calibration_curve = intcal20,
-#'   output_data = walker_temp,
-#'   n_breaks = 10)
+#'   output_data = walker_example_output)
 #'
 PlotIndividualCalendarAgeDensity <- function(
     ident,

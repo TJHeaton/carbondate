@@ -6,11 +6,16 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/TJHeaton/carbondate/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/TJHeaton/carbondate/actions/workflows/R-CMD-check.yaml)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/carbondate)](https://CRAN.R-project.org/package=carbondate)
 <!-- badges: end -->
 
-An R package to analyse multiple radiocarbon determinations
-
-*TODO: The below needs changing from the boiler plate code*
+An R package to analyse multiple radiocarbon determinations. It is based
+on the original functions available
+[here](https://github.com/TJHeaton/NonparametricCalibration) which were
+used for “Non-parametric calibration of multiple related radiocarbon
+determinations and their calendar age summarisation”
+[arXiv](https://arxiv.org/abs/2109.15024).
 
 ## Installation
 
@@ -24,36 +29,46 @@ devtools::install_github("TJHeaton/carbondate")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+There are 3 example datasets (`kerr`, `buchanan`, `armit`) provided,
+which can be used to try out the calibration functions. The calibration
+curve IntCal20 is also included in the package. E.g. see below (but note
+it is run with a very small number of iterations, this is just for
+illustrative purposes.)
 
 ``` r
 library(carbondate)
-## basic example code
+
+walker_temp = WalkerBivarDirichlet(
+   c14_determinations = kerr$c14_ages,
+   c14_uncertainties = kerr$c14_sig,
+   calibration_curve = intcal20,
+   lambda = 0.1,
+   nu1 = 0.25,
+   nu2 = 10,
+   alpha_shape = 1,
+   alpha_rate = 1)
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+Once the calibration has been run, the calendar age density can be
+plotted.
 
 ``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
+PlotCalendarAgeDensity(
+  c14_determinations = kerr$c14_ages,
+  c14_uncertainties = kerr$c14_sig,
+  calibration_curve = intcal20,
+  output_data = walker_example_output,
+  n_posterior_samples = 500)
 ```
 
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this. You could also
-use GitHub Actions to re-render `README.Rmd` every time you push. An
-example workflow can be found here:
-<https://github.com/r-lib/actions/tree/v1/examples>.
+Here, instead of plotting the output from the example above, we plot
+output which has been run with the `kerr` data and 100,000 iterations,
+and with slightly different input values.
 
-You can also embed plots, for example:
+<img src="man/figures/README-calendar_age-1.png" width="100%" />
 
-<img src="man/figures/README-pressure-1.png" width="100%" />
+For a full example run-through, load the vignette:
 
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
+``` r
+browseVignettes(package="carbondate")
+```

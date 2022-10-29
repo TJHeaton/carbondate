@@ -1,15 +1,23 @@
 Package: carbondate
-Title: What the Package Does (One Line, Title Case)
+Title: Calibration and Summarisation of Radiocarbon Dates
 Version: 0.0.0.9000
-Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+Authors@R: c(
+    person("Tim", "Heaton", , "T.Heaton@leeds.ac.uk", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-9994-142X")),
+    person("Sara", "Al-assam", , "sarassam@gmail.com", role = c("aut"),
+           comment = c(ORCID = "0000-0001-7280-6802")))       
+Description: 
+  Performs non-parametric calibration of multiple related radiocarbon 
+  determinations. Functions are also included for summarising the calendar age 
+  information to plot the calendar age density.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
 Suggests: 
+    covr,
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Depends: 
@@ -21,3 +29,6 @@ Imports:
     stats,
     stringr,
     utils
+URL: https://github.com/TJHeaton/carbondate
+BugReports: https://github.com/TJHeaton/carbondate/issues
+VignetteBuilder: knitr

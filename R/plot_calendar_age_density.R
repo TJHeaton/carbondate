@@ -1,4 +1,4 @@
-#' Plots the predicted calendar age density from the output data
+#' Plots the calendar age density of all objects from the output data
 #'
 #' Plots the input radiocarbon determinations and calibration curve, with the
 #' output predicted density on the same plot. Can also optionally show the
@@ -37,36 +37,13 @@
 #' @export
 #'
 #' @examples
-#' # First generate some output data  for plotting using two update methods.
-#' c14_determinations = c(602, 805, 954)
-#' c14_uncertainties = c(35, 34, 45)
-#' neal_temp = BivarGibbsDirichletwithSlice(
-#'   c14_determinations = c14_determinations,
-#'   c14_uncertainties = c14_uncertainties,
-#'   calibration_curve = intcal20,
-#'   lambda = 0.1,
-#'   nu1 = 0.25,
-#'   nu2 = 10,
-#'   alpha_shape = 1,
-#'   alpha_rate = 1)
-#'
-#' walker_temp = WalkerBivarDirichlet(
-#'   c14_determinations = c14_determinations,
-#'   c14_uncertainties = c14_uncertainties,
-#'   calibration_curve = intcal20,
-#'   lambda = 0.1,
-#'   nu1 = 0.25,
-#'   nu2 = 10,
-#'   alpha_shape = 1,
-#'   alpha_rate = 1)
-#'
-#' # Plot results for both on the same graph
+#' # Plot results for a single calibration
 #' PlotCalendarAgeDensity(
-#'   c14_determinations = c14_determinations,
-#'   c14_uncertainties = c14_uncertainties,
+#'   c14_determinations = kerr$c14_ages,
+#'   c14_uncertainties = kerr$c14_sig,
 #'   calibration_curve = intcal20,
-#'   output_data = list(neal_temp, walker_temp),
-#'   n_posterior_samples = 20)
+#'   output_data = walker_example_output,
+#'   n_posterior_samples = 500)
 #'
 PlotCalendarAgeDensity <- function(
     c14_determinations,
@@ -208,7 +185,7 @@ PlotCalendarAgeDensity <- function(
     xlab = "Calendar Age (cal yr BP)",
     ylab = expression(paste(""^14, "C", " age (", ""^14, "C yr BP)")),
     type = "l",
-    main = expression(paste("Posterior calendar age density")),
+    main = expression(paste("Calendar age density estimate")),
   )
   calibration_curve$ub <- calibration_curve$c14_age +
     1.96 * calibration_curve$c14_sig
