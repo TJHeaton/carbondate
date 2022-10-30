@@ -24,7 +24,7 @@ You can install the development version of carbondate from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("TJHeaton/carbondate")
+devtools::install_github("TJHeaton/carbondate", build_vignettes = TRUE)
 ```
 
 ## Example
