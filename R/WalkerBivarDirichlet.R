@@ -14,8 +14,8 @@
 #' @param c14_determinations A vector containing the radiocarbon determinations.
 #' @param c14_uncertainties A vector containing the radiocarbon determination
 #' uncertainties. Must be the same length as `c14_determinations`.
-#' @param calibration_curve A dataframe which should contain one column entitled
-#' c14_age and one column entitled c14_sig.
+#' @param calibration_curve A dataframe which should contain at least 3 columns
+#' entitled calendar_age, c14_age and c14_sig.
 #' This format matches [carbondate::intcal20].
 #' @param lambda,nu1,nu2  Hyperparameters for the prior on the means
 #' \eqn{\phi_j} and precision \eqn{\tau_j} of each individual calendar age
@@ -46,7 +46,8 @@
 #' @param slice_width  Parameter for slice sampling (optional). Default is 1000.
 #' @param slice_multiplier  Integer parameter for slice sampling (optional).
 #' Default is 10. Limits the slice size to `slice_multiplier * slice_width`.
-#' @param n_clust The initial number of clusters (optional). Default is 10.
+#' @param n_clust The initial number of clusters (optional). Default is 10. Must
+#' be less than the length of `c14_determinations`.
 #' @param sensible_initialisation Whether to use sensible start values and
 #' adaptive prior on \eqn{\mu_{\phi}} and  (A, B).
 #' If this is `TRUE` (the default), then `calendar_ages`, `A` and `B` will be
@@ -110,10 +111,10 @@ WalkerBivarDirichlet <- function(
     lambda,
     nu1,
     nu2,
-    A,
-    B,
-    alpha_shape,
-    alpha_rate,
+    A = NA,
+    B = NA,
+    alpha_shape = NA,
+    alpha_rate = NA,
     n_iter = 100,
     n_thin = 10,
     calendar_ages = NA,
@@ -125,12 +126,35 @@ WalkerBivarDirichlet <- function(
 
   ##############################################################################
   # Check input parameters
+  num_observations <- length(c14_determinations)
 
-  # TODO
+  argument_checker <- checkmate::makeAssertCollection()
+
+  .check_input_data(
+    argument_checker, c14_determinations, c14_uncertainties, calibration_curve)
+  .check_dpmm_parameters(
+    argument_checker,
+    sensible_initialisation,
+    num_observations,
+    lambda,
+    nu1,
+    nu2,
+    A,
+    B,
+    "gamma",
+    alpha_shape,
+    alpha_rate,
+    NA,
+    NA,
+    calendar_ages,
+    n_clust)
+  .check_iteration_parameters(argument_checker, n_iter, n_thin)
+  .check_slice_parameters(argument_checker, slice_width, slice_multiplier)
+
+  checkmate::reportAssertions(argument_checker)
 
   ##############################################################################
   # Initialise parameters
-  num_observations <- length(c14_determinations)
 
   if (sensible_initialisation) {
     initial_probabilities <- mapply(
@@ -150,7 +174,7 @@ WalkerBivarDirichlet <- function(
   }
 
   # do not allow very small values of alpha as this causes crashes
-  alpha <- 2
+  alpha <- 2 # rgamma(1, shape = cprshape, rate = cprrate)
 
   tau <- stats::rgamma(n_clust, shape = nu1, rate = nu2)
   phi <- stats::rnorm(n_clust, mean = mu_phi, sd = 1 / sqrt(lambda * tau))

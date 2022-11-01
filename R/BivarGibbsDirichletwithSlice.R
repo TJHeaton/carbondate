@@ -14,8 +14,8 @@
 #' @param c14_determinations A vector containing the radiocarbon determinations.
 #' @param c14_uncertainties A vector containing the radiocarbon determination
 #' uncertainties. Must be the same length as `c14_determinations`.
-#' @param calibration_curve A dataframe which should contain one column entitled
-#' c14_age and one column entitled c14_sig.
+#' @param calibration_curve A dataframe which should contain at least 3 columns
+#' entitled calendar_age, c14_age and c14_sig.
 #' This format matches [carbondate::intcal20].
 #' @param lambda,nu1,nu2  Hyperparameters for the prior on the means
 #' \eqn{\phi_j} and precision \eqn{\tau_j} of each individual calendar age
@@ -55,9 +55,8 @@
 #' @param slice_width  Parameter for slice sampling (optional). Default is 200.
 #' @param slice_multiplier  Integer parameter for slice sampling (optional).
 #' Default is 50. Limits the slice size to `slice_multiplier * slice_width`.
-#' @param n_clust The initial number of clusters (optional). Default is 10. If
-#' it is set to a value larger than the number of c14 determinations, it will be
-#' reduced to the number of c14 observations.
+#' @param n_clust The initial number of clusters (optional). Default is 10. Must
+#' be less than the length of `c14_determinations`.
 #' @param sensible_initialisation Whether to use sensible start values and
 #' adaptive prior on \eqn{\mu_{\phi}} and  (A, B).
 #' If this is `TRUE` (the default), then `calendar_ages`, `A` and `B` will be
@@ -152,17 +151,30 @@ BivarGibbsDirichletwithSlice <- function(
   # Check input parameters
   num_observations <- length(c14_determinations)
 
-  if (n_clust > length(c14_determinations)) {
-    message(
-      paste(
-        "Initial value of n_clust being reduced from ",
-        n_clust,
-        " to ",
-        num_observations))
-    n_clust <- num_observations
-  }
+  argument_checker <- checkmate::makeAssertCollection()
 
-  # TODO
+  .check_input_data(
+    argument_checker, c14_determinations, c14_uncertainties, calibration_curve)
+  .check_dpmm_parameters(
+    argument_checker,
+    sensible_initialisation,
+    num_observations,
+    lambda,
+    nu1,
+    nu2,
+    A,
+    B,
+    alpha_type,
+    alpha_shape,
+    alpha_rate,
+    alpha_mu,
+    alpha_sigma,
+    calendar_ages,
+    n_clust)
+  .check_iteration_parameters(argument_checker, n_iter, n_thin)
+  .check_slice_parameters(argument_checker, slice_width, slice_multiplier)
+
+  checkmate::reportAssertions(argument_checker)
 
 
   ##############################################################################

@@ -35,3 +35,4 @@ test_that("WalkerBivarDirichlet gives expected result", {
   expect_equal(calculated_walker_temp$mu_phi, WalkerTemp$muphi)
 
 })
+
