@@ -4,8 +4,8 @@ test_that("BivarGibbsDirichletwithSlice gives expected result", {
   # the function again here and compare results to test that the function is
   # working correctly
 
-  set.seed(14)
   load(test_path("testdata", "NPNeal_input.rda"))
+  set.seed(seednum)
   calculated_neal_temp = BivarGibbsDirichletwithSlice(
     c14_determinations = x,
     c14_uncertainties = xsig,
@@ -42,3 +42,4 @@ test_that("BivarGibbsDirichletwithSlice gives expected result", {
 
 
 # TODO: test with a lognorm type for alpha. This is not currently tested.
+# Ask Tim about suitable parameters and whether we need it.

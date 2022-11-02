@@ -24,19 +24,19 @@ BivarGibbsDirichletwithSlice(
   calendar_ages = NA,
   slice_width = 200,
   slice_multiplier = 50,
-  n_clust = 10,
+  n_clust = min(10, length(c14_determinations)),
   sensible_initialisation = TRUE,
   show_progress = TRUE
 )
 }
 \arguments{
-\item{c14_determinations}{A vector containing the radiocarbon determinations.}
+\item{c14_determinations}{An array of observed radiocarbon determinations}
 
-\item{c14_uncertainties}{A vector containing the radiocarbon determination
+\item{c14_uncertainties}{An array of the radiocarbon determinations
 uncertainties. Must be the same length as \code{c14_determinations}.}
 
-\item{calibration_curve}{A dataframe which should contain one column entitled
-c14_age and one column entitled c14_sig.
+\item{calibration_curve}{A dataframe which should contain at least 3 columns
+entitled calendar_age, c14_age and c14_sig.
 This format matches \link{intcal20}.}
 
 \item{lambda, nu1, nu2}{Hyperparameters for the prior on the means
@@ -82,14 +82,13 @@ potentially use.}
 \code{c14_determinations}. Will be overridden if \code{sensible_initialisation} is
 \code{TRUE}.}
 
-\item{slice_width}{Parameter for slice sampling (optional). Default is 200.}
+\item{slice_width}{Parameter for slice sampling (optional). Default is 1000.}
 
 \item{slice_multiplier}{Integer parameter for slice sampling (optional).
-Default is 50. Limits the slice size to \code{slice_multiplier * slice_width}.}
+Default is 10. Limits the slice size to \code{slice_multiplier * slice_width}.}
 
-\item{n_clust}{The initial number of clusters (optional). Default is 10. If
-it is set to a value larger than the number of c14 determinations, it will be
-reduced to the number of c14 observations.}
+\item{n_clust}{The initial number of clusters (optional). Default is 10. Must
+be less than the length of \code{c14_determinations}.}
 
 \item{sensible_initialisation}{Whether to use sensible start values and
 adaptive prior on \eqn{\mu_{\phi}} and  (A, B).
@@ -143,7 +142,7 @@ joint calendar age density and cluster.
 }
 \details{
 This method considers both the mean and the variance of the clusters
-to be unknown. [TODO Do we want to include more detail about the algorith
+to be unknown. [TODO Do we want to include more detail about the algorithm
 here? Or refer to the paper.]
 }
 \examples{

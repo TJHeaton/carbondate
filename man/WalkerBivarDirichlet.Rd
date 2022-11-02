@@ -12,28 +12,28 @@ WalkerBivarDirichlet(
   lambda,
   nu1,
   nu2,
-  A,
-  B,
-  alpha_shape,
-  alpha_rate,
+  A = NA,
+  B = NA,
+  alpha_shape = NA,
+  alpha_rate = NA,
   n_iter = 100,
   n_thin = 10,
   calendar_ages = NA,
   slice_width = 1000,
   slice_multiplier = 10,
-  n_clust = 10,
+  n_clust = min(10, length(c14_determinations)),
   sensible_initialisation = TRUE,
   show_progress = TRUE
 )
 }
 \arguments{
-\item{c14_determinations}{A vector containing the radiocarbon determinations.}
+\item{c14_determinations}{An array of observed radiocarbon determinations}
 
-\item{c14_uncertainties}{A vector containing the radiocarbon determination
+\item{c14_uncertainties}{An array of the radiocarbon determinations
 uncertainties. Must be the same length as \code{c14_determinations}.}
 
-\item{calibration_curve}{A dataframe which should contain one column entitled
-c14_age and one column entitled c14_sig.
+\item{calibration_curve}{A dataframe which should contain at least 3 columns
+entitled calendar_age, c14_age and c14_sig.
 This format matches \link{intcal20}.}
 
 \item{lambda, nu1, nu2}{Hyperparameters for the prior on the means
@@ -73,7 +73,8 @@ potentially use.}
 \item{slice_multiplier}{Integer parameter for slice sampling (optional).
 Default is 10. Limits the slice size to \code{slice_multiplier * slice_width}.}
 
-\item{n_clust}{The initial number of clusters (optional). Default is 10.}
+\item{n_clust}{The initial number of clusters (optional). Default is 10. Must
+be less than the length of \code{c14_determinations}.}
 
 \item{sensible_initialisation}{Whether to use sensible start values and
 adaptive prior on \eqn{\mu_{\phi}} and  (A, B).

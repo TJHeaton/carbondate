@@ -20,8 +20,8 @@ calendar age to calculate the SPD over}
 \item{c14_uncertainties}{An array of the radiocarbon determinations
 uncertainties. Must be the same length as \code{c14_determinations}.}
 
-\item{calibration_curve}{A dataframe which should contain one column entitled
-c14_age and one column entitled c14_sig.
+\item{calibration_curve}{A dataframe which should contain at least 3 columns
+entitled calendar_age, c14_age and c14_sig.
 This format matches \link{intcal20}.}
 }
 \value{

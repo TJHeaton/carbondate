@@ -17,18 +17,20 @@ PlotIndividualCalendarAgeDensity(
 \item{ident}{the determination you want to show the individual posterior
 calendar age for.}
 
-\item{c14_determinations}{A vector containing the radiocarbon determinations.}
+\item{c14_determinations}{An array of observed radiocarbon determinations}
 
-\item{c14_uncertainties}{A vector containing the radiocarbon determination
+\item{c14_uncertainties}{An array of the radiocarbon determinations
 uncertainties. Must be the same length as \code{c14_determinations}.}
 
-\item{calibration_curve}{A dataframe which should contain one column entitled
-c14_age and one column entitled c14_sig.
+\item{calibration_curve}{A dataframe which should contain at least 3 columns
+entitled calendar_age, c14_age and c14_sig.
 This format matches \link{intcal20}.}
 
-\item{output_data}{Data returned from one of the updating functions e.g.
+\item{output_data}{The return value from one of the updating functions e.g.
 \link{WalkerBivarDirichlet} or
-\link{BivarGibbsDirichletwithSlice}.}
+\link{BivarGibbsDirichletwithSlice} or a list, each item containing
+one of these values. Optionally, the output data can have an extra list item
+named \code{label} which is used to set the label on the plot legend.}
 
 \item{n_breaks}{The number of breaks in the histogram (optional). If not
 given then it is set to the max of 100 and 1/tenth of post burn-in chain.}

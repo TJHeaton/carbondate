@@ -10,8 +10,8 @@ InterpolateCalibrationCurve(new_calendar_ages, calibration_curve)
 \item{new_calendar_ages}{A scalar or vector containing calendar ages to
 interpolate the calibration curve to}
 
-\item{calibration_curve}{A dataframe which should contain one column entitled
-c14_age and one column entitled c14_sig.
+\item{calibration_curve}{A dataframe which should contain at least 3 columns
+entitled calendar_age, c14_age and c14_sig.
 This format matches \link{intcal20}.}
 }
 \value{

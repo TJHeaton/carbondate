@@ -4,8 +4,8 @@ test_that("WalkerBivarDirichlet gives expected result", {
   # the function again here and compare results to test that the function is
   # working correctly
 
-  set.seed(14)
   load(test_path("testdata", "NPWalker_input.rda"))
+  set.seed(seednum)
   calculated_walker_temp = WalkerBivarDirichlet(
     c14_determinations=x,
     c14_uncertainties=xsig,
@@ -35,3 +35,4 @@ test_that("WalkerBivarDirichlet gives expected result", {
   expect_equal(calculated_walker_temp$mu_phi, WalkerTemp$muphi)
 
 })
+

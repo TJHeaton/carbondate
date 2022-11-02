@@ -8,24 +8,10 @@
 #' joint calendar age density and cluster.
 #'
 #' @details This method considers both the mean and the variance of the clusters
-#' to be unknown. \[TODO Do we want to include more detail about the algorith
+#' to be unknown. \[TODO Do we want to include more detail about the algorithm
 #' here? Or refer to the paper.\]
 #'
-#' @param c14_determinations A vector containing the radiocarbon determinations.
-#' @param c14_uncertainties A vector containing the radiocarbon determination
-#' uncertainties. Must be the same length as `c14_determinations`.
-#' @param calibration_curve A dataframe which should contain one column entitled
-#' c14_age and one column entitled c14_sig.
-#' This format matches [carbondate::intcal20].
-#' @param lambda,nu1,nu2  Hyperparameters for the prior on the means
-#' \eqn{\phi_j} and precision \eqn{\tau_j} of each individual calendar age
-#' cluster \eqn{j}.
-#' \deqn{(\phi_j, \tau_j)|\mu_{\phi} \sim
-#' \textrm{NormalGamma}(\mu_{\phi}, \lambda, \nu_1, \nu_2)} where
-#' \eqn{\mu_{\phi}} is the overall cluster centering.
-#' @param A,B  Prior on \eqn{\mu_{\phi}} giving the mean and precision of the
-#' overall centering \eqn{\mu_{\phi} \sim N(A, B^{-1})} i.e.
-#' B small is uninformative.
+#' @inheritParams WalkerBivarDirichlet
 #' @param alpha_type The type of prior on alpha - choose `"lognorm"` or
 #' `"gamma"`.  Default is `"gamma"`.
 #' @param alpha_mu,alpha_sigma Hyperparameters for the mean and sd on prior
@@ -42,28 +28,6 @@
 #' `alpha_type` is `"gamma"`. A small alpha means more concentrated
 #' (i.e. few clusters) while a large alpha means not concentrated (i.e. many
 #' clusters). \[TODO WE DON'T ACTUALLY USE THESE\]
-#' @param n_iter  The number of MCMC iterations (optional). Default is 100.
-#' @param n_thin  How much to thin the output (optional). 1 is no thinning,
-#' a larger number is more thinning. Default is 10. Must choose an integer more
-#' than 1 and not too close to `n_iter`, since after burn-in there are
-#' \eqn{(n_{\textrm{iter}}/n_{\textrm{thin}})/2} samples from posterior to
-#' potentially use.
-#' @param calendar_ages The initial estimate for the underlying calendar ages
-#' (optional). If supplied it must be a vector with the same length as
-#' `c14_determinations`. Will be overridden if `sensible_initialisation` is
-#' `TRUE`.
-#' @param slice_width  Parameter for slice sampling (optional). Default is 200.
-#' @param slice_multiplier  Integer parameter for slice sampling (optional).
-#' Default is 50. Limits the slice size to `slice_multiplier * slice_width`.
-#' @param n_clust The initial number of clusters (optional). Default is 10. If
-#' it is set to a value larger than the number of c14 determinations, it will be
-#' reduced to the number of c14 observations.
-#' @param sensible_initialisation Whether to use sensible start values and
-#' adaptive prior on \eqn{\mu_{\phi}} and  (A, B).
-#' If this is `TRUE` (the default), then `calendar_ages`, `A` and `B` will be
-#' overridden from any values passed in the arguments.
-#' @param show_progress Whether to show a progress bar in the console during
-#' execution. Default is `TRUE`.
 #'
 #' @return A list with 11 items. The first 7 items contain output data, each of
 #' which have one dimension of size \eqn{n_{\textrm{out}} =
@@ -144,7 +108,7 @@ BivarGibbsDirichletwithSlice <- function(
     calendar_ages = NA,
     slice_width = 200,
     slice_multiplier = 50,
-    n_clust = 10,
+    n_clust = min(10, length(c14_determinations)),
     sensible_initialisation = TRUE,
     show_progress = TRUE) {
 
@@ -152,17 +116,30 @@ BivarGibbsDirichletwithSlice <- function(
   # Check input parameters
   num_observations <- length(c14_determinations)
 
-  if (n_clust > length(c14_determinations)) {
-    message(
-      paste(
-        "Initial value of n_clust being reduced from ",
-        n_clust,
-        " to ",
-        num_observations))
-    n_clust <- num_observations
-  }
+  arg_check <- checkmate::makeAssertCollection()
 
-  # TODO
+  .check_input_data(
+    arg_check, c14_determinations, c14_uncertainties, calibration_curve)
+  .check_dpmm_parameters(
+    arg_check,
+    sensible_initialisation,
+    num_observations,
+    lambda,
+    nu1,
+    nu2,
+    A,
+    B,
+    alpha_type,
+    alpha_shape,
+    alpha_rate,
+    alpha_mu,
+    alpha_sigma,
+    calendar_ages,
+    n_clust)
+  .check_iteration_parameters(arg_check, n_iter, n_thin)
+  .check_slice_parameters(arg_check, slice_width, slice_multiplier)
+
+  checkmate::reportAssertions(arg_check)
 
 
   ##############################################################################
