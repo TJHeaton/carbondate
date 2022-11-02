@@ -4,17 +4,9 @@
 #' determinations, the posterior density for a single determination can be
 #' plotted using this function.
 #'
+#' @inheritParams PlotCalendarAgeDensity
 #' @param ident the determination you want to show the individual posterior
 #' calendar age for.
-#' @param c14_determinations A vector containing the radiocarbon determinations.
-#' @param c14_uncertainties A vector containing the radiocarbon determination
-#' uncertainties. Must be the same length as `c14_determinations`.
-#' @param calibration_curve A dataframe which should contain one column entitled
-#' c14_age and one column entitled c14_sig.
-#' This format matches [carbondate::intcal20].
-#' @param output_data Data returned from one of the updating functions e.g.
-#' [carbondate::WalkerBivarDirichlet] or
-#' [carbondate::BivarGibbsDirichletwithSlice].
 #' @param n_breaks The number of breaks in the histogram (optional). If not
 #' given then it is set to the max of 100 and 1/tenth of post burn-in chain.
 #'
@@ -37,6 +29,14 @@ PlotIndividualCalendarAgeDensity <- function(
     calibration_curve,
     output_data,
     n_breaks = NA) {
+
+  arg_check <- checkmate::makeAssertCollection()
+  .check_input_data(
+    arg_check, c14_determinations, c14_uncertainties, calibration_curve)
+  .check_output_data(arg_check, output_data)
+  checkmate::assertInt(n_breaks, na.ok = TRUE, add = arg_check)
+
+  checkmate::reportAssertions(arg_check)
 
   calendar_age <- output_data$calendar_ages[, ident]
   c14_age <- c14_determinations[ident]

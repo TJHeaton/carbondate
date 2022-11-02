@@ -7,9 +7,11 @@
 PlotNumberOfClusters(output_data)
 }
 \arguments{
-\item{output_data}{Data returned from one of the updating functions e.g.
+\item{output_data}{The return value from one of the updating functions e.g.
 \link{WalkerBivarDirichlet} or
-\link{BivarGibbsDirichletwithSlice}.}
+\link{BivarGibbsDirichletwithSlice} or a list, each item containing
+one of these values. Optionally, the output data can have an extra list item
+named \code{label} which is used to set the label on the plot legend.}
 }
 \value{
 No return value

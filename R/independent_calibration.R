@@ -6,8 +6,8 @@
 #'
 #' @param c14_determination A single observed radiocarbon determination (c14 age)
 #' @param c14_uncertainty The uncertainty of the radiocarbon determination
-#' @param calibration_curve A dataframe which should contain one column entitled
-#' c14_age and one column entitled c14_sig.
+#' @param calibration_curve A dataframe which should contain at least 3 columns
+#' entitled calendar_age, c14_age and c14_sig.
 #' This format matches [carbondate::intcal20].
 #'
 #' @return A vector containing the probability for each calendar age in the
@@ -20,6 +20,12 @@ CalibrateSingleDetermination <- function(
     c14_determination,
     c14_uncertainty,
     calibration_curve) {
+
+  arg_check <- checkmate::makeAssertCollection()
+  checkmate::assertNumber(c14_determination, add = arg_check)
+  checkmate::assertNumber(c14_uncertainty, add = arg_check)
+  .check_calibration_curve(arg_check, calibration_curve)
+  checkmate::reportAssertions(arg_check)
 
   c14_ages = calibration_curve$c14_age
   c14_sigs = calibration_curve$c14_sig
@@ -36,14 +42,12 @@ CalibrateSingleDetermination <- function(
 #' Takes a set of radiocarbon determinations and uncertainties and independently
 #' calibrates each one, and then averages them to give the SPD estimate.
 #'
+#' @inheritParams CalibrateSingleDetermination
 #' @param calendar_age_range An array of length 2 with the start and end
 #' calendar age to calculate the SPD over
 #' @param c14_determinations An array of observed radiocarbon determinations
 #' @param c14_uncertainties An array of the radiocarbon determinations
 #' uncertainties. Must be the same length as `c14_determinations`.
-#' @param calibration_curve A dataframe which should contain one column entitled
-#' c14_age and one column entitled c14_sig.
-#' This format matches [carbondate::intcal20].
 #'
 #' @return A data frame with one column `calendar_age` containing the calendar
 #' ages, and the other column `probability` containing the probability at that
@@ -62,7 +66,13 @@ FindSPD <- function(
     c14_uncertainties,
     calibration_curve) {
 
-  # TODO(error-handling): check determinations and uncertainties are same length
+  arg_check <- checkmate::makeAssertCollection()
+  checkmate::assertNumeric(
+    calendar_age_range, len = 2, any.missing = FALSE, add = arg_check)
+  .check_input_data(
+    arg_check, c14_determinations, c14_uncertainties, calibration_curve)
+  checkmate::reportAssertions(arg_check)
+
 
   calibration_data_range = range(calibration_curve$calendar_age)
   range_margin = 400

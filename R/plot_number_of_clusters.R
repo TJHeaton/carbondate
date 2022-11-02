@@ -4,9 +4,7 @@
 #' determinations, the estimated number of clusters can be plotted using this
 #' function.
 #'
-#' @param output_data Data returned from one of the updating functions e.g.
-#' [carbondate::WalkerBivarDirichlet] or
-#' [carbondate::BivarGibbsDirichletwithSlice].
+#' @inheritParams PlotCalendarAgeDensity
 #'
 #' @return No return value
 #' @export
@@ -15,6 +13,9 @@
 #' # Plot results for the number of clusters
 #' PlotNumberOfClusters(output_data = walker_example_output)
 PlotNumberOfClusters <- function(output_data) {
+
+  .check_output_data(NULL, output_data)
+
   n_out <- length(output_data$n_clust)
   n_burn <- floor(n_out / 2)
 

@@ -1,10 +1,8 @@
 #' Interpolate calendar ages for a calibration curve
 #'
+#' @inheritParams CalibrateSingleDetermination
 #' @param new_calendar_ages A scalar or vector containing calendar ages to
 #' interpolate the calibration curve to
-#' @param calibration_curve A dataframe which should contain one column entitled
-#' c14_age and one column entitled c14_sig.
-#' This format matches [carbondate::intcal20].
 #'
 #' @return A new dataframe with entries for the interpolated `c14_age` and
 #' `c14_sig` values at the `calendar_age` values given in `new_calendar_ages`
@@ -16,6 +14,9 @@
 InterpolateCalibrationCurve <- function(
     new_calendar_ages,
     calibration_curve) {
+
+  .check_calibration_curve(NULL, calibration_curve)
+  checkmate::assertNumeric(new_calendar_ages)
 
   calendar_ages =  calibration_curve$calendar_age
   c14_ages = calibration_curve$c14_age

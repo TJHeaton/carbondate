@@ -1,5 +1,6 @@
 test_that("single determination probabilities same length as calibration data", {
   test_calibration_data = data.frame(
+    calendar_age = c(3, 4, 6, 5, 6, 8, 7),
     c14_age = c(2, 3, 4, 5, 6, 7, 8),
     c14_sig = c(0.2, 0.1, 0.3, 0.3, 0.4, 0.5, 0.3)
   )
@@ -9,6 +10,7 @@ test_that("single determination probabilities same length as calibration data", 
 
 test_that("single determination probabilities sum to one", {
   test_calibration_data = data.frame(
+    calendar_age = c(3, 4, 6, 5, 6, 8, 7),
     c14_age = c(2, 3, 4, 5, 6, 7, 8),
     c14_sig = c(0.2, 0.1, 0.3, 0.3, 0.4, 0.5, 0.3)
   )

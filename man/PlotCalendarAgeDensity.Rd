@@ -12,25 +12,27 @@ PlotCalendarAgeDensity(
   n_posterior_samples,
   show_SPD = TRUE,
   show_confidence_intervals = TRUE,
-  true_density = NA,
+  true_density = NULL,
   xlimscal = 1,
   ylimscal = 1,
   denscale = 3
 )
 }
 \arguments{
-\item{c14_determinations}{A vector containing the radiocarbon determinations.}
+\item{c14_determinations}{An array of observed radiocarbon determinations}
 
-\item{c14_uncertainties}{A vector containing the radiocarbon determination
+\item{c14_uncertainties}{An array of the radiocarbon determinations
 uncertainties. Must be the same length as \code{c14_determinations}.}
 
-\item{calibration_curve}{A dataframe which should contain one column entitled
-c14_age and one column entitled c14_sig.
+\item{calibration_curve}{A dataframe which should contain at least 3 columns
+entitled calendar_age, c14_age and c14_sig.
 This format matches \link{intcal20}.}
 
 \item{output_data}{The return value from one of the updating functions e.g.
 \link{WalkerBivarDirichlet} or
-\link{BivarGibbsDirichletwithSlice}.}
+\link{BivarGibbsDirichletwithSlice} or a list, each item containing
+one of these values. Optionally, the output data can have an extra list item
+named \code{label} which is used to set the label on the plot legend.}
 
 \item{n_posterior_samples}{Current number of samples it will draw from this
 posterior to estimate the calendar age density (possibly repeats).}
@@ -73,4 +75,13 @@ PlotCalendarAgeDensity(
   output_data = walker_example_output,
   n_posterior_samples = 500)
 
+# Plot results from a calibration, and add a label
+new_output = walker_example_output
+new_output$label = "My plot"
+PlotCalendarAgeDensity(
+  c14_determinations = kerr$c14_ages,
+  c14_uncertainties = kerr$c14_sig,
+  calibration_curve = intcal20,
+  output_data = walker_example_output,
+  n_posterior_samples = 500)
 }

@@ -4,15 +4,12 @@
 #' output predicted density on the same plot. Can also optionally show the
 #' SPD estimate
 #'
-#' @param c14_determinations A vector containing the radiocarbon determinations.
-#' @param c14_uncertainties A vector containing the radiocarbon determination
-#' uncertainties. Must be the same length as `c14_determinations`.
-#' @param calibration_curve A dataframe which should contain one column entitled
-#' c14_age and one column entitled c14_sig.
-#' This format matches [carbondate::intcal20].
+#' @inheritParams FindSPD
 #' @param output_data The return value from one of the updating functions e.g.
 #' [carbondate::WalkerBivarDirichlet] or
-#' [carbondate::BivarGibbsDirichletwithSlice].
+#' [carbondate::BivarGibbsDirichletwithSlice] or a list, each item containing
+#' one of these values. Optionally, the output data can have an extra list item
+#' named `label` which is used to set the label on the plot legend.
 #' @param n_posterior_samples Current number of samples it will draw from this
 #' posterior to estimate the calendar age density (possibly repeats).
 #' @param show_SPD Whether to calculate and show the summed probability function
@@ -45,6 +42,15 @@
 #'   output_data = walker_example_output,
 #'   n_posterior_samples = 500)
 #'
+#' # Plot results from a calibration, and add a label
+#' new_output = walker_example_output
+#' new_output$label = "My plot"
+#' PlotCalendarAgeDensity(
+#'   c14_determinations = kerr$c14_ages,
+#'   c14_uncertainties = kerr$c14_sig,
+#'   calibration_curve = intcal20,
+#'   output_data = walker_example_output,
+#'   n_posterior_samples = 500)
 PlotCalendarAgeDensity <- function(
     c14_determinations,
     c14_uncertainties,
@@ -53,7 +59,7 @@ PlotCalendarAgeDensity <- function(
     n_posterior_samples,
     show_SPD = TRUE,
     show_confidence_intervals = TRUE,
-    true_density = NA,
+    true_density = NULL,
     xlimscal = 1,
     ylimscal = 1,
     denscale = 3) {
@@ -61,16 +67,28 @@ PlotCalendarAgeDensity <- function(
   ##############################################################################
   # Check input parameters
 
+  arg_check <- checkmate::makeAssertCollection()
+  .check_input_data(
+    arg_check, c14_determinations, c14_uncertainties, calibration_curve)
+
   # Treat single output data as a list of length 1
   if (!is.null(output_data$update_type)) output_data = list(output_data)
 
   num_data = length(output_data)
   for (i in 1:num_data) {
+    .check_output_data(arg_check, output_data[[i]])
     if (is.null(output_data[[i]]$label)) {
       output_data[[i]]$label <- stringr::str_to_title(
         output_data[[i]]$update_type)
     }
   }
+  checkmate::assertInt(n_posterior_samples, lower = 10, add = arg_check)
+  checkmate::assertNumber(xlimscal, lower = 0, add = arg_check)
+  checkmate::assertNumber(ylimscal, lower = 0, add = arg_check)
+  checkmate::assertNumber(denscale, lower = 0, add = arg_check)
+  checkmate::assertDataFrame(
+    true_density, types = "numeric", null.ok = TRUE, add = arg_check)
+  checkmate::reportAssertions(arg_check)
 
   ##############################################################################
   # Initialise plotting parameters

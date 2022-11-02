@@ -10,13 +10,7 @@
 #'  \[TODO Do we want to include more detail about the algorith
 #' here? Or refer to the paper.\]
 #'
-#'
-#' @param c14_determinations A vector containing the radiocarbon determinations.
-#' @param c14_uncertainties A vector containing the radiocarbon determination
-#' uncertainties. Must be the same length as `c14_determinations`.
-#' @param calibration_curve A dataframe which should contain at least 3 columns
-#' entitled calendar_age, c14_age and c14_sig.
-#' This format matches [carbondate::intcal20].
+#' @inheritParams FindSPD
 #' @param lambda,nu1,nu2  Hyperparameters for the prior on the means
 #' \eqn{\phi_j} and precision \eqn{\tau_j} of each individual calendar age
 #' cluster \eqn{j}.
@@ -120,7 +114,7 @@ WalkerBivarDirichlet <- function(
     calendar_ages = NA,
     slice_width = 1000,
     slice_multiplier = 10,
-    n_clust = 10,
+    n_clust = min(10, length(c14_determinations)),
     sensible_initialisation = TRUE,
     show_progress = TRUE) {
 
@@ -128,12 +122,12 @@ WalkerBivarDirichlet <- function(
   # Check input parameters
   num_observations <- length(c14_determinations)
 
-  argument_checker <- checkmate::makeAssertCollection()
+  arg_check <- checkmate::makeAssertCollection()
 
   .check_input_data(
-    argument_checker, c14_determinations, c14_uncertainties, calibration_curve)
+    arg_check, c14_determinations, c14_uncertainties, calibration_curve)
   .check_dpmm_parameters(
-    argument_checker,
+    arg_check,
     sensible_initialisation,
     num_observations,
     lambda,
@@ -148,10 +142,10 @@ WalkerBivarDirichlet <- function(
     NA,
     calendar_ages,
     n_clust)
-  .check_iteration_parameters(argument_checker, n_iter, n_thin)
-  .check_slice_parameters(argument_checker, slice_width, slice_multiplier)
+  .check_iteration_parameters(arg_check, n_iter, n_thin)
+  .check_slice_parameters(arg_check, slice_width, slice_multiplier)
 
-  checkmate::reportAssertions(argument_checker)
+  checkmate::reportAssertions(arg_check)
 
   ##############################################################################
   # Initialise parameters
