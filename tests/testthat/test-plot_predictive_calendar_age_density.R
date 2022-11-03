@@ -17,7 +17,7 @@ test_that("gives expected result for walker output", {
     nu1 = nu1,
     nu2 = nu2)
 
-  density_list = PlotCalendarAgeDensity(
+  density_list = PlotPredictiveCalendarAgeDensity(
     c14_determinations = x,
     c14_uncertainties = xsig,
     calibration_curve = intcal20,
@@ -54,7 +54,7 @@ test_that("gives expected result for neal output", {
     neal_output$n_clust[i] = length(unique(cluster_identifiers))
   }
 
-  density_list = PlotCalendarAgeDensity(
+  density_list = PlotPredictiveCalendarAgeDensity(
     c14_determinations = x,
     c14_uncertainties = xsig,
     calibration_curve = intcal20,

@@ -4,7 +4,7 @@
 #' determinations, the estimated number of clusters can be plotted using this
 #' function.
 #'
-#' @inheritParams PlotCalendarAgeDensity
+#' @inheritParams PlotPredictiveCalendarAgeDensity
 #'
 #' @return No return value
 #' @export

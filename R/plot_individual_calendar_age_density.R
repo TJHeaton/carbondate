@@ -4,7 +4,7 @@
 #' determinations, the posterior density for a single determination can be
 #' plotted using this function.
 #'
-#' @inheritParams PlotCalendarAgeDensity
+#' @inheritParams PlotPredictiveCalendarAgeDensity
 #' @param ident the determination you want to show the individual posterior
 #' calendar age for.
 #' @param n_breaks The number of breaks in the histogram (optional). If not
@@ -15,14 +15,14 @@
 #'
 #' @examples
 #' # Plot results for the 10th determinations
-#' PlotIndividualCalendarAgeDensity(
+#' PlotCalendarAgeDensityInvidualSample(
 #'   ident = 10,
 #'   c14_determinations = kerr$c14_ages,
 #'   c14_uncertainties = kerr$c14_sig,
 #'   calibration_curve = intcal20,
 #'   output_data = walker_example_output)
 #'
-PlotIndividualCalendarAgeDensity <- function(
+PlotCalendarAgeDensityInvidualSample <- function(
     ident,
     c14_determinations,
     c14_uncertainties,
@@ -56,6 +56,7 @@ PlotIndividualCalendarAgeDensity <- function(
   cal_age_ind_max <- which.min(abs(calibration_curve$calendar_age - xrange[2]))
   calendar_age_indices <- cal_age_ind_min:cal_age_ind_max
 
+  # 95% interval
   calibration_curve$ub <- calibration_curve$c14_age +
     1.96 * calibration_curve$c14_sig
   calibration_curve$lb <- calibration_curve$c14_age -

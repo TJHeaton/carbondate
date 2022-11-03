@@ -162,10 +162,10 @@ Our sampler provides three outputs of particular interest.
 
 As described above, the output data includes the calendar age estimate for each ^14^C sample. We can use this to determine the posterior distribution of the calendar age for each sample. Note that the calendar age estimates use the joint information provided by all the 14C determinations (as opposed to solely the ^14^C determination of the single object that would be found using `CalibrateSingleDetermination`) on the understanding the calendar ages of the objects are related.
 
-You can calculate and plot this using `PlotIndividualCalendarAgeDensity` - for example to calculate the posterior calendar age distribution for the 10th ^14^C determination:
+You can calculate and plot this using `PlotCalendarAgeDensityInvidualSample` - for example to calculate the posterior calendar age distribution for the 10th ^14^C determination:
 
 ```{r plot_individual, out.width="100%", fig.width=10, fig.height=8}
-PlotIndividualCalendarAgeDensity(
+PlotCalendarAgeDensityInvidualSample(
   ident = 10,
   c14_determinations = kerr$c14_ages,
   c14_uncertainties = kerr$c14_sig,
@@ -175,12 +175,12 @@ PlotIndividualCalendarAgeDensity(
 
 #### Density Estimate to Summarise Objects {#plot_density}
 
-The output data contains information to allow calculation of the predictive distribution for the calendar age of a new, as yet undiscovered, object. This density estimate summarises the calendar ages of all objects. It is generated using the posterior sampled values of the DPMM component of our MCMC sampler. This calendar age density can be calculated and plotted using `PlotCalendarAgeDensity`.
+The output data contains information to allow calculation of the predictive distribution for the calendar age of a new, as yet undiscovered, object. This density estimate summarises the calendar ages of all objects. It is generated using the posterior sampled values of the DPMM component of our MCMC sampler. This calendar age density can be calculated and plotted using `PlotPredictiveCalendarAgeDensity`.
 
 The function allows calculation using multiple outputs so that their results can be compared. It also, by default, plots the SPD, although this can be suppressed with the argument `show_SPD = FALSE`. For example below we compare the results from the two sampler methods above.
 
 ```{r plot_density, out.width="100%", fig.width=10, fig.height=8}
-densities = PlotCalendarAgeDensity(
+densities = PlotPredictiveCalendarAgeDensity(
   c14_determinations = kerr$c14_ages,
   c14_uncertainties = kerr$c14_sig,
   calibration_curve = intcal20,

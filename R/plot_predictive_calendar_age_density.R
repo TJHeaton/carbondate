@@ -35,7 +35,7 @@
 #'
 #' @examples
 #' # Plot results for a single calibration
-#' PlotCalendarAgeDensity(
+#' PlotPredictiveCalendarAgeDensity(
 #'   c14_determinations = kerr$c14_ages,
 #'   c14_uncertainties = kerr$c14_sig,
 #'   calibration_curve = intcal20,
@@ -45,13 +45,13 @@
 #' # Plot results from a calibration, and add a label
 #' new_output = walker_example_output
 #' new_output$label = "My plot"
-#' PlotCalendarAgeDensity(
+#' PlotPredictiveCalendarAgeDensity(
 #'   c14_determinations = kerr$c14_ages,
 #'   c14_uncertainties = kerr$c14_sig,
 #'   calibration_curve = intcal20,
 #'   output_data = walker_example_output,
 #'   n_posterior_samples = 500)
-PlotCalendarAgeDensity <- function(
+PlotPredictiveCalendarAgeDensity <- function(
     c14_determinations,
     c14_uncertainties,
     calibration_curve,

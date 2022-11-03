@@ -53,7 +53,7 @@ Once the calibration has been run, the calendar age density can be
 plotted.
 
 ``` r
-PlotCalendarAgeDensity(
+PlotPredictiveCalendarAgeDensity(
   c14_determinations = kerr$c14_ages,
   c14_uncertainties = kerr$c14_sig,
   calibration_curve = intcal20,
