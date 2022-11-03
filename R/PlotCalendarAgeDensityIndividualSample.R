@@ -15,24 +15,24 @@
 #'
 #' @examples
 #' # Plot results for the 10th determinations
-#' PlotCalendarAgeDensityInvidualSample(
+#' PlotCalendarAgeDensityIndividualSample(
 #'   ident = 10,
 #'   c14_determinations = kerr$c14_ages,
-#'   c14_uncertainties = kerr$c14_sig,
+#'   c14_sigmas = kerr$c14_sig,
 #'   calibration_curve = intcal20,
 #'   output_data = walker_example_output)
 #'
-PlotCalendarAgeDensityInvidualSample <- function(
+PlotCalendarAgeDensityIndividualSample <- function(
     ident,
     c14_determinations,
-    c14_uncertainties,
+    c14_sigmas,
     calibration_curve,
     output_data,
     n_breaks = NA) {
 
   arg_check <- checkmate::makeAssertCollection()
   .check_input_data(
-    arg_check, c14_determinations, c14_uncertainties, calibration_curve)
+    arg_check, c14_determinations, c14_sigmas, calibration_curve)
   .check_output_data(arg_check, output_data)
   checkmate::assertInt(n_breaks, na.ok = TRUE, add = arg_check)
 
@@ -40,7 +40,7 @@ PlotCalendarAgeDensityInvidualSample <- function(
 
   calendar_age <- output_data$calendar_ages[, ident]
   c14_age <- c14_determinations[ident]
-  c14_sig <- c14_uncertainties[ident]
+  c14_sig <- c14_sigmas[ident]
 
   n_out <- length(calendar_age)
   n_burn <- floor(n_out / 2)

@@ -40,7 +40,7 @@ library(carbondate)
 
 walker_temp = WalkerBivarDirichlet(
    c14_determinations = kerr$c14_ages,
-   c14_uncertainties = kerr$c14_sig,
+   c14_sigmas = kerr$c14_sig,
    calibration_curve = intcal20,
    lambda = 0.1,
    nu1 = 0.25,
@@ -55,7 +55,7 @@ plotted.
 ``` r
 PlotPredictiveCalendarAgeDensity(
   c14_determinations = kerr$c14_ages,
-  c14_uncertainties = kerr$c14_sig,
+  c14_sigmas = kerr$c14_sig,
   calibration_curve = intcal20,
   output_data = walker_example_output,
   n_posterior_samples = 500)

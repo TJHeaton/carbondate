@@ -14,7 +14,7 @@
 }
 
 .check_input_data <- function(
-    arg_check, c14_determinations, c14_uncertainties, calibration_curve){
+    arg_check, c14_determinations, c14_sigmas, calibration_curve){
 
   checkmate::assertNumeric(
     c14_determinations,
@@ -24,7 +24,7 @@
     typed.missing = FALSE,
     add = arg_check)
   checkmate::assertNumeric(
-    c14_uncertainties,
+    c14_sigmas,
     any.missing = FALSE,
     lower = 0,
     len = length(c14_determinations),

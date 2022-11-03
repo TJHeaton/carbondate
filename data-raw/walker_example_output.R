@@ -29,7 +29,7 @@ lambda <- (100 / maxrange)^2 # Each muclust ~ N(mutheta, sigma2/lambda)
 
 walker_example_output <- WalkerBivarDirichlet(
   c14_determinations = kerr$c14_ages,
-  c14_uncertainties = kerr$c14_sig,
+  c14_sigmas = kerr$c14_sig,
   calibration_curve=intcal20,
   lambda = lambda,
   nu1 = nu1,
@@ -41,5 +41,9 @@ walker_example_output <- WalkerBivarDirichlet(
   slice_width = max(1000, diff(range(kerr$c14_ages)) / 2),
   slice_multiplier = 10,
   n_clust = 10)
+
+
+## CUT OFF HALF
+## thin_id <- seq(nburn, n_iter, length = 100)
 
 usethis::use_data(walker_example_output, overwrite = TRUE, compress = "bzip2")

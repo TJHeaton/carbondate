@@ -1,4 +1,4 @@
-test_that("BivarGibbsDirichletwithSlice gives expected result", {
+test_that("PolyaUrnBivarDirichlet gives expected result", {
   # Here we load input and output data from the functions in the original
   # nonparametric calibration code (that we know is working correctly). We run
   # the function again here and compare results to test that the function is
@@ -6,9 +6,9 @@ test_that("BivarGibbsDirichletwithSlice gives expected result", {
 
   load(test_path("testdata", "NPNeal_input.rda"))
   set.seed(seednum)
-  calculated_neal_temp = BivarGibbsDirichletwithSlice(
+  calculated_neal_temp = PolyaUrnBivarDirichlet(
     c14_determinations = x,
-    c14_uncertainties = xsig,
+    c14_sigmas = xsig,
     calibration_curve = intcal20,
     lambda = lambda,
     nu1 = nu1,
@@ -40,6 +40,3 @@ test_that("BivarGibbsDirichletwithSlice gives expected result", {
   }
 })
 
-
-# TODO: test with a lognorm type for alpha. This is not currently tested.
-# Ask Tim about suitable parameters and whether we need it.

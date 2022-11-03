@@ -19,7 +19,7 @@ test_that("gives expected result for walker output", {
 
   density_list = PlotPredictiveCalendarAgeDensity(
     c14_determinations = x,
-    c14_uncertainties = xsig,
+    c14_sigmas = xsig,
     calibration_curve = intcal20,
     output_data = walker_output,
     n_posterior_samples = npostsum)
@@ -56,7 +56,7 @@ test_that("gives expected result for neal output", {
 
   density_list = PlotPredictiveCalendarAgeDensity(
     c14_determinations = x,
-    c14_uncertainties = xsig,
+    c14_sigmas = xsig,
     calibration_curve = intcal20,
     output_data = neal_output,
     n_posterior_samples = npostsum)

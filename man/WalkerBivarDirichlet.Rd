@@ -7,7 +7,7 @@ of the DPMM}
 \usage{
 WalkerBivarDirichlet(
   c14_determinations,
-  c14_uncertainties,
+  c14_sigmas,
   calibration_curve,
   lambda,
   nu1,
@@ -29,7 +29,7 @@ WalkerBivarDirichlet(
 \arguments{
 \item{c14_determinations}{An array of observed radiocarbon determinations}
 
-\item{c14_uncertainties}{An array of the radiocarbon determinations
+\item{c14_sigmas}{An array of the radiocarbon determinations
 uncertainties. Must be the same length as \code{c14_determinations}.}
 
 \item{calibration_curve}{A dataframe which should contain at least 3 columns
@@ -137,11 +137,12 @@ here? Or refer to the paper.]
 # Basic usage making use of sensible initialisation to set most values
 WalkerBivarDirichlet(
   c14_determinations = c(602, 805, 1554),
-  c14_uncertainties = c(35, 34, 45),
+  c14_sigmas = c(35, 34, 45),
   calibration_curve = intcal20,
   lambda = 0.1,
   nu1 = 0.25,
   nu2 = 10,
   alpha_shape = 1,
   alpha_rate = 1)
+
 }

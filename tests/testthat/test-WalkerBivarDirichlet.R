@@ -8,7 +8,7 @@ test_that("WalkerBivarDirichlet gives expected result", {
   set.seed(seednum)
   calculated_walker_temp = WalkerBivarDirichlet(
     c14_determinations=x,
-    c14_uncertainties=xsig,
+    c14_sigmas=xsig,
     calibration_curve=intcal20,
     lambda=lambda,
     nu1=nu1,

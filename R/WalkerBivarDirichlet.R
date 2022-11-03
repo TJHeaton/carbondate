@@ -10,7 +10,7 @@
 #'  \[TODO Do we want to include more detail about the algorith
 #' here? Or refer to the paper.\]
 #'
-#' @inheritParams FindSPD
+#' @inheritParams FindSummedProbabilityDistribution
 #' @param lambda,nu1,nu2  Hyperparameters for the prior on the means
 #' \eqn{\phi_j} and precision \eqn{\tau_j} of each individual calendar age
 #' cluster \eqn{j}.
@@ -91,16 +91,18 @@
 #' # Basic usage making use of sensible initialisation to set most values
 #' WalkerBivarDirichlet(
 #'   c14_determinations = c(602, 805, 1554),
-#'   c14_uncertainties = c(35, 34, 45),
+#'   c14_sigmas = c(35, 34, 45),
 #'   calibration_curve = intcal20,
 #'   lambda = 0.1,
 #'   nu1 = 0.25,
 #'   nu2 = 10,
 #'   alpha_shape = 1,
 #'   alpha_rate = 1)
+#'
+
 WalkerBivarDirichlet <- function(
     c14_determinations,
-    c14_uncertainties,
+    c14_sigmas,
     calibration_curve,
     lambda,
     nu1,
@@ -125,7 +127,7 @@ WalkerBivarDirichlet <- function(
   arg_check <- checkmate::makeAssertCollection()
 
   .check_input_data(
-    arg_check, c14_determinations, c14_uncertainties, calibration_curve)
+    arg_check, c14_determinations, c14_sigmas, calibration_curve)
   .check_dpmm_parameters(
     arg_check,
     sensible_initialisation,
@@ -154,7 +156,7 @@ WalkerBivarDirichlet <- function(
     initial_probabilities <- mapply(
       CalibrateSingleDetermination,
       c14_determinations,
-      c14_uncertainties,
+      c14_sigmas,
       MoreArgs = list(calibration_curve=calibration_curve))
     indices_of_max_probability = apply(initial_probabilities, 2, which.max)
     calendar_ages <- calibration_curve$calendar_age[indices_of_max_probability]
@@ -252,7 +254,7 @@ WalkerBivarDirichlet <- function(
         prmean = phi[cluster_identifiers[k]],
         prsig = 1 / sqrt(tau[cluster_identifiers[k]]),
         c14obs = c14_determinations[k],
-        c14sig = c14_uncertainties[k],
+        c14sig = c14_sigmas[k],
         mucalallyr = interpolated_c14_age,
         sigcalallyr = interpolated_c14_sig)
     }

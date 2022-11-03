@@ -1,42 +1,3 @@
-#' Calibrate a single radiocarbon determination
-#'
-#' Uses the supplied calibration curve to take a single radiocardbon
-#' determination and uncertainty and calculate the calendar age probability
-#' density for it.
-#'
-#' @param c14_determination A single observed radiocarbon determination (c14 age)
-#' @param c14_uncertainty The uncertainty of the radiocarbon determination
-#' @param calibration_curve A dataframe which should contain at least 3 columns
-#' entitled calendar_age, c14_age and c14_sig.
-#' This format matches [carbondate::intcal20].
-#'
-#' @return A vector containing the probability for each calendar age in the
-#' calibration data
-#' @export
-#'
-#' @examples
-#' CalibrateSingleDetermination(51020, 35, intcal20)
-CalibrateSingleDetermination <- function(
-    c14_determination,
-    c14_uncertainty,
-    calibration_curve) {
-
-  arg_check <- checkmate::makeAssertCollection()
-  checkmate::assertNumber(c14_determination, add = arg_check)
-  checkmate::assertNumber(c14_uncertainty, add = arg_check)
-  .check_calibration_curve(arg_check, calibration_curve)
-  checkmate::reportAssertions(arg_check)
-
-  c14_ages = calibration_curve$c14_age
-  c14_sigs = calibration_curve$c14_sig
-
-  probabilities <- stats::dnorm(
-    c14_determination, mean=c14_ages, sd=sqrt(c14_sigs^2 + c14_uncertainty^2))
-  probabilities <- probabilities / sum(probabilities)
-  return(probabilities)
-}
-
-
 #' Find the summed probability function (SPD) for a set of observations
 #'
 #' Takes a set of radiocarbon determinations and uncertainties and independently
@@ -46,7 +7,7 @@ CalibrateSingleDetermination <- function(
 #' @param calendar_age_range An array of length 2 with the start and end
 #' calendar age to calculate the SPD over
 #' @param c14_determinations An array of observed radiocarbon determinations
-#' @param c14_uncertainties An array of the radiocarbon determinations
+#' @param c14_sigmas An array of the radiocarbon determinations
 #' uncertainties. Must be the same length as `c14_determinations`.
 #'
 #' @return A data frame with one column `calendar_age` containing the calendar
@@ -55,22 +16,22 @@ CalibrateSingleDetermination <- function(
 #' @export
 #'
 #' @examples
-#' FindSPD(
+#' FindSummedProbabilityDistribution(
 #'    calendar_age_range=c(600, 1600),
 #'    c14_determinations=c(602, 805, 1554),
-#'    c14_uncertainties=c(35, 34, 45),
+#'    c14_sigmas=c(35, 34, 45),
 #'    calibration_curve=intcal20)
-FindSPD <- function(
+FindSummedProbabilityDistribution <- function(
     calendar_age_range,
     c14_determinations,
-    c14_uncertainties,
+    c14_sigmas,
     calibration_curve) {
 
   arg_check <- checkmate::makeAssertCollection()
   checkmate::assertNumeric(
     calendar_age_range, len = 2, any.missing = FALSE, add = arg_check)
   .check_input_data(
-    arg_check, c14_determinations, c14_uncertainties, calibration_curve)
+    arg_check, c14_determinations, c14_sigmas, calibration_curve)
   checkmate::reportAssertions(arg_check)
 
 
@@ -89,7 +50,7 @@ FindSPD <- function(
   individual_probabilities <- mapply(
     CalibrateSingleDetermination,
     c14_determinations,
-    c14_uncertainties,
+    c14_sigmas,
     MoreArgs = list(calibration_curve = interpolated_calibration_data))
 
   probabilities_per_calendar_age = apply(individual_probabilities, 1, sum) /

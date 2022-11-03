@@ -68,9 +68,9 @@
 #'
 #' @examples
 #' # Basic usage making use of sensible initialisation to set most values
-#' BivarGibbsDirichletwithSlice(
+#' PolyaUrnBivarDirichlet(
 #'   c14_determinations = c(602, 805, 1554),
-#'   c14_uncertainties = c(35, 34, 45),
+#'   c14_sigmas = c(35, 34, 45),
 #'   calibration_curve = intcal20,
 #'   lambda = 0.1,
 #'   nu1 = 0.25,
@@ -79,9 +79,9 @@
 #'   alpha_rate = 1)
 #'
 #' # Use sensible initialisation values but use lognorm prior on alpha
-#' BivarGibbsDirichletwithSlice(
+#' PolyaUrnBivarDirichlet(
 #'   c14_determinations = c(602, 805, 1554),
-#'   c14_uncertainties = c(35, 34, 45),
+#'   c14_sigmas = c(35, 34, 45),
 #'   calibration_curve = intcal20,
 #'   lambda = 0.1,
 #'   nu1 = 0.25,
@@ -89,9 +89,9 @@
 #'   alpha_type = "lognorm",
 #'   alpha_mu = 1,
 #'   alpha_sigma = 1)
-BivarGibbsDirichletwithSlice <- function(
+PolyaUrnBivarDirichlet <- function(
     c14_determinations,
-    c14_uncertainties,
+    c14_sigmas,
     calibration_curve,
     lambda,
     nu1,
@@ -119,7 +119,7 @@ BivarGibbsDirichletwithSlice <- function(
   arg_check <- checkmate::makeAssertCollection()
 
   .check_input_data(
-    arg_check, c14_determinations, c14_uncertainties, calibration_curve)
+    arg_check, c14_determinations, c14_sigmas, calibration_curve)
   .check_dpmm_parameters(
     arg_check,
     sensible_initialisation,
@@ -156,7 +156,7 @@ BivarGibbsDirichletwithSlice <- function(
     initial_probabilities <- mapply(
       CalibrateSingleDetermination,
       c14_determinations,
-      c14_uncertainties,
+      c14_sigmas,
       MoreArgs = list(calibration_curve=calibration_curve))
     indices_of_max_probability = apply(initial_probabilities, 2, which.max)
     calendar_ages <- calibration_curve$calendar_age[indices_of_max_probability]
@@ -165,6 +165,7 @@ BivarGibbsDirichletwithSlice <- function(
     A <- stats::median(calendar_ages)
     B <- 1 / (max(calendar_ages) - min(calendar_ages))^2
   } else {
+    # GET RID OFF: ELSE MUST SPECIFY
     scale_val <- 8267 / 8033
     mu_phi <- mean(c14_determinations) * scale_val
     if (is.na(calendar_ages[1])) calendar_ages <- c14_determinations * scale_val
@@ -176,6 +177,8 @@ BivarGibbsDirichletwithSlice <- function(
     gamma = 0.0001, # stats::rgamma(1, shape = alpha_shape, rate = alpha_rate),
     stop("Unknown form for prior on alpha"))
 
+  # ADD COMMENT
+  # tau <- rep(1 / (diff(range(c14_determinations)) / 4)^2, n_clust)
   tau <- rep(n_clust, 1 / (diff(range(c14_determinations)) / 4)^2)
   phi <- stats::rnorm(
     n_clust, mean = mu_phi, sd = diff(range(c14_determinations)) / 2)
@@ -257,7 +260,7 @@ BivarGibbsDirichletwithSlice <- function(
         prmean = phi[cluster_identifiers[k]],
         prsig = 1 / sqrt(tau[cluster_identifiers[k]]),
         c14obs = c14_determinations[k],
-        c14sig = c14_uncertainties[k],
+        c14sig = c14_sigmas[k],
         mucalallyr = interpolated_c14_age,
         sigcalallyr = interpolated_c14_sig)
     }

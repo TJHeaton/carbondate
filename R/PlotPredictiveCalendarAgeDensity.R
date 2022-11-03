@@ -4,10 +4,10 @@
 #' output predicted density on the same plot. Can also optionally show the
 #' SPD estimate
 #'
-#' @inheritParams FindSPD
+#' @inheritParams FindSummedProbabilityDistribution
 #' @param output_data The return value from one of the updating functions e.g.
 #' [carbondate::WalkerBivarDirichlet] or
-#' [carbondate::BivarGibbsDirichletwithSlice] or a list, each item containing
+#' [carbondate::PolyaUrnBivarDirichlet] or a list, each item containing
 #' one of these values. Optionally, the output data can have an extra list item
 #' named `label` which is used to set the label on the plot legend.
 #' @param n_posterior_samples Current number of samples it will draw from this
@@ -37,7 +37,7 @@
 #' # Plot results for a single calibration
 #' PlotPredictiveCalendarAgeDensity(
 #'   c14_determinations = kerr$c14_ages,
-#'   c14_uncertainties = kerr$c14_sig,
+#'   c14_sigmas = kerr$c14_sig,
 #'   calibration_curve = intcal20,
 #'   output_data = walker_example_output,
 #'   n_posterior_samples = 500)
@@ -47,13 +47,13 @@
 #' new_output$label = "My plot"
 #' PlotPredictiveCalendarAgeDensity(
 #'   c14_determinations = kerr$c14_ages,
-#'   c14_uncertainties = kerr$c14_sig,
+#'   c14_sigmas = kerr$c14_sig,
 #'   calibration_curve = intcal20,
 #'   output_data = walker_example_output,
 #'   n_posterior_samples = 500)
 PlotPredictiveCalendarAgeDensity <- function(
     c14_determinations,
-    c14_uncertainties,
+    c14_sigmas,
     calibration_curve,
     output_data,
     n_posterior_samples,
@@ -69,7 +69,7 @@ PlotPredictiveCalendarAgeDensity <- function(
 
   arg_check <- checkmate::makeAssertCollection()
   .check_input_data(
-    arg_check, c14_determinations, c14_uncertainties, calibration_curve)
+    arg_check, c14_determinations, c14_sigmas, calibration_curve)
 
   # Treat single output data as a list of length 1
   if (!is.null(output_data$update_type)) output_data = list(output_data)
@@ -108,10 +108,10 @@ PlotPredictiveCalendarAgeDensity <- function(
   # Calculate density distributions
 
   if (show_SPD){
-    SPD = FindSPD(
+    SPD = FindSummedProbabilityDistribution(
       calendar_age_range = floor(range(output_data[[1]]$calendar_ages)),
       c14_determinations = c14_determinations,
-      c14_uncertainties = c14_uncertainties,
+      c14_sigmas = c14_sigmas,
       calibration_curve = calibration_curve)
   }
 
@@ -126,7 +126,7 @@ PlotPredictiveCalendarAgeDensity <- function(
   xlim <- .ScaleLimit(rev(range(calendar_age_sequence)), xlimscal)
   ylim_calibration <- .ScaleLimit(
     range(c14_determinations) +
-      c(-2, 2) * stats::quantile(c14_uncertainties, 0.9),
+      c(-2, 2) * stats::quantile(c14_sigmas, 0.9),
     ylimscal)
   ylim_density = c(0, denscale * max(posterior_density[[1]]$density_mean))
 

@@ -47,7 +47,7 @@ Although this package is concerned with the calibration of multiple related ^14^
 
 ```{r single_calibration}
 cal_age_prob = CalibrateSingleDetermination(
-  c14_determination = 1413, c14_uncertainty = 25, intcal20)
+  c14_determination = 1413, c14_sigma = 25, intcal20)
 plot(
   intcal20$calendar_age, 
   cal_age_prob, 
@@ -63,7 +63,7 @@ The most common approach to summarise calendar age information of multiple ^14^C
 To calculate the SPD for a set of radiocarbon determinations (here we use the example dataset `armit`) see the example below, where we also plot the results.
 
 ```{r find_spd}
-spd = FindSPD(c(1000, 4500), armit$c14_ages, armit$c14_sig, intcal20)
+spd = FindSummedProbabilityDistribution(c(1000, 4500), armit$c14_ages, armit$c14_sig, intcal20)
 plot(
   spd,
   type="l", 
@@ -117,7 +117,7 @@ We can then run using the Walker method:
 ```{r calculate_walker, results=FALSE}
 walker_temp <- WalkerBivarDirichlet(
   c14_determinations = kerr$c14_ages,
-  c14_uncertainties = kerr$c14_sig,
+  c14_sigmas = kerr$c14_sig,
   calibration_curve=intcal20,
   lambda = lambda,
   nu1 = nu1,
@@ -134,9 +134,9 @@ walker_temp <- WalkerBivarDirichlet(
 or the Neal method as follows:
 
 ```{r calculate_neal, results=FALSE}
-neal_temp <- BivarGibbsDirichletwithSlice(
+neal_temp <- PolyaUrnBivarDirichlet(
   c14_determinations = kerr$c14_ages,
-  c14_uncertainties = kerr$c14_sig,
+  c14_sigmas = kerr$c14_sig,
   calibration_curve = intcal20,
   lambda = lambda,
   nu1 = nu1,
@@ -162,13 +162,13 @@ Our sampler provides three outputs of particular interest.
 
 As described above, the output data includes the calendar age estimate for each ^14^C sample. We can use this to determine the posterior distribution of the calendar age for each sample. Note that the calendar age estimates use the joint information provided by all the 14C determinations (as opposed to solely the ^14^C determination of the single object that would be found using `CalibrateSingleDetermination`) on the understanding the calendar ages of the objects are related.
 
-You can calculate and plot this using `PlotCalendarAgeDensityInvidualSample` - for example to calculate the posterior calendar age distribution for the 10th ^14^C determination:
+You can calculate and plot this using `PlotCalendarAgeDensityIndividualSample` - for example to calculate the posterior calendar age distribution for the 10th ^14^C determination:
 
 ```{r plot_individual, out.width="100%", fig.width=10, fig.height=8}
-PlotCalendarAgeDensityInvidualSample(
+PlotCalendarAgeDensityIndividualSample(
   ident = 10,
   c14_determinations = kerr$c14_ages,
-  c14_uncertainties = kerr$c14_sig,
+  c14_sigmas = kerr$c14_sig,
   calibration_curve = intcal20,
   output_data = walker_temp)
 ```
@@ -182,7 +182,7 @@ The function allows calculation using multiple outputs so that their results can
 ```{r plot_density, out.width="100%", fig.width=10, fig.height=8}
 densities = PlotPredictiveCalendarAgeDensity(
   c14_determinations = kerr$c14_ages,
-  c14_uncertainties = kerr$c14_sig,
+  c14_sigmas = kerr$c14_sig,
   calibration_curve = intcal20,
   output_data = list(walker_temp, neal_temp),
   n_posterior_samples = 500,
