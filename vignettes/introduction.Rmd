@@ -124,7 +124,7 @@ walker_temp <- WalkerBivarDirichlet(
   nu2 = nu2,
   alpha_shape = 1,
   alpha_rate = 1,
-  n_iter = 1000,
+  n_iter = 100,
   n_thin = 5,
   slice_width = max(1000, diff(range(kerr$c14_ages)) / 2),
   slice_multiplier =10,
@@ -143,7 +143,7 @@ neal_temp <- PolyaUrnBivarDirichlet(
   nu2 = nu2,
   alpha_shape = 1,
   alpha_rate = 1,
-  n_iter = 1000,
+  n_iter = 100,
   n_thin = 5,
   slice_width = max(1000, diff(range(kerr$c14_ages)) / 2),
   slice_multiplier = 10,
@@ -164,7 +164,7 @@ As described above, the output data includes the calendar age estimate for each 
 
 You can calculate and plot this using `PlotCalendarAgeDensityIndividualSample` - for example to calculate the posterior calendar age distribution for the 10th ^14^C determination:
 
-```{r plot_individual, out.width="100%", fig.width=10, fig.height=8}
+```{r plot_individual, out.width="100%", fig.width=10, fig.height=8, cache=TRUE}
 PlotCalendarAgeDensityIndividualSample(
   ident = 10,
   c14_determinations = kerr$c14_ages,
@@ -179,13 +179,13 @@ The output data contains information to allow calculation of the predictive dist
 
 The function allows calculation using multiple outputs so that their results can be compared. It also, by default, plots the SPD, although this can be suppressed with the argument `show_SPD = FALSE`. For example below we compare the results from the two sampler methods above.
 
-```{r plot_density, out.width="100%", fig.width=10, fig.height=8}
+```{r plot_density, out.width="100%", fig.width=10, fig.height=8, cache=TRUE}
 densities = PlotPredictiveCalendarAgeDensity(
   c14_determinations = kerr$c14_ages,
   c14_sigmas = kerr$c14_sig,
   calibration_curve = intcal20,
   output_data = list(walker_temp, neal_temp),
-  n_posterior_samples = 500,
+  n_posterior_samples = 50,
   denscale = 2.5)
 ```
 
@@ -193,7 +193,7 @@ densities = PlotPredictiveCalendarAgeDensity(
 
 The output data also contains information about the cluster allocation of each sampled object, which we can use to build the probability for there being a given number of total clusters. If we believe the underlying individual clusters in the model have inherent meaning in terms of representing genuine and distinct periods of site usage, as opposed to simply providing a tool to enable a non-parametric density estimate, this information may be archaeologically useful.
 
-```{r plot_clusters, out.width="50%", fig.width=5, fig.height=6}
+```{r plot_clusters, out.width="50%", fig.width=5, fig.height=6, cache=TRUE}
 PlotNumberOfClusters(output_data = walker_temp)
 ```
 

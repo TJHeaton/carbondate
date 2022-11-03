@@ -12,22 +12,6 @@
 #' here? Or refer to the paper.\]
 #'
 #' @inheritParams WalkerBivarDirichlet
-#' @param alpha_type The type of prior on alpha - choose `"lognorm"` or
-#' `"gamma"`.  Default is `"gamma"`.
-#' @param alpha_mu,alpha_sigma Hyperparameters for the mean and sd on prior
-#' for DP concentration, \eqn{\alpha}, determining the number of clusters we
-#' expect to observe among our n sampled objects.
-#' \eqn{\alpha \sim \textrm{Lognormal}(\mu, \sigma^2)} where \eqn{\mu, \sigma}
-#' are the `alpha_mu` and `alpha_sigma`. Note these are only used if
-#' `alpha_type` is `"lognorm"`.
-#' @param alpha_shape,alpha_rate Hyperparameters for the shape and rate on prior
-#' for DP concentration, \eqn{\alpha}, determining the number of clusters we
-#' expect to observe among our n sampled objects.
-#' \eqn{\alpha \sim \Gamma(\eta_1, \eta_2)} where \eqn{\eta_1, \eta_2} are
-#' the `alpha_shape` and `alpha_rate`. Note these are only used if
-#' `alpha_type` is `"gamma"`. A small alpha means more concentrated
-#' (i.e. few clusters) while a large alpha means not concentrated (i.e. many
-#' clusters). \[TODO WE DON'T ACTUALLY USE THESE\]
 #'
 #' @return A list with 11 items. The first 7 items contain output data, each of
 #' which have one dimension of size \eqn{n_{\textrm{out}} =
@@ -74,21 +58,7 @@
 #'   calibration_curve = intcal20,
 #'   lambda = 0.1,
 #'   nu1 = 0.25,
-#'   nu2 = 10,
-#'   alpha_shape = 1,
-#'   alpha_rate = 1)
-#'
-#' # Use sensible initialisation values but use lognorm prior on alpha
-#' PolyaUrnBivarDirichlet(
-#'   c14_determinations = c(602, 805, 1554),
-#'   c14_sigmas = c(35, 34, 45),
-#'   calibration_curve = intcal20,
-#'   lambda = 0.1,
-#'   nu1 = 0.25,
-#'   nu2 = 10,
-#'   alpha_type = "lognorm",
-#'   alpha_mu = 1,
-#'   alpha_sigma = 1)
+#'   nu2 = 10)
 PolyaUrnBivarDirichlet <- function(
     c14_determinations,
     c14_sigmas,
@@ -98,11 +68,8 @@ PolyaUrnBivarDirichlet <- function(
     nu2,
     A=NA,
     B=NA,
-    alpha_type = "gamma",
-    alpha_mu = NA,
-    alpha_sigma = NA,
-    alpha_shape = NA,
-    alpha_rate = NA,
+    alpha_shape = 1,
+    alpha_rate = 1,
     n_iter = 100,
     n_thin = 10,
     calendar_ages = NA,
@@ -129,11 +96,8 @@ PolyaUrnBivarDirichlet <- function(
     nu2,
     A,
     B,
-    alpha_type,
     alpha_shape,
     alpha_rate,
-    alpha_mu,
-    alpha_sigma,
     calendar_ages,
     n_clust)
   .check_iteration_parameters(arg_check, n_iter, n_thin)
@@ -168,14 +132,9 @@ PolyaUrnBivarDirichlet <- function(
     # GET RID OFF: ELSE MUST SPECIFY
     scale_val <- 8267 / 8033
     mu_phi <- mean(c14_determinations) * scale_val
-    if (is.na(calendar_ages[1])) calendar_ages <- c14_determinations * scale_val
   }
 
-  alpha <- switch(
-    alpha_type,
-    lognorm = exp(stats::rnorm(1, alpha_mu, sd = alpha_sigma)),
-    gamma = 0.0001, # stats::rgamma(1, shape = alpha_shape, rate = alpha_rate),
-    stop("Unknown form for prior on alpha"))
+  alpha <- 0.0001
 
   # ADD COMMENT
   # tau <- rep(1 / (diff(range(c14_determinations)) / 4)^2, n_clust)
@@ -265,13 +224,8 @@ PolyaUrnBivarDirichlet <- function(
         sigcalallyr = interpolated_c14_sig)
     }
 
-    alpha <- switch(
-      alpha_type,
-      lognorm = .UpdateAlphaLognormPrior(
-        cluster_identifiers, alpha, mualpha = alpha_mu, sigalpha = alpha_sigma),
-      gamma = .UpdateAlphaGammaPrior(
-        cluster_identifiers, alpha, prshape = alpha_shape, prrate = alpha_rate),
-      stop("Unknown form for prior on gamma"))
+    alpha <- .UpdateAlphaGammaPrior(
+        cluster_identifiers, alpha, prshape = alpha_shape, prrate = alpha_rate)
 
     if (iter %% n_thin == 0) {
       output_index <- output_index + 1

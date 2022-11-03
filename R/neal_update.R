@@ -59,35 +59,6 @@
 }
 
 
-# This function will update DP process parameter alpha by MH
-# Arguments are:
-# c - vector of the classes of each observation
-# alpha - parameter in Dir(alpha)
-# mualpha - mean of log-normal
-# sigalpha - sd of lognormal
-.UpdateAlphaLognormPrior <- function(
-    c, alpha, mualpha = -3, sigalpha = 1, propsd = 1) {
-  uold <- log(alpha)
-  unew <- stats::rnorm(1, uold, propsd)
-  alphanew <- exp(unew)
-  logprrat <- stats::dnorm(unew, mean = mualpha, sd = sigalpha, log = TRUE) -
-    stats::dnorm(uold, mean = mualpha, sd = sigalpha, log = TRUE)
-  loglikrat <- .AlphaLogLiklihood(c, alphanew) - .AlphaLogLiklihood(c, alpha)
-  HR <- exp(logprrat + loglikrat)
-  if (is.na(HR)) {
-    cat(logprrat, "    ", loglikrat, "\n")
-    cat(alpha, "     ", alphanew, "\n")
-    cat(c, "\n")
-    stop("Not a number")
-  }
-
-  if (stats::runif(1) < HR) {
-    return(alphanew)
-  }
-  return(alpha)
-}
-
-
 # Function as above but using a gamma prior on the value of alpha
 .UpdateAlphaGammaPrior <- function(
     c, alpha, prshape = 0.5, prrate = 1, propsd = 1) {

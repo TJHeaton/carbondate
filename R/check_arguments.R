@@ -45,11 +45,8 @@
     nu2,
     A,
     B,
-    alpha_type,
     alpha_shape,
     alpha_rate,
-    alpha_mu,
-    alpha_sigma,
     calendar_ages,
     n_clust){
 
@@ -65,14 +62,8 @@
   checkmate::assertNumber(lambda, add = arg_check)
   checkmate::assertNumber(nu1, add = arg_check)
   checkmate::assertNumber(nu2, add = arg_check)
-  checkmate::assertChoice(alpha_type, c("gamma", "lognorm"))
-  if (alpha_type == "gamma") {
-    checkmate::assertNumber(alpha_shape, add = arg_check)
-    checkmate::assertNumber(alpha_rate, add = arg_check)
-  } else {
-    checkmate::assertNumber(alpha_sigma, add = arg_check)
-    checkmate::assertNumber(alpha_mu, add = arg_check)
-  }
+  checkmate::assertNumber(alpha_shape, add = arg_check)
+  checkmate::assertNumber(alpha_rate, add = arg_check)
   checkmate::assertDouble(
     n_clust,
     upper = num_observations,

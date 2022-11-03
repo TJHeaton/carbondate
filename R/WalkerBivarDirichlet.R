@@ -137,11 +137,8 @@ WalkerBivarDirichlet <- function(
     nu2,
     A,
     B,
-    "gamma",
     alpha_shape,
     alpha_rate,
-    NA,
-    NA,
     calendar_ages,
     n_clust)
   .check_iteration_parameters(arg_check, n_iter, n_thin)
