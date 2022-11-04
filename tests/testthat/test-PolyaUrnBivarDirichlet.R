@@ -1,4 +1,4 @@
-test_that("PolyaUrnBivarDirichlet gives expected result", {
+test_that("PolyaUrnBivarDirichlet gives expected result - all args", {
   # Here we load input and output data from the functions in the original
   # nonparametric calibration code (that we know is working correctly). We run
   # the function again here and compare results to test that the function is
@@ -22,7 +22,41 @@ test_that("PolyaUrnBivarDirichlet gives expected result", {
     calendar_ages = inittheta,
     slice_width = w,
     slice_multiplier = m,
-    n_clust = nclusinit)
+    n_clust = nclusinit,
+    sensible_initialisation = FALSE,
+    mu_phi = stats::median(inittheta))
+
+  load(test_path("testdata", "NPNeal_output.rda"))
+  expect_equal(calculated_neal_temp$cluster_identifiers, NealTemp$c)
+  expect_equal(calculated_neal_temp$phi, NealTemp$phi)
+  expect_equal(calculated_neal_temp$tau, NealTemp$tau)
+  expect_equal(calculated_neal_temp$calendar_ages, NealTemp$theta)
+  expect_equal(calculated_neal_temp$alpha, NealTemp$alpha)
+  expect_equal(calculated_neal_temp$mu_phi, NealTemp$muphi)
+  n_out = length(calculated_neal_temp$alpha)
+  for (i in 1:n_out) {
+    cluster_identifiers = calculated_neal_temp$cluster_identifiers[i,]
+    expect_equal(
+      calculated_neal_temp$n_clust[i],
+      length(unique(cluster_identifiers)))
+  }
+})
+
+
+test_that("PolyaUrnBivarDirichlet gives expected result - sensible init", {
+  # Here we load input and output data from the functions in the original
+  # nonparametric calibration code (that we know is working correctly). We run
+  # the function again here and compare results to test that the function is
+  # working correctly
+
+  load(test_path("testdata", "NPNeal_input.rda"))
+  set.seed(seednum)
+  calculated_neal_temp = PolyaUrnBivarDirichlet(
+    c14_determinations = x,
+    c14_sigmas = xsig,
+    calibration_curve = intcal20,
+    n_iter=niter,
+    n_thin=nthin)
 
   load(test_path("testdata", "NPNeal_output.rda"))
   expect_equal(calculated_neal_temp$cluster_identifiers, NealTemp$c)

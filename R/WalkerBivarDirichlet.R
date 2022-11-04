@@ -11,43 +11,47 @@
 #' here? Or refer to the paper.\]
 #'
 #' @inheritParams FindSummedProbabilityDistribution
-#' @param lambda,nu1,nu2  Hyperparameters for the prior on the means
-#' \eqn{\phi_j} and precision \eqn{\tau_j} of each individual calendar age
-#' cluster \eqn{j}.
-#' \deqn{(\phi_j, \tau_j)|\mu_{\phi} \sim
-#' \textrm{NormalGamma}(\mu_{\phi}, \lambda, \nu_1, \nu_2)} where
-#' \eqn{\mu_{\phi}} is the overall cluster centering.
-#' @param A,B  Prior on \eqn{\mu_{\phi}} giving the mean and precision of the
-#' overall centering \eqn{\mu_{\phi} \sim N(A, B^{-1})} i.e.
-#' B small is uninformative.
-#' @param alpha_shape,alpha_rate Hyperparameters for the shape and rate on prior
-#' for DP concentration, \eqn{\alpha}, determining the number of clusters we
-#' expect to observe among our n sampled objects.
-#' \eqn{\alpha \sim \Gamma(\eta_1, \eta_2)} where \eqn{\eta_1, \eta_2} are
-#' the `alpha_shape` and `alpha_rate`. A small alpha means more concentrated
-#' (i.e. few clusters) while a large alpha means not concentrated (i.e. many
-#' clusters).
 #' @param n_iter  The number of MCMC iterations (optional). Default is 100.
 #' @param n_thin  How much to thin the output (optional). 1 is no thinning,
 #' a larger number is more thinning. Default is 10. Must choose an integer more
 #' than 1 and not too close to `n_iter`, since after burn-in there are
 #' \eqn{(n_{\textrm{iter}}/n_{\textrm{thin}})/2} samples from posterior to
 #' potentially use.
-#' @param calendar_ages  The initial estimate for the underlying calendar ages
-#' (optional). If supplied it must be a vector with the same length as
-#' `c14_determinations`. Will be overridden if `sensible_initialisation` is
-#' `TRUE`.
-#' @param slice_width  Parameter for slice sampling (optional). Default is 1000.
+#' @param slice_width  Parameter for slice sampling (optional). Default is
+#' either 1000 or half the width of the c14 determinations, whichever is larger.
 #' @param slice_multiplier  Integer parameter for slice sampling (optional).
 #' Default is 10. Limits the slice size to `slice_multiplier * slice_width`.
-#' @param n_clust The initial number of clusters (optional). Default is 10. Must
-#' be less than the length of `c14_determinations`.
-#' @param sensible_initialisation Whether to use sensible start values and
-#' adaptive prior on \eqn{\mu_{\phi}} and  (A, B).
-#' If this is `TRUE` (the default), then `calendar_ages`, `A` and `B` will be
-#' overridden from any values passed in the arguments.
+#' @param n_clust The initial number of clusters (optional). Must
+#' be less than the length of `c14_determinations`. Default is 10 or the length
+#' of `c14_determinations` if it is less than 10.
 #' @param show_progress Whether to show a progress bar in the console during
 #' execution. Default is `TRUE`.
+#' @param sensible_initialisation Whether to use sensible start values and
+#' adaptive prior on \eqn{\mu_{\phi}} and  (A, B).
+#' If this is `TRUE` (the default), then all the remaining arguments below are
+#' ignored.
+#' @param lambda,nu1,nu2  Hyperparameters for the prior on the means
+#' \eqn{\phi_j} and precision \eqn{\tau_j} of each individual calendar age
+#' cluster \eqn{j}.
+#' \deqn{(\phi_j, \tau_j)|\mu_{\phi} \sim
+#' \textrm{NormalGamma}(\mu_{\phi}, \lambda, \nu_1, \nu_2)} where
+#' \eqn{\mu_{\phi}} is the overall cluster centering. Required if
+#' `sensible_initialisation` is `FALSE`.
+#' @param A,B  Prior on \eqn{\mu_{\phi}} giving the mean and precision of the
+#' overall centering \eqn{\mu_{\phi} \sim N(A, B^{-1})} i.e.
+#' B small is uninformative.
+#' @param mu_phi Initial value of the overall cluster centering \eqn{\mu_{\phi}}.
+#' Required if `sensible_initialisation` is `FALSE`.
+#' @param alpha_shape,alpha_rate Hyperparameters for the shape and rate on prior
+#' for DP concentration, \eqn{\alpha}, determining the number of clusters we
+#' expect to observe among our n sampled objects.
+#' \eqn{\alpha \sim \Gamma(\eta_1, \eta_2)} where \eqn{\eta_1, \eta_2} are
+#' the `alpha_shape` and `alpha_rate`. A small alpha means more concentrated
+#' (i.e. few clusters) while a large alpha means not concentrated (i.e. many
+#' clusters).  Required if `sensible_initialisation` is `FALSE`.
+#' @param calendar_ages  The initial estimate for the underlying calendar ages
+#' (optional). If supplied it must be a vector with the same length as
+#' `c14_determinations`.  Required if `sensible_initialisation` is `FALSE`.
 #'
 #' @return A list with 12 items. The first 8 items contain output data, each of
 #' which have one dimension of size \eqn{n_{\textrm{out}} =
@@ -88,37 +92,29 @@
 #' @export
 #'
 #' @examples
-#' # Basic usage making use of sensible initialisation to set most values
-#' WalkerBivarDirichlet(
-#'   c14_determinations = c(602, 805, 1554),
-#'   c14_sigmas = c(35, 34, 45),
-#'   calibration_curve = intcal20,
-#'   lambda = 0.1,
-#'   nu1 = 0.25,
-#'   nu2 = 10,
-#'   alpha_shape = 1,
-#'   alpha_rate = 1)
-#'
-
+#' # Basic usage making use of sensible initialisation to set most values and
+#' # using a saved example data set
+#' WalkerBivarDirichlet(kerr$c14_ages, kerr$c14_sig, intcal20)
 WalkerBivarDirichlet <- function(
     c14_determinations,
     c14_sigmas,
     calibration_curve,
-    lambda,
-    nu1,
-    nu2,
+    n_iter = 100,
+    n_thin = 10,
+    slice_width = max(1000, diff(range(c14_determinations)) / 2),
+    slice_multiplier = 10,
+    show_progress = TRUE,
+    sensible_initialisation = TRUE,
+    lambda = NA,
+    nu1 = NA,
+    nu2 = NA,
     A = NA,
     B = NA,
     alpha_shape = NA,
     alpha_rate = NA,
-    n_iter = 100,
-    n_thin = 10,
+    mu_phi = NA,
     calendar_ages = NA,
-    slice_width = 1000,
-    slice_multiplier = 10,
-    n_clust = min(10, length(c14_determinations)),
-    sensible_initialisation = TRUE,
-    show_progress = TRUE) {
+    n_clust = min(10, length(c14_determinations))) {
 
   ##############################################################################
   # Check input parameters
@@ -139,6 +135,7 @@ WalkerBivarDirichlet <- function(
     B,
     alpha_shape,
     alpha_rate,
+    mu_phi,
     calendar_ages,
     n_clust)
   .check_iteration_parameters(arg_check, n_iter, n_thin)
@@ -148,7 +145,6 @@ WalkerBivarDirichlet <- function(
 
   ##############################################################################
   # Initialise parameters
-
   if (sensible_initialisation) {
     initial_probabilities <- mapply(
       CalibrateSingleDetermination,
@@ -156,18 +152,27 @@ WalkerBivarDirichlet <- function(
       c14_sigmas,
       MoreArgs = list(calibration_curve=calibration_curve))
     indices_of_max_probability = apply(initial_probabilities, 2, which.max)
+
     calendar_ages <- calibration_curve$calendar_age[indices_of_max_probability]
+    maxrange <- max(calendar_ages) - min(calendar_ages)
+
     mu_phi <- stats::median(calendar_ages)
     A <- stats::median(calendar_ages)
-    B <- 1 / (max(calendar_ages) - min(calendar_ages))^2
-  } else {
-    scale_val <- 8267 / 8033
-    mu_phi <- mean(c14_determinations) * scale_val
-    if (is.na(calendar_ages[1])) calendar_ages <- c14_determinations * scale_val
+    B <- 1 / (maxrange)^2
+
+    tempspread <- 0.1 * stats::mad(calendar_ages)
+    tempprec <- 1/(tempspread)^2
+
+    lambda <- (100 / maxrange)^2
+    nu1 <- 0.25
+    nu2 <- nu1 / tempprec
+
+    alpha_shape <- 1
+    alpha_rate <- 1
   }
 
   # do not allow very small values of alpha as this causes crashes
-  alpha <- 2 # rgamma(1, shape = cprshape, rate = cprrate)
+  alpha <- 2
 
   tau <- stats::rgamma(n_clust, shape = nu1, rate = nu2)
   phi <- stats::rnorm(n_clust, mean = mu_phi, sd = 1 / sqrt(lambda * tau))

@@ -1,14 +1,14 @@
-#' Find the summed probability function (SPD) for a set of observations
+#' Find the summed probability distribution (SPD) for a set of observations
 #'
 #' Takes a set of radiocarbon determinations and uncertainties and independently
 #' calibrates each one, and then averages them to give the SPD estimate.
 #'
 #' @inheritParams CalibrateSingleDetermination
-#' @param calendar_age_range An array of length 2 with the start and end
+#' @param calendar_age_range A vector of length 2 with the start and end
 #' calendar age to calculate the SPD over
-#' @param c14_determinations An array of observed radiocarbon determinations
-#' @param c14_sigmas An array of the radiocarbon determinations
-#' uncertainties. Must be the same length as `c14_determinations`.
+#' @param c14_determinations An vector of observed radiocarbon determinations
+#' @param c14_sigmas An vector of the radiocarbon determinations
+#' uncertainties (1-sigma). Must be the same length as `c14_determinations`.
 #'
 #' @return A data frame with one column `calendar_age` containing the calendar
 #' ages, and the other column `probability` containing the probability at that

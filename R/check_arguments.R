@@ -13,6 +13,7 @@
     add = arg_check)
 }
 
+
 .check_input_data <- function(
     arg_check, c14_determinations, c14_sigmas, calibration_curve){
 
@@ -47,28 +48,50 @@
     B,
     alpha_shape,
     alpha_rate,
+    mu_phi,
     calendar_ages,
     n_clust){
 
   if (!sensible_initialisation) {
+    checkmate::assertNumber(lambda, add = arg_check)
+    checkmate::assertNumber(nu1, add = arg_check)
+    checkmate::assertNumber(nu2, add = arg_check)
     checkmate::assertNumber(A, add = arg_check)
     checkmate::assertNumber(B, add = arg_check)
-    checkmate::assertDouble(
+    checkmate::assertNumber(alpha_shape, add = arg_check)
+    checkmate::assertNumber(alpha_rate, add = arg_check)
+    checkmate::assertNumber(mu_phi, add = arg_check)
+    checkmate::assertNumeric(
       calendar_ages,
       len = num_observations,
       any.missing = FALSE,
       add = arg_check)
+  } else {
+    reason = "sensible_initialisation is TRUE"
+    .WarnIfValueOverwritten(lambda, reason)
+    .WarnIfValueOverwritten(nu1, reason)
+    .WarnIfValueOverwritten(nu2, reason)
+    .WarnIfValueOverwritten(A, reason)
+    .WarnIfValueOverwritten(B, reason)
+    .WarnIfValueOverwritten(alpha_shape, reason)
+    .WarnIfValueOverwritten(alpha_rate, reason)
+    .WarnIfValueOverwritten(mu_phi, reason)
+    .WarnIfValueOverwritten(calendar_ages, reason)
   }
-  checkmate::assertNumber(lambda, add = arg_check)
-  checkmate::assertNumber(nu1, add = arg_check)
-  checkmate::assertNumber(nu2, add = arg_check)
-  checkmate::assertNumber(alpha_shape, add = arg_check)
-  checkmate::assertNumber(alpha_rate, add = arg_check)
-  checkmate::assertDouble(
-    n_clust,
-    upper = num_observations,
-    any.missing = FALSE,
-    add = arg_check)
+  checkmate::assertInt(
+    n_clust, upper = num_observations, add = arg_check)
+}
+
+
+.WarnIfValueOverwritten <- function(var, reason = NULL) {
+  varname = deparse(substitute(var))
+  if (!is.na(var)) {
+    warning_msg = paste("Provided value of", varname, "was overwritten")
+    if (!is.null(reason)) {
+      warning_msg = paste(warning_msg, "since", reason)
+    }
+    warning(warning_msg)
+  }
 }
 
 

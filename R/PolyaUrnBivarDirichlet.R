@@ -38,46 +38,45 @@
 #' where \eqn{n_{\textrm{obs}}} is the number of radiocarbon observations i.e.
 #' the length of `c14_determinations`.
 #'
-#' The remaining 4 items contain information that is used for later
-#' post-processing of the output data:
+#' The remaining items give information about input data, input parameters (or
+#' those calculated using `sensible_initialisation`) and update_type
 #'
 #' \describe{
 #'  \item{`update_type`}{A string that always has the value "neal"}
-#'  \item{`lambda`}{The fixed hypeparameter lambda.}
-#'  \item{`nu1`}{The fixed hypeparameter nu1}
-#'  \item{`nu2`}{The fixed hypeparameter nu2}
+#'  \item{`input_data`}{a list containing the C14 data used and the name of
+#'  the calibration curve used.}
+#'  \item{`input_parameters`}{A list containing the values of the fixed
+#'  hyperparameters `lambda`, `nu1`, `nu2`, `A`, `B`, `alpha_shape`,
+#'  `alpha_rate` and `mu_phi`, and the slice parameters `slice_width` and
+#'  `slice_multiplier`.}
 #' }
 #'
 #' @export
 #'
 #' @examples
-#' # Basic usage making use of sensible initialisation to set most values
-#' PolyaUrnBivarDirichlet(
-#'   c14_determinations = c(602, 805, 1554),
-#'   c14_sigmas = c(35, 34, 45),
-#'   calibration_curve = intcal20,
-#'   lambda = 0.1,
-#'   nu1 = 0.25,
-#'   nu2 = 10)
+#' # Basic usage making use of sensible initialisation to set most values and
+#' # using a saved example data set
+#' PolyaUrnBivarDirichlet(kerr$c14_ages, kerr$c14_sig, intcal20)
 PolyaUrnBivarDirichlet <- function(
     c14_determinations,
     c14_sigmas,
     calibration_curve,
-    lambda,
-    nu1,
-    nu2,
-    A=NA,
-    B=NA,
-    alpha_shape = 1,
-    alpha_rate = 1,
     n_iter = 100,
     n_thin = 10,
-    calendar_ages = NA,
-    slice_width = 200,
-    slice_multiplier = 50,
+    slice_width = max(1000, diff(range(c14_determinations)) / 2),
+    slice_multiplier = 10,
     n_clust = min(10, length(c14_determinations)),
+    show_progress = TRUE,
     sensible_initialisation = TRUE,
-    show_progress = TRUE) {
+    lambda = NA,
+    nu1 = NA,
+    nu2 = NA,
+    A = NA,
+    B = NA,
+    alpha_shape = NA,
+    alpha_rate = NA,
+    mu_phi = NA,
+    calendar_ages = NA) {
 
   ##############################################################################
   # Check input parameters
@@ -98,6 +97,7 @@ PolyaUrnBivarDirichlet <- function(
     B,
     alpha_shape,
     alpha_rate,
+    mu_phi,
     calendar_ages,
     n_clust)
   .check_iteration_parameters(arg_check, n_iter, n_thin)
@@ -105,11 +105,8 @@ PolyaUrnBivarDirichlet <- function(
 
   checkmate::reportAssertions(arg_check)
 
-
   ##############################################################################
   # Initialise parameters
-
-
   all_clusters_represented <- FALSE
   while (!all_clusters_represented) {
     cluster_identifiers <- sample(1:n_clust, num_observations, replace = TRUE)
@@ -123,15 +120,23 @@ PolyaUrnBivarDirichlet <- function(
       c14_sigmas,
       MoreArgs = list(calibration_curve=calibration_curve))
     indices_of_max_probability = apply(initial_probabilities, 2, which.max)
+
     calendar_ages <- calibration_curve$calendar_age[indices_of_max_probability]
+    maxrange <- max(calendar_ages) - min(calendar_ages)
 
     mu_phi <- stats::median(calendar_ages)
     A <- stats::median(calendar_ages)
-    B <- 1 / (max(calendar_ages) - min(calendar_ages))^2
-  } else {
-    # GET RID OFF: ELSE MUST SPECIFY
-    scale_val <- 8267 / 8033
-    mu_phi <- mean(c14_determinations) * scale_val
+    B <- 1 / (maxrange)^2
+
+    tempspread <- 0.1 * mad(calendar_ages)
+    tempprec <- 1/(tempspread)^2
+
+    lambda <- (100 / maxrange)^2
+    nu1 <- 0.25
+    nu2 <- nu1 / tempprec
+
+    alpha_shape <- 1
+    alpha_rate <- 1
   }
 
   alpha <- 0.0001

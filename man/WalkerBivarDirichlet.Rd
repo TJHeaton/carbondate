@@ -9,39 +9,63 @@ WalkerBivarDirichlet(
   c14_determinations,
   c14_sigmas,
   calibration_curve,
-  lambda,
-  nu1,
-  nu2,
+  n_iter = 100,
+  n_thin = 10,
+  slice_width = max(1000, diff(range(c14_determinations))/2),
+  slice_multiplier = 10,
+  show_progress = TRUE,
+  sensible_initialisation = TRUE,
+  lambda = NA,
+  nu1 = NA,
+  nu2 = NA,
   A = NA,
   B = NA,
   alpha_shape = NA,
   alpha_rate = NA,
-  n_iter = 100,
-  n_thin = 10,
+  mu_phi = NA,
   calendar_ages = NA,
-  slice_width = 1000,
-  slice_multiplier = 10,
-  n_clust = min(10, length(c14_determinations)),
-  sensible_initialisation = TRUE,
-  show_progress = TRUE
+  n_clust = min(10, length(c14_determinations))
 )
 }
 \arguments{
-\item{c14_determinations}{An array of observed radiocarbon determinations}
+\item{c14_determinations}{An vector of observed radiocarbon determinations}
 
-\item{c14_sigmas}{An array of the radiocarbon determinations
-uncertainties. Must be the same length as \code{c14_determinations}.}
+\item{c14_sigmas}{An vector of the radiocarbon determinations
+uncertainties (1-sigma). Must be the same length as \code{c14_determinations}.}
 
 \item{calibration_curve}{A dataframe which should contain at least 3 columns
 entitled calendar_age, c14_age and c14_sig.
 This format matches \link{intcal20}.}
+
+\item{n_iter}{The number of MCMC iterations (optional). Default is 100.}
+
+\item{n_thin}{How much to thin the output (optional). 1 is no thinning,
+a larger number is more thinning. Default is 10. Must choose an integer more
+than 1 and not too close to \code{n_iter}, since after burn-in there are
+\eqn{(n_{\textrm{iter}}/n_{\textrm{thin}})/2} samples from posterior to
+potentially use.}
+
+\item{slice_width}{Parameter for slice sampling (optional). Default is
+either 1000 or half the width of the c14 determinations, whichever is larger.}
+
+\item{slice_multiplier}{Integer parameter for slice sampling (optional).
+Default is 10. Limits the slice size to \code{slice_multiplier * slice_width}.}
+
+\item{show_progress}{Whether to show a progress bar in the console during
+execution. Default is \code{TRUE}.}
+
+\item{sensible_initialisation}{Whether to use sensible start values and
+adaptive prior on \eqn{\mu_{\phi}} and  (A, B).
+If this is \code{TRUE} (the default), then all the remaining arguments below are
+ignored.}
 
 \item{lambda, nu1, nu2}{Hyperparameters for the prior on the means
 \eqn{\phi_j} and precision \eqn{\tau_j} of each individual calendar age
 cluster \eqn{j}.
 \deqn{(\phi_j, \tau_j)|\mu_{\phi} \sim
 \textrm{NormalGamma}(\mu_{\phi}, \lambda, \nu_1, \nu_2)} where
-\eqn{\mu_{\phi}} is the overall cluster centering.}
+\eqn{\mu_{\phi}} is the overall cluster centering. Required if
+\code{sensible_initialisation} is \code{FALSE}.}
 
 \item{A, B}{Prior on \eqn{\mu_{\phi}} giving the mean and precision of the
 overall centering \eqn{\mu_{\phi} \sim N(A, B^{-1})} i.e.
@@ -53,36 +77,18 @@ expect to observe among our n sampled objects.
 \eqn{\alpha \sim \Gamma(\eta_1, \eta_2)} where \eqn{\eta_1, \eta_2} are
 the \code{alpha_shape} and \code{alpha_rate}. A small alpha means more concentrated
 (i.e. few clusters) while a large alpha means not concentrated (i.e. many
-clusters).}
+clusters).  Required if \code{sensible_initialisation} is \code{FALSE}.}
 
-\item{n_iter}{The number of MCMC iterations (optional). Default is 100.}
-
-\item{n_thin}{How much to thin the output (optional). 1 is no thinning,
-a larger number is more thinning. Default is 10. Must choose an integer more
-than 1 and not too close to \code{n_iter}, since after burn-in there are
-\eqn{(n_{\textrm{iter}}/n_{\textrm{thin}})/2} samples from posterior to
-potentially use.}
+\item{mu_phi}{Initial value of the overall cluster centering \eqn{\mu_{\phi}}.
+Required if \code{sensible_initialisation} is \code{FALSE}.}
 
 \item{calendar_ages}{The initial estimate for the underlying calendar ages
 (optional). If supplied it must be a vector with the same length as
-\code{c14_determinations}. Will be overridden if \code{sensible_initialisation} is
-\code{TRUE}.}
+\code{c14_determinations}.  Required if \code{sensible_initialisation} is \code{FALSE}.}
 
-\item{slice_width}{Parameter for slice sampling (optional). Default is 1000.}
-
-\item{slice_multiplier}{Integer parameter for slice sampling (optional).
-Default is 10. Limits the slice size to \code{slice_multiplier * slice_width}.}
-
-\item{n_clust}{The initial number of clusters (optional). Default is 10. Must
-be less than the length of \code{c14_determinations}.}
-
-\item{sensible_initialisation}{Whether to use sensible start values and
-adaptive prior on \eqn{\mu_{\phi}} and  (A, B).
-If this is \code{TRUE} (the default), then \code{calendar_ages}, \code{A} and \code{B} will be
-overridden from any values passed in the arguments.}
-
-\item{show_progress}{Whether to show a progress bar in the console during
-execution. Default is \code{TRUE}.}
+\item{n_clust}{The initial number of clusters (optional). Must
+be less than the length of \code{c14_determinations}. Default is 10 or the length
+of \code{c14_determinations} if it is less than 10.}
 }
 \value{
 A list with 12 items. The first 8 items contain output data, each of
@@ -134,15 +140,7 @@ In this method slice sampling is used to update the DPMM.
 here? Or refer to the paper.]
 }
 \examples{
-# Basic usage making use of sensible initialisation to set most values
-WalkerBivarDirichlet(
-  c14_determinations = c(602, 805, 1554),
-  c14_sigmas = c(35, 34, 45),
-  calibration_curve = intcal20,
-  lambda = 0.1,
-  nu1 = 0.25,
-  nu2 = 10,
-  alpha_shape = 1,
-  alpha_rate = 1)
-
+# Basic usage making use of sensible initialisation to set most values and
+# using a saved example data set
+WalkerBivarDirichlet(kerr$c14_ages, kerr$c14_sig, intcal20)
 }

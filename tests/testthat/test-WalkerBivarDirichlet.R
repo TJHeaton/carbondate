@@ -1,4 +1,4 @@
-test_that("WalkerBivarDirichlet gives expected result", {
+test_that("WalkerBivarDirichlet gives expected result - all args", {
   # Here we load input and output data from the functions in the original
   # nonparametric calibration code (that we know is working correctly). We run
   # the function again here and compare results to test that the function is
@@ -22,7 +22,9 @@ test_that("WalkerBivarDirichlet gives expected result", {
     calendar_ages=inittheta,
     slice_width=slicew,
     slice_multiplier=m,
-    n_clust=kstar)
+    n_clust=kstar,
+    sensible_initialisation = FALSE,
+    mu_phi = stats::median(inittheta))
 
   load(test_path("testdata", "NPWalker_output.rda"))
   expect_equal(calculated_walker_temp$cluster_identifiers, WalkerTemp$delta)
@@ -35,4 +37,32 @@ test_that("WalkerBivarDirichlet gives expected result", {
   expect_equal(calculated_walker_temp$mu_phi, WalkerTemp$muphi)
 
 })
+
+test_that("WalkerBivarDirichlet gives expected result - sensible init", {
+  # Here we load input and output data from the functions in the original
+  # nonparametric calibration code (that we know is working correctly). We run
+  # the function again here and compare results to test that the function is
+  # working correctly
+
+  load(test_path("testdata", "NPWalker_input.rda"))
+  set.seed(seednum)
+  calculated_walker_temp = WalkerBivarDirichlet(
+    c14_determinations=x,
+    c14_sigmas=xsig,
+    calibration_curve=intcal20,
+    n_iter=niter,
+    n_thin=nthin)
+
+  load(test_path("testdata", "NPWalker_output.rda"))
+  expect_equal(calculated_walker_temp$cluster_identifiers, WalkerTemp$delta)
+  expect_equal(calculated_walker_temp$alpha, WalkerTemp$c)
+  expect_equal(calculated_walker_temp$n_clust, WalkerTemp$nclust)
+  expect_equal(calculated_walker_temp$phi, WalkerTemp$phi)
+  expect_equal(calculated_walker_temp$tau, WalkerTemp$tau)
+  expect_equal(calculated_walker_temp$calendar_ages, WalkerTemp$theta)
+  expect_equal(calculated_walker_temp$weight, WalkerTemp$w)
+  expect_equal(calculated_walker_temp$mu_phi, WalkerTemp$muphi)
+
+})
+
 

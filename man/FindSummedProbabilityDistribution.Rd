@@ -2,7 +2,7 @@
 % Please edit documentation in R/FindSummedProbabilityDistribution.R
 \name{FindSummedProbabilityDistribution}
 \alias{FindSummedProbabilityDistribution}
-\title{Find the summed probability function (SPD) for a set of observations}
+\title{Find the summed probability distribution (SPD) for a set of observations}
 \usage{
 FindSummedProbabilityDistribution(
   calendar_age_range,
@@ -12,13 +12,13 @@ FindSummedProbabilityDistribution(
 )
 }
 \arguments{
-\item{calendar_age_range}{An array of length 2 with the start and end
+\item{calendar_age_range}{A vector of length 2 with the start and end
 calendar age to calculate the SPD over}
 
-\item{c14_determinations}{An array of observed radiocarbon determinations}
+\item{c14_determinations}{An vector of observed radiocarbon determinations}
 
-\item{c14_sigmas}{An array of the radiocarbon determinations
-uncertainties. Must be the same length as \code{c14_determinations}.}
+\item{c14_sigmas}{An vector of the radiocarbon determinations
+uncertainties (1-sigma). Must be the same length as \code{c14_determinations}.}
 
 \item{calibration_curve}{A dataframe which should contain at least 3 columns
 entitled calendar_age, c14_age and c14_sig.

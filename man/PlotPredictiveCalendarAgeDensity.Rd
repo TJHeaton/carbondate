@@ -19,10 +19,10 @@ PlotPredictiveCalendarAgeDensity(
 )
 }
 \arguments{
-\item{c14_determinations}{An array of observed radiocarbon determinations}
+\item{c14_determinations}{An vector of observed radiocarbon determinations}
 
-\item{c14_sigmas}{An array of the radiocarbon determinations
-uncertainties. Must be the same length as \code{c14_determinations}.}
+\item{c14_sigmas}{An vector of the radiocarbon determinations
+uncertainties (1-sigma). Must be the same length as \code{c14_determinations}.}
 
 \item{calibration_curve}{A dataframe which should contain at least 3 columns
 entitled calendar_age, c14_age and c14_sig.
