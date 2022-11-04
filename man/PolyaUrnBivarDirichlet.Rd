@@ -91,7 +91,7 @@ Required if \code{sensible_initialisation} is \code{FALSE}.}
 \code{c14_determinations}.  Required if \code{sensible_initialisation} is \code{FALSE}.}
 }
 \value{
-A list with 11 items. The first 7 items contain output data, each of
+A list with 10 items. The first 7 items contain output data, each of
 which have one dimension of size \eqn{n_{\textrm{out}} =
 \textrm{floor}( n_{\textrm{iter}}/n_{\textrm{thin}}) + 1}, each row storing
 the result from every \eqn{n_{\textrm{thin}}}th iteration:
@@ -120,7 +120,7 @@ The remaining items give information about input data, input parameters (or
 those calculated using \code{sensible_initialisation}) and update_type
 
 \describe{
-\item{\code{update_type}}{A string that always has the value "neal"}
+\item{\code{update_type}}{A string that always has the value "Polya Urn"}
 \item{\code{input_data}}{a list containing the C14 data used and the name of
 the calibration curve used.}
 \item{\code{input_parameters}}{A list containing the values of the fixed

@@ -5,11 +5,9 @@
 \title{Plots the calendar age density of all objects from the output data}
 \usage{
 PlotPredictiveCalendarAgeDensity(
-  c14_determinations,
-  c14_sigmas,
-  calibration_curve,
   output_data,
   n_posterior_samples,
+  calibration_curve = NULL,
   show_SPD = TRUE,
   show_confidence_intervals = TRUE,
   true_density = NULL,
@@ -19,15 +17,6 @@ PlotPredictiveCalendarAgeDensity(
 )
 }
 \arguments{
-\item{c14_determinations}{An vector of observed radiocarbon determinations}
-
-\item{c14_sigmas}{An vector of the radiocarbon determinations
-uncertainties (1-sigma). Must be the same length as \code{c14_determinations}.}
-
-\item{calibration_curve}{A dataframe which should contain at least 3 columns
-entitled calendar_age, c14_age and c14_sig.
-This format matches \link{intcal20}.}
-
 \item{output_data}{The return value from one of the updating functions e.g.
 \link{WalkerBivarDirichlet} or
 \link{PolyaUrnBivarDirichlet} or a list, each item containing
@@ -36,6 +25,13 @@ named \code{label} which is used to set the label on the plot legend.}
 
 \item{n_posterior_samples}{Current number of samples it will draw from this
 posterior to estimate the calendar age density (possibly repeats).}
+
+\item{calibration_curve}{The name of the calibration curve variable is saved
+in the output data. However if the variable with this name is no longer in
+your environment then you should pass the calibration curve here. If
+provided this should be a dataframe which should contain at least 3 columns
+entitled calendar_age, c14_age and c14_sig.
+This format matches \link{intcal20}.}
 
 \item{show_SPD}{Whether to calculate and show the summed probability function
 on the plot (optional). Default is \code{TRUE}.}
@@ -68,20 +64,10 @@ SPD estimate
 }
 \examples{
 # Plot results for a single calibration
-PlotPredictiveCalendarAgeDensity(
-  c14_determinations = kerr$c14_ages,
-  c14_sigmas = kerr$c14_sig,
-  calibration_curve = intcal20,
-  output_data = walker_example_output,
-  n_posterior_samples = 500)
+PlotPredictiveCalendarAgeDensity(walker_example_output, 500)
 
 # Plot results from a calibration, and add a label
 new_output = walker_example_output
 new_output$label = "My plot"
-PlotPredictiveCalendarAgeDensity(
-  c14_determinations = kerr$c14_ages,
-  c14_sigmas = kerr$c14_sig,
-  calibration_curve = intcal20,
-  output_data = walker_example_output,
-  n_posterior_samples = 500)
+PlotPredictiveCalendarAgeDensity(walker_example_output, 500)
 }

@@ -6,10 +6,8 @@
 \usage{
 PlotCalendarAgeDensityIndividualSample(
   ident,
-  c14_determinations,
-  c14_sigmas,
-  calibration_curve,
   output_data,
+  calibration_curve = NULL,
   n_breaks = NA
 )
 }
@@ -17,20 +15,18 @@ PlotCalendarAgeDensityIndividualSample(
 \item{ident}{the determination you want to show the individual posterior
 calendar age for.}
 
-\item{c14_determinations}{An vector of observed radiocarbon determinations}
-
-\item{c14_sigmas}{An vector of the radiocarbon determinations
-uncertainties (1-sigma). Must be the same length as \code{c14_determinations}.}
-
-\item{calibration_curve}{A dataframe which should contain at least 3 columns
-entitled calendar_age, c14_age and c14_sig.
-This format matches \link{intcal20}.}
-
 \item{output_data}{The return value from one of the updating functions e.g.
 \link{WalkerBivarDirichlet} or
 \link{PolyaUrnBivarDirichlet} or a list, each item containing
 one of these values. Optionally, the output data can have an extra list item
 named \code{label} which is used to set the label on the plot legend.}
+
+\item{calibration_curve}{The name of the calibration curve variable is saved
+in the output data. However if the variable with this name is no longer in
+your environment then you should pass the calibration curve here. If
+provided this should be a dataframe which should contain at least 3 columns
+entitled calendar_age, c14_age and c14_sig.
+This format matches \link{intcal20}.}
 
 \item{n_breaks}{The number of breaks in the histogram (optional). If not
 given then it is set to the max of 100 and 1/tenth of post burn-in chain.}
@@ -45,11 +41,5 @@ plotted using this function.
 }
 \examples{
 # Plot results for the 10th determinations
-PlotCalendarAgeDensityIndividualSample(
-  ident = 10,
-  c14_determinations = kerr$c14_ages,
-  c14_sigmas = kerr$c14_sig,
-  calibration_curve = intcal20,
-  output_data = walker_example_output)
-
+PlotCalendarAgeDensityIndividualSample(10, walker_example_output)
 }

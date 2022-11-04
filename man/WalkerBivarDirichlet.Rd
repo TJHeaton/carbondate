@@ -91,7 +91,7 @@ be less than the length of \code{c14_determinations}. Default is 10 or the lengt
 of \code{c14_determinations} if it is less than 10.}
 }
 \value{
-A list with 12 items. The first 8 items contain output data, each of
+A list with 11 items. The first 8 items contain output data, each of
 which have one dimension of size \eqn{n_{\textrm{out}} =
 \textrm{floor}( n_{\textrm{iter}}/n_{\textrm{thin}}) + 1}, each row storing
 the result from every \eqn{n_{\textrm{thin}}}th iteration:
@@ -118,14 +118,17 @@ centering \eqn{\mu_{\phi}} of the clusters.}
 where \eqn{n_{\textrm{obs}}} is the number of radiocarbon observations i.e.
 the length of \code{c14_determinations}.
 
-The remaining 4 items contain information that is used for later
-post-processing of the output data:
+The remaining items give information about input data, input parameters (or
+those calculated using \code{sensible_initialisation}) and update_type
 
 \describe{
-\item{\code{update_type}}{A string that always has the value "neal"}
-\item{\code{lambda}}{The fixed hypeparameter lambda.}
-\item{\code{nu1}}{The fixed hypeparameter nu1}
-\item{\code{nu2}}{The fixed hypeparameter nu2}
+\item{\code{update_type}}{A string that always has the value "Walker"}
+\item{\code{input_data}}{a list containing the C14 data used and the name of
+the calibration curve used.}
+\item{\code{input_parameters}}{A list containing the values of the fixed
+hyperparameters \code{lambda}, \code{nu1}, \code{nu2}, \code{A}, \code{B}, \code{alpha_shape},
+\code{alpha_rate} and \code{mu_phi}, and the slice parameters \code{slice_width} and
+\code{slice_multiplier}.}
 }
 }
 \description{

@@ -160,7 +160,12 @@
     return()
   }
   for (i in 2:length(output_data_list)) {
-    if (output_data_list[[1]]$input_data != output_data_list[[i]]$input_data) {
+    first = output_data_list[[1]]$input_data
+    other = output_data_list[[i]]$input_data
+    if (
+      !identical(first$c14_determinations, other$c14_determinations)
+      || !identical(first$sigma, other$sigma)
+      || first$calibration_curve_name != other$calibration_curve_name) {
       cli::cli_abort(
         c(
           "Output data is not consistent.",
