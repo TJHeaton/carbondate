@@ -53,7 +53,7 @@
 #' (optional). If supplied it must be a vector with the same length as
 #' `c14_determinations`.  Required if `sensible_initialisation` is `FALSE`.
 #'
-#' @return A list with 12 items. The first 8 items contain output data, each of
+#' @return A list with 11 items. The first 8 items contain output data, each of
 #' which have one dimension of size \eqn{n_{\textrm{out}} =
 #' \textrm{floor}( n_{\textrm{iter}}/n_{\textrm{thin}}) + 1}, each row storing
 #' the result from every \eqn{n_{\textrm{thin}}}th iteration:
@@ -80,15 +80,19 @@
 #' where \eqn{n_{\textrm{obs}}} is the number of radiocarbon observations i.e.
 #' the length of `c14_determinations`.
 #'
-#' The remaining 4 items contain information that is used for later
-#' post-processing of the output data:
+#' The remaining items give information about input data, input parameters (or
+#' those calculated using `sensible_initialisation`) and update_type
 #'
 #' \describe{
-#'  \item{`update_type`}{A string that always has the value "neal"}
-#'  \item{`lambda`}{The fixed hypeparameter lambda.}
-#'  \item{`nu1`}{The fixed hypeparameter nu1}
-#'  \item{`nu2`}{The fixed hypeparameter nu2}
+#'  \item{`update_type`}{A string that always has the value "Walker"}
+#'  \item{`input_data`}{a list containing the C14 data used and the name of
+#'  the calibration curve used.}
+#'  \item{`input_parameters`}{A list containing the values of the fixed
+#'  hyperparameters `lambda`, `nu1`, `nu2`, `A`, `B`, `alpha_shape`,
+#'  `alpha_rate` and `mu_phi`, and the slice parameters `slice_width` and
+#'  `slice_multiplier`.}
 #' }
+#'
 #' @export
 #'
 #' @examples
@@ -180,6 +184,24 @@ WalkerBivarDirichlet <- function(
   v <- stats::rbeta(n_clust, 1, alpha)
   weight <- v * c(1, cumprod(1 - v)[-n_clust])
   cluster_identifiers <- sample(1:n_clust, num_observations, replace = TRUE)
+
+  ##############################################################################
+  # Save input data and parameters
+  input_data = list(
+    c14_determinations = c14_determinations,
+    c14_sigmas = c14_sigmas,
+    calibration_curve_name = deparse(substitute(calibration_curve)))
+  input_parameters = list(
+    lambda = lambda,
+    nu1 = nu1,
+    nu2 = nu2,
+    A = A,
+    B = B,
+    alpha_shape = alpha_shape,
+    alpha_rate = alpha_rate,
+    mu_phi = mu_phi,
+    slice_width = slice_width,
+    slice_multiplier = slice_multiplier)
 
   ##############################################################################
   # Create storage for output
@@ -282,10 +304,9 @@ WalkerBivarDirichlet <- function(
     weight = w_out,
     calendar_ages = theta_out,
     mu_phi = mu_phi_out,
-    update_type="walker",
-    lambda = lambda,
-    nu1 = nu1,
-    nu2 = nu2)
+    update_type="Walker",
+    input_data = input_data,
+    input_parameters = input_parameters)
   if (show_progress) close(progress_bar)
   return(return_list)
 }

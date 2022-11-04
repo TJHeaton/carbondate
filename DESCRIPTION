@@ -25,6 +25,7 @@ Depends:
 LazyData: true
 Imports: 
     checkmate,
+    cli,
     graphics,
     grDevices,
     stats,

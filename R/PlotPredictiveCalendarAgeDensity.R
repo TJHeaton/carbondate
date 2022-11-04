@@ -4,7 +4,6 @@
 #' output predicted density on the same plot. Can also optionally show the
 #' SPD estimate
 #'
-#' @inheritParams FindSummedProbabilityDistribution
 #' @param output_data The return value from one of the updating functions e.g.
 #' [carbondate::WalkerBivarDirichlet] or
 #' [carbondate::PolyaUrnBivarDirichlet] or a list, each item containing
@@ -12,6 +11,12 @@
 #' named `label` which is used to set the label on the plot legend.
 #' @param n_posterior_samples Current number of samples it will draw from this
 #' posterior to estimate the calendar age density (possibly repeats).
+#' @param calibration_curve The name of the calibration curve variable is saved
+#' in the output data. However if the variable with this name is no longer in
+#' your environment then you should pass the calibration curve here. If
+#' provided this should be a dataframe which should contain at least 3 columns
+#' entitled calendar_age, c14_age and c14_sig.
+#' This format matches [carbondate::intcal20].
 #' @param show_SPD Whether to calculate and show the summed probability function
 #' on the plot (optional). Default is `TRUE`.
 #' @param show_confidence_intervals Whether to show the 95% confidence intervals
@@ -35,28 +40,16 @@
 #'
 #' @examples
 #' # Plot results for a single calibration
-#' PlotPredictiveCalendarAgeDensity(
-#'   c14_determinations = kerr$c14_ages,
-#'   c14_sigmas = kerr$c14_sig,
-#'   calibration_curve = intcal20,
-#'   output_data = walker_example_output,
-#'   n_posterior_samples = 500)
+#' PlotPredictiveCalendarAgeDensity(walker_example_output, 500)
 #'
 #' # Plot results from a calibration, and add a label
 #' new_output = walker_example_output
 #' new_output$label = "My plot"
-#' PlotPredictiveCalendarAgeDensity(
-#'   c14_determinations = kerr$c14_ages,
-#'   c14_sigmas = kerr$c14_sig,
-#'   calibration_curve = intcal20,
-#'   output_data = walker_example_output,
-#'   n_posterior_samples = 500)
+#' PlotPredictiveCalendarAgeDensity(walker_example_output, 500)
 PlotPredictiveCalendarAgeDensity <- function(
-    c14_determinations,
-    c14_sigmas,
-    calibration_curve,
     output_data,
     n_posterior_samples,
+    calibration_curve = NULL,
     show_SPD = TRUE,
     show_confidence_intervals = TRUE,
     true_density = NULL,
@@ -68,18 +61,18 @@ PlotPredictiveCalendarAgeDensity <- function(
   # Check input parameters
 
   arg_check <- checkmate::makeAssertCollection()
-  .check_input_data(
-    arg_check, c14_determinations, c14_sigmas, calibration_curve)
 
   # Treat single output data as a list of length 1
   if (!is.null(output_data$update_type)) output_data = list(output_data)
 
+  .CheckMultipleOutputDataConsistent(output_data)
   num_data = length(output_data)
   for (i in 1:num_data) {
     .check_output_data(arg_check, output_data[[i]])
+    .CheckCalibrationCurveFromOutput(
+      arg_check, output_data[[i]], calibration_curve)
     if (is.null(output_data[[i]]$label)) {
-      output_data[[i]]$label <- stringr::str_to_title(
-        output_data[[i]]$update_type)
+      output_data[[i]]$label <- output_data[[i]]$update_type
     }
   }
   checkmate::assertInt(n_posterior_samples, lower = 10, add = arg_check)
@@ -89,6 +82,12 @@ PlotPredictiveCalendarAgeDensity <- function(
   checkmate::assertDataFrame(
     true_density, types = "numeric", null.ok = TRUE, add = arg_check)
   checkmate::reportAssertions(arg_check)
+
+  if (is.null(calibration_curve)) {
+    calibration_curve = get(output_data[[1]]$input_data$calibration_curve_name)
+  }
+  c14_determinations = output_data[[1]]$input_data$c14_determinations
+  c14_sigmas = output_data[[1]]$input_data$c14_sigmas
 
   ##############################################################################
   # Initialise plotting parameters

@@ -34,16 +34,16 @@
     matrix(posterior_sample_ids, 1, n_posterior_samples),
     2,
     function(i, output_data, x) {
-      if (output_data$update_type == "walker") {
+      if (output_data$update_type == "Walker") {
         .FindPredictedDensityWalker(
           x,
           weight = output_data$weight[[i]],
           phi = output_data$phi[[i]],
           tau = output_data$tau[[i]],
           mu_phi = output_data$mu_phi[i],
-          lambda = output_data$lambda,
-          nu1 = output_data$nu1,
-          nu2 = output_data$nu2)
+          lambda = output_data$input_parameters$lambda,
+          nu1 = output_data$input_parameters$nu1,
+          nu2 = output_data$input_parameters$nu2)
       } else {
         .FindPredictedDensityNeal(
           x,
@@ -52,9 +52,9 @@
           tau = output_data$tau[[i]],
           alpha = output_data$alpha[i],
           mu_phi = output_data$mu_phi[i],
-          lambda = output_data$lambda,
-          nu1 = output_data$nu1,
-          nu2 = output_data$nu2)
+          lambda = output_data$input_parameters$lambda,
+          nu1 = output_data$input_parameters$nu1,
+          nu2 = output_data$input_parameters$nu2)
       }
     },
     output_data = output_data, x = calendar_age_sequence)

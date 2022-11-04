@@ -110,7 +110,7 @@
 
 .check_output_data <- function(arg_check, output_data) {
   checkmate::assertList(
-    output_data, names = "named", min.len = 11, add=arg_check)
+    output_data, names = "named", min.len = 10, add=arg_check)
   checkmate::assertSubset(
     c(
       "cluster_identifiers",
@@ -121,16 +121,53 @@
       "calendar_ages",
       "mu_phi",
       "update_type",
-      "lambda",
-      "nu1",
-      "nu2"),
+      "input_data",
+      "input_parameters"),
     names(output_data),
     .var.name ="output_data required list item names")
-  checkmate::assertChoice(output_data$update_type, c("neal", "walker"))
+  checkmate::assertChoice(output_data$update_type, c("Polya Urn", "Walker"))
   if (output_data$update_type == "walker") {
     checkmate::assertChoice(
       "weight",
       names(output_data),
       .var.name ="output_data required list item names")
+  }
+}
+
+
+.CheckCalibrationCurveFromOutput <- function(
+    arg_check, output_data, calibration_curve) {
+  calibration_curve_name = output_data$input_data$calibration_curve_name
+  if (!exists(calibration_curve_name) && is.null(calibration_curve)){
+    checkmate::reportAssertions(arg_check)
+    cli::cli_abort(
+      c(
+        paste("Calibration curve", calibration_curve_name, "does not exist\n"),
+        "Either ensure a variable with this name exists, or pass the variable
+        in the arguments"
+      )
+    )
+  }
+  if (!is.null(calibration_curve)) {
+    .check_calibration_curve(arg_check, calibration_curve)
+  }
+
+}
+
+
+.CheckMultipleOutputDataConsistent <- function(output_data_list) {
+  if (length(output_data_list) == 1) {
+    return()
+  }
+  for (i in 2:length(output_data_list)) {
+    if (output_data_list[[1]]$input_data != output_data_list[[i]]$input_data) {
+      cli::cli_abort(
+        c(
+          "Output data is not consistent.",
+          "Ensure all output data given in the list comes from the same
+          calibration curve and c14 values."
+        )
+      )
+    }
   }
 }

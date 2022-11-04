@@ -13,7 +13,7 @@
 #'
 #' @inheritParams WalkerBivarDirichlet
 #'
-#' @return A list with 11 items. The first 7 items contain output data, each of
+#' @return A list with 10 items. The first 7 items contain output data, each of
 #' which have one dimension of size \eqn{n_{\textrm{out}} =
 #' \textrm{floor}( n_{\textrm{iter}}/n_{\textrm{thin}}) + 1}, each row storing
 #' the result from every \eqn{n_{\textrm{thin}}}th iteration:
@@ -42,7 +42,7 @@
 #' those calculated using `sensible_initialisation`) and update_type
 #'
 #' \describe{
-#'  \item{`update_type`}{A string that always has the value "neal"}
+#'  \item{`update_type`}{A string that always has the value "Polya Urn"}
 #'  \item{`input_data`}{a list containing the C14 data used and the name of
 #'  the calibration curve used.}
 #'  \item{`input_parameters`}{A list containing the values of the fixed
@@ -128,7 +128,7 @@ PolyaUrnBivarDirichlet <- function(
     A <- stats::median(calendar_ages)
     B <- 1 / (maxrange)^2
 
-    tempspread <- 0.1 * mad(calendar_ages)
+    tempspread <- 0.1 * stats::mad(calendar_ages)
     tempprec <- 1/(tempspread)^2
 
     lambda <- (100 / maxrange)^2
@@ -146,6 +146,24 @@ PolyaUrnBivarDirichlet <- function(
   tau <- rep(n_clust, 1 / (diff(range(c14_determinations)) / 4)^2)
   phi <- stats::rnorm(
     n_clust, mean = mu_phi, sd = diff(range(c14_determinations)) / 2)
+
+  ##############################################################################
+  # Save input data and parameters
+  input_data = list(
+    c14_determinations = c14_determinations,
+    c14_sigmas = c14_sigmas,
+    calibration_curve_name = deparse(substitute(calibration_curve)))
+  input_parameters = list(
+    lambda = lambda,
+    nu1 = nu1,
+    nu2 = nu2,
+    A = A,
+    B = B,
+    alpha_shape = alpha_shape,
+    alpha_rate = alpha_rate,
+    mu_phi = mu_phi,
+    slice_width = slice_width,
+    slice_multiplier = slice_multiplier)
 
   ##############################################################################
   # Create storage for output
@@ -251,10 +269,9 @@ PolyaUrnBivarDirichlet <- function(
     alpha = alpha_out,
     mu_phi = mu_phi_out,
     n_clust = n_clust_out,
-    update_type="neal",
-    lambda = lambda,
-    nu1 = nu1,
-    nu2 = nu2)
+    update_type="Polya Urn",
+    input_data = input_data,
+    input_parameters = input_parameters)
 
   if (show_progress) close(progress_bar)
   return(return_list)
