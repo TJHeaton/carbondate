@@ -126,9 +126,9 @@ WalkerBivarDirichlet <- function(
 
   arg_check <- checkmate::makeAssertCollection()
 
-  .check_input_data(
+  .CheckInputData(
     arg_check, c14_determinations, c14_sigmas, calibration_curve)
-  .check_dpmm_parameters(
+  .CheckDpmmParameters(
     arg_check,
     sensible_initialisation,
     num_observations,
@@ -142,8 +142,8 @@ WalkerBivarDirichlet <- function(
     mu_phi,
     calendar_ages,
     n_clust)
-  .check_iteration_parameters(arg_check, n_iter, n_thin)
-  .check_slice_parameters(arg_check, slice_width, slice_multiplier)
+  .CheckIterationParameters(arg_check, n_iter, n_thin)
+  .CheckSliceParameters(arg_check, slice_width, slice_multiplier)
 
   checkmate::reportAssertions(arg_check)
 

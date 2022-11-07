@@ -68,7 +68,7 @@ PlotPredictiveCalendarAgeDensity <- function(
   .CheckMultipleOutputDataConsistent(output_data)
   num_data = length(output_data)
   for (i in 1:num_data) {
-    .check_output_data(arg_check, output_data[[i]])
+    .CheckOutputData(arg_check, output_data[[i]])
     .CheckCalibrationCurveFromOutput(
       arg_check, output_data[[i]], calibration_curve)
     if (is.null(output_data[[i]]$label)) {

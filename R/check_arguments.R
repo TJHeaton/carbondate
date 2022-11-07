@@ -1,4 +1,4 @@
-.check_calibration_curve <- function(arg_check, calibration_curve){
+.CheckCalibrationCurve <- function(arg_check, calibration_curve){
   checkmate::assertDataFrame(
     calibration_curve,
     types = "numeric",
@@ -14,7 +14,7 @@
 }
 
 
-.check_input_data <- function(
+.CheckInputData <- function(
     arg_check, c14_determinations, c14_sigmas, calibration_curve){
 
   checkmate::assertNumeric(
@@ -32,12 +32,12 @@
     null.ok = FALSE,
     typed.missing = FALSE,
     add = arg_check)
-  .check_calibration_curve(arg_check, calibration_curve)
+  .CheckCalibrationCurve(arg_check, calibration_curve)
 
 }
 
 
-.check_dpmm_parameters <- function(
+.CheckDpmmParameters <- function(
     arg_check,
     sensible_initialisation,
     num_observations,
@@ -95,20 +95,20 @@
 }
 
 
-.check_slice_parameters <- function(
+.CheckSliceParameters <- function(
     arg_check, slice_width, slice_multiplier){
   checkmate::assertNumber(slice_width, lower = 1, add = arg_check)
   checkmate::assertNumber(slice_multiplier, lower = 1, add = arg_check)
 }
 
 
-.check_iteration_parameters <- function(arg_check, n_iter, n_thin){
+.CheckIterationParameters <- function(arg_check, n_iter, n_thin){
   checkmate::assertInt(n_iter, lower = 1, add = arg_check)
   checkmate::assertInt(n_thin, lower = 1, add = arg_check)
 }
 
 
-.check_output_data <- function(arg_check, output_data) {
+.CheckOutputData <- function(arg_check, output_data) {
   checkmate::assertList(
     output_data, names = "named", min.len = 10, add=arg_check)
   checkmate::assertSubset(
@@ -149,7 +149,7 @@
     )
   }
   if (!is.null(calibration_curve)) {
-    .check_calibration_curve(arg_check, calibration_curve)
+    .CheckCalibrationCurve(arg_check, calibration_curve)
   }
 
 }

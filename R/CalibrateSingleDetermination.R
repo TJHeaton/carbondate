@@ -24,7 +24,7 @@ CalibrateSingleDetermination <- function(
   arg_check <- checkmate::makeAssertCollection()
   checkmate::assertNumber(c14_determination, add = arg_check)
   checkmate::assertNumber(c14_sigma, add = arg_check)
-  .check_calibration_curve(arg_check, calibration_curve)
+  .CheckCalibrationCurve(arg_check, calibration_curve)
   checkmate::reportAssertions(arg_check)
 
   c14_ages = calibration_curve$c14_age

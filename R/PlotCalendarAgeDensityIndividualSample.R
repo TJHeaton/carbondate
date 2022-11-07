@@ -24,7 +24,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
 
   arg_check <- checkmate::makeAssertCollection()
   checkmate::assertInt(ident, add = arg_check)
-  .check_output_data(arg_check, output_data)
+  .CheckOutputData(arg_check, output_data)
   .CheckCalibrationCurveFromOutput(arg_check, output_data, calibration_curve)
   checkmate::assertInt(n_breaks, na.ok = TRUE, add = arg_check)
   checkmate::reportAssertions(arg_check)

@@ -30,7 +30,7 @@ FindSummedProbabilityDistribution <- function(
   arg_check <- checkmate::makeAssertCollection()
   checkmate::assertNumeric(
     calendar_age_range, len = 2, any.missing = FALSE, add = arg_check)
-  .check_input_data(
+  .CheckInputData(
     arg_check, c14_determinations, c14_sigmas, calibration_curve)
   checkmate::reportAssertions(arg_check)
 

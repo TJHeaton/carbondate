@@ -14,7 +14,7 @@
 #' PlotNumberOfClusters(output_data = walker_example_output)
 PlotNumberOfClusters <- function(output_data) {
 
-  .check_output_data(NULL, output_data)
+  .CheckOutputData(NULL, output_data)
 
   n_out <- length(output_data$n_clust)
   n_burn <- floor(n_out / 2)

@@ -15,7 +15,7 @@ InterpolateCalibrationCurve <- function(
     new_calendar_ages,
     calibration_curve) {
 
-  .check_calibration_curve(NULL, calibration_curve)
+  .CheckCalibrationCurve(NULL, calibration_curve)
   checkmate::assertNumeric(new_calendar_ages)
 
   calendar_ages =  calibration_curve$calendar_age
