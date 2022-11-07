@@ -103,8 +103,8 @@
 
 
 .CheckIterationParameters <- function(arg_check, n_iter, n_thin){
-  checkmate::assertInt(n_iter, lower = 1, add = arg_check)
-  checkmate::assertInt(n_thin, lower = 1, add = arg_check)
+  checkmate::assertInt(n_iter, lower = 10, add = arg_check)
+  checkmate::assertInt(n_thin, lower = 1, upper = n_iter/10, add = arg_check)
 }
 
 
@@ -175,4 +175,32 @@
       )
     }
   }
+}
+
+
+.CheckIntervalWidth = function(arg_check, interval_width, bespoke_probability) {
+  checkmate::assertChoice(
+    interval_width, c("1sigma", "2sigma", "bespoke"), add = arg_check)
+  if (interval_width == "bespoke") {
+    checkmate::assertNumber(
+      bespoke_probability, lower = 0, upper = 1, add = arg_check)
+  } else {
+    if (!is.na(bespoke_probability)) {
+      cli::cli_warn(
+        c(paste("You have chosed an interval width of", interval_width)),
+        c(
+          paste("The value you have chosen for `bespoke_probability` will
+                therefore be ignored")))
+    }
+  }
+}
+
+
+.CheckCalendarAgeSequence = function(arg_check, calendar_age_sequence) {
+  checkmate::assertNumeric(
+    calendar_age_sequence,
+    unique = TRUE,
+    sorted = TRUE,
+    any.missing = FALSE,
+    add = arg_check)
 }

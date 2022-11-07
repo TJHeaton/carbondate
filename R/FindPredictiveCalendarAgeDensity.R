@@ -1,21 +1,69 @@
-# Returns a dataframe containing the `calendar_age`, the `density_mean`
-# and the 95% confidence intervals for the density `density_ci_lower` and
-# `density_ci_upper`.
-.FindPosteriorDensityMeanAndCI <- function(
-    output_data, calendar_age_sequence, n_posterior_samples) {
+#' Plots the calendar age density of all objects from the output data
+#'
+#' Plots the input radiocarbon determinations and calibration curve, with the
+#' output predicted density on the same plot. Can also optionally show the
+#' SPD estimate
+#'
+#' @inheritParams PlotPredictiveCalendarAgeDensity
+#' @param output_data The return value from one of the updating functions e.g.
+#' [carbondate::WalkerBivarDirichlet] or
+#' [carbondate::PolyaUrnBivarDirichlet].
+#' @param calendar_age_sequence A vector containing the calendar ages to
+#' calculate the predictive density for.
+#'
+#' @return A data frame of the `calendar_age`, the
+#' `density_mean` and the confidence intervals for the density
+#' `density_ci_lower` and `density_ci_upper` for each set of output data.
+#'
+#' @export
+#'
+#' @examples
+#' # Find results for example output, 2-sigma confidence interval (default)
+#' FindPredictiveCalendarAgeDensity(
+#'   walker_example_output, seq(600, 1700, length=12), 500)
+#'
+#' # Find results for example output, 1-sigma confidence interval (default)
+#' FindPredictiveCalendarAgeDensity(
+#'   walker_example_output, seq(600, 1700, length=12), 500, "1sigma")
+#'
+#' # Find results for example output, 95% confidence interval (default)
+#' FindPredictiveCalendarAgeDensity(
+#'   walker_example_output, seq(600, 1700, length=12), 500, "bespoke", 0.95)
+FindPredictiveCalendarAgeDensity <- function(
+    output_data,
+    calendar_age_sequence,
+    n_posterior_samples,
+    interval_width = "2sigma",
+    bespoke_probability = NA) {
 
-  posterier_density_matrix <- .FindDensityPerSampleID(
+  arg_check <- checkmate::makeAssertCollection()
+
+  .CheckOutputData(arg_check, output_data)
+  .CheckCalendarAgeSequence(arg_check, calendar_age_sequence)
+  .CheckIntervalWidth(arg_check, interval_width, bespoke_probability)
+  checkmate::assertInt(n_posterior_samples, lower = 10, add = arg_check)
+  checkmate::reportAssertions(arg_check)
+
+  density_matrix <- .FindDensityPerSampleID(
     output_data, calendar_age_sequence, n_posterior_samples)
 
-  posterier_density_confidence_intervals <- apply(
-    posterier_density_matrix, 1, stats::quantile, probs = c(0.025, 0.975))
-  posterier_density_mean <- apply(posterier_density_matrix, 1, mean)
+  edge_width = switch(
+    interval_width,
+    "1sigma" = 1 - stats::pnorm(1),
+    "2sigma"  = 1 - stats::pnorm(2),
+    "bespoke" = (1 - bespoke_probability)/2)
+  density_confidence_intervals <- apply(
+    density_matrix,
+    1,
+    stats::quantile,
+    probs = c(edge_width, 1 - edge_width))
+  density_mean <- apply(density_matrix, 1, mean)
 
   return(data.frame(
     calendar_age=calendar_age_sequence,
-    density_mean=posterier_density_mean,
-    density_ci_lower=posterier_density_confidence_intervals[1, ],
-    density_ci_upper=posterier_density_confidence_intervals[2, ]))
+    density_mean=density_mean,
+    density_ci_lower=density_confidence_intervals[1, ],
+    density_ci_upper=density_confidence_intervals[2, ]))
 }
 
 
@@ -25,17 +73,17 @@
   n_out <- length(output_data$alpha)
   n_burn <- floor(n_out / 2)
 
-  posterior_sample_ids <- sample(
+  sample_ids <- sample(
     x = n_burn:n_out,
     size = n_posterior_samples,
     replace = n_posterior_samples > (n_out - n_burn))
 
   posterior_density_matrix <- apply(
-    matrix(posterior_sample_ids, 1, n_posterior_samples),
+    matrix(sample_ids, 1, n_posterior_samples),
     2,
     function(i, output_data, x) {
       if (output_data$update_type == "Walker") {
-        .FindPredictedDensityWalker(
+        .FindPredictiveDensityWalker(
           x,
           weight = output_data$weight[[i]],
           phi = output_data$phi[[i]],
@@ -45,7 +93,7 @@
           nu1 = output_data$input_parameters$nu1,
           nu2 = output_data$input_parameters$nu2)
       } else {
-        .FindPredictedDensityNeal(
+        .FindPredictiveDensityPolyaUrn(
           x,
           cluster_identifiers = output_data$cluster_identifiers[i, ],
           phi = output_data$phi[[i]],
@@ -62,7 +110,7 @@
 }
 
 
-.FindPredictedDensityNeal <- function(
+.FindPredictiveDensityPolyaUrn <- function(
     x, cluster_identifiers, phi, tau, alpha, mu_phi, lambda, nu1, nu2) {
   n_clust <- length(phi)
   nci <- .NumberOfObservationsInEachCluster(cluster_identifiers)
@@ -76,7 +124,7 @@
 }
 
 
-.FindPredictedDensityWalker <- function(
+.FindPredictiveDensityWalker <- function(
     x, weight, phi, tau, mu_phi, lambda, nu1, nu2) {
   prob_new_clust <- 1 - sum(weight)
 

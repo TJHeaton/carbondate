@@ -9,6 +9,12 @@
 #' calendar age for.
 #' @param n_breaks The number of breaks in the histogram (optional). If not
 #' given then it is set to the max of 100 and 1/tenth of post burn-in chain.
+#' @param interval_width The confidence intervals to show for the
+#' calibration curve. Choose from one of "1sigma", "2sigma" and "bespoke".
+#' Default is "2sigma".
+#' @param bespoke_probability The probability to use for the confidence interval
+#' if "bespoke" is chosen above. E.g. if 0.95 is chosen, then the 95% confidence
+#' interval is calculated. Ignored if "bespoke" is not chosen.
 #'
 #' @return No return value
 #' @export
@@ -20,7 +26,9 @@ PlotCalendarAgeDensityIndividualSample <- function(
     ident,
     output_data,
     calibration_curve = NULL,
-    n_breaks = NA) {
+    n_breaks = NA,
+    interval_width = "2sigma",
+    bespoke_probability = NA) {
 
   arg_check <- checkmate::makeAssertCollection()
   checkmate::assertInt(ident, add = arg_check)
@@ -48,44 +56,34 @@ PlotCalendarAgeDensityIndividualSample <- function(
   }
 
   # Find the calendar age range to plot
-  xrange <- range(calendar_age) + c(-1, 1) * 10
+  xrange <- range(calendar_age) + c(-1, 1) * 20
   cal_age_ind_min <- which.min(abs(calibration_curve$calendar_age - xrange[1]))
   cal_age_ind_max <- which.min(abs(calibration_curve$calendar_age - xrange[2]))
   calendar_age_indices <- cal_age_ind_min:cal_age_ind_max
-
-  # 95% interval
-  calibration_curve$ub <- calibration_curve$c14_age +
-    1.96 * calibration_curve$c14_sig
-  calibration_curve$lb <- calibration_curve$c14_age -
-    1.96 * calibration_curve$c14_sig
   yrange <- range(
-    calibration_curve$ub[calendar_age_indices],
-    calibration_curve$lb[calendar_age_indices] - 10)
+    calibration_curve$c14_age[calendar_age_indices] + 30,
+    calibration_curve$c14_age[calendar_age_indices] - 30)
 
-  graphics::plot(calibration_curve$calendar_age, calibration_curve$c14_age,
-       col = "blue",
-       ylim = yrange,
-       xlim = rev(xrange),
-       xlab = "Calendar Age (cal yr BP)",
-       ylab = expression(paste(""^14, "C", " age (", ""^14, "C yr BP)")),
-       type = "l",
-       main = substitute(
-         paste(
-           "Posterior of ",
-           i^th,
-           " determination ",
-           c14_age,
-           "\u00B1",
-           c14_sig,
-           ""^14,
-           "C yr BP"),
-         list(i = ident, c14_age = c14_age, c14_sig = c14_sig)),
-       xaxs = "i",
-       yaxs = "i")
-  graphics::lines(
-    calibration_curve$calendar_age, calibration_curve$ub, lty = 2, col = "blue")
-  graphics::lines(
-    calibration_curve$calendar_age, calibration_curve$lb, lty = 2, col = "blue")
+  graphics::par(xaxs = "i", yaxs = "i")
+  .PlotCalibrationCurve(
+    xlim = rev(xrange),
+    ylim = yrange,
+    calibration_curve = calibration_curve,
+    calibration_curve_colour = "blue",
+    calibration_curve_bg = grDevices::rgb(0, 0, 1, .3),
+    interval_width = interval_width,
+    bespoke_probability = bespoke_probability,
+    title = substitute(
+      paste(
+        "Posterior of ",
+        i^th,
+        " determination ",
+        c14_age,
+        "\u00B1",
+        c14_sig,
+        ""^14,
+        "C yr BP"),
+      list(i = ident, c14_age = c14_age, c14_sig = c14_sig)))
 
   # Plot the 14C determination on the y-axis
   yfromto <- seq(c14_age - 4 * c14_sig, c14_age + 4 * c14_sig, by = 1)

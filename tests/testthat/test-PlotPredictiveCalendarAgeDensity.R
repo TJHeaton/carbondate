@@ -14,7 +14,10 @@ test_that("gives expected result for walker output", {
   set.seed(seednum)
 
   density_list = PlotPredictiveCalendarAgeDensity(
-    output_data = walker_output, n_posterior_samples = npostsum)
+    output_data = walker_output,
+    n_posterior_samples = npostsum,
+    interval_width = "bespoke",
+    bespoke_probability = 0.95)
 
   expect_equal(density_list[[1]]$density_mean, postden)
   expect_equal(density_list[[1]]$density_ci_lower, postdenCI[1,])
@@ -32,14 +35,17 @@ test_that("gives expected result for neal output", {
     c14_determinations = x,
     c14_sigmas = xsig,
     calibration_curve = intcal20,
-    n_iter=niter,
-    n_thin=nthin)
+    n_iter = niter,
+    n_thin = nthin)
   load(test_path("testdata", "NPNeal_postprocessing.rda"))
 
   set.seed(seednum)
 
   density_list = PlotPredictiveCalendarAgeDensity(
-    output_data = neal_output, n_posterior_samples = npostsum)
+    output_data = neal_output,
+    n_posterior_samples = npostsum,
+    interval_width = "bespoke",
+    bespoke_probability = 0.95)
 
   expect_equal(density_list[[1]]$density_mean, postden)
   expect_equal(density_list[[1]]$density_ci_lower, postdenCI[1,])

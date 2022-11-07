@@ -8,12 +8,15 @@ PlotPredictiveCalendarAgeDensity(
   output_data,
   n_posterior_samples,
   calibration_curve = NULL,
-  show_SPD = TRUE,
+  show_SPD = FALSE,
   show_confidence_intervals = TRUE,
+  interval_width = "2sigma",
+  bespoke_probability = NA,
   true_density = NULL,
   xlimscal = 1,
   ylimscal = 1,
-  denscale = 3
+  denscale = 3,
+  n_calc = 1001
 )
 }
 \arguments{
@@ -34,10 +37,18 @@ entitled calendar_age, c14_age and c14_sig.
 This format matches \link{intcal20}.}
 
 \item{show_SPD}{Whether to calculate and show the summed probability function
-on the plot (optional). Default is \code{TRUE}.}
+on the plot (optional). Default is \code{FALSE}.}
 
-\item{show_confidence_intervals}{Whether to show the 95\% confidence intervals
-of the posterior density on the plot. Default is \code{TRUE}.}
+\item{show_confidence_intervals}{Whether to show the confidence intervals
+for the chosen probability on the plot. Default is \code{TRUE}.}
+
+\item{interval_width}{The confidence intervals to show for both the
+calibration curve and the predictive density. Choose from one of "1sigma",
+"2sigma" and "bespoke". Default is "2sigma".}
+
+\item{bespoke_probability}{The probability to use for the confidence interval
+if "bespoke" is chosen above. E.g. if 0.95 is chosen, then the 95\% confidence
+interval is calculated. Ignored if "bespoke" is not chosen.}
 
 \item{true_density}{The true calendar age density (optional). Expects a data
 frame with two columns, the first column being calendar age and the right
@@ -49,8 +60,10 @@ values less than 1 will decrease the range of the limits.}
 
 \item{denscale}{Whether to scale the vertical range of the density plot
 relative to the calibration curve plot (optional). Default is 3 which means
-that the maximum SPD density will be at 1/3 of the height of the plot.
-TODO: base on the output data.}
+that the maximum SPD density will be at 1/3 of the height of the plot.}
+
+\item{n_calc}{Number of points to use when calculating the predictive
+density. Default is 1001.}
 }
 \value{
 A list, each item containing a data frame of the \code{calendar_age}, the
@@ -69,5 +82,16 @@ PlotPredictiveCalendarAgeDensity(walker_example_output, 500)
 # Plot results from a calibration, and add a label
 new_output = walker_example_output
 new_output$label = "My plot"
-PlotPredictiveCalendarAgeDensity(walker_example_output, 500)
+PlotPredictiveCalendarAgeDensity(new_output, 500)
+
+# Plot results from two calibrations on the same plot, and show the SPD
+PlotPredictiveCalendarAgeDensity(
+  list(walker_example_output, polya_urn_example_output), 500, show_SPD = TRUE)
+
+# Plot and show the 1-sigma confidence interval
+PlotPredictiveCalendarAgeDensity(walker_example_output, 500, interval_width = "1sigma")
+
+# Plot and show the 80\% confidence interval
+PlotPredictiveCalendarAgeDensity(
+  walker_example_output, 500, interval_width = "bespoke", bespoke_probability = 0.8)
 }
