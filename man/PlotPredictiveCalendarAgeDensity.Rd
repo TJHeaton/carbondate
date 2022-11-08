@@ -73,7 +73,9 @@ A list, each item containing a data frame of the \code{calendar_age}, the
 \description{
 Plots the input radiocarbon determinations and calibration curve, with the
 output predicted density on the same plot. Can also optionally show the
-SPD estimate
+SPD estimate. Note that if all you are only interested in is the density
+data, without an accompanying plot, you can use
+\link{FindPredictiveCalendarAgeDensity} instead.
 }
 \examples{
 # Plot results for a single calibration

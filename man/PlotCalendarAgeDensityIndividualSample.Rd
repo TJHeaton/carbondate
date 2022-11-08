@@ -8,7 +8,9 @@ PlotCalendarAgeDensityIndividualSample(
   ident,
   output_data,
   calibration_curve = NULL,
-  n_breaks = NA
+  n_breaks = NA,
+  interval_width = "2sigma",
+  bespoke_probability = NA
 )
 }
 \arguments{
@@ -30,6 +32,14 @@ This format matches \link{intcal20}.}
 
 \item{n_breaks}{The number of breaks in the histogram (optional). If not
 given then it is set to the max of 100 and 1/tenth of post burn-in chain.}
+
+\item{interval_width}{The confidence intervals to show for the
+calibration curve. Choose from one of "1sigma", "2sigma" and "bespoke".
+Default is "2sigma".}
+
+\item{bespoke_probability}{The probability to use for the confidence interval
+if "bespoke" is chosen above. E.g. if 0.95 is chosen, then the 95\% confidence
+interval is calculated. Ignored if "bespoke" is not chosen.}
 }
 \value{
 No return value

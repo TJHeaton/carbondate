@@ -88,7 +88,7 @@
 #' running [carbondate::WalkerBivarDirichlet] with the [carbondate::kerr]
 #' radiocarbon input data and the [carbondate::intcal20] calibration curve for
 #' 100,000 iterations. To reduce file size a large \eqn{n_{\textrm{thin}} = 100}
-#' was used and the first hald of the observations where discarded.
+#' was used and the first half of the observations where discarded.
 #'
 #' @format ## `walker_example_output`
 #' A list with 11 items, as described in [carbondate::WalkerBivarDirichlet]. In
@@ -103,9 +103,9 @@
 #' running [carbondate::PolyaUrnBivarDirichlet] with the [carbondate::kerr]
 #' radiocarbon input data and the [carbondate::intcal20] calibration curve for
 #' 100,000 iterations. To reduce file size a large \eqn{n_{\textrm{thin}} = 100}
-#' was used and the first hald of the observations where discarded.
+#' was used and the first half of the observations where discarded.
 #'
-#' @format ## `walker_example_output`
+#' @format ## `polya_urn_example_output`
 #' A list with 10 items, as described in [carbondate::PolyaUrnBivarDirichlet]. In
 #' this case \eqn{n_{\textrm{out}}} is 501 and \eqn{n_{\textrm{obs}}} is 255.
 "polya_urn_example_output"

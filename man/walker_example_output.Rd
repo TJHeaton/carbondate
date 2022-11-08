@@ -20,6 +20,6 @@ functions without having to first run a calibration. It shows the output from
 running \link{WalkerBivarDirichlet} with the \link{kerr}
 radiocarbon input data and the \link{intcal20} calibration curve for
 100,000 iterations. To reduce file size a large \eqn{n_{\textrm{thin}} = 100}
-was used and the first hald of the observations where discarded.
+was used and the first half of the observations where discarded.
 }
 \keyword{datasets}

@@ -74,3 +74,16 @@ test_that("PolyaUrnBivarDirichlet gives expected result - sensible init", {
   }
 })
 
+
+test_that("PolyaUrnBivarDirichlet gives error if no sensible init and not all params", {
+  # This should fail with multiple assertions. Just test one of them.
+  expect_error(
+    PolyaUrnBivarDirichlet(
+      c14_determinations=kerr$c14_ages,
+      c14_sigmas=kerr$c14_sig,
+      calibration_curve=intcal20,
+      sensible_initialisation = FALSE),
+    regexp = "Variable 'lambda': May not be NA."
+  )
+})
+

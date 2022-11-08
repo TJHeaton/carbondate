@@ -5,7 +5,7 @@
 \alias{polya_urn_example_output}
 \title{Example output from Polya Urn calibration}
 \format{
-\subsection{\code{walker_example_output}}{
+\subsection{\code{polya_urn_example_output}}{
 
 A list with 10 items, as described in \link{PolyaUrnBivarDirichlet}. In
 this case \eqn{n_{\textrm{out}}} is 501 and \eqn{n_{\textrm{obs}}} is 255.
@@ -20,6 +20,6 @@ functions without having to first run a calibration. It shows the output from
 running \link{PolyaUrnBivarDirichlet} with the \link{kerr}
 radiocarbon input data and the \link{intcal20} calibration curve for
 100,000 iterations. To reduce file size a large \eqn{n_{\textrm{thin}} = 100}
-was used and the first hald of the observations where discarded.
+was used and the first half of the observations where discarded.
 }
 \keyword{datasets}

@@ -55,8 +55,9 @@
 #'
 #' @examples
 #' # Basic usage making use of sensible initialisation to set most values and
-#' # using a saved example data set
-#' PolyaUrnBivarDirichlet(kerr$c14_ages, kerr$c14_sig, intcal20)
+#' # using a saved example data set. Note iterations are kept very small here
+#' # for a faster run time.
+#' PolyaUrnBivarDirichlet(kerr$c14_ages, kerr$c14_sig, intcal20, n_iter=100, n_thin=10)
 PolyaUrnBivarDirichlet <- function(
     c14_determinations,
     c14_sigmas,
@@ -115,7 +116,7 @@ PolyaUrnBivarDirichlet <- function(
 
   if (sensible_initialisation) {
     initial_probabilities <- mapply(
-      CalibrateSingleDetermination,
+      .ProbabilitiesForSingleDetermination,
       c14_determinations,
       c14_sigmas,
       MoreArgs = list(calibration_curve=calibration_curve))

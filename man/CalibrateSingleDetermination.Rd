@@ -16,8 +16,9 @@ entitled calendar_age, c14_age and c14_sig.
 This format matches \link{intcal20}.}
 }
 \value{
-A vector containing the probability for each calendar age in the
-calibration data
+A data frame with one column \code{calendar_age} containing the calendar
+ages, and the other column \code{probability} containing the probability at that
+calendar age
 }
 \description{
 Uses the supplied calibration curve to take a single radiocardbon
@@ -25,5 +26,5 @@ determination and uncertainty and calculate the calendar age probability
 density for it.
 }
 \examples{
-CalibrateSingleDetermination(51020, 35, intcal20)
+CalibrateSingleDetermination(31020, 35, intcal20)
 }

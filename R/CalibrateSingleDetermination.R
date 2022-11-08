@@ -10,22 +10,33 @@
 #' entitled calendar_age, c14_age and c14_sig.
 #' This format matches [carbondate::intcal20].
 #'
-#' @return A vector containing the probability for each calendar age in the
-#' calibration data
+#' @return A data frame with one column `calendar_age` containing the calendar
+#' ages, and the other column `probability` containing the probability at that
+#' calendar age
 #' @export
 #'
 #' @examples
-#' CalibrateSingleDetermination(51020, 35, intcal20)
+#' CalibrateSingleDetermination(31020, 35, intcal20)
 CalibrateSingleDetermination <- function(
-    c14_determination,
-    c14_sigma,
-    calibration_curve) {
+    c14_determination, c14_sigma, calibration_curve) {
 
   arg_check <- checkmate::makeAssertCollection()
   checkmate::assertNumber(c14_determination, add = arg_check)
   checkmate::assertNumber(c14_sigma, add = arg_check)
   .CheckCalibrationCurve(arg_check, calibration_curve)
   checkmate::reportAssertions(arg_check)
+
+  probabilities <- .ProbabilitiesForSingleDetermination(
+    c14_determination, c14_sigma, calibration_curve)
+
+  return(
+    data.frame(
+      calendar_age=calibration_curve$c14_age, probability=probabilities))
+}
+
+
+.ProbabilitiesForSingleDetermination <- function(
+    c14_determination, c14_sigma, calibration_curve) {
 
   c14_ages = calibration_curve$c14_age
   c14_sigs = calibration_curve$c14_sig

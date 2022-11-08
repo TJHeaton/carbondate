@@ -34,7 +34,6 @@ FindSummedProbabilityDistribution <- function(
     arg_check, c14_determinations, c14_sigmas, calibration_curve)
   checkmate::reportAssertions(arg_check)
 
-
   calibration_data_range = range(calibration_curve$calendar_age)
   range_margin = 400
 
@@ -48,7 +47,7 @@ FindSummedProbabilityDistribution <- function(
 
   # Each column of matrix gives probabilities per calendar age for a given determination
   individual_probabilities <- mapply(
-    CalibrateSingleDetermination,
+    .ProbabilitiesForSingleDetermination,
     c14_determinations,
     c14_sigmas,
     MoreArgs = list(calibration_curve = interpolated_calibration_data))
