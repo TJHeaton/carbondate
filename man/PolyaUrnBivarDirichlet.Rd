@@ -24,17 +24,18 @@ PolyaUrnBivarDirichlet(
   alpha_shape = NA,
   alpha_rate = NA,
   mu_phi = NA,
-  calendar_ages = NA
+  calendar_ages = NA,
+  correct_start_tau = TRUE
 )
 }
 \arguments{
-\item{c14_determinations}{An vector of observed radiocarbon determinations}
+\item{c14_determinations}{A vector of observed radiocarbon determinations}
 
-\item{c14_sigmas}{An vector of the radiocarbon determinations
+\item{c14_sigmas}{A vector of the radiocarbon determinations
 uncertainties (1-sigma). Must be the same length as \code{c14_determinations}.}
 
 \item{calibration_curve}{A dataframe which should contain at least 3 columns
-entitled calendar_age, c14_age and c14_sig.
+entitled \code{calendar_age}, \code{c14_age} and \code{c14_sig}.
 This format matches \link{intcal20}.}
 
 \item{n_iter}{The number of MCMC iterations (optional). Default is 100.}
@@ -73,7 +74,7 @@ cluster \eqn{j}.
 
 \item{A, B}{Prior on \eqn{\mu_{\phi}} giving the mean and precision of the
 overall centering \eqn{\mu_{\phi} \sim N(A, B^{-1})} i.e.
-B small is uninformative.}
+B small is uninformative. Required if \code{sensible_initialisation} is \code{FALSE}.}
 
 \item{alpha_shape, alpha_rate}{Hyperparameters for the shape and rate on prior
 for DP concentration, \eqn{\alpha}, determining the number of clusters we
@@ -89,6 +90,11 @@ Required if \code{sensible_initialisation} is \code{FALSE}.}
 \item{calendar_ages}{The initial estimate for the underlying calendar ages
 (optional). If supplied it must be a vector with the same length as
 \code{c14_determinations}.  Required if \code{sensible_initialisation} is \code{FALSE}.}
+
+\item{correct_start_tau}{Default TRUE. DEV ONLY. If TRUE, uses
+\code{tau <- rep(1 / (diff(range(c14_determinations)) / 4)^2, n_clust)}
+if FALSE uses the value in the original code which is:
+\code{tau <- rep(n_clust, 1 / (diff(range(c14_determinations)) / 4)^2)}}
 }
 \value{
 A list with 10 items. The first 7 items contain output data, each of
@@ -120,7 +126,7 @@ The remaining items give information about input data, input parameters (or
 those calculated using \code{sensible_initialisation}) and update_type
 
 \describe{
-\item{\code{update_type}}{A string that always has the value "Polya Urn"}
+\item{\code{update_type}}{A string that always has the value "Polya Urn".}
 \item{\code{input_data}}{a list containing the C14 data used and the name of
 the calibration curve used.}
 \item{\code{input_parameters}}{A list containing the values of the fixed
@@ -130,15 +136,11 @@ hyperparameters \code{lambda}, \code{nu1}, \code{nu2}, \code{A}, \code{B}, \code
 }
 }
 \description{
-This function takes as an input a set of radiocarbon determinations and
-associated 1-sigma uncertainties, as well as the calibration curve which
-should be used, and returns output data that can be sampled to estimate the
-joint calendar age density and cluster.
-}
-\details{
-This method considers both the mean and the variance of the clusters
-to be unknown. [TODO Do we want to include more detail about the algorithm
-here? Or refer to the paper.]
+This function takes as an input a set of radiocarbon
+determinations and associated 1-sigma uncertainties, as well as the
+calibration curve which should be used, and returns output data that can be
+sampled to estimate the joint calendar age density and clusters. This method
+considers both the mean and the variance of the clusters to be unknown.
 }
 \examples{
 # Basic usage making use of sensible initialisation to set most values and

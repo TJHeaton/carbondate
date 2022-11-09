@@ -2,16 +2,17 @@
 #' Gibbs sampler using a DPMM
 #'
 #'
-#' @description This function takes as an input a set of radiocarbon determinations and
-#' associated 1-sigma uncertainties, as well as the calibration curve which
-#' should be used, and returns output data that can be sampled to estimate the
-#' joint calendar age density and cluster.
-#'
-#' @details This method considers both the mean and the variance of the clusters
-#' to be unknown. \[TODO Do we want to include more detail about the algorithm
-#' here? Or refer to the paper.\]
+#' @description This function takes as an input a set of radiocarbon
+#' determinations and associated 1-sigma uncertainties, as well as the
+#' calibration curve which should be used, and returns output data that can be
+#' sampled to estimate the joint calendar age density and clusters. This method
+#' considers both the mean and the variance of the clusters to be unknown.
 #'
 #' @inheritParams WalkerBivarDirichlet
+#' @param correct_start_tau Default TRUE. DEV ONLY. If TRUE, uses
+#' ```tau <- rep(1 / (diff(range(c14_determinations)) / 4)^2, n_clust)```
+#' if FALSE uses the value in the original code which is:
+#' ```tau <- rep(n_clust, 1 / (diff(range(c14_determinations)) / 4)^2)```
 #'
 #' @return A list with 10 items. The first 7 items contain output data, each of
 #' which have one dimension of size \eqn{n_{\textrm{out}} =
@@ -42,7 +43,7 @@
 #' those calculated using `sensible_initialisation`) and update_type
 #'
 #' \describe{
-#'  \item{`update_type`}{A string that always has the value "Polya Urn"}
+#'  \item{`update_type`}{A string that always has the value "Polya Urn".}
 #'  \item{`input_data`}{a list containing the C14 data used and the name of
 #'  the calibration curve used.}
 #'  \item{`input_parameters`}{A list containing the values of the fixed
@@ -77,7 +78,8 @@ PolyaUrnBivarDirichlet <- function(
     alpha_shape = NA,
     alpha_rate = NA,
     mu_phi = NA,
-    calendar_ages = NA) {
+    calendar_ages = NA,
+    correct_start_tau = TRUE) {
 
   ##############################################################################
   # Check input parameters
@@ -142,9 +144,12 @@ PolyaUrnBivarDirichlet <- function(
 
   alpha <- 0.0001
 
-  # ADD COMMENT
-  # tau <- rep(1 / (diff(range(c14_determinations)) / 4)^2, n_clust)
-  tau <- rep(n_clust, 1 / (diff(range(c14_determinations)) / 4)^2)
+  # REMOVE AFTER TESTING COMPLETE
+  if (correct_start_tau) {
+    tau <- rep(1 / (diff(range(c14_determinations)) / 4)^2, n_clust)
+  } else {
+    tau <- rep(n_clust, 1 / (diff(range(c14_determinations)) / 4)^2)
+  }
   phi <- stats::rnorm(
     n_clust, mean = mu_phi, sd = diff(range(c14_determinations)) / 2)
 

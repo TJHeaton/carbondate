@@ -7,9 +7,9 @@
 # phi - the current cluster means
 # tau - the current cluster precisions
 # n_clust - current n_clust
-# c, mu_phi, lambda, nu1, nu2 - the current DP parameters (not updated here)
+# alpha, mu_phi, lambda, nu1, nu2 - the current DP parameters (not updated here)
 .DPWalkerUpdate <- function(
-    theta, w, v, delta, phi, tau, n_clust, c, mu_phi, lambda, nu1, nu2) {
+    theta, w, v, delta, phi, tau, n_clust, alpha, mu_phi, lambda, nu1, nu2) {
   # Create relevant variables
   n <- length(theta)
 
@@ -22,47 +22,47 @@
   wnew <- c()
   j <- 1
   brprod <- 1 # This is the current product of (1-v[1])...(1-v[j-1])
-  # Need to work out alpha and beta internally
+  # Need to work out a and b internally
 
   # Iteratively update the weights until we have all we need
   # To update v[j] we do the following
   while (sum(wnew) < 1 - ustar) {
 
     if (j <= n_clust) {
-      # We have to work out alpha and beta and sample a new v[j] by inverse cdf
+      # We have to work out a and b and sample a new v[j] by inverse cdf
 
       # Find the indices we need to search over i.e. which are in cluster j and
       # which are above cluster j
       clustj <- which(delta == j)
       aboveclj <- which(delta > j)
 
-      # Find alpha_j
+      # Find a_j
       if (length(clustj) == 0) {
-        alpha <- 0
+        a <- 0
       } else {
-        alpha <- max(u[clustj] / brprod)
+        a <- max(u[clustj] / brprod)
       }
 
-      # Find beta_j
+      # Find b_j
       if (length(aboveclj) == 0) {
-        beta <- 1
+        b <- 1
       } else {
         # Vector to aid denominator: ith entry is Prod_{l < i, l != j} (1- v_l)
         prodvtemp <- cumprod(1 - v) / (1 - v[j])
-        beta <- 1 -
+        b <- 1 -
           max(
             u[aboveclj] / (v[delta[aboveclj]] * prodvtemp[delta[aboveclj] - 1]))
       }
 
       # Now sample from the correct posterior by inversion
-      A <- (1 - alpha)^c
-      B <- A - (1 - beta)^c
+      A <- (1 - a)^alpha
+      B <- A - (1 - b)^alpha
       utemp <- stats::runif(1)
-      v[j] <- 1 - (A - B * utemp)^(1 / c)
+      v[j] <- 1 - (A - B * utemp)^(1 / alpha)
     } else {
       # We are in the case that j > k^star (for current n_clust) and v[j] is just
       # from the prior beta
-      v[j] <- stats::rbeta(1, 1, c)
+      v[j] <- stats::rbeta(1, 1, alpha)
     }
 
     # We now have v so we need to extend w (and update brprod for next iteration)
@@ -70,7 +70,7 @@
     brprod <- brprod * (1 - v[j])
 
     if (sum(is.na(wnew)) != 0) {
-      cat("c = ", c, "\n")
+      cat("alpha = ", alpha, "\n")
       cat("j < k^star is", j <= n_clust, "\n")
       cat("v[j] = ", v[j], "\n")
       browser()

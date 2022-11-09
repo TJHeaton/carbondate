@@ -15,13 +15,13 @@ FindSummedProbabilityDistribution(
 \item{calendar_age_range}{A vector of length 2 with the start and end
 calendar age to calculate the SPD over}
 
-\item{c14_determinations}{An vector of observed radiocarbon determinations}
+\item{c14_determinations}{A vector of observed radiocarbon determinations}
 
-\item{c14_sigmas}{An vector of the radiocarbon determinations
+\item{c14_sigmas}{A vector of the radiocarbon determinations
 uncertainties (1-sigma). Must be the same length as \code{c14_determinations}.}
 
 \item{calibration_curve}{A dataframe which should contain at least 3 columns
-entitled calendar_age, c14_age and c14_sig.
+entitled \code{calendar_age}, \code{c14_age} and \code{c14_sig}.
 This format matches \link{intcal20}.}
 }
 \value{

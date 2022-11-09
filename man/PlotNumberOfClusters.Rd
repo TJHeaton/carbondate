@@ -4,7 +4,7 @@
 \alias{PlotNumberOfClusters}
 \title{Plots the number of clusters}
 \usage{
-PlotNumberOfClusters(output_data)
+PlotNumberOfClusters(output_data, title = NULL)
 }
 \arguments{
 \item{output_data}{The return value from one of the updating functions e.g.
@@ -12,6 +12,11 @@ PlotNumberOfClusters(output_data)
 \link{PolyaUrnBivarDirichlet} or a list, each item containing
 one of these values. Optionally, the output data can have an extra list item
 named \code{label} which is used to set the label on the plot legend.}
+
+\item{title}{The title to use for the plot. If nothing is given it will use
+whatever is assigned to the \code{label} field of the \code{output_data}. If there is
+no label, and nothing is provided as an argument, then no title will be
+shown.}
 }
 \value{
 No return value

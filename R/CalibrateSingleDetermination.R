@@ -7,12 +7,12 @@
 #' @param c14_determination A single observed radiocarbon determination (c14 age)
 #' @param c14_sigma The uncertainty of the radiocarbon determination
 #' @param calibration_curve A dataframe which should contain at least 3 columns
-#' entitled calendar_age, c14_age and c14_sig.
+#' entitled `calendar_age`, `c14_age` and `c14_sig`.
 #' This format matches [carbondate::intcal20].
 #'
 #' @return A data frame with one column `calendar_age` containing the calendar
 #' ages, and the other column `probability` containing the probability at that
-#' calendar age
+#' calendar age.
 #' @export
 #'
 #' @examples

@@ -23,11 +23,11 @@ calendar age for.}
 one of these values. Optionally, the output data can have an extra list item
 named \code{label} which is used to set the label on the plot legend.}
 
-\item{calibration_curve}{The name of the calibration curve variable is saved
-in the output data. However if the variable with this name is no longer in
-your environment then you should pass the calibration curve here. If
-provided this should be a dataframe which should contain at least 3 columns
-entitled calendar_age, c14_age and c14_sig.
+\item{calibration_curve}{This is usually not required since the name of the
+calibration curve variable is saved in the output data. However if the
+variable with this name is no longer in your environment then you should pass
+the calibration curve here. If provided this should be a dataframe which
+should contain at least 3 columns entitled calendar_age, c14_age and c14_sig.
 This format matches \link{intcal20}.}
 
 \item{n_breaks}{The number of breaks in the histogram (optional). If not

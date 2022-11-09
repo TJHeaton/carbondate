@@ -21,7 +21,7 @@ library(carbondate)
 
 # Introduction
 
-The **carbondate** package contains functions for analysing of multiple related radiocarbon determinations. Due to fluctuations in past radiocarbon (^14^C) levels, calibration is required to convert ^14^C determinations into calendar ages. In many cases, we wish to calibrate a set of samples which are known to be related to one another (for example, arising from a particular site, or set of sites, populated by a particular culture). Each sample has an unknown calendar age but, since they are related, these calendar ages are assumed to arise from the same unknown shared calendar age density. Calibration of the determinations can be improved significantly by incorporating the knowledge that the samples are related.
+The **carbondate** package contains functions for analysing multiple related radiocarbon determinations. Due to fluctuations in past radiocarbon (^14^C) levels, calibration is required to convert ^14^C determinations into calendar ages. In many cases, we wish to calibrate a set of samples which are known to be related to one another (for example, arising from a particular site, or set of sites, populated by a particular culture). Each sample has an unknown calendar age but, since they are related, these calendar ages are assumed to arise from the same unknown shared calendar age density. Calibration of these determinations can be improved significantly by incorporating the knowledge that the samples are related.
 
 This package contains functions for both independent calibration of the ^14^C determinations, and two different functions for jointly calibrating related samples.
 
@@ -35,11 +35,11 @@ The modern, internationally-ratified, standard for the radiocarbon calibration c
 
 There are some example data sets provided in the package, each of which contain a number of radiocarbon determinations and uncertainties from real-life cases:
 
--   `kerr`: 255 radiocarbon determinations collated by Kerr and McCormick related to the building and use of raths in Ireland [@kerr2014]
+-   `kerr`: 255 radiocarbon determinations collated by Kerr and McCormick related to the building and use of raths in Ireland [@kerr2014].
 
--   `armit`: 2021 radiocarbon determinations collated by Armit et al. from archaeological groups operating in Ireland, to investigate whether a wetter environment around 2700 cal yr BP led to a population collapse [@armit2014]
+-   `armit`: 2021 radiocarbon determinations collated by Armit et al. from archaeological groups operating in Ireland, to investigate whether a wetter environment around 2700 cal yr BP led to a population collapse [@armit2014].
 
--   `buchanan`: 628 radiocarbon determinations collated by Buchanan et al. representing the ages of distinct archaeological sites found across Canada and North America during the time of the palaeoindians [@buchanan2008]
+-   `buchanan`: 628 radiocarbon determinations collated by Buchanan et al. representing the ages of distinct archaeological sites found across Canada and North America during the time of the palaeoindians [@buchanan2008].
 
 # Independent calibration
 
@@ -57,7 +57,7 @@ plot(
   yaxt="n")
 ```
 
-The most common approach to summarise calendar age information of multiple ^14^C determinations is via summed probability distributions (SPD). Here, the posterior calendar age density of each object is first calculated independently from the others as using the function above. These individual densities are then summed/averaged to give an SPD estimate. SPDs are not statistically valid estimators of the calendar age of a potential future object. The independence assumed in the separate calibration of each sample, followed by subsequent summarisation, generates a contradiction. The function is provided her as a useful comparison with the other routines.
+The most common approach to summarise calendar age information of multiple ^14^C determinations is via summed probability distributions (SPD). Here, the posterior calendar age density of each object is first calculated independently from the others as using the function above. These individual densities are then summed/averaged to give an SPD estimate. SPDs are not statistically valid estimators of the calendar age of a potential future object. The independence assumed in the separate calibration of each sample, followed by subsequent summarisation, generates a contradiction. The function is provided here as a useful comparison with the other routines.
 
 To calculate the SPD for a set of radiocarbon determinations (here we use the example dataset `armit`) see the example below, where we also plot the results.
 
@@ -118,7 +118,7 @@ Our sampler provides three outputs of particular interest.
 
 #### Calendar Ages
 
-As described above, the output data includes the calendar age estimate for each ^14^C sample. We can use this to determine the posterior distribution of the calendar age for each sample. Note that the calendar age estimates use the joint information provided by all the 14C determinations (as opposed to solely the ^14^C determination of the single object that would be found using `CalibrateSingleDetermination`) on the understanding the calendar ages of the objects are related.
+As described above, the output data includes the calendar age estimate for each ^14^C sample. We can use this to determine the posterior distribution of the calendar age for each sample. Note that the calendar age estimates use the joint information provided by all the ^14^C determinations (as opposed to solely the ^14^C determination of the single object that would be found using `CalibrateSingleDetermination`) on the understanding the calendar ages of the objects are related.
 
 You can calculate and plot this using `PlotCalendarAgeDensityIndividualSample` - for example to calculate the posterior calendar age distribution for the 10th ^14^C determination:
 

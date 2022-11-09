@@ -28,13 +28,13 @@ WalkerBivarDirichlet(
 )
 }
 \arguments{
-\item{c14_determinations}{An vector of observed radiocarbon determinations}
+\item{c14_determinations}{A vector of observed radiocarbon determinations}
 
-\item{c14_sigmas}{An vector of the radiocarbon determinations
+\item{c14_sigmas}{A vector of the radiocarbon determinations
 uncertainties (1-sigma). Must be the same length as \code{c14_determinations}.}
 
 \item{calibration_curve}{A dataframe which should contain at least 3 columns
-entitled calendar_age, c14_age and c14_sig.
+entitled \code{calendar_age}, \code{c14_age} and \code{c14_sig}.
 This format matches \link{intcal20}.}
 
 \item{n_iter}{The number of MCMC iterations (optional). Default is 100.}
@@ -69,7 +69,7 @@ cluster \eqn{j}.
 
 \item{A, B}{Prior on \eqn{\mu_{\phi}} giving the mean and precision of the
 overall centering \eqn{\mu_{\phi} \sim N(A, B^{-1})} i.e.
-B small is uninformative.}
+B small is uninformative. Required if \code{sensible_initialisation} is \code{FALSE}.}
 
 \item{alpha_shape, alpha_rate}{Hyperparameters for the shape and rate on prior
 for DP concentration, \eqn{\alpha}, determining the number of clusters we
@@ -105,9 +105,9 @@ concentration parameter.}
 \item{\code{n_clust}}{An integer vector of length \eqn{n_{\textrm{out}}} giving
 the number of clusters.}
 \item{\code{phi}}{A list of length \eqn{n_{\textrm{out}}} each entry giving
-a vector [of length nclust???] of the cluster means \eqn{\phi_j}.}
+a vector of the cluster means \eqn{\phi_j}.}
 \item{\code{tau}}{A list of length \eqn{n_{\textrm{out}}} each entry giving
-a vector [of length nclust???] of the cluster uncertainties \eqn{\tau_j}.}
+a vector of the cluster uncertainties \eqn{\tau_j}.}
 \item{\code{weight}}{A list of length \eqn{n_{\textrm{out}}} each entry giving
 the mixing weights of each cluster.}
 \item{\code{calendar_ages}}{An \eqn{n_{\textrm{out}}} by \eqn{n_{\textrm{obs}}}
@@ -122,7 +122,7 @@ The remaining items give information about input data, input parameters (or
 those calculated using \code{sensible_initialisation}) and update_type
 
 \describe{
-\item{\code{update_type}}{A string that always has the value "Walker"}
+\item{\code{update_type}}{A string that always has the value "Walker".}
 \item{\code{input_data}}{a list containing the C14 data used and the name of
 the calibration curve used.}
 \item{\code{input_parameters}}{A list containing the values of the fixed
@@ -136,11 +136,6 @@ This function takes as an input a set of radiocarbon determinations and
 associated 1-sigma uncertainties, as well as the calibration curve which
 should be used, and returns output data that can be sampled to estimate the
 joint calendar age density and cluster.
-}
-\details{
-In this method slice sampling is used to update the DPMM.
-[TODO Do we want to include more detail about the algorith
-here? Or refer to the paper.]
 }
 \examples{
 # Basic usage making use of sensible initialisation to set most values and

@@ -1,19 +1,17 @@
-#' Plots the calendar age density of all objects from the output data
+#' Find the predictive calendar age density of from the output data
 #'
-#' Plots the input radiocarbon determinations and calibration curve, with the
-#' output predicted density on the same plot. Can also optionally show the
-#' SPD estimate
+#' Given a calendar age sequence and output data from one of the package upate
+#' functions, calculates the predicitive calendar age density and confidence
+#' intervals. Note if you want to calculate and plot the result, use
+#' [carbondate::PlotPredictiveCalendarAgeDensity] instead.
 #'
 #' @inheritParams PlotPredictiveCalendarAgeDensity
-#' @param output_data The return value from one of the updating functions e.g.
-#' [carbondate::WalkerBivarDirichlet] or
-#' [carbondate::PolyaUrnBivarDirichlet].
 #' @param calendar_age_sequence A vector containing the calendar ages to
 #' calculate the predictive density for.
 #'
 #' @return A data frame of the `calendar_age`, the
 #' `density_mean` and the confidence intervals for the density
-#' `density_ci_lower` and `density_ci_upper` for each set of output data.
+#' `density_ci_lower` and `density_ci_upper`.
 #'
 #' @export
 #'

@@ -29,26 +29,26 @@ named \code{label} which is used to set the label on the plot legend.}
 \item{n_posterior_samples}{Current number of samples it will draw from this
 posterior to estimate the calendar age density (possibly repeats).}
 
-\item{calibration_curve}{The name of the calibration curve variable is saved
-in the output data. However if the variable with this name is no longer in
-your environment then you should pass the calibration curve here. If
-provided this should be a dataframe which should contain at least 3 columns
-entitled calendar_age, c14_age and c14_sig.
+\item{calibration_curve}{This is usually not required since the name of the
+calibration curve variable is saved in the output data. However if the
+variable with this name is no longer in your environment then you should pass
+the calibration curve here. If provided this should be a dataframe which
+should contain at least 3 columns entitled calendar_age, c14_age and c14_sig.
 This format matches \link{intcal20}.}
 
-\item{show_SPD}{Whether to calculate and show the summed probability function
-on the plot (optional). Default is \code{FALSE}.}
+\item{show_SPD}{Whether to calculate and show the summed probability
+distribution on the plot (optional). Default is \code{FALSE}.}
 
 \item{show_confidence_intervals}{Whether to show the confidence intervals
 for the chosen probability on the plot. Default is \code{TRUE}.}
 
 \item{interval_width}{The confidence intervals to show for both the
-calibration curve and the predictive density. Choose from one of "1sigma",
-"2sigma" and "bespoke". Default is "2sigma".}
+calibration curve and the predictive density. Choose from one of \code{"1sigma"},
+\code{"2sigma"} and \code{"bespoke"}. Default is \code{"2sigma"}.}
 
 \item{bespoke_probability}{The probability to use for the confidence interval
-if "bespoke" is chosen above. E.g. if 0.95 is chosen, then the 95\% confidence
-interval is calculated. Ignored if "bespoke" is not chosen.}
+if \code{"bespoke"} is chosen above. E.g. if 0.95 is chosen, then the 95\% confidence
+interval is calculated. Ignored if \code{"bespoke"} is not chosen.}
 
 \item{true_density}{The true calendar age density (optional). Expects a data
 frame with two columns, the first column being calendar age and the right

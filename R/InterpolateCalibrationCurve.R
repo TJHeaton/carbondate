@@ -2,7 +2,7 @@
 #'
 #' @inheritParams CalibrateSingleDetermination
 #' @param new_calendar_ages A scalar or vector containing calendar ages to
-#' interpolate the calibration curve to
+#' interpolate the calibration curve to.
 #'
 #' @return A new dataframe with entries for the interpolated `c14_age` and
 #' `c14_sig` values at the `calendar_age` values given in `new_calendar_ages`

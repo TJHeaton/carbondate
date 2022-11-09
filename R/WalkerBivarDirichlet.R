@@ -6,10 +6,6 @@
 #' should be used, and returns output data that can be sampled to estimate the
 #' joint calendar age density and cluster.
 #'
-#' @details In this method slice sampling is used to update the DPMM.
-#'  \[TODO Do we want to include more detail about the algorith
-#' here? Or refer to the paper.\]
-#'
 #' @inheritParams FindSummedProbabilityDistribution
 #' @param n_iter  The number of MCMC iterations (optional). Default is 100.
 #' @param n_thin  How much to thin the output (optional). 1 is no thinning,
@@ -39,7 +35,7 @@
 #' `sensible_initialisation` is `FALSE`.
 #' @param A,B  Prior on \eqn{\mu_{\phi}} giving the mean and precision of the
 #' overall centering \eqn{\mu_{\phi} \sim N(A, B^{-1})} i.e.
-#' B small is uninformative.
+#' B small is uninformative. Required if `sensible_initialisation` is `FALSE`.
 #' @param mu_phi Initial value of the overall cluster centering \eqn{\mu_{\phi}}.
 #' Required if `sensible_initialisation` is `FALSE`.
 #' @param alpha_shape,alpha_rate Hyperparameters for the shape and rate on prior
@@ -67,9 +63,9 @@
 #'  \item{`n_clust`}{An integer vector of length \eqn{n_{\textrm{out}}} giving
 #'      the number of clusters.}
 #'  \item{`phi`}{A list of length \eqn{n_{\textrm{out}}} each entry giving
-#'      a vector \[of length nclust???\] of the cluster means \eqn{\phi_j}.}
+#'      a vector of the cluster means \eqn{\phi_j}.}
 #'  \item{`tau`}{A list of length \eqn{n_{\textrm{out}}} each entry giving
-#'      a vector \[of length nclust???\] of the cluster uncertainties \eqn{\tau_j}.}
+#'      a vector of the cluster uncertainties \eqn{\tau_j}.}
 #'  \item{`weight`}{A list of length \eqn{n_{\textrm{out}}} each entry giving
 #'      the mixing weights of each cluster.}
 #'  \item{`calendar_ages`}{An \eqn{n_{\textrm{out}}} by \eqn{n_{\textrm{obs}}}
@@ -84,7 +80,7 @@
 #' those calculated using `sensible_initialisation`) and update_type
 #'
 #' \describe{
-#'  \item{`update_type`}{A string that always has the value "Walker"}
+#'  \item{`update_type`}{A string that always has the value "Walker".}
 #'  \item{`input_data`}{a list containing the C14 data used and the name of
 #'  the calibration curve used.}
 #'  \item{`input_parameters`}{A list containing the values of the fixed
@@ -250,7 +246,7 @@ WalkerBivarDirichlet <- function(
       phi = phi,
       tau = tau,
       n_clust = n_clust,
-      c = alpha,
+      alpha = alpha,
       mu_phi = mu_phi,
       lambda = lambda,
       nu1 = nu1,

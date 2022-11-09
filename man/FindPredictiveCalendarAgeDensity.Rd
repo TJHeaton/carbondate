@@ -2,7 +2,7 @@
 % Please edit documentation in R/FindPredictiveCalendarAgeDensity.R
 \name{FindPredictiveCalendarAgeDensity}
 \alias{FindPredictiveCalendarAgeDensity}
-\title{Plots the calendar age density of all objects from the output data}
+\title{Find the predictive calendar age density of from the output data}
 \usage{
 FindPredictiveCalendarAgeDensity(
   output_data,
@@ -15,7 +15,9 @@ FindPredictiveCalendarAgeDensity(
 \arguments{
 \item{output_data}{The return value from one of the updating functions e.g.
 \link{WalkerBivarDirichlet} or
-\link{PolyaUrnBivarDirichlet}.}
+\link{PolyaUrnBivarDirichlet} or a list, each item containing
+one of these values. Optionally, the output data can have an extra list item
+named \code{label} which is used to set the label on the plot legend.}
 
 \item{calendar_age_sequence}{A vector containing the calendar ages to
 calculate the predictive density for.}
@@ -24,22 +26,23 @@ calculate the predictive density for.}
 posterior to estimate the calendar age density (possibly repeats).}
 
 \item{interval_width}{The confidence intervals to show for both the
-calibration curve and the predictive density. Choose from one of "1sigma",
-"2sigma" and "bespoke". Default is "2sigma".}
+calibration curve and the predictive density. Choose from one of \code{"1sigma"},
+\code{"2sigma"} and \code{"bespoke"}. Default is \code{"2sigma"}.}
 
 \item{bespoke_probability}{The probability to use for the confidence interval
-if "bespoke" is chosen above. E.g. if 0.95 is chosen, then the 95\% confidence
-interval is calculated. Ignored if "bespoke" is not chosen.}
+if \code{"bespoke"} is chosen above. E.g. if 0.95 is chosen, then the 95\% confidence
+interval is calculated. Ignored if \code{"bespoke"} is not chosen.}
 }
 \value{
 A data frame of the \code{calendar_age}, the
 \code{density_mean} and the confidence intervals for the density
-\code{density_ci_lower} and \code{density_ci_upper} for each set of output data.
+\code{density_ci_lower} and \code{density_ci_upper}.
 }
 \description{
-Plots the input radiocarbon determinations and calibration curve, with the
-output predicted density on the same plot. Can also optionally show the
-SPD estimate
+Given a calendar age sequence and output data from one of the package upate
+functions, calculates the predicitive calendar age density and confidence
+intervals. Note if you want to calculate and plot the result, use
+\link{PlotPredictiveCalendarAgeDensity} instead.
 }
 \examples{
 # Find results for example output, 2-sigma confidence interval (default)

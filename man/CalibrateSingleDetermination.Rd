@@ -12,13 +12,13 @@ CalibrateSingleDetermination(c14_determination, c14_sigma, calibration_curve)
 \item{c14_sigma}{The uncertainty of the radiocarbon determination}
 
 \item{calibration_curve}{A dataframe which should contain at least 3 columns
-entitled calendar_age, c14_age and c14_sig.
+entitled \code{calendar_age}, \code{c14_age} and \code{c14_sig}.
 This format matches \link{intcal20}.}
 }
 \value{
 A data frame with one column \code{calendar_age} containing the calendar
 ages, and the other column \code{probability} containing the probability at that
-calendar age
+calendar age.
 }
 \description{
 Uses the supplied calibration curve to take a single radiocardbon

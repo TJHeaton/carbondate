@@ -6,8 +6,8 @@
 #' @inheritParams CalibrateSingleDetermination
 #' @param calendar_age_range A vector of length 2 with the start and end
 #' calendar age to calculate the SPD over
-#' @param c14_determinations An vector of observed radiocarbon determinations
-#' @param c14_sigmas An vector of the radiocarbon determinations
+#' @param c14_determinations A vector of observed radiocarbon determinations
+#' @param c14_sigmas A vector of the radiocarbon determinations
 #' uncertainties (1-sigma). Must be the same length as `c14_determinations`.
 #'
 #' @return A data frame with one column `calendar_age` containing the calendar
