@@ -25,10 +25,10 @@ Depends:
 LazyData: true
 Imports: 
     checkmate,
+    cli,
     graphics,
     grDevices,
     stats,
-    stringr,
     utils
 URL: https://github.com/TJHeaton/carbondate
 BugReports: https://github.com/TJHeaton/carbondate/issues

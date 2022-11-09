@@ -83,14 +83,30 @@
 
 #' Example output from Walker calibration
 #'
-#' This output has been provided for trying out the plotting amd summarisations
+#' This output has been provided for trying out the plotting and summarisation
 #' functions without having to first run a calibration. It shows the output from
 #' running [carbondate::WalkerBivarDirichlet] with the [carbondate::kerr]
 #' radiocarbon input data and the [carbondate::intcal20] calibration curve for
-#' 10,000 iterations.
+#' 100,000 iterations. To reduce file size a large \eqn{n_{\textrm{thin}} = 100}
+#' was used and the first half of the observations where discarded.
 #'
 #' @format ## `walker_example_output`
-#' A list with 12 items, as described in [carbondate::WalkerBivarDirichlet]. In
-#' this case \eqn{n_{\textrm{out}}} is 1001 and \eqn{n_{\textrm{obs}}} is 255.
+#' A list with 11 items, as described in [carbondate::WalkerBivarDirichlet]. In
+#' this case \eqn{n_{\textrm{out}}} is 501 and \eqn{n_{\textrm{obs}}} is 255.
 "walker_example_output"
+
+
+#' Example output from Polya Urn calibration
+#'
+#' This output has been provided for trying out the plotting and summarisation
+#' functions without having to first run a calibration. It shows the output from
+#' running [carbondate::PolyaUrnBivarDirichlet] with the [carbondate::kerr]
+#' radiocarbon input data and the [carbondate::intcal20] calibration curve for
+#' 100,000 iterations. To reduce file size a large \eqn{n_{\textrm{thin}} = 100}
+#' was used and the first half of the observations where discarded.
+#'
+#' @format ## `polya_urn_example_output`
+#' A list with 10 items, as described in [carbondate::PolyaUrnBivarDirichlet]. In
+#' this case \eqn{n_{\textrm{out}}} is 501 and \eqn{n_{\textrm{obs}}} is 255.
+"polya_urn_example_output"
 

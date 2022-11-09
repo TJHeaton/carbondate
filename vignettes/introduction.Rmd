@@ -21,7 +21,7 @@ library(carbondate)
 
 # Introduction
 
-The **carbondate** package contains functions for analysing of multiple related radiocarbon determinations. Due to fluctuations in past radiocarbon (^14^C) levels, calibration is required to convert ^14^C determinations into calendar ages. In many cases, we wish to calibrate a set of samples which are known to be related to one another (for example, arising from a particular site, or set of sites, populated by a particular culture). Each sample has an unknown calendar age but, since they are related, these calendar ages are assumed to arise from the same unknown shared calendar age density. Calibration of the determinations can be improved significantly by incorporating the knowledge that the samples are related.
+The **carbondate** package contains functions for analysing multiple related radiocarbon determinations. Due to fluctuations in past radiocarbon (^14^C) levels, calibration is required to convert ^14^C determinations into calendar ages. In many cases, we wish to calibrate a set of samples which are known to be related to one another (for example, arising from a particular site, or set of sites, populated by a particular culture). Each sample has an unknown calendar age but, since they are related, these calendar ages are assumed to arise from the same unknown shared calendar age density. Calibration of these determinations can be improved significantly by incorporating the knowledge that the samples are related.
 
 This package contains functions for both independent calibration of the ^14^C determinations, and two different functions for jointly calibrating related samples.
 
@@ -35,35 +35,34 @@ The modern, internationally-ratified, standard for the radiocarbon calibration c
 
 There are some example data sets provided in the package, each of which contain a number of radiocarbon determinations and uncertainties from real-life cases:
 
--   `kerr`: 255 radiocarbon determinations collated by Kerr and McCormick related to the building and use of raths in Ireland [@kerr2014]
+-   `kerr`: 255 radiocarbon determinations collated by Kerr and McCormick related to the building and use of raths in Ireland [@kerr2014].
 
--   `armit`: 2021 radiocarbon determinations collated by Armit et al. from archaeological groups operating in Ireland, to investigate whether a wetter environment around 2700 cal yr BP led to a population collapse [@armit2014]
+-   `armit`: 2021 radiocarbon determinations collated by Armit et al. from archaeological groups operating in Ireland, to investigate whether a wetter environment around 2700 cal yr BP led to a population collapse [@armit2014].
 
--   `buchanan`: 628 radiocarbon determinations collated by Buchanan et al. representing the ages of distinct archaeological sites found across Canada and North America during the time of the palaeoindians [@buchanan2008]
+-   `buchanan`: 628 radiocarbon determinations collated by Buchanan et al. representing the ages of distinct archaeological sites found across Canada and North America during the time of the palaeoindians [@buchanan2008].
 
 # Independent calibration
 
 Although this package is concerned with the calibration of multiple related ^14^C determinations it can be useful to calibrate a single calibration independently, for example for estimating initial values for the sampler, or for comparison. To calibrate a single independent determination (using the provided IntCal20 calibration curve), run the following:
 
-```{r single_calibration}
-cal_age_prob = CalibrateSingleDetermination(
-  c14_determination = 1413, c14_uncertainty = 25, intcal20)
+```{r single_calibration, out.width="100%", fig.width=10, fig.height=8}
+calibration_result = CalibrateSingleDetermination(
+  c14_determination = 1413, c14_sigma = 25, intcal20)
 plot(
-  intcal20$calendar_age, 
-  cal_age_prob, 
+  calibration_result,
   type="l", 
   xlab = "Calendar age (yr BP)", 
   ylab = "Probability", 
-  xlim=c(1500, 1200),
+  xlim=c(1600, 1200),
   yaxt="n")
 ```
 
-The most common approach to summarise calendar age information of multiple ^14^C determinations is via summed probability distributions (SPD). Here, the posterior calendar age density of each object is first calculated independently from the others as using the function above. These individual densities are then summed/averaged to give an SPD estimate. SPDs are not statistically valid estimators of the calendar age of a potential future object. The independence assumed in the separate calibration of each sample, followed by subsequent summarisation, generates a contradiction. The function is provided her as a useful comparison with the other routines.
+The most common approach to summarise calendar age information of multiple ^14^C determinations is via summed probability distributions (SPD). Here, the posterior calendar age density of each object is first calculated independently from the others as using the function above. These individual densities are then summed/averaged to give an SPD estimate. SPDs are not statistically valid estimators of the calendar age of a potential future object. The independence assumed in the separate calibration of each sample, followed by subsequent summarisation, generates a contradiction. The function is provided here as a useful comparison with the other routines.
 
 To calculate the SPD for a set of radiocarbon determinations (here we use the example dataset `armit`) see the example below, where we also plot the results.
 
-```{r find_spd}
-spd = FindSPD(c(1000, 4500), armit$c14_ages, armit$c14_sig, intcal20)
+```{r find_spd, out.width="100%", fig.width=10, fig.height=8}
+spd = FindSummedProbabilityDistribution(c(1000, 4500), armit$c14_ages, armit$c14_sig, intcal20)
 plot(
   spd,
   type="l", 
@@ -87,70 +86,29 @@ For full technical details of the models used, and explanation of the model para
 
 Updating is performed within an overall Gibbs MCMC scheme by sampling the model parameters. There are two different schemes provided to update the DPMM --- a Polya Urn approach [@neal2000] which integrates out the mixing weights of each cluster; and a slice sampling approach in which they are explicitly retained [@walker2007].
 
-To set up with sensible initial values for the sampling parameters, run the following. *[I think we either need more explanation here of what all the different parameters are, or we do not include this part and make it internal to the function - could we discuss which approach would be best?]*
-
-```{r set_parameters}
-# Set parameters - Updated adaptive version
-# Prior on mu theta for DP - very uninformative based on observed data
-initprobs <- mapply(
-  CalibrateSingleDetermination,
-  kerr$c14_ages,
-  kerr$c14_sig,
-  MoreArgs = list(calibration_curve=intcal20))
-inittheta <- intcal20$calendar_age[apply(initprobs, 2, which.max)]
-
-maxrange <- max(inittheta) - min(inittheta)
-
-# Parameters for sigma2 (sigma^2 ~ InvGamma(nu1, nu2))
-# E[tau] = (1/100)^2 Var[tau] = (1/100)^4
-# Interval for sigma2 is approx 1/c(nu2/nu1-2*nu2^2/nu1, nu2/nu1+2*nu2^2/nu1)
-tempspread <- 0.1 * mad(inittheta)
-tempprec <- 1 / (tempspread)^2
-nu1 <- 0.25
-nu2 <- nu1 / tempprec
-
-lambda <- (100 / maxrange)^2 # Each muclust ~ N(mutheta, sigma2/lambda)
-```
-
-We can then run using the Walker method:
+Run using the Walker method:
 
 ```{r calculate_walker, results=FALSE}
-walker_temp <- WalkerBivarDirichlet(
+walker_output <- WalkerBivarDirichlet(
   c14_determinations = kerr$c14_ages,
-  c14_uncertainties = kerr$c14_sig,
+  c14_sigmas = kerr$c14_sig,
   calibration_curve=intcal20,
-  lambda = lambda,
-  nu1 = nu1,
-  nu2 = nu2,
-  alpha_shape = 1,
-  alpha_rate = 1,
-  n_iter = 1000,
-  n_thin = 5,
-  slice_width = max(1000, diff(range(kerr$c14_ages)) / 2),
-  slice_multiplier =10,
-  n_clust = 10)
+  n_iter = 100,
+  n_thin = 5)
 ```
 
-or the Neal method as follows:
+or the Poly Urn method as follows:
 
 ```{r calculate_neal, results=FALSE}
-neal_temp <- BivarGibbsDirichletwithSlice(
+polya_urn_output <- PolyaUrnBivarDirichlet(
   c14_determinations = kerr$c14_ages,
-  c14_uncertainties = kerr$c14_sig,
+  c14_sigmas = kerr$c14_sig,
   calibration_curve = intcal20,
-  lambda = lambda,
-  nu1 = nu1,
-  nu2 = nu2,
-  alpha_shape = 1,
-  alpha_rate = 1,
-  n_iter = 1000,
-  n_thin = 5,
-  slice_width = max(1000, diff(range(kerr$c14_ages)) / 2),
-  slice_multiplier = 10,
-  n_clust = 10)
+  n_iter = 100,
+  n_thin = 5)
 ```
 
-Note this example only runs for 1000 iterations - this is to keep the run time short, but is not enough to lead to a converged results. We suggest running for 100,000 iterations to arrive at the converged results, which are shown in [@heaton2021].
+Note this example only runs for 100 iterations - this is to keep the run time short, but is not enough to lead to a converged results. We suggest running for 100,000 iterations to arrive at the converged results, which are shown in [@heaton2021]. There are also example datasets from running the above for 100,000 iterations available in the package called `walker_example_output` and `polya_urn_example_output`.
 
 Both of these method will output a list containing the sampler outputs at every $n_{\textrm{thin}}$ iteration, with the values of the model parameters and the calendar ages.
 
@@ -160,33 +118,37 @@ Our sampler provides three outputs of particular interest.
 
 #### Calendar Ages
 
-As described above, the output data includes the calendar age estimate for each ^14^C sample. We can use this to determine the posterior distribution of the calendar age for each sample. Note that the calendar age estimates use the joint information provided by all the 14C determinations (as opposed to solely the ^14^C determination of the single object that would be found using `CalibrateSingleDetermination`) on the understanding the calendar ages of the objects are related.
+As described above, the output data includes the calendar age estimate for each ^14^C sample. We can use this to determine the posterior distribution of the calendar age for each sample. Note that the calendar age estimates use the joint information provided by all the ^14^C determinations (as opposed to solely the ^14^C determination of the single object that would be found using `CalibrateSingleDetermination`) on the understanding the calendar ages of the objects are related.
 
-You can calculate and plot this using `PlotIndividualCalendarAgeDensity` - for example to calculate the posterior calendar age distribution for the 10th ^14^C determination:
+You can calculate and plot this using `PlotCalendarAgeDensityIndividualSample` - for example to calculate the posterior calendar age distribution for the 10th ^14^C determination:
 
 ```{r plot_individual, out.width="100%", fig.width=10, fig.height=8}
-PlotIndividualCalendarAgeDensity(
-  ident = 10,
-  c14_determinations = kerr$c14_ages,
-  c14_uncertainties = kerr$c14_sig,
-  calibration_curve = intcal20,
-  output_data = walker_temp)
+PlotCalendarAgeDensityIndividualSample(10, walker_example_output)
 ```
 
 #### Density Estimate to Summarise Objects {#plot_density}
 
-The output data contains information to allow calculation of the predictive distribution for the calendar age of a new, as yet undiscovered, object. This density estimate summarises the calendar ages of all objects. It is generated using the posterior sampled values of the DPMM component of our MCMC sampler. This calendar age density can be calculated and plotted using `PlotCalendarAgeDensity`.
+The output data contains information to allow calculation of the predictive distribution for the calendar age of a new, as yet undiscovered, object. This density estimate summarises the calendar ages of all objects. It is generated using the posterior sampled values of the DPMM component of our MCMC sampler. This calendar age density can be calculated and plotted using `PlotPredictiveCalendarAgeDensity`.
 
-The function allows calculation using multiple outputs so that their results can be compared. It also, by default, plots the SPD, although this can be suppressed with the argument `show_SPD = FALSE`. For example below we compare the results from the two sampler methods above.
+The function allows calculation using multiple outputs so that their results can be compared. For example below we compare the results from the two sampler methods above.
 
 ```{r plot_density, out.width="100%", fig.width=10, fig.height=8}
-densities = PlotCalendarAgeDensity(
-  c14_determinations = kerr$c14_ages,
-  c14_uncertainties = kerr$c14_sig,
-  calibration_curve = intcal20,
-  output_data = list(walker_temp, neal_temp),
+densities = PlotPredictiveCalendarAgeDensity(
+  output_data = list(walker_example_output, polya_urn_example_output),
   n_posterior_samples = 500,
   denscale = 2.5)
+```
+
+We also have the option to plot the SPD, and change the confidence intervals on the plot.
+
+```{r plot_density_2, out.width="100%", fig.width=10, fig.height=8}
+densities = PlotPredictiveCalendarAgeDensity(
+  output_data = list(walker_example_output, polya_urn_example_output),
+  n_posterior_samples = 500,
+  denscale = 2.5,
+  show_SPD = TRUE,
+  interval_width = "bespoke",
+  bespoke_probability = 0.8)
 ```
 
 #### Number of Clusters
@@ -194,7 +156,7 @@ densities = PlotCalendarAgeDensity(
 The output data also contains information about the cluster allocation of each sampled object, which we can use to build the probability for there being a given number of total clusters. If we believe the underlying individual clusters in the model have inherent meaning in terms of representing genuine and distinct periods of site usage, as opposed to simply providing a tool to enable a non-parametric density estimate, this information may be archaeologically useful.
 
 ```{r plot_clusters, out.width="50%", fig.width=5, fig.height=6}
-PlotNumberOfClusters(output_data = walker_temp)
+PlotNumberOfClusters(output_data = walker_example_output)
 ```
 
 # References

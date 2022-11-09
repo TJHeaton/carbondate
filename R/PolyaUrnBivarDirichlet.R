@@ -2,34 +2,19 @@
 #' Gibbs sampler using a DPMM
 #'
 #'
-#' @description This function takes as an input a set of radiocarbon determinations and
-#' associated 1-sigma uncertainties, as well as the calibration curve which
-#' should be used, and returns output data that can be sampled to estimate the
-#' joint calendar age density and cluster.
-#'
-#' @details This method considers both the mean and the variance of the clusters
-#' to be unknown. \[TODO Do we want to include more detail about the algorithm
-#' here? Or refer to the paper.\]
+#' @description This function takes as an input a set of radiocarbon
+#' determinations and associated 1-sigma uncertainties, as well as the
+#' calibration curve which should be used, and returns output data that can be
+#' sampled to estimate the joint calendar age density and clusters. This method
+#' considers both the mean and the variance of the clusters to be unknown.
 #'
 #' @inheritParams WalkerBivarDirichlet
-#' @param alpha_type The type of prior on alpha - choose `"lognorm"` or
-#' `"gamma"`.  Default is `"gamma"`.
-#' @param alpha_mu,alpha_sigma Hyperparameters for the mean and sd on prior
-#' for DP concentration, \eqn{\alpha}, determining the number of clusters we
-#' expect to observe among our n sampled objects.
-#' \eqn{\alpha \sim \textrm{Lognormal}(\mu, \sigma^2)} where \eqn{\mu, \sigma}
-#' are the `alpha_mu` and `alpha_sigma`. Note these are only used if
-#' `alpha_type` is `"lognorm"`.
-#' @param alpha_shape,alpha_rate Hyperparameters for the shape and rate on prior
-#' for DP concentration, \eqn{\alpha}, determining the number of clusters we
-#' expect to observe among our n sampled objects.
-#' \eqn{\alpha \sim \Gamma(\eta_1, \eta_2)} where \eqn{\eta_1, \eta_2} are
-#' the `alpha_shape` and `alpha_rate`. Note these are only used if
-#' `alpha_type` is `"gamma"`. A small alpha means more concentrated
-#' (i.e. few clusters) while a large alpha means not concentrated (i.e. many
-#' clusters). \[TODO WE DON'T ACTUALLY USE THESE\]
+#' @param correct_start_tau Default TRUE. DEV ONLY. If TRUE, uses
+#' ```tau <- rep(1 / (diff(range(c14_determinations)) / 4)^2, n_clust)```
+#' if FALSE uses the value in the original code which is:
+#' ```tau <- rep(n_clust, 1 / (diff(range(c14_determinations)) / 4)^2)```
 #'
-#' @return A list with 11 items. The first 7 items contain output data, each of
+#' @return A list with 10 items. The first 7 items contain output data, each of
 #' which have one dimension of size \eqn{n_{\textrm{out}} =
 #' \textrm{floor}( n_{\textrm{iter}}/n_{\textrm{thin}}) + 1}, each row storing
 #' the result from every \eqn{n_{\textrm{thin}}}th iteration:
@@ -54,63 +39,47 @@
 #' where \eqn{n_{\textrm{obs}}} is the number of radiocarbon observations i.e.
 #' the length of `c14_determinations`.
 #'
-#' The remaining 4 items contain information that is used for later
-#' post-processing of the output data:
+#' The remaining items give information about input data, input parameters (or
+#' those calculated using `sensible_initialisation`) and update_type
 #'
 #' \describe{
-#'  \item{`update_type`}{A string that always has the value "neal"}
-#'  \item{`lambda`}{The fixed hypeparameter lambda.}
-#'  \item{`nu1`}{The fixed hypeparameter nu1}
-#'  \item{`nu2`}{The fixed hypeparameter nu2}
+#'  \item{`update_type`}{A string that always has the value "Polya Urn".}
+#'  \item{`input_data`}{a list containing the C14 data used and the name of
+#'  the calibration curve used.}
+#'  \item{`input_parameters`}{A list containing the values of the fixed
+#'  hyperparameters `lambda`, `nu1`, `nu2`, `A`, `B`, `alpha_shape`,
+#'  `alpha_rate` and `mu_phi`, and the slice parameters `slice_width` and
+#'  `slice_multiplier`.}
 #' }
 #'
 #' @export
 #'
 #' @examples
-#' # Basic usage making use of sensible initialisation to set most values
-#' BivarGibbsDirichletwithSlice(
-#'   c14_determinations = c(602, 805, 1554),
-#'   c14_uncertainties = c(35, 34, 45),
-#'   calibration_curve = intcal20,
-#'   lambda = 0.1,
-#'   nu1 = 0.25,
-#'   nu2 = 10,
-#'   alpha_shape = 1,
-#'   alpha_rate = 1)
-#'
-#' # Use sensible initialisation values but use lognorm prior on alpha
-#' BivarGibbsDirichletwithSlice(
-#'   c14_determinations = c(602, 805, 1554),
-#'   c14_uncertainties = c(35, 34, 45),
-#'   calibration_curve = intcal20,
-#'   lambda = 0.1,
-#'   nu1 = 0.25,
-#'   nu2 = 10,
-#'   alpha_type = "lognorm",
-#'   alpha_mu = 1,
-#'   alpha_sigma = 1)
-BivarGibbsDirichletwithSlice <- function(
+#' # Basic usage making use of sensible initialisation to set most values and
+#' # using a saved example data set. Note iterations are kept very small here
+#' # for a faster run time.
+#' PolyaUrnBivarDirichlet(kerr$c14_ages, kerr$c14_sig, intcal20, n_iter=100, n_thin=10)
+PolyaUrnBivarDirichlet <- function(
     c14_determinations,
-    c14_uncertainties,
+    c14_sigmas,
     calibration_curve,
-    lambda,
-    nu1,
-    nu2,
-    A=NA,
-    B=NA,
-    alpha_type = "gamma",
-    alpha_mu = NA,
-    alpha_sigma = NA,
-    alpha_shape = NA,
-    alpha_rate = NA,
     n_iter = 100,
     n_thin = 10,
-    calendar_ages = NA,
-    slice_width = 200,
-    slice_multiplier = 50,
+    slice_width = max(1000, diff(range(c14_determinations)) / 2),
+    slice_multiplier = 10,
     n_clust = min(10, length(c14_determinations)),
+    show_progress = TRUE,
     sensible_initialisation = TRUE,
-    show_progress = TRUE) {
+    lambda = NA,
+    nu1 = NA,
+    nu2 = NA,
+    A = NA,
+    B = NA,
+    alpha_shape = NA,
+    alpha_rate = NA,
+    mu_phi = NA,
+    calendar_ages = NA,
+    correct_start_tau = TRUE) {
 
   ##############################################################################
   # Check input parameters
@@ -118,9 +87,9 @@ BivarGibbsDirichletwithSlice <- function(
 
   arg_check <- checkmate::makeAssertCollection()
 
-  .check_input_data(
-    arg_check, c14_determinations, c14_uncertainties, calibration_curve)
-  .check_dpmm_parameters(
+  .CheckInputData(
+    arg_check, c14_determinations, c14_sigmas, calibration_curve)
+  .CheckDpmmParameters(
     arg_check,
     sensible_initialisation,
     num_observations,
@@ -129,23 +98,18 @@ BivarGibbsDirichletwithSlice <- function(
     nu2,
     A,
     B,
-    alpha_type,
     alpha_shape,
     alpha_rate,
-    alpha_mu,
-    alpha_sigma,
+    mu_phi,
     calendar_ages,
     n_clust)
-  .check_iteration_parameters(arg_check, n_iter, n_thin)
-  .check_slice_parameters(arg_check, slice_width, slice_multiplier)
+  .CheckIterationParameters(arg_check, n_iter, n_thin)
+  .CheckSliceParameters(arg_check, slice_width, slice_multiplier)
 
   checkmate::reportAssertions(arg_check)
 
-
   ##############################################################################
   # Initialise parameters
-
-
   all_clusters_represented <- FALSE
   while (!all_clusters_represented) {
     cluster_identifiers <- sample(1:n_clust, num_observations, replace = TRUE)
@@ -154,31 +118,58 @@ BivarGibbsDirichletwithSlice <- function(
 
   if (sensible_initialisation) {
     initial_probabilities <- mapply(
-      CalibrateSingleDetermination,
+      .ProbabilitiesForSingleDetermination,
       c14_determinations,
-      c14_uncertainties,
+      c14_sigmas,
       MoreArgs = list(calibration_curve=calibration_curve))
     indices_of_max_probability = apply(initial_probabilities, 2, which.max)
+
     calendar_ages <- calibration_curve$calendar_age[indices_of_max_probability]
+    maxrange <- max(calendar_ages) - min(calendar_ages)
 
     mu_phi <- stats::median(calendar_ages)
     A <- stats::median(calendar_ages)
-    B <- 1 / (max(calendar_ages) - min(calendar_ages))^2
-  } else {
-    scale_val <- 8267 / 8033
-    mu_phi <- mean(c14_determinations) * scale_val
-    if (is.na(calendar_ages[1])) calendar_ages <- c14_determinations * scale_val
+    B <- 1 / (maxrange)^2
+
+    tempspread <- 0.1 * stats::mad(calendar_ages)
+    tempprec <- 1/(tempspread)^2
+
+    lambda <- (100 / maxrange)^2
+    nu1 <- 0.25
+    nu2 <- nu1 / tempprec
+
+    alpha_shape <- 1
+    alpha_rate <- 1
   }
 
-  alpha <- switch(
-    alpha_type,
-    lognorm = exp(stats::rnorm(1, alpha_mu, sd = alpha_sigma)),
-    gamma = 0.0001, # stats::rgamma(1, shape = alpha_shape, rate = alpha_rate),
-    stop("Unknown form for prior on alpha"))
+  alpha <- 0.0001
 
-  tau <- rep(n_clust, 1 / (diff(range(c14_determinations)) / 4)^2)
+  # REMOVE AFTER TESTING COMPLETE
+  if (correct_start_tau) {
+    tau <- rep(1 / (diff(range(c14_determinations)) / 4)^2, n_clust)
+  } else {
+    tau <- rep(n_clust, 1 / (diff(range(c14_determinations)) / 4)^2)
+  }
   phi <- stats::rnorm(
     n_clust, mean = mu_phi, sd = diff(range(c14_determinations)) / 2)
+
+  ##############################################################################
+  # Save input data and parameters
+  input_data = list(
+    c14_determinations = c14_determinations,
+    c14_sigmas = c14_sigmas,
+    calibration_curve_name = deparse(substitute(calibration_curve)))
+  input_parameters = list(
+    lambda = lambda,
+    nu1 = nu1,
+    nu2 = nu2,
+    A = A,
+    B = B,
+    alpha_shape = alpha_shape,
+    alpha_rate = alpha_rate,
+    mu_phi = mu_phi,
+    slice_width = slice_width,
+    slice_multiplier = slice_multiplier)
 
   ##############################################################################
   # Create storage for output
@@ -257,18 +248,13 @@ BivarGibbsDirichletwithSlice <- function(
         prmean = phi[cluster_identifiers[k]],
         prsig = 1 / sqrt(tau[cluster_identifiers[k]]),
         c14obs = c14_determinations[k],
-        c14sig = c14_uncertainties[k],
+        c14sig = c14_sigmas[k],
         mucalallyr = interpolated_c14_age,
         sigcalallyr = interpolated_c14_sig)
     }
 
-    alpha <- switch(
-      alpha_type,
-      lognorm = .UpdateAlphaLognormPrior(
-        cluster_identifiers, alpha, mualpha = alpha_mu, sigalpha = alpha_sigma),
-      gamma = .UpdateAlphaGammaPrior(
-        cluster_identifiers, alpha, prshape = alpha_shape, prrate = alpha_rate),
-      stop("Unknown form for prior on gamma"))
+    alpha <- .UpdateAlphaGammaPrior(
+        cluster_identifiers, alpha, prshape = alpha_shape, prrate = alpha_rate)
 
     if (iter %% n_thin == 0) {
       output_index <- output_index + 1
@@ -289,10 +275,9 @@ BivarGibbsDirichletwithSlice <- function(
     alpha = alpha_out,
     mu_phi = mu_phi_out,
     n_clust = n_clust_out,
-    update_type="neal",
-    lambda = lambda,
-    nu1 = nu1,
-    nu2 = nu2)
+    update_type="Polya Urn",
+    input_data = input_data,
+    input_parameters = input_parameters)
 
   if (show_progress) close(progress_bar)
   return(return_list)

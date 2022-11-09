@@ -2,44 +2,25 @@ set.seed(8)
 
 library(carbondate)
 
-###############################################################################
-# Set parameters - Updated adaptive version
-# Prior on mu theta for DP - very uninformative based on observed data
-initprobs <- mapply(
-  CalibrateSingleDetermination,
-  kerr$c14_ages,
-  kerr$c14_sig,
-  MoreArgs = list(calibration_curve=intcal20))
-inittheta <- intcal20$calendar_age[apply(initprobs, 2, which.max)]
-
-maxrange <- max(inittheta) - min(inittheta)
-
-# Parameters for sigma2 (sigma^2 ~ InvGamma(nu1, nu2))
-# E[tau] = (1/100)^2 Var[tau] = (1/100)^4
-# Interval for sigma2 is approx 1/c(nu2/nu1-2*nu2^2/nu1, nu2/nu1+2*nu2^2/nu1)
-tempspread <- 0.1 * mad(inittheta)
-tempprec <- 1 / (tempspread)^2
-nu1 <- 0.25
-nu2 <- nu1 / tempprec
-
-lambda <- (100 / maxrange)^2 # Each muclust ~ N(mutheta, sigma2/lambda)
-
-###############################################################################
-# Perform the MCMC update
-
 walker_example_output <- WalkerBivarDirichlet(
   c14_determinations = kerr$c14_ages,
-  c14_uncertainties = kerr$c14_sig,
+  c14_sigmas = kerr$c14_sig,
   calibration_curve=intcal20,
-  lambda = lambda,
-  nu1 = nu1,
-  nu2 = nu2,
-  alpha_shape = 1,
-  alpha_rate = 1,
-  n_iter = 10000,
-  n_thin = 10,
-  slice_width = max(1000, diff(range(kerr$c14_ages)) / 2),
-  slice_multiplier = 10,
-  n_clust = 10)
+  n_iter = 1e5,
+  n_thin = 100)
+
+
+## Cut off the first half of the data to reduce file size
+n_out = length(walker_example_output$alpha)
+thin_id <- seq((n_out+1)/2, n_out, by = 1)
+
+walker_example_output$cluster_identifiers = walker_example_output$cluster_identifiers[thin_id,]
+walker_example_output$alpha = walker_example_output$alpha[thin_id]
+walker_example_output$n_clust = walker_example_output$n_clust[thin_id]
+walker_example_output$phi = walker_example_output$phi[thin_id]
+walker_example_output$tau = walker_example_output$tau[thin_id]
+walker_example_output$weight = walker_example_output$weight[thin_id]
+walker_example_output$calendar_ages = walker_example_output$calendar_ages[thin_id,]
+walker_example_output$mu_phi = walker_example_output$mu_phi[thin_id]
 
 usethis::use_data(walker_example_output, overwrite = TRUE, compress = "bzip2")

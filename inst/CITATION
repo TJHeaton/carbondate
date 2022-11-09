@@ -1,0 +1,7 @@
+bibentry(
+  "Manual",
+  title    = "Calibration and Summarisation of Radiocarbon Dates",
+  author   = "Tim Heaton, Sara Al-Assam",
+  year     = "2022",
+  url      = "https://github.com/TJHeaton/carbondate",
+)

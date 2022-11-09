@@ -2,20 +2,33 @@
 #'
 #' Plots the input radiocarbon determinations and calibration curve, with the
 #' output predicted density on the same plot. Can also optionally show the
-#' SPD estimate
+#' SPD estimate. Note that if all you are only interested in is the density
+#' data, without an accompanying plot, you can use
+#' [carbondate::FindPredictiveCalendarAgeDensity] instead.
 #'
-#' @inheritParams FindSPD
 #' @param output_data The return value from one of the updating functions e.g.
 #' [carbondate::WalkerBivarDirichlet] or
-#' [carbondate::BivarGibbsDirichletwithSlice] or a list, each item containing
+#' [carbondate::PolyaUrnBivarDirichlet] or a list, each item containing
 #' one of these values. Optionally, the output data can have an extra list item
 #' named `label` which is used to set the label on the plot legend.
 #' @param n_posterior_samples Current number of samples it will draw from this
 #' posterior to estimate the calendar age density (possibly repeats).
-#' @param show_SPD Whether to calculate and show the summed probability function
-#' on the plot (optional). Default is `TRUE`.
-#' @param show_confidence_intervals Whether to show the 95% confidence intervals
-#' of the posterior density on the plot. Default is `TRUE`.
+#' @param calibration_curve This is usually not required since the name of the
+#' calibration curve variable is saved in the output data. However if the
+#' variable with this name is no longer in your environment then you should pass
+#' the calibration curve here. If provided this should be a dataframe which
+#' should contain at least 3 columns entitled calendar_age, c14_age and c14_sig.
+#' This format matches [carbondate::intcal20].
+#' @param show_SPD Whether to calculate and show the summed probability
+#' distribution on the plot (optional). Default is `FALSE`.
+#' @param show_confidence_intervals Whether to show the confidence intervals
+#' for the chosen probability on the plot. Default is `TRUE`.
+#' @param interval_width The confidence intervals to show for both the
+#' calibration curve and the predictive density. Choose from one of `"1sigma"`,
+#' `"2sigma"` and `"bespoke"`. Default is `"2sigma"`.
+#' @param bespoke_probability The probability to use for the confidence interval
+#' if `"bespoke"` is chosen above. E.g. if 0.95 is chosen, then the 95% confidence
+#' interval is calculated. Ignored if `"bespoke"` is not chosen.
 #' @param true_density The true calendar age density (optional). Expects a data
 #' frame with two columns, the first column being calendar age and the right
 #' column being the normalized density.
@@ -25,7 +38,8 @@
 #' @param denscale Whether to scale the vertical range of the density plot
 #' relative to the calibration curve plot (optional). Default is 3 which means
 #' that the maximum SPD density will be at 1/3 of the height of the plot.
-#' TODO: base on the output data.
+#' @param n_calc Number of points to use when calculating the predictive
+#' density. Default is 1001.
 #'
 #' @return A list, each item containing a data frame of the `calendar_age`, the
 #' `density_mean` and the 95% confidence intervals for the density
@@ -35,60 +49,69 @@
 #'
 #' @examples
 #' # Plot results for a single calibration
-#' PlotCalendarAgeDensity(
-#'   c14_determinations = kerr$c14_ages,
-#'   c14_uncertainties = kerr$c14_sig,
-#'   calibration_curve = intcal20,
-#'   output_data = walker_example_output,
-#'   n_posterior_samples = 500)
+#' PlotPredictiveCalendarAgeDensity(walker_example_output, 500)
 #'
 #' # Plot results from a calibration, and add a label
 #' new_output = walker_example_output
 #' new_output$label = "My plot"
-#' PlotCalendarAgeDensity(
-#'   c14_determinations = kerr$c14_ages,
-#'   c14_uncertainties = kerr$c14_sig,
-#'   calibration_curve = intcal20,
-#'   output_data = walker_example_output,
-#'   n_posterior_samples = 500)
-PlotCalendarAgeDensity <- function(
-    c14_determinations,
-    c14_uncertainties,
-    calibration_curve,
+#' PlotPredictiveCalendarAgeDensity(new_output, 500)
+#'
+#' # Plot results from two calibrations on the same plot, and show the SPD
+#' PlotPredictiveCalendarAgeDensity(
+#'   list(walker_example_output, polya_urn_example_output), 500, show_SPD = TRUE)
+#'
+#' # Plot and show the 1-sigma confidence interval
+#' PlotPredictiveCalendarAgeDensity(walker_example_output, 500, interval_width = "1sigma")
+#'
+#' # Plot and show the 80% confidence interval
+#' PlotPredictiveCalendarAgeDensity(
+#'   walker_example_output, 500, interval_width = "bespoke", bespoke_probability = 0.8)
+PlotPredictiveCalendarAgeDensity <- function(
     output_data,
     n_posterior_samples,
-    show_SPD = TRUE,
+    calibration_curve = NULL,
+    show_SPD = FALSE,
     show_confidence_intervals = TRUE,
+    interval_width = "2sigma",
+    bespoke_probability = NA,
     true_density = NULL,
     xlimscal = 1,
     ylimscal = 1,
-    denscale = 3) {
+    denscale = 3,
+    n_calc = 1001) {
 
   ##############################################################################
   # Check input parameters
 
   arg_check <- checkmate::makeAssertCollection()
-  .check_input_data(
-    arg_check, c14_determinations, c14_uncertainties, calibration_curve)
 
   # Treat single output data as a list of length 1
   if (!is.null(output_data$update_type)) output_data = list(output_data)
 
+  .CheckMultipleOutputDataConsistent(output_data)
   num_data = length(output_data)
   for (i in 1:num_data) {
-    .check_output_data(arg_check, output_data[[i]])
+    .CheckOutputData(arg_check, output_data[[i]])
+    .CheckCalibrationCurveFromOutput(
+      arg_check, output_data[[i]], calibration_curve)
     if (is.null(output_data[[i]]$label)) {
-      output_data[[i]]$label <- stringr::str_to_title(
-        output_data[[i]]$update_type)
+      output_data[[i]]$label <- output_data[[i]]$update_type
     }
   }
   checkmate::assertInt(n_posterior_samples, lower = 10, add = arg_check)
+  .CheckIntervalWidth(arg_check, interval_width, bespoke_probability)
   checkmate::assertNumber(xlimscal, lower = 0, add = arg_check)
   checkmate::assertNumber(ylimscal, lower = 0, add = arg_check)
   checkmate::assertNumber(denscale, lower = 0, add = arg_check)
   checkmate::assertDataFrame(
     true_density, types = "numeric", null.ok = TRUE, add = arg_check)
   checkmate::reportAssertions(arg_check)
+
+  if (is.null(calibration_curve)) {
+    calibration_curve = get(output_data[[1]]$input_data$calibration_curve_name)
+  }
+  c14_determinations = output_data[[1]]$input_data$c14_determinations
+  c14_sigmas = output_data[[1]]$input_data$c14_sigmas
 
   ##############################################################################
   # Initialise plotting parameters
@@ -102,23 +125,27 @@ PlotCalendarAgeDensity <- function(
   }
   true_density_colour = "red"
 
-  calendar_age_sequence <- .CreateRangeToPlotDensity(output_data[[1]])
+  calendar_age_sequence <- .CreateRangeToPlotDensity(output_data[[1]], n_calc)
 
   ##############################################################################
   # Calculate density distributions
 
   if (show_SPD){
-    SPD = FindSPD(
-      calendar_age_range = floor(range(output_data[[1]]$calendar_ages)),
+    SPD = FindSummedProbabilityDistribution(
+      calendar_age_range = floor(range(calendar_age_sequence)),
       c14_determinations = c14_determinations,
-      c14_uncertainties = c14_uncertainties,
+      c14_sigmas = c14_sigmas,
       calibration_curve = calibration_curve)
   }
 
-  posterior_density <- list()
+  predictive_density <- list()
   for (i in 1:num_data) {
-    posterior_density[[i]] <- .FindPosteriorDensityMeanAndCI(
-      output_data[[i]], calendar_age_sequence, n_posterior_samples)
+    predictive_density[[i]] <- FindPredictiveCalendarAgeDensity(
+      output_data[[i]],
+      calendar_age_sequence,
+      n_posterior_samples,
+      interval_width,
+      bespoke_probability)
   }
   ##############################################################################
   # Calculate plot scaling
@@ -126,9 +153,9 @@ PlotCalendarAgeDensity <- function(
   xlim <- .ScaleLimit(rev(range(calendar_age_sequence)), xlimscal)
   ylim_calibration <- .ScaleLimit(
     range(c14_determinations) +
-      c(-2, 2) * stats::quantile(c14_uncertainties, 0.9),
+      c(-2, 2) * stats::quantile(c14_sigmas, 0.9),
     ylimscal)
-  ylim_density = c(0, denscale * max(posterior_density[[1]]$density_mean))
+  ylim_density = c(0, denscale * max(predictive_density[[1]]$density_mean))
 
   ##############################################################################
   # Plot curves
@@ -139,7 +166,9 @@ PlotCalendarAgeDensity <- function(
     calibration_curve,
     c14_determinations,
     calibration_curve_colour,
-    calibration_curve_bg)
+    calibration_curve_bg,
+    interval_width,
+    bespoke_probability)
 
   .SetUpDensityPlot(xlim, ylim_density)
 
@@ -149,7 +178,7 @@ PlotCalendarAgeDensity <- function(
 
   for (i in 1:num_data) {
     .PlotDensityEstimateOnCurrentPlot(
-      posterior_density[[i]], output_colours[[i]], show_confidence_intervals)
+      predictive_density[[i]], output_colours[[i]], show_confidence_intervals)
   }
 
   if (is.data.frame(true_density)) {
@@ -161,20 +190,22 @@ PlotCalendarAgeDensity <- function(
     show_SPD,
     is.data.frame(true_density),
     show_confidence_intervals,
+    interval_width,
+    bespoke_probability,
     calibration_curve_colour,
     output_colours,
     SPD_colour,
     true_density_colour)
 
-  invisible(posterior_density)
+  invisible(predictive_density)
 }
 
 
-.CreateRangeToPlotDensity <- function(output_data) {
+.CreateRangeToPlotDensity <- function(output_data, n_calc) {
   calendar_age_sequence <- seq(
     floor(min(output_data$calendar_ages, na.rm = TRUE)),
     ceiling(max(output_data$calendar_ages, na.rm = TRUE)),
-    by = 1,
+    length = n_calc,
   )
   return(calendar_age_sequence)
 }
@@ -192,8 +223,33 @@ PlotCalendarAgeDensity <- function(
     calibration_curve,
     c14_determinations,
     calibration_curve_colour,
-    calibration_curve_bg){
+    calibration_curve_bg,
+    interval_width,
+    bespoke_probability){
   graphics::par(mar = c(5, 4.5, 4, 2) + 0.1, las = 1)
+  .PlotCalibrationCurve(
+    xlim,
+    ylim,
+    calibration_curve,
+    calibration_curve_colour,
+    calibration_curve_bg,
+    interval_width,
+    bespoke_probability,
+    title = "Calendar age density estimate")
+  graphics::rug(c14_determinations, side = 2)
+}
+
+
+.PlotCalibrationCurve = function(
+    xlim,
+    ylim,
+    calibration_curve,
+    calibration_curve_colour,
+    calibration_curve_bg,
+    interval_width,
+    bespoke_probability,
+    title) {
+
   graphics::plot.default(
     calibration_curve$calendar_age,
     calibration_curve$c14_age,
@@ -203,12 +259,17 @@ PlotCalendarAgeDensity <- function(
     xlab = "Calendar Age (cal yr BP)",
     ylab = expression(paste(""^14, "C", " age (", ""^14, "C yr BP)")),
     type = "l",
-    main = expression(paste("Calendar age density estimate")),
-  )
+    main = title)
+  # multiplier for the confidence interval if you have a standard deviation
+  zquant <- switch(
+    interval_width,
+    "1sigma" = 1,
+    "2sigma" = 2,
+    "bespoke" = - stats::qnorm((1 - bespoke_probability) / 2))
   calibration_curve$ub <- calibration_curve$c14_age +
-    1.96 * calibration_curve$c14_sig
+    zquant * calibration_curve$c14_sig
   calibration_curve$lb <- calibration_curve$c14_age -
-    1.96 * calibration_curve$c14_sig
+    zquant * calibration_curve$c14_sig
 
   graphics::lines(
     calibration_curve$calendar_age,
@@ -225,7 +286,6 @@ PlotCalendarAgeDensity <- function(
     c(rev(calibration_curve$lb), calibration_curve$ub),
     col = calibration_curve_bg,
     border = NA)
-  graphics::rug(c14_determinations, side = 2)
 }
 
 
@@ -253,21 +313,21 @@ PlotCalendarAgeDensity <- function(
 
 
 .PlotDensityEstimateOnCurrentPlot <- function(
-    posterior_density, output_colour, show_confidence_intervals) {
+    predictive_density, output_colour, show_confidence_intervals) {
 
   graphics::lines(
-    posterior_density$calendar_age,
-    posterior_density$density_mean,
+    predictive_density$calendar_age,
+    predictive_density$density_mean,
     col = output_colour)
   if (show_confidence_intervals) {
     graphics::lines(
-      posterior_density$calendar_age,
-      posterior_density$density_ci_lower,
+      predictive_density$calendar_age,
+      predictive_density$density_ci_lower,
       col = output_colour,
       lty = 2)
     graphics::lines(
-      posterior_density$calendar_age,
-      posterior_density$density_ci_upper,
+      predictive_density$calendar_age,
+      predictive_density$density_ci_upper,
       col = output_colour,
       lty = 2)
   }
@@ -285,14 +345,23 @@ PlotCalendarAgeDensity <- function(
     show_SPD,
     show_true_density,
     show_confidence_intervals,
+    interval_width,
+    bespoke_probability,
     calibration_curve_colour,
     output_colours,
     SPD_colour,
     true_density_colour) {
-  legend_labels = "IntCal20"
-  lty = 1
-  pch = NA
-  col = calibration_curve_colour
+
+  ci_label = switch(
+    interval_width,
+    "1sigma" = "1 sigma interval",
+    "2sigma"  = "2 sigma interval",
+    "bespoke" = paste(round(100*bespoke_probability), "% interval", sep = ""))
+
+  legend_labels = c("IntCal20", ci_label)
+  lty = c(1, 2)
+  pch = c(NA, NA)
+  col = c(calibration_curve_colour, calibration_curve_colour)
 
   for (i in 1:length(output_data)) {
     legend_labels <- c(legend_labels, output_data[[i]]$label)
@@ -301,8 +370,7 @@ PlotCalendarAgeDensity <- function(
     col <- c(col, output_colours[[i]])
 
     if (show_confidence_intervals) {
-      legend_labels <- c(
-        legend_labels, paste(output_data[[i]]$label, " 95% prob interval"))
+      legend_labels <- c(legend_labels, ci_label)
       lty <- c(lty, 2)
       pch <- c(pch, NA)
       col <- c(col, output_colours[[i]])

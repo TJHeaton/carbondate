@@ -38,34 +38,29 @@ illustrative purposes.)
 ``` r
 library(carbondate)
 
-walker_temp = WalkerBivarDirichlet(
-   c14_determinations = kerr$c14_ages,
-   c14_uncertainties = kerr$c14_sig,
-   calibration_curve = intcal20,
-   lambda = 0.1,
-   nu1 = 0.25,
-   nu2 = 10,
-   alpha_shape = 1,
-   alpha_rate = 1)
+walker_output <- WalkerBivarDirichlet(
+  c14_determinations = kerr$c14_ages,
+  c14_sigmas = kerr$c14_sig,
+  calibration_curve=intcal20,
+  n_iter = 100,
+  n_thin = 5)
 ```
 
 Once the calibration has been run, the calendar age density can be
 plotted.
 
 ``` r
-PlotCalendarAgeDensity(
-  c14_determinations = kerr$c14_ages,
-  c14_uncertainties = kerr$c14_sig,
-  calibration_curve = intcal20,
-  output_data = walker_example_output,
-  n_posterior_samples = 500)
+densities = PlotPredictiveCalendarAgeDensity(
+  output_data = list(walker_example_output, polya_urn_example_output),
+  n_posterior_samples = 500,
+  denscale = 2.5,
+  show_SPD = TRUE)
 ```
 
-Here, instead of plotting the output from the example above, we plot
-output which has been run with the `kerr` data and 100,000 iterations,
-and with slightly different input values.
+<img src="man/figures/README-plot_density-1.png" width="100%" />
 
-<img src="man/figures/README-calendar_age-1.png" width="100%" />
+Here, instead of plotting the output from the example above, we plot
+output which has been run with the `kerr` data and 100,000 iterations.
 
 For a full example run-through, load the vignette:
 
