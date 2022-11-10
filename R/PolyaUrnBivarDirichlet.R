@@ -240,11 +240,9 @@ PolyaUrnBivarDirichlet <- function(
 
     for (k in 1:num_observations) {
       calendar_ages[k] <- .SliceSample(
-        TARGET = .ThetaLogLikelihood,
         x0 = calendar_ages[k],
-        slice_width = slice_width,
-        slice_multiplier = slice_multiplier,
-        type = "log",
+        w = slice_width,
+        m = slice_multiplier,
         prmean = phi[cluster_identifiers[k]],
         prsig = 1 / sqrt(tau[cluster_identifiers[k]]),
         c14obs = c14_determinations[k],
