@@ -48,6 +48,8 @@
 #' @param calendar_ages  The initial estimate for the underlying calendar ages
 #' (optional). If supplied it must be a vector with the same length as
 #' `c14_determinations`.  Required if `sensible_initialisation` is `FALSE`.
+#' @param use_cpp_slice_sample DEV ONLY: Use new cpp function for slice sampling
+#' (should be faster).
 #'
 #' @return A list with 11 items. The first 8 items contain output data, each of
 #' which have one dimension of size \eqn{n_{\textrm{out}} =
@@ -115,7 +117,8 @@ WalkerBivarDirichlet <- function(
     alpha_rate = NA,
     mu_phi = NA,
     calendar_ages = NA,
-    n_clust = min(10, length(c14_determinations))) {
+    n_clust = min(10, length(c14_determinations)),
+    use_cpp_slice_sample = FALSE) {
 
   ##############################################################################
   # Check input parameters
@@ -143,6 +146,12 @@ WalkerBivarDirichlet <- function(
   .CheckSliceParameters(arg_check, slice_width, slice_multiplier)
 
   checkmate::reportAssertions(arg_check)
+
+  if (use_cpp_slice_sample) {
+    slice_sample_fn = SliceSample_cpp
+  } else {
+    slice_sample_fn = .SliceSample
+  }
 
   ##############################################################################
   # Initialise parameters
@@ -266,7 +275,7 @@ WalkerBivarDirichlet <- function(
     mu_phi <- .UpdateMuPhi(phi = phi, tau = tau, lambda = lambda, A = A, B = B)
 
     for (k in 1:num_observations) {
-      calendar_ages[k] <- .SliceSample(
+      calendar_ages[k] <- slice_sample_fn(
         x0 = calendar_ages[k],
         w = slice_width,
         m = slice_multiplier,

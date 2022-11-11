@@ -24,7 +24,8 @@ WalkerBivarDirichlet(
   alpha_rate = NA,
   mu_phi = NA,
   calendar_ages = NA,
-  n_clust = min(10, length(c14_determinations))
+  n_clust = min(10, length(c14_determinations)),
+  use_cpp_slice_sample = FALSE
 )
 }
 \arguments{
@@ -89,6 +90,9 @@ Required if \code{sensible_initialisation} is \code{FALSE}.}
 \item{n_clust}{The initial number of clusters (optional). Must
 be less than the length of \code{c14_determinations}. Default is 10 or the length
 of \code{c14_determinations} if it is less than 10.}
+
+\item{use_cpp_slice_sample}{DEV ONLY: Use new cpp function for slice sampling
+(should be faster).}
 }
 \value{
 A list with 11 items. The first 8 items contain output data, each of

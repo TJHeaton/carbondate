@@ -79,7 +79,8 @@ PolyaUrnBivarDirichlet <- function(
     alpha_rate = NA,
     mu_phi = NA,
     calendar_ages = NA,
-    correct_start_tau = TRUE) {
+    correct_start_tau = TRUE,
+    use_cpp_slice_sample = FALSE) {
 
   ##############################################################################
   # Check input parameters
@@ -107,6 +108,12 @@ PolyaUrnBivarDirichlet <- function(
   .CheckSliceParameters(arg_check, slice_width, slice_multiplier)
 
   checkmate::reportAssertions(arg_check)
+
+  if (use_cpp_slice_sample) {
+    slice_sample_fn = SliceSample_cpp
+  } else {
+    slice_sample_fn = .SliceSample
+  }
 
   ##############################################################################
   # Initialise parameters
@@ -239,7 +246,7 @@ PolyaUrnBivarDirichlet <- function(
     mu_phi <- .UpdateMuPhi(phi = phi, tau = tau, lambda = lambda, A = A, B = B)
 
     for (k in 1:num_observations) {
-      calendar_ages[k] <- .SliceSample(
+      calendar_ages[k] <- slice_sample_fn(
         x0 = calendar_ages[k],
         w = slice_width,
         m = slice_multiplier,
