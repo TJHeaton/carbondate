@@ -79,7 +79,8 @@ PolyaUrnBivarDirichlet <- function(
     alpha_rate = NA,
     mu_phi = NA,
     calendar_ages = NA,
-    correct_start_tau = TRUE) {
+    correct_start_tau = TRUE,
+    use_cpp = TRUE) {
 
   ##############################################################################
   # Check input parameters
@@ -238,19 +239,32 @@ PolyaUrnBivarDirichlet <- function(
     }
     mu_phi <- .UpdateMuPhi(phi = phi, tau = tau, lambda = lambda, A = A, B = B)
 
-    for (k in 1:num_observations) {
-      calendar_ages[k] <- .SliceSample(
-        TARGET = .ThetaLogLikelihood,
-        x0 = calendar_ages[k],
-        slice_width = slice_width,
-        slice_multiplier = slice_multiplier,
-        type = "log",
-        prmean = phi[cluster_identifiers[k]],
-        prsig = 1 / sqrt(tau[cluster_identifiers[k]]),
-        c14obs = c14_determinations[k],
-        c14sig = c14_sigmas[k],
-        mucalallyr = interpolated_c14_age,
-        sigcalallyr = interpolated_c14_sig)
+    if (use_cpp) {
+      calendar_ages = UpdateCalendarAges_cpp(
+        num_observations,
+        as.double(calendar_ages),
+        slice_width,
+        slice_multiplier,
+        as.integer(cluster_identifiers),
+        as.double(phi),
+        as.double(tau),
+        as.double(c14_determinations),
+        as.double(c14_sigmas),
+        as.double(interpolated_c14_age),
+        as.double(interpolated_c14_sig))
+    } else {
+      for (k in 1:num_observations) {
+        calendar_ages[k] <- .SliceSample(
+          x0 = calendar_ages[k],
+          w = slice_width,
+          m = slice_multiplier,
+          prmean = phi[cluster_identifiers[k]],
+          prsig = 1 / sqrt(tau[cluster_identifiers[k]]),
+          c14obs = c14_determinations[k],
+          c14sig = c14_sigmas[k],
+          mucalallyr = interpolated_c14_age,
+          sigcalallyr = interpolated_c14_sig)
+      }
     }
 
     alpha <- .UpdateAlphaGammaPrior(
