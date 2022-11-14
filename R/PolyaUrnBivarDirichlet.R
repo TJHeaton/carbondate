@@ -240,7 +240,7 @@ PolyaUrnBivarDirichlet <- function(
     mu_phi <- .UpdateMuPhi(phi = phi, tau = tau, lambda = lambda, A = A, B = B)
 
     if (use_cpp) {
-      calendar_ages = Update_calendar_ages_cpp(
+      calendar_ages = UpdateCalendarAges_cpp(
         num_observations,
         as.double(calendar_ages),
         slice_width,

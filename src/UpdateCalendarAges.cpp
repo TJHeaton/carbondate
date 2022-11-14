@@ -118,7 +118,7 @@ public:
 }
 
 
-[[cpp11::register]] doubles Update_calendar_ages_cpp(
+[[cpp11::register]] doubles UpdateCalendarAges_cpp(
     int n,
     doubles calendar_ages,
     double w,
