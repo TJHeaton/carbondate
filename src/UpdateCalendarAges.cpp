@@ -92,7 +92,7 @@ public:
 
   // RHS stepping out
   while ((K > 0) & (y < ThetaLogLikelihood_cpp(
-      R, prmean, prsig, c14obs, c14sig, mucalallyr, sigcalallyr)) {
+      R, prmean, prsig, c14obs, c14sig, mucalallyr, sigcalallyr))) {
     R += w;
     K -= 1;
   }

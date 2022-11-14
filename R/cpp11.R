@@ -8,6 +8,6 @@ SliceSample_cpp <- function(x0, w, m, prmean, prsig, c14obs, c14sig, mucalallyr,
   .Call(`_carbondate_SliceSample_cpp`, x0, w, m, prmean, prsig, c14obs, c14sig, mucalallyr, sigcalallyr)
 }
 
-Update_calendar_ages_cpp <- function(n, calendar_ages, w, m, cluster_identifiers, phi, tau, c14_determinations, c14_sigmas, mucalallyr, sigcalallyr) {
-  .Call(`_carbondate_Update_calendar_ages_cpp`, n, calendar_ages, w, m, cluster_identifiers, phi, tau, c14_determinations, c14_sigmas, mucalallyr, sigcalallyr)
+UpdateCalendarAges_cpp <- function(n, calendar_ages, w, m, cluster_identifiers, phi, tau, c14_determinations, c14_sigmas, mucalallyr, sigcalallyr) {
+  .Call(`_carbondate_UpdateCalendarAges_cpp`, n, calendar_ages, w, m, cluster_identifiers, phi, tau, c14_determinations, c14_sigmas, mucalallyr, sigcalallyr)
 }
