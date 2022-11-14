@@ -35,7 +35,7 @@ public:
 
   yr = floor(theta) - 1;
 
-  if (yr < 0 | yr >= mucalallyr.size()) {
+  if ((yr < 0) | (yr >= mucalallyr.size())) {
     return -std::numeric_limits<double>::infinity();
   }
 
@@ -84,14 +84,14 @@ public:
   K = m - 1 - J;
 
   // LHS stepping out
-  while (J > 0 & y < ThetaLogLikelihood_cpp(
-      L, prmean, prsig, c14obs, c14sig, mucalallyr, sigcalallyr)) {
+  while ((J > 0) & (y < ThetaLogLikelihood_cpp(
+      L, prmean, prsig, c14obs, c14sig, mucalallyr, sigcalallyr))) {
     L -= w;
     J -= 1;
   }
 
   // RHS stepping out
-  while (K > 0 & y < ThetaLogLikelihood_cpp(
+  while ((K > 0) & (y < ThetaLogLikelihood_cpp(
       R, prmean, prsig, c14obs, c14sig, mucalallyr, sigcalallyr)) {
     R += w;
     K -= 1;
