@@ -1,12 +1,23 @@
 #include "cpp11/doubles.hpp"
+#include "cpp11/integers.hpp"
 #include "Rmath.h"
+#include "R_ext/Random.h"
 #include <limits>
 using namespace cpp11;
 
+// Get and set the random number generator set on entering and exiting functions
+// Important so we get the same stream of random numbers when interchanging
+// between R and C++ as we would by running the code only in R.
+class local_rng {
+public:
+  local_rng() {
+    GetRNGstate();
+  }
 
-[[cpp11::register]] double random_test_cpp(void) {
-  return Rf_runif(0, 1);
-}
+  ~local_rng(){
+    PutRNGstate();
+  }
+};
 
 
 [[cpp11::register]] double ThetaLogLikelihood_cpp(
@@ -49,10 +60,11 @@ using namespace cpp11;
     doubles mucalallyr,
     doubles sigcalallyr) {
 
-    double y;     // Slice height
-    double L, R;  // Each side of calender age slice interval
-    double J, K;  // Max steps on left and right hand sides
-    double x1;    // Current sampled value
+  local_rng rng_state;
+  double y;     // Slice height
+  double L, R;  // Each side of calender age slice interval
+  double J, K;  // Max steps on left and right hand sides
+  double x1;    // Current sampled value
 
   //////////////////////////////////////////////
   // Slice height
@@ -106,4 +118,41 @@ using namespace cpp11;
 }
 
 
+[[cpp11::register]] doubles Update_calendar_ages_cpp(
+    int n,
+    doubles calendar_ages,
+    double w,
+    double m,
+    integers cluster_identifiers,
+    doubles phi,
+    doubles tau,
+    doubles c14_determinations,
+    doubles c14_sigmas,
+    doubles mucalallyr,
+    doubles sigcalallyr) {
+
+  writable::doubles calendar_ages_new(n);
+  double prmean;
+  double prsig;
+  int ci;
+
+  for (int k = 0; k < n; ++k) {
+    ci = cluster_identifiers[k];
+    prmean = phi[ci-1];
+    prsig = 1.0 / sqrt(tau[ci-1]);
+
+    calendar_ages_new[k] = SliceSample_cpp(
+      calendar_ages[k],
+      w,
+      m,
+      prmean,
+      prsig,
+      c14_determinations[k],
+      c14_sigmas[k],
+      mucalallyr,
+      sigcalallyr);
+  }
+
+  return calendar_ages_new;
+}
 

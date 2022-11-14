@@ -26,7 +26,7 @@ PolyaUrnBivarDirichlet(
   mu_phi = NA,
   calendar_ages = NA,
   correct_start_tau = TRUE,
-  use_cpp_slice_sample = FALSE
+  use_cpp = TRUE
 )
 }
 \arguments{
@@ -97,8 +97,7 @@ Required if \code{sensible_initialisation} is \code{FALSE}.}
 if FALSE uses the value in the original code which is:
 \code{tau <- rep(n_clust, 1 / (diff(range(c14_determinations)) / 4)^2)}}
 
-\item{use_cpp_slice_sample}{DEV ONLY: Use new cpp function for slice sampling
-(should be faster).}
+\item{use_cpp}{DEV ONLY: Use new cpp functions (should be faster).}
 }
 \value{
 A list with 10 items. The first 7 items contain output data, each of

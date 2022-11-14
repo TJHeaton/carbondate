@@ -6,13 +6,6 @@
 #include <R_ext/Visibility.h>
 
 // SliceSample.cpp
-double random_test_cpp();
-extern "C" SEXP _carbondate_random_test_cpp() {
-  BEGIN_CPP11
-    return cpp11::as_sexp(random_test_cpp());
-  END_CPP11
-}
-// SliceSample.cpp
 double ThetaLogLikelihood_cpp(double theta, double prmean, double prsig, double c14obs, double c14sig, doubles mucalallyr, doubles sigcalallyr);
 extern "C" SEXP _carbondate_ThetaLogLikelihood_cpp(SEXP theta, SEXP prmean, SEXP prsig, SEXP c14obs, SEXP c14sig, SEXP mucalallyr, SEXP sigcalallyr) {
   BEGIN_CPP11
@@ -26,12 +19,19 @@ extern "C" SEXP _carbondate_SliceSample_cpp(SEXP x0, SEXP w, SEXP m, SEXP prmean
     return cpp11::as_sexp(SliceSample_cpp(cpp11::as_cpp<cpp11::decay_t<double>>(x0), cpp11::as_cpp<cpp11::decay_t<double>>(w), cpp11::as_cpp<cpp11::decay_t<double>>(m), cpp11::as_cpp<cpp11::decay_t<double>>(prmean), cpp11::as_cpp<cpp11::decay_t<double>>(prsig), cpp11::as_cpp<cpp11::decay_t<double>>(c14obs), cpp11::as_cpp<cpp11::decay_t<double>>(c14sig), cpp11::as_cpp<cpp11::decay_t<doubles>>(mucalallyr), cpp11::as_cpp<cpp11::decay_t<doubles>>(sigcalallyr)));
   END_CPP11
 }
+// SliceSample.cpp
+doubles Update_calendar_ages_cpp(int n, doubles calendar_ages, double w, double m, integers cluster_identifiers, doubles phi, doubles tau, doubles c14_determinations, doubles c14_sigmas, doubles mucalallyr, doubles sigcalallyr);
+extern "C" SEXP _carbondate_Update_calendar_ages_cpp(SEXP n, SEXP calendar_ages, SEXP w, SEXP m, SEXP cluster_identifiers, SEXP phi, SEXP tau, SEXP c14_determinations, SEXP c14_sigmas, SEXP mucalallyr, SEXP sigcalallyr) {
+  BEGIN_CPP11
+    return cpp11::as_sexp(Update_calendar_ages_cpp(cpp11::as_cpp<cpp11::decay_t<int>>(n), cpp11::as_cpp<cpp11::decay_t<doubles>>(calendar_ages), cpp11::as_cpp<cpp11::decay_t<double>>(w), cpp11::as_cpp<cpp11::decay_t<double>>(m), cpp11::as_cpp<cpp11::decay_t<integers>>(cluster_identifiers), cpp11::as_cpp<cpp11::decay_t<doubles>>(phi), cpp11::as_cpp<cpp11::decay_t<doubles>>(tau), cpp11::as_cpp<cpp11::decay_t<doubles>>(c14_determinations), cpp11::as_cpp<cpp11::decay_t<doubles>>(c14_sigmas), cpp11::as_cpp<cpp11::decay_t<doubles>>(mucalallyr), cpp11::as_cpp<cpp11::decay_t<doubles>>(sigcalallyr)));
+  END_CPP11
+}
 
 extern "C" {
 static const R_CallMethodDef CallEntries[] = {
-    {"_carbondate_SliceSample_cpp",        (DL_FUNC) &_carbondate_SliceSample_cpp,        9},
-    {"_carbondate_ThetaLogLikelihood_cpp", (DL_FUNC) &_carbondate_ThetaLogLikelihood_cpp, 7},
-    {"_carbondate_random_test_cpp",        (DL_FUNC) &_carbondate_random_test_cpp,        0},
+    {"_carbondate_SliceSample_cpp",          (DL_FUNC) &_carbondate_SliceSample_cpp,           9},
+    {"_carbondate_ThetaLogLikelihood_cpp",   (DL_FUNC) &_carbondate_ThetaLogLikelihood_cpp,    7},
+    {"_carbondate_Update_calendar_ages_cpp", (DL_FUNC) &_carbondate_Update_calendar_ages_cpp, 11},
     {NULL, NULL, 0}
 };
 }

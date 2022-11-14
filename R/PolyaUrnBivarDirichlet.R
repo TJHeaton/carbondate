@@ -80,7 +80,7 @@ PolyaUrnBivarDirichlet <- function(
     mu_phi = NA,
     calendar_ages = NA,
     correct_start_tau = TRUE,
-    use_cpp_slice_sample = FALSE) {
+    use_cpp = TRUE) {
 
   ##############################################################################
   # Check input parameters
@@ -108,12 +108,6 @@ PolyaUrnBivarDirichlet <- function(
   .CheckSliceParameters(arg_check, slice_width, slice_multiplier)
 
   checkmate::reportAssertions(arg_check)
-
-  if (use_cpp_slice_sample) {
-    slice_sample_fn = SliceSample_cpp
-  } else {
-    slice_sample_fn = .SliceSample
-  }
 
   ##############################################################################
   # Initialise parameters
@@ -245,17 +239,32 @@ PolyaUrnBivarDirichlet <- function(
     }
     mu_phi <- .UpdateMuPhi(phi = phi, tau = tau, lambda = lambda, A = A, B = B)
 
-    for (k in 1:num_observations) {
-      calendar_ages[k] <- slice_sample_fn(
-        x0 = calendar_ages[k],
-        w = slice_width,
-        m = slice_multiplier,
-        prmean = phi[cluster_identifiers[k]],
-        prsig = 1 / sqrt(tau[cluster_identifiers[k]]),
-        c14obs = c14_determinations[k],
-        c14sig = c14_sigmas[k],
-        mucalallyr = interpolated_c14_age,
-        sigcalallyr = interpolated_c14_sig)
+    if (use_cpp) {
+      calendar_ages = Update_calendar_ages_cpp(
+        num_observations,
+        as.double(calendar_ages),
+        slice_width,
+        slice_multiplier,
+        as.integer(cluster_identifiers),
+        as.double(phi),
+        as.double(tau),
+        as.double(c14_determinations),
+        as.double(c14_sigmas),
+        as.double(interpolated_c14_age),
+        as.double(interpolated_c14_sig))
+    } else {
+      for (k in 1:num_observations) {
+        calendar_ages[k] <- .SliceSample(
+          x0 = calendar_ages[k],
+          w = slice_width,
+          m = slice_multiplier,
+          prmean = phi[cluster_identifiers[k]],
+          prsig = 1 / sqrt(tau[cluster_identifiers[k]]),
+          c14obs = c14_determinations[k],
+          c14sig = c14_sigmas[k],
+          mucalallyr = interpolated_c14_age,
+          sigcalallyr = interpolated_c14_sig)
+      }
     }
 
     alpha <- .UpdateAlphaGammaPrior(

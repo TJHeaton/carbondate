@@ -2,14 +2,14 @@ library(proftools)
 
 set.seed(14)
 
-n_iter = 10000
+n_iter = 1000
 n_thin = 10
 
 profile_walker <- function(n_iter, n_thin, use_cpp) {
-  file_pref = paste("Walker", n_iter, n_thin, "cpp", use_cpp, sep="_")
+  file_pref = paste("Polya_urn", n_iter, n_thin, "cpp", use_cpp, sep="_")
 
   Rprof(paste("profiling/", file_pref, ".out", sep = ""))
-  walker_output = WalkerBivarDirichlet(
+  walker_output = PolyaUrnBivarDirichlet(
     kerr$c14_ages,
     kerr$c14_sig,
     intcal20,
