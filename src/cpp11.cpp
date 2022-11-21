@@ -5,18 +5,39 @@
 #include "cpp11/declarations.hpp"
 #include <R_ext/Visibility.h>
 
-// UpdateCalendarAges.cpp
-double ThetaLogLikelihood_cpp(double theta, double prmean, double prsig, double c14obs, double c14sig, doubles mucalallyr, doubles sigcalallyr);
-extern "C" SEXP _carbondate_ThetaLogLikelihood_cpp(SEXP theta, SEXP prmean, SEXP prsig, SEXP c14obs, SEXP c14sig, SEXP mucalallyr, SEXP sigcalallyr) {
+// DPWalkerUpdate.cpp
+integers which_equal(integers vec, int i);
+extern "C" SEXP _carbondate_which_equal(SEXP vec, SEXP i) {
   BEGIN_CPP11
-    return cpp11::as_sexp(ThetaLogLikelihood_cpp(cpp11::as_cpp<cpp11::decay_t<double>>(theta), cpp11::as_cpp<cpp11::decay_t<double>>(prmean), cpp11::as_cpp<cpp11::decay_t<double>>(prsig), cpp11::as_cpp<cpp11::decay_t<double>>(c14obs), cpp11::as_cpp<cpp11::decay_t<double>>(c14sig), cpp11::as_cpp<cpp11::decay_t<doubles>>(mucalallyr), cpp11::as_cpp<cpp11::decay_t<doubles>>(sigcalallyr)));
+    return cpp11::as_sexp(which_equal(cpp11::as_cpp<cpp11::decay_t<integers>>(vec), cpp11::as_cpp<cpp11::decay_t<int>>(i)));
   END_CPP11
 }
-// UpdateCalendarAges.cpp
-double SliceSample_cpp(double x0, double w, double m, double prmean, double prsig, double c14obs, double c14sig, doubles mucalallyr, doubles sigcalallyr);
-extern "C" SEXP _carbondate_SliceSample_cpp(SEXP x0, SEXP w, SEXP m, SEXP prmean, SEXP prsig, SEXP c14obs, SEXP c14sig, SEXP mucalallyr, SEXP sigcalallyr) {
+// DPWalkerUpdate.cpp
+integers which_mt(doubles vec, double i);
+extern "C" SEXP _carbondate_which_mt(SEXP vec, SEXP i) {
   BEGIN_CPP11
-    return cpp11::as_sexp(SliceSample_cpp(cpp11::as_cpp<cpp11::decay_t<double>>(x0), cpp11::as_cpp<cpp11::decay_t<double>>(w), cpp11::as_cpp<cpp11::decay_t<double>>(m), cpp11::as_cpp<cpp11::decay_t<double>>(prmean), cpp11::as_cpp<cpp11::decay_t<double>>(prsig), cpp11::as_cpp<cpp11::decay_t<double>>(c14obs), cpp11::as_cpp<cpp11::decay_t<double>>(c14sig), cpp11::as_cpp<cpp11::decay_t<doubles>>(mucalallyr), cpp11::as_cpp<cpp11::decay_t<doubles>>(sigcalallyr)));
+    return cpp11::as_sexp(which_mt(cpp11::as_cpp<cpp11::decay_t<doubles>>(vec), cpp11::as_cpp<cpp11::decay_t<double>>(i)));
+  END_CPP11
+}
+// DPWalkerUpdate.cpp
+integers which_mt_int(integers vec, int i);
+extern "C" SEXP _carbondate_which_mt_int(SEXP vec, SEXP i) {
+  BEGIN_CPP11
+    return cpp11::as_sexp(which_mt_int(cpp11::as_cpp<cpp11::decay_t<integers>>(vec), cpp11::as_cpp<cpp11::decay_t<int>>(i)));
+  END_CPP11
+}
+// DPWalkerUpdate.cpp
+double update_v_j(integers delta, int clust_num, int n_clust, double brprod, doubles u, doubles v, double alpha);
+extern "C" SEXP _carbondate_update_v_j(SEXP delta, SEXP clust_num, SEXP n_clust, SEXP brprod, SEXP u, SEXP v, SEXP alpha) {
+  BEGIN_CPP11
+    return cpp11::as_sexp(update_v_j(cpp11::as_cpp<cpp11::decay_t<integers>>(delta), cpp11::as_cpp<cpp11::decay_t<int>>(clust_num), cpp11::as_cpp<cpp11::decay_t<int>>(n_clust), cpp11::as_cpp<cpp11::decay_t<double>>(brprod), cpp11::as_cpp<cpp11::decay_t<doubles>>(u), cpp11::as_cpp<cpp11::decay_t<doubles>>(v), cpp11::as_cpp<cpp11::decay_t<double>>(alpha)));
+  END_CPP11
+}
+// DPWalkerUpdate.cpp
+list DPWalkerUpdate_cpp(doubles calendar_ages, doubles weight, doubles v, integers cluster_identifiers, doubles phi, doubles tau, int n_clust, double alpha, double mu_phi, double lambda, double nu1, double nu2);
+extern "C" SEXP _carbondate_DPWalkerUpdate_cpp(SEXP calendar_ages, SEXP weight, SEXP v, SEXP cluster_identifiers, SEXP phi, SEXP tau, SEXP n_clust, SEXP alpha, SEXP mu_phi, SEXP lambda, SEXP nu1, SEXP nu2) {
+  BEGIN_CPP11
+    return cpp11::as_sexp(DPWalkerUpdate_cpp(cpp11::as_cpp<cpp11::decay_t<doubles>>(calendar_ages), cpp11::as_cpp<cpp11::decay_t<doubles>>(weight), cpp11::as_cpp<cpp11::decay_t<doubles>>(v), cpp11::as_cpp<cpp11::decay_t<integers>>(cluster_identifiers), cpp11::as_cpp<cpp11::decay_t<doubles>>(phi), cpp11::as_cpp<cpp11::decay_t<doubles>>(tau), cpp11::as_cpp<cpp11::decay_t<int>>(n_clust), cpp11::as_cpp<cpp11::decay_t<double>>(alpha), cpp11::as_cpp<cpp11::decay_t<double>>(mu_phi), cpp11::as_cpp<cpp11::decay_t<double>>(lambda), cpp11::as_cpp<cpp11::decay_t<double>>(nu1), cpp11::as_cpp<cpp11::decay_t<double>>(nu2)));
   END_CPP11
 }
 // UpdateCalendarAges.cpp
@@ -26,12 +47,23 @@ extern "C" SEXP _carbondate_UpdateCalendarAges_cpp(SEXP n, SEXP calendar_ages, S
     return cpp11::as_sexp(UpdateCalendarAges_cpp(cpp11::as_cpp<cpp11::decay_t<int>>(n), cpp11::as_cpp<cpp11::decay_t<doubles>>(calendar_ages), cpp11::as_cpp<cpp11::decay_t<double>>(w), cpp11::as_cpp<cpp11::decay_t<double>>(m), cpp11::as_cpp<cpp11::decay_t<integers>>(cluster_identifiers), cpp11::as_cpp<cpp11::decay_t<doubles>>(phi), cpp11::as_cpp<cpp11::decay_t<doubles>>(tau), cpp11::as_cpp<cpp11::decay_t<doubles>>(c14_determinations), cpp11::as_cpp<cpp11::decay_t<doubles>>(c14_sigmas), cpp11::as_cpp<cpp11::decay_t<doubles>>(mucalallyr), cpp11::as_cpp<cpp11::decay_t<doubles>>(sigcalallyr)));
   END_CPP11
 }
+// UpdatePhiTau.cpp
+doubles UpdatePhiTau_cpp(doubles calendar_ages, double mu_phi, double lambda, double nu1, double nu2);
+extern "C" SEXP _carbondate_UpdatePhiTau_cpp(SEXP calendar_ages, SEXP mu_phi, SEXP lambda, SEXP nu1, SEXP nu2) {
+  BEGIN_CPP11
+    return cpp11::as_sexp(UpdatePhiTau_cpp(cpp11::as_cpp<cpp11::decay_t<doubles>>(calendar_ages), cpp11::as_cpp<cpp11::decay_t<double>>(mu_phi), cpp11::as_cpp<cpp11::decay_t<double>>(lambda), cpp11::as_cpp<cpp11::decay_t<double>>(nu1), cpp11::as_cpp<cpp11::decay_t<double>>(nu2)));
+  END_CPP11
+}
 
 extern "C" {
 static const R_CallMethodDef CallEntries[] = {
-    {"_carbondate_SliceSample_cpp",        (DL_FUNC) &_carbondate_SliceSample_cpp,         9},
-    {"_carbondate_ThetaLogLikelihood_cpp", (DL_FUNC) &_carbondate_ThetaLogLikelihood_cpp,  7},
+    {"_carbondate_DPWalkerUpdate_cpp",     (DL_FUNC) &_carbondate_DPWalkerUpdate_cpp,     12},
     {"_carbondate_UpdateCalendarAges_cpp", (DL_FUNC) &_carbondate_UpdateCalendarAges_cpp, 11},
+    {"_carbondate_UpdatePhiTau_cpp",       (DL_FUNC) &_carbondate_UpdatePhiTau_cpp,        5},
+    {"_carbondate_update_v_j",             (DL_FUNC) &_carbondate_update_v_j,              7},
+    {"_carbondate_which_equal",            (DL_FUNC) &_carbondate_which_equal,             2},
+    {"_carbondate_which_mt",               (DL_FUNC) &_carbondate_which_mt,                2},
+    {"_carbondate_which_mt_int",           (DL_FUNC) &_carbondate_which_mt_int,            2},
     {NULL, NULL, 0}
 };
 }

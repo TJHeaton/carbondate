@@ -240,19 +240,35 @@ WalkerBivarDirichlet <- function(
         utils::setTxtProgressBar(progress_bar, iter)
       }
     }
-    DPMM_update <- .DPWalkerUpdate(
-      theta = calendar_ages,
-      w = weight,
-      v = v,
-      delta = cluster_identifiers,
-      phi = phi,
-      tau = tau,
-      n_clust = n_clust,
-      alpha = alpha,
-      mu_phi = mu_phi,
-      lambda = lambda,
-      nu1 = nu1,
-      nu2 = nu2)
+    if (use_cpp) {
+      DPMM_update <- .DPWalkerUpdate_cpp(
+        theta = calendar_ages,
+        w = weight,
+        v = v,
+        delta = cluster_identifiers,
+        phi = phi,
+        tau = tau,
+        n_clust = n_clust,
+        alpha = alpha,
+        mu_phi = mu_phi,
+        lambda = lambda,
+        nu1 = nu1,
+        nu2 = nu2)
+    } else {
+      DPMM_update <- .DPWalkerUpdate(
+        theta = calendar_ages,
+        w = weight,
+        v = v,
+        delta = cluster_identifiers,
+        phi = phi,
+        tau = tau,
+        n_clust = n_clust,
+        alpha = alpha,
+        mu_phi = mu_phi,
+        lambda = lambda,
+        nu1 = nu1,
+        nu2 = nu2)
+    }
     weight <- DPMM_update$w
     cluster_identifiers <- DPMM_update$delta
     phi <- DPMM_update$phi

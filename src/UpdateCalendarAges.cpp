@@ -1,26 +1,13 @@
+#include <iostream>
+#include <limits>
 #include "cpp11/doubles.hpp"
 #include "cpp11/integers.hpp"
 #include "Rmath.h"
-#include "R_ext/Random.h"
-#include <limits>
+#include "local_rng.h"
 using namespace cpp11;
 
-// Get and set the random number generator set on entering and exiting functions
-// Important so we get the same stream of random numbers when interchanging
-// between R and C++ as we would by running the code only in R.
-class local_rng {
-public:
-  local_rng() {
-    GetRNGstate();
-  }
 
-  ~local_rng(){
-    PutRNGstate();
-  }
-};
-
-
-[[cpp11::register]] double ThetaLogLikelihood_cpp(
+double ThetaLogLikelihood_cpp(
     double theta,
     double prmean,
     double prsig,
@@ -49,7 +36,7 @@ public:
 }
 
 
-[[cpp11::register]] double SliceSample_cpp(
+double SliceSample_cpp(
     double x0,
     double w,
     double m,
@@ -60,7 +47,6 @@ public:
     doubles mucalallyr,
     doubles sigcalallyr) {
 
-  local_rng rng_state;
   double y;     // Slice height
   double L, R;  // Each side of calender age slice interval
   double J, K;  // Max steps on left and right hand sides
@@ -131,6 +117,7 @@ public:
     doubles mucalallyr,
     doubles sigcalallyr) {
 
+  local_rng rng_state;
   writable::doubles calendar_ages_new(n);
   double prmean;
   double prsig;
