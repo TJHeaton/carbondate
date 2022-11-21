@@ -13,39 +13,17 @@
 
   retlist <- DPWalkerUpdate_cpp(
     as.double(theta), w, v, delta, phi, tau, n_clust, alpha, mu_phi, lambda, nu1, nu2)
+
   u = retlist$u
-  ustar = retlist$umin
-
-  # Now update the weights
-  wnew <- c()
-  j <- 1
-  brprod <- 1 # This is the current product of (1-v[1])...(1-v[j-1])
-  # Need to work out a and b internally
-
-  # Iteratively update the weights until we have all we need
-  # To update v[j] we do the following
-  while (sum(wnew) < 1 - ustar) {
-
-    v[j] = update_v_j(delta, j, n_clust, brprod, u, v, alpha)
-
-    # We now have v so we need to extend w (and update brprod for next iteration)
-    wnew <- c(wnew, brprod * v[j])
-    brprod <- brprod * (1 - v[j])
-
-    j <- j + 1
-  }
-
-  # Now update n_clust (the number of weights we have) and truncate w and v at the
-  # correct values
-  n_clust <- length(wnew)
-  w <- wnew
-  v <- v[1:n_clust]
+  v = retlist$v
+  w = retlist$weight
+  n_clust = retlist$n_clust
 
   # Now update the cluster means and precisions (note we have to introduce new
   # ones for the new states without observations)
   for (i in 1:n_clust) {
     # Find which observations belong to this cluster
-    clusti <- which_equal(as.integer(delta), i)
+    clusti <- which(delta == i)
     if (length(clusti) == 0) {
       # No observations in this cluster so sample from the prior
       tau[i] <- stats::rgamma(1, shape = nu1, rate = nu2)

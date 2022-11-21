@@ -14,143 +14,21 @@ doubles UpdatePhiTau_cpp(
     double nu1,
     double nu2);
 
+double find_a(integers delta, int clust_num, double brprod, doubles u);
 
-double min_value(doubles vec) {
+double find_b(integers delta, int clust_num, doubles u, std::vector<double> v);
+
+
+[[cpp11::register]] double min_value(doubles vec) {
   auto pos = std::min_element(vec.begin(), vec.end());
   return *pos;
 }
 
 
-[[cpp11::register]] integers which_equal(integers vec, int i) {
-  std::vector<int> indices;
-  indices.reserve(20);
-  for (int k = 0; k < vec.size(); ++k) {
-    if (vec[k] == i) {
-      indices.push_back(k + 1);
-    }
-  }
-  return integers(indices);
-}
-
-
-[[cpp11::register]] integers which_mt(doubles vec, double i) {
-  std::vector<int> indices;
-  indices.reserve(20);
-  for (int k = 0; k < vec.size(); ++k) {
-    if (vec[k] > i) {
-      indices.push_back(k + 1);
-    }
-  }
-  return integers(indices);
-}
-
-[[cpp11::register]] integers which_mt_int(integers vec, int i) {
-  std::vector<int> indices;
-  indices.reserve(20);
-  for (int k = 0; k < vec.size(); ++k) {
-    if (vec[k] > i) {
-      indices.push_back(k + 1);
-    }
-  }
-  return integers(indices);
-}
-
-
-double find_a(
-    integers delta,
-    int clust_num,
-    double brprod,
-    doubles u) {
-  double a = 0;
-
-  for (int k = 0; k < delta.size(); ++k) {
-    if ((delta[k] == clust_num) && (u[k] > a)) {
-      a = u[k];
-    }
-  }
-  return a/brprod;
-}
-
-
-
-double find_b(
-    integers delta,
-    int clust_num,
-    doubles u,
-    doubles v) {
-
-  int n = delta.size();
-  int m = v.size();
-  writable::doubles prodv(m + 1);
-  double b = 1.0;
-  double b_sub = 0.0;
-  double b_sub_comp;
-  int index;
-
-  if (std::any_of(delta.cbegin(), delta.cend(), [=](int i){ return i > clust_num; })) {
-    prodv[0] = 1.0 - v[0];
-    for (int k = 1; k < m; ++k) {
-      prodv[k] = prodv[k-1] * (1.0 - v[k]);
-      prodv[k-1] /= (1.0 - v[clust_num - 1]);
-    }
-    prodv[m-1] /= (1.0 - v[clust_num - 1]);
-
-    for (int k = 0; k < n; ++k) {
-      if (delta[k] > clust_num) {
-        index = delta[k] - 1;
-        b_sub_comp = u[k] / (v[index] * prodv[index - 1]);
-        if (b_sub_comp > b_sub) {
-          b_sub = b_sub_comp;
-        }
-      }
-    }
-    b -= b_sub;
-  }
-
-  return b;
-}
-
-
-
-[[cpp11::register]] double update_v_j(
-    integers delta,
-    int clust_num,
-    int n_clust,
-    double brprod,
-    doubles u,
-    doubles v,
-    double alpha) {
-
-  local_rng rng_state;
-  double v_j;
-  double a;
-  double b;
-  double A;
-  double B;
-
-  if (clust_num <= n_clust) {
-
-    a = find_a(delta, clust_num, brprod, u);
-    b = find_b(delta, clust_num, u, v);
-
-    A = pow(1. - a, alpha);
-    B = A - pow(1. - b, alpha);
-    v_j = 1. - pow(A - B * Rf_runif(0., 1.), 1. / alpha);
-
-  } else {
-
-    v_j = Rf_rbeta(1., alpha);
-  }
-
-  return v_j;
-}
-
-
-
 [[cpp11::register]] list DPWalkerUpdate_cpp(
     doubles calendar_ages,
-    doubles weight,
-    doubles v,
+    doubles weightprev,
+    doubles vprev,
     integers cluster_identifiers,
     doubles phi,
     doubles tau,
@@ -165,16 +43,54 @@ double find_b(
   using namespace cpp11::literals;
   local_rng rng_state;
   writable::doubles u(n);
-  double umin;
+  double compvar;
   cpp11::writable::list retlist;
+  std::vector<double> weight;
+  weight.reserve(2*n_clust);
+  int clust_num = 0;
+  double brprod = 1.;
+  double sum_weight = 0.;
+  double new_weight;
 
+  std::vector<double> v(n_clust);
+  for (int k = 0; k < n_clust; k++) v[k] = vprev[k];
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Create auxiliary u variables
   for (int k = 0; k < n; k++) {
-    u[k] = Rf_runif(0, weight[cluster_identifiers[k] - 1]);
+    u[k] = Rf_runif(0., weightprev[cluster_identifiers[k] - 1]);
   }
-  umin = min_value(u);
+  compvar = 1. - min_value(u);
+
+  //////////////////////////////////////////////////////////////////////////////
+  // Iteratively update the weights until we have all we need
+
+  while (sum_weight < compvar) {
+    clust_num++;
+    if (clust_num <= n_clust) {
+
+      double a = find_a(cluster_identifiers, clust_num, brprod, u);
+      double b = find_b(cluster_identifiers, clust_num, u, v);
+      double A = pow(1. - a, alpha);
+      double B = A - pow(1. - b, alpha);
+
+      v[clust_num - 1] = 1. - pow(A - B * Rf_runif(0., 1.), 1. / alpha);
+    } else {
+      v.push_back(Rf_rbeta(1., alpha));
+    }
+    new_weight = brprod * v[clust_num - 1];
+    sum_weight += new_weight;
+    weight.push_back(new_weight);
+    brprod *= (1. - v[clust_num - 1]);
+  }
+
+  n_clust = clust_num;  // TODO Should be able to use clust_num
+  v.resize(n_clust);
 
   retlist.push_back({"u"_nm = u});
-  retlist.push_back({"umin"_nm = umin});
+  retlist.push_back({"v"_nm = v});
+  retlist.push_back({"weight"_nm = weight});
+  retlist.push_back({"n_clust"_nm = n_clust});
   return retlist;
 }
 
