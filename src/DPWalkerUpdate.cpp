@@ -14,15 +14,11 @@ doubles UpdatePhiTau_cpp(
     double nu1,
     double nu2);
 
-double find_a(integers delta, int clust_num, double brprod, doubles u);
+double find_a(integers cluster_identifiers, int clust_num, double brprod, std::vector<double> u);
 
-double find_b(integers delta, int clust_num, doubles u, std::vector<double> v);
+double find_b(integers cluster_identifiers, int clust_num, std::vector<double> u, std::vector<double> v);
 
-
-[[cpp11::register]] double min_value(doubles vec) {
-  auto pos = std::min_element(vec.begin(), vec.end());
-  return *pos;
-}
+double min_value(std::vector<double> vec);
 
 
 [[cpp11::register]] list DPWalkerUpdate_cpp(
@@ -42,7 +38,7 @@ double find_b(integers delta, int clust_num, doubles u, std::vector<double> v);
   int n = calendar_ages.size();
   using namespace cpp11::literals;
   local_rng rng_state;
-  writable::doubles u(n);
+  std::vector<double> u(n);  // auxilliary variables
   double compvar;
   cpp11::writable::list retlist;
   std::vector<double> weight;
@@ -84,7 +80,7 @@ double find_b(integers delta, int clust_num, doubles u, std::vector<double> v);
     brprod *= (1. - v[clust_num - 1]);
   }
 
-  n_clust = clust_num;  // TODO Should be able to use clust_num
+  n_clust = clust_num;
   v.resize(n_clust);
 
   retlist.push_back({"u"_nm = u});

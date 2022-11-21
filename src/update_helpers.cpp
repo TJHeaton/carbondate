@@ -42,15 +42,23 @@ using namespace cpp11;
   return integers(indices);
 }
 
-double find_a(
-    integers delta,
-    int clust_num,
-    double brprod,
-    doubles u) {
+
+double min_value(std::vector<double> vec) {
+  auto pos = std::min_element(vec.begin(), vec.end());
+  return *pos;
+}
+
+
+bool any_more_than(integers vec, int j) {
+  return std::any_of(vec.cbegin(), vec.cend(), [=](int i){ return i > j; });
+}
+
+
+double find_a(integers cluster_identifiers, int clust_num, double brprod, std::vector<double> u) {
   double a = 0;
 
-  for (int k = 0; k < delta.size(); ++k) {
-    if ((delta[k] == clust_num) && (u[k] > a)) {
+  for (int k = 0; k < cluster_identifiers.size(); ++k) {
+    if ((cluster_identifiers[k] == clust_num) && (u[k] > a)) {
       a = u[k];
     }
   }
@@ -59,12 +67,12 @@ double find_a(
 
 
 double find_b(
-    integers delta,
+    integers cluster_identifiers,
     int clust_num,
-    doubles u,
+    std::vector<double> u,
     std::vector<double> v) {
 
-  int n = delta.size();
+  int n = cluster_identifiers.size();
   int m = v.size();
   writable::doubles prodv(m + 1);
   double b = 1.0;
@@ -72,7 +80,7 @@ double find_b(
   double b_sub_comp;
   int index;
 
-  if (std::any_of(delta.cbegin(), delta.cend(), [=](int i){ return i > clust_num; })) {
+  if (any_more_than(cluster_identifiers, clust_num)) {
     prodv[0] = 1.0 - v[0];
     for (int k = 1; k < m; ++k) {
       prodv[k] = prodv[k-1] * (1.0 - v[k]);
@@ -81,8 +89,8 @@ double find_b(
     prodv[m-1] /= (1.0 - v[clust_num - 1]);
 
     for (int k = 0; k < n; ++k) {
-      if (delta[k] > clust_num) {
-        index = delta[k] - 1;
+      if (cluster_identifiers[k] > clust_num) {
+        index = cluster_identifiers[k] - 1;
         b_sub_comp = u[k] / (v[index] * prodv[index - 1]);
         if (b_sub_comp > b_sub) {
           b_sub = b_sub_comp;
@@ -95,35 +103,3 @@ double find_b(
   return b;
 }
 
-
-double update_v_j(
-    integers delta,
-    int clust_num,
-    int n_clust,
-    double brprod,
-    doubles u,
-    std::vector<double> v,
-    double alpha) {
-
-  double v_j;
-  double a;
-  double b;
-  double A;
-  double B;
-
-  if (clust_num <= n_clust) {
-
-    a = find_a(delta, clust_num, brprod, u);
-    b = find_b(delta, clust_num, u, v);
-
-    A = pow(1. - a, alpha);
-    B = A - pow(1. - b, alpha);
-    v_j = 1. - pow(A - B * Rf_runif(0., 1.), 1. / alpha);
-
-  } else {
-
-    v_j = Rf_rbeta(1., alpha);
-  }
-
-  return v_j;
-}
