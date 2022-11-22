@@ -33,6 +33,13 @@ extern "C" SEXP _carbondate_which_mt_int(SEXP vec, SEXP i) {
     return cpp11::as_sexp(which_mt_int(cpp11::as_cpp<cpp11::decay_t<integers>>(vec), cpp11::as_cpp<cpp11::decay_t<int>>(i)));
   END_CPP11
 }
+// update_helpers.cpp
+int sample_prob_cpp(int n, doubles prob, bool one_based);
+extern "C" SEXP _carbondate_sample_prob_cpp(SEXP n, SEXP prob, SEXP one_based) {
+  BEGIN_CPP11
+    return cpp11::as_sexp(sample_prob_cpp(cpp11::as_cpp<cpp11::decay_t<int>>(n), cpp11::as_cpp<cpp11::decay_t<doubles>>(prob), cpp11::as_cpp<cpp11::decay_t<bool>>(one_based)));
+  END_CPP11
+}
 // UpdateCalendarAges.cpp
 doubles UpdateCalendarAges_cpp(int n, doubles calendar_ages, double w, double m, integers cluster_identifiers, doubles phi, doubles tau, doubles c14_determinations, doubles c14_sigmas, doubles mucalallyr, doubles sigcalallyr);
 extern "C" SEXP _carbondate_UpdateCalendarAges_cpp(SEXP n, SEXP calendar_ages, SEXP w, SEXP m, SEXP cluster_identifiers, SEXP phi, SEXP tau, SEXP c14_determinations, SEXP c14_sigmas, SEXP mucalallyr, SEXP sigcalallyr) {
@@ -53,6 +60,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_carbondate_DPWalkerUpdate_cpp",     (DL_FUNC) &_carbondate_DPWalkerUpdate_cpp,     12},
     {"_carbondate_UpdateCalendarAges_cpp", (DL_FUNC) &_carbondate_UpdateCalendarAges_cpp, 11},
     {"_carbondate_UpdatePhiTau_cpp",       (DL_FUNC) &_carbondate_UpdatePhiTau_cpp,        5},
+    {"_carbondate_sample_prob_cpp",        (DL_FUNC) &_carbondate_sample_prob_cpp,         3},
     {"_carbondate_which_equal",            (DL_FUNC) &_carbondate_which_equal,             2},
     {"_carbondate_which_mt",               (DL_FUNC) &_carbondate_which_mt,                2},
     {"_carbondate_which_mt_int",           (DL_FUNC) &_carbondate_which_mt_int,            2},

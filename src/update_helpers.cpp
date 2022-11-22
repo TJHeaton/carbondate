@@ -54,6 +54,42 @@ bool any_more_than(integers vec, int j) {
 }
 
 
+// Adapted from `ProbSampleNoReplace` in R/src/main/sample.c and from SampleNoReplace
+// in Rcpp package, but substantially simplified since we know we're only ever
+// going to be calling this with sz = 1. Tested that it gives the same result as
+// calling sample.int from R.
+[[cpp11::register]] int sample_int(int n, doubles prob, bool one_based) {
+
+  local_rng rng_state;
+  int adj = one_based ? 0 : 1;
+  double rT, mass, sum_p = 0.;
+  int i, j, k, n1, ans;
+  std::vector<double> p(n);   // Possible not not initialise?
+  std::vector<int> perm(n);   // Possible not not initialise?
+
+  for (i = 0; i < n; i++) {
+    perm[i] = i + 1;
+    p[i] = prob[i];
+    sum_p += p[i];
+  }
+
+  Rf_revsort(&p[0], &perm[0], n);
+
+  rT = unif_rand() * sum_p;
+  mass = 0.0;
+
+  for (j = 0; j < n-1; j++) {
+    mass += p[j];
+    if (rT <= mass) {
+      break;
+    }
+  }
+
+  ans = perm[j] - adj;
+  return ans;
+}
+
+
 double find_a(integers cluster_identifiers, int clust_num, double brprod, std::vector<double> u) {
   double a = 0;
 
