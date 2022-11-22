@@ -98,11 +98,11 @@
 #' # for a faster run time.
 #' WalkerBivarDirichlet(kerr$c14_ages, kerr$c14_sig, intcal20, n_iter=100, n_thin=10)
 WalkerBivarDirichlet <- function(
-    c14_determinations = kerr$c14_ages,
-    c14_sigmas = kerr$c14_sig,
-    calibration_curve = intcal20,
-    n_iter = 10,
-    n_thin = 1,
+    c14_determinations,
+    c14_sigmas,
+    calibration_curve,
+    n_iter = 100,
+    n_thin = 10,
     slice_width = max(1000, diff(range(c14_determinations)) / 2),
     slice_multiplier = 10,
     show_progress = TRUE,
