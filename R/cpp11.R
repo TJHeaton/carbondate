@@ -16,8 +16,8 @@ which_mt_int <- function(vec, i) {
   .Call(`_carbondate_which_mt_int`, vec, i)
 }
 
-sample_prob_cpp <- function(n, prob, one_based) {
-  .Call(`_carbondate_sample_prob_cpp`, n, prob, one_based)
+sample_int <- function(n, prob, one_based) {
+  .Call(`_carbondate_sample_int`, n, prob, one_based)
 }
 
 UpdateCalendarAges_cpp <- function(n, calendar_ages, w, m, cluster_identifiers, phi, tau, c14_determinations, c14_sigmas, mucalallyr, sigcalallyr) {

@@ -48,7 +48,7 @@
     dens <- stats::dnorm(
       phi[possid], mean = theta[i], sd = 1 / sqrt(tau[possid]))
     dens[is.na(dens)] <- 0 # Fudge to remove erroneous problems
-    delta[i] <- possid[sample.int(length(possid), 1, prob = dens)]
+    delta[i] <- possid[sample_int(length(possid), prob = dens, TRUE)]
   }
 
   # Return w, v, delta, phi and tau

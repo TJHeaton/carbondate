@@ -63,7 +63,7 @@ bool any_more_than(integers vec, int j) {
   local_rng rng_state;
   int adj = one_based ? 0 : 1;
   double rT, mass, sum_p = 0.;
-  int i, j, k, n1, ans;
+  int i, j, ans;
   std::vector<double> p(n);   // Possible not not initialise?
   std::vector<int> perm(n);   // Possible not not initialise?
 
