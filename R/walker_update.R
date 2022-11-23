@@ -9,7 +9,7 @@
 # n_clust - current n_clust
 # alpha, mu_phi, lambda, nu1, nu2 - the current DP parameters (not updated here)
 .DPWalkerUpdate <- function(
-    theta, w, v, delta, phi, tau, n_clust, alpha, mu_phi, lambda, nu1, nu2) {
+    theta, w, v, delta, n_clust, alpha, mu_phi, lambda, nu1, nu2) {
   # Create relevant variables
   n <- length(theta)
 
@@ -17,6 +17,8 @@
   u <- stats::runif(n, min = 0, max = w[delta])
   ustar <- min(u)
 
+  phi = c()
+  tau = c()
 
   # Now update the weights
   wnew <- c()
