@@ -4,52 +4,24 @@
 # w - the current weights
 # v - the current vs
 # delta - the current cluster allocations
-# phi - the current cluster means
-# tau - the current cluster precisions
 # n_clust - current n_clust
 # alpha, mu_phi, lambda, nu1, nu2 - the current DP parameters (not updated here)
 .DPWalkerUpdate_cpp <- function(
-    theta, w, v, delta, phi, tau, n_clust, alpha, mu_phi, lambda, nu1, nu2) {
+    theta, w, v, delta, n_clust, alpha, mu_phi, lambda, nu1, nu2) {
 
-  retlist <- DPWalkerUpdate_cpp(
-    as.double(theta), w, v, delta, phi, tau, n_clust, alpha, mu_phi, lambda, nu1, nu2)
+  retlist <- WalkerUpdateWeights_cpp(w, v, delta, n_clust, alpha)
 
   u = retlist$u
   v = retlist$v
   w = retlist$weight
   n_clust = retlist$n_clust
 
-  # Now update the cluster means and precisions (note we have to introduce new
-  # ones for the new states without observations)
-  for (i in 1:n_clust) {
-    # Find which observations belong to this cluster
-    clusti <- which(delta == i)
-    if (length(clusti) == 0) {
-      # No observations in this cluster so sample from the prior
-      tau[i] <- stats::rgamma(1, shape = nu1, rate = nu2)
-      phi[i] <- stats::rnorm(1, mean = mu_phi, sd = 1 / sqrt(lambda * tau[i]))
-    } else {
-      # There are some observations we need to update the phi and tau for this
-      # cluster (conjugate according to NormalGamma prior)
-      gibbs_parameters <- UpdatePhiTau_cpp(
-        as.double(theta[clusti]), mu_phi, lambda, nu1, nu2)
-      phi[i] <- gibbs_parameters[1]
-      tau[i] <- gibbs_parameters[2]
-    }
-  }
-  # Only store the values we need
-  phi <- phi[1:n_clust]
-  tau <- tau[1:n_clust]
+  retlist <- WalkerUpdateClusterPhiTau_cpp(n_clust, as.double(theta), delta, mu_phi, lambda, nu1, nu2)
 
-  # Now update the allocations for each observation by sampling from them
-  n = length(theta)
-  for (i in 1:n) {
-    possid <- which_mt(w, u[i])
-    dens <- stats::dnorm(
-      phi[possid], mean = theta[i], sd = 1 / sqrt(tau[possid]))
-    dens[is.na(dens)] <- 0 # Fudge to remove erroneous problems
-    delta[i] <- possid[sample_int(length(possid), prob = dens, TRUE)]
-  }
+  phi <- retlist$phi;
+  tau <- retlist$tau;
+
+  delta = WalkerUpdateClusterIdentifiers_cpp(as.double(theta), u, w, phi, tau)
 
   # Return w, v, delta, phi and tau
   return_list <- list(

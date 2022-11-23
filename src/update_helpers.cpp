@@ -58,9 +58,8 @@ bool any_more_than(integers vec, int j) {
 // in Rcpp package, but substantially simplified since we know we're only ever
 // going to be calling this with sz = 1. Tested that it gives the same result as
 // calling sample.int from R.
-[[cpp11::register]] int sample_int(int n, doubles prob, bool one_based) {
+int sample_int(int n, std::vector<double> prob, bool one_based) {
 
-  local_rng rng_state;
   int adj = one_based ? 0 : 1;
   double rT, mass, sum_p = 0.;
   int i, j, ans;
@@ -69,8 +68,12 @@ bool any_more_than(integers vec, int j) {
 
   for (i = 0; i < n; i++) {
     perm[i] = i + 1;
-    p[i] = prob[i];
-    sum_p += p[i];
+    if (R_FINITE(prob[i]) && prob[i] > 0.0) {
+      p[i] = prob[i];
+      sum_p += p[i];
+    } else {
+      p[i] = 0.0;
+    }
   }
 
   Rf_revsort(&p[0], &perm[0], n);

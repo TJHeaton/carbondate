@@ -2,7 +2,7 @@ library(proftools)
 
 set.seed(14)
 
-n_iter = 1000
+n_iter = 100000
 n_thin = 10
 
 profile_walker <- function(n_iter, n_thin, use_cpp) {
@@ -14,7 +14,8 @@ profile_walker <- function(n_iter, n_thin, use_cpp) {
     kerr$c14_sig,
     intcal20,
     n_iter,
-    n_thin)
+    n_thin,
+    use_cpp = use_cpp)
   Rprof(NULL)
 
   pd = readProfileData(paste("profiling/", file_pref, ".out", sep = ""))
@@ -26,4 +27,4 @@ profile_walker <- function(n_iter, n_thin, use_cpp) {
 }
 
 profile_walker(n_iter, n_thin, TRUE)
-# profile_walker(n_iter, n_thin, FALSE)
+#profile_walker(n_iter, n_thin, FALSE)
