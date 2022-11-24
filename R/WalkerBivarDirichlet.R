@@ -96,7 +96,7 @@
 #' # Basic usage making use of sensible initialisation to set most values and
 #' # using a saved example data set. Note iterations are kept very small here
 #' # for a faster run time.
-#' WalkerBivarDirichlet(kerr$c14_ages, kerr$c14_sig, intcal20, n_iter=100, n_thin=10)
+#' WalkerBivarDirichlet(kerr$c14_ages, kerr$c14_sig, intcal20, n_iter=1000, n_thin=10)
 WalkerBivarDirichlet <- function(
     c14_determinations,
     c14_sigmas,
@@ -241,17 +241,23 @@ WalkerBivarDirichlet <- function(
       }
     }
     if (use_cpp) {
-      DPMM_update <- .DPWalkerUpdate_cpp(
-        theta = calendar_ages,
-        w = weight,
-        v = v,
-        delta = cluster_identifiers,
-        n_clust = n_clust,
+      DPMM_update <- DPWalkerUpdate_cpp(
+        calendar_ages = as.double(calendar_ages),
+        current_weight = weight,
+        current_v = v,
+        current_cluster_ids = cluster_identifiers,
+        current_n_clust = n_clust,
         alpha = alpha,
         mu_phi = mu_phi,
         lambda = lambda,
         nu1 = nu1,
         nu2 = nu2)
+      weight <- DPMM_update$weight
+      cluster_identifiers <- DPMM_update$cluster_ids
+      phi <- DPMM_update$phi
+      tau <- DPMM_update$tau
+      v <- DPMM_update$v
+      n_clust <- DPMM_update$n_clust
     } else {
       DPMM_update <- .DPWalkerUpdate(
         theta = calendar_ages,
@@ -264,13 +270,14 @@ WalkerBivarDirichlet <- function(
         lambda = lambda,
         nu1 = nu1,
         nu2 = nu2)
+      weight <- DPMM_update$w
+      cluster_identifiers <- DPMM_update$delta
+      phi <- DPMM_update$phi
+      tau <- DPMM_update$tau
+      v <- DPMM_update$v
+      n_clust <- DPMM_update$n_clust
     }
-    weight <- DPMM_update$w
-    cluster_identifiers <- DPMM_update$delta
-    phi <- DPMM_update$phi
-    tau <- DPMM_update$tau
-    v <- DPMM_update$v
-    n_clust <- DPMM_update$n_clust
+
 
     alpha <- .WalkerUpdateAlpha(
       delta = cluster_identifiers,
