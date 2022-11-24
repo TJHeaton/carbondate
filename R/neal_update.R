@@ -17,7 +17,7 @@
 # Note: phi and tau will need to stored as a list on return as variable length
 
 .BivarUpdateClusterIdentifier <- function(
-    i, c, phi, tau, theta, lambda, nu1, nu2, mu_phi, alpha) {
+    i, c, phi, tau, theta, lambda, nu1, nu2, mu_phi, alpha, use_cpp) {
   nc <- length(phi)
   ci <- c[i] # Cluster of element to update
   cminus <- c[-i] # the other cluster elements
@@ -27,7 +27,7 @@
     cminus[cminus > ci] <- cminus[cminus > ci] - 1 # Adjust labelling
     nc <- nc - 1 # Adjust n levels
   }
-  nci <- .NumberOfObservationsInEachCluster(cminus)
+  nci <- .NumberOfObservationsInEachCluster(as.integer(cminus))
 
   # Likelihood of theta given phi and tau
   cprob <- stats::dnorm(theta, mean = phi, sd = 1 / sqrt(tau))
@@ -37,7 +37,7 @@
 
   # weight by number in class (or alpha for new cluster)
   cprob <- cprob * c(nci, alpha)
-  class <- sample(1:(nc + 1), 1, prob = cprob)
+  class <- sample.int(nc + 1, 1, prob = cprob)
   if (class == (nc + 1)) {
     # We have sampled a new state
     # - create new phi and tau from posterior given theta

@@ -220,7 +220,8 @@ PolyaUrnBivarDirichlet <- function(
         nu1 = nu1,
         nu2 = nu2,
         mu_phi = mu_phi,
-        alpha = alpha)
+        alpha = alpha,
+        use_cpp = use_cpp)
       cluster_identifiers <- newclusters$c
       phi <- newclusters$phi
       tau <- newclusters$tau

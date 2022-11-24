@@ -4,6 +4,22 @@ DPWalkerUpdate_cpp <- function(calendar_ages, current_weight, current_v, current
   .Call(`_carbondate_DPWalkerUpdate_cpp`, calendar_ages, current_weight, current_v, current_cluster_ids, current_n_clust, alpha, mu_phi, lambda, nu1, nu2)
 }
 
+LogMarginalNormalGamma <- function(calendar_age, lambda, nu1, nu2, mu_phi) {
+  .Call(`_carbondate_LogMarginalNormalGamma`, calendar_age, lambda, nu1, nu2, mu_phi)
+}
+
+log_cpp <- function(val) {
+  .Call(`_carbondate_log_cpp`, val)
+}
+
+lgamma_cpp <- function(val) {
+  .Call(`_carbondate_lgamma_cpp`, val)
+}
+
+PolyaUrnUpdateClusterIdentifier <- function(calendar_ages, current_cluster_ids, current_phi, current_tau, alpha, mu_phi, lambda, nu1, nu2) {
+  .Call(`_carbondate_PolyaUrnUpdateClusterIdentifier`, calendar_ages, current_cluster_ids, current_phi, current_tau, alpha, mu_phi, lambda, nu1, nu2)
+}
+
 UpdateCalendarAges_cpp <- function(n, calendar_ages, w, m, cluster_identifiers, phi, tau, c14_determinations, c14_sigmas, mucalallyr, sigcalallyr) {
   .Call(`_carbondate_UpdateCalendarAges_cpp`, n, calendar_ages, w, m, cluster_identifiers, phi, tau, c14_determinations, c14_sigmas, mucalallyr, sigcalallyr)
 }
