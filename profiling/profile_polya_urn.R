@@ -2,7 +2,7 @@ library(proftools)
 
 set.seed(14)
 
-n_iter = 1000
+n_iter = 100000
 n_thin = 10
 
 profile_polya_urn <- function(n_iter, n_thin, use_cpp) {
@@ -27,4 +27,4 @@ profile_polya_urn <- function(n_iter, n_thin, use_cpp) {
 }
 
 profile_polya_urn(n_iter, n_thin, TRUE)
-profile_polya_urn(n_iter, n_thin, FALSE)
+# profile_polya_urn(n_iter, n_thin, FALSE)

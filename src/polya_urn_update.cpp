@@ -24,7 +24,6 @@ double LogMarginalNormalGamma(
   logden -= ((margdf + 1) / 2) * log(1 + margprec * pow(calendar_age - mu_phi, 2) / margdf);
 
   return logden;
-
 }
 
 
@@ -44,7 +43,22 @@ void CreateNewPhiTau(
 
   tau = Rf_rgamma(nu1, 1. / nu2);
   phi = Rf_rnorm(mu_phi, 1. / sqrt(lambda * tau));
+}
 
+
+void print_vector(std::vector<double> v) {
+  for (int i = 0; i < v.size(); i++) {
+    printf("%e, ", v[i]);
+  }
+  printf("\n");
+}
+
+
+void print_vector(std::vector<int> v) {
+  for (int i = 0; i < v.size(); i++) {
+    printf("%d, ", v[i]);
+  }
+  printf("\n");
 }
 
 
@@ -59,30 +73,29 @@ void CreateNewPhiTau(
     double nu1,
     double nu2) {
 
-  local_rng rng_state;                   // Ensures RNG follows R and R follows after
-  int n = calendar_ages.size();          // Number of observations
-  int n_clust = current_phi.size();      // Number of clusters
+  local_rng rng_state;                // Ensures RNG follows R and R follows after
+  int n = calendar_ages.size();       // Number of observations
+  int n_clust = current_phi.size();   // Number of clusters
   std::vector<int> cluster_ids(current_cluster_ids.begin(), current_cluster_ids.end());
   std::vector<double> phi(current_phi.begin(), current_phi.end());
   std::vector<double> tau(current_tau.begin(), current_tau.end());
   std::vector<int> observations_per_cluster(n_clust);
   int cluster_id, new_cluster_id;
-  std::vector<double> cprob(n_clust + 1);
+  std::vector<double> cprob(n_clust + 1); // Probability of sampling each cluster ID
   double logmarg;
-  double phi_new, tau_new;
+  double phi_new, tau_new;           // New phi and tau values when we sample a new cluster
+  int n_non_empty_clust = n_clust;   // Keeps track of how many clusters we have each iteration
+  std::vector<int> cluster_id_map;   // Maps the old cluster ids to the new shifted cluster ids
   cpp11::writable::list retlist;
-  int n_non_empty_clust = n_clust;
 
   using namespace cpp11::literals;
 
-  // Leave space to increase vectors if we introduce new clusters
+  // Reserve memory to increase vectors if we introduce new clusters
   cprob.reserve(2 * n_clust);
   phi.reserve(2 * n_clust);
   tau.reserve(2 * n_clust);
 
-
   // First initialise the number of observations in each cluster
-  // (it will be updated in each loop below)
   for (int i = 0; i < n; i++) observations_per_cluster[cluster_ids[i] - 1]++;
 
   for (int i = 0; i < n; i++) {
@@ -97,15 +110,14 @@ void CreateNewPhiTau(
     // (including a new cluster ID)
     for (int c = 1; c <= n_clust; c++) {
       if (observations_per_cluster[c-1] == 0) {
-        cprob[c - 1] = 0;
+        cprob[c - 1] = 0.;
       } else {
-        cprob[c - 1] = Rf_dnorm4(calendar_ages[i], phi[c - 1], tau[c - 1], 0);
+        cprob[c - 1] = Rf_dnorm4(calendar_ages[i], phi[c - 1], 1./sqrt(tau[c - 1]), 0);
         cprob[c - 1] *= observations_per_cluster[c - 1];
       }
       logmarg = LogMarginalNormalGamma(calendar_ages[i], lambda, nu1, nu2, mu_phi);
       cprob[n_clust] = exp(logmarg) * alpha;
     }
-
     // Sample cluster ID for the new cluster
     new_cluster_id = SampleInt(n_clust + 1, cprob, 1);
 
@@ -124,17 +136,27 @@ void CreateNewPhiTau(
     cluster_ids[i] = new_cluster_id;
   }
 
+  // Create a map of old cluster labelling to new cluster labelling
+  // Shift phi and tau to remove values where there are no observations
+  cluster_id_map.resize(n_clust + 1);
+  int newc = 1;
+  for (int c = 1; c <= n_clust; c++) {
+    if (observations_per_cluster[c-1] > 0) {
+      cluster_id_map[c] = newc;
+      phi[newc - 1] = phi[c - 1];
+      tau[newc - 1] = tau[c - 1];
+      newc++;
+    }
+  }
+  phi.resize(n_non_empty_clust);
+  tau.resize(n_non_empty_clust);
 
-  // TODO:
-  // * Shift phi and tau to remove values where there are no observations
-  // * Create a map of old cluster labelling to new cluster labelling
-  // * Change the cluster ID labelling so that there are no skipped values
-
+  // Change the cluster ID labelling so that there are no skipped values
+  for (int i = 0; i < n; i++) cluster_ids[i] = cluster_id_map[cluster_ids[i]];
 
   // Return the updated cluster ids, means and precisions
   retlist.push_back({"cluster_ids"_nm = cluster_ids});
   retlist.push_back({"phi"_nm = phi});
   retlist.push_back({"tau"_nm = tau});
   return retlist;
-
 }

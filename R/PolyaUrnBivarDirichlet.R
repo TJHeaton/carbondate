@@ -209,25 +209,41 @@ PolyaUrnBivarDirichlet <- function(
         utils::setTxtProgressBar(progress_bar, iter)
       }
     }
-    for (i in 1:num_observations) {
-      newclusters <- .BivarUpdateClusterIdentifier(
-        i,
-        c = cluster_identifiers,
-        phi = phi,
-        tau = tau,
-        theta = calendar_ages[i],
+    if (use_cpp) {
+      newclusters <- PolyaUrnUpdateClusterIdentifier(
+        calendar_ages = as.double(calendar_ages),
+        current_cluster_ids = as.integer(cluster_identifiers),
+        current_phi = phi,
+        current_tau = tau,
+        alpha = alpha,
+        mu_phi = mu_phi,
         lambda = lambda,
         nu1 = nu1,
-        nu2 = nu2,
-        mu_phi = mu_phi,
-        alpha = alpha,
-        use_cpp = use_cpp)
-      cluster_identifiers <- newclusters$c
+        nu2 = nu2)
+      cluster_identifiers <- newclusters$cluster_ids
       phi <- newclusters$phi
       tau <- newclusters$tau
       if (max(cluster_identifiers) != length(phi)) stop("Lengths do not match")
+    } else {
+      for (i in 1:num_observations) {
+        newclusters <- .BivarUpdateClusterIdentifier(
+          i,
+          c = cluster_identifiers,
+          phi = phi,
+          tau = tau,
+          theta = calendar_ages[i],
+          lambda = lambda,
+          nu1 = nu1,
+          nu2 = nu2,
+          mu_phi = mu_phi,
+          alpha = alpha,
+          use_cpp = use_cpp)
+        cluster_identifiers <- newclusters$c
+        phi <- newclusters$phi
+        tau <- newclusters$tau
+        if (max(cluster_identifiers) != length(phi)) stop("Lengths do not match")
+      }
     }
-
     for (j in 1:length(phi)) {
       GibbsParams <- .UpdatePhiTau(
         theta = calendar_ages[cluster_identifiers == j],

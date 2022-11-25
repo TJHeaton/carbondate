@@ -13,27 +13,6 @@ extern "C" SEXP _carbondate_DPWalkerUpdate_cpp(SEXP calendar_ages, SEXP current_
   END_CPP11
 }
 // polya_urn_update.cpp
-double LogMarginalNormalGamma(double calendar_age, double lambda, double nu1, double nu2, double mu_phi);
-extern "C" SEXP _carbondate_LogMarginalNormalGamma(SEXP calendar_age, SEXP lambda, SEXP nu1, SEXP nu2, SEXP mu_phi) {
-  BEGIN_CPP11
-    return cpp11::as_sexp(LogMarginalNormalGamma(cpp11::as_cpp<cpp11::decay_t<double>>(calendar_age), cpp11::as_cpp<cpp11::decay_t<double>>(lambda), cpp11::as_cpp<cpp11::decay_t<double>>(nu1), cpp11::as_cpp<cpp11::decay_t<double>>(nu2), cpp11::as_cpp<cpp11::decay_t<double>>(mu_phi)));
-  END_CPP11
-}
-// polya_urn_update.cpp
-double log_cpp(double val);
-extern "C" SEXP _carbondate_log_cpp(SEXP val) {
-  BEGIN_CPP11
-    return cpp11::as_sexp(log_cpp(cpp11::as_cpp<cpp11::decay_t<double>>(val)));
-  END_CPP11
-}
-// polya_urn_update.cpp
-double lgamma_cpp(double val);
-extern "C" SEXP _carbondate_lgamma_cpp(SEXP val) {
-  BEGIN_CPP11
-    return cpp11::as_sexp(lgamma_cpp(cpp11::as_cpp<cpp11::decay_t<double>>(val)));
-  END_CPP11
-}
-// polya_urn_update.cpp
 list PolyaUrnUpdateClusterIdentifier(doubles calendar_ages, integers current_cluster_ids, doubles current_phi, doubles current_tau, double alpha, double mu_phi, double lambda, double nu1, double nu2);
 extern "C" SEXP _carbondate_PolyaUrnUpdateClusterIdentifier(SEXP calendar_ages, SEXP current_cluster_ids, SEXP current_phi, SEXP current_tau, SEXP alpha, SEXP mu_phi, SEXP lambda, SEXP nu1, SEXP nu2) {
   BEGIN_CPP11
@@ -51,11 +30,8 @@ extern "C" SEXP _carbondate_UpdateCalendarAges_cpp(SEXP n, SEXP calendar_ages, S
 extern "C" {
 static const R_CallMethodDef CallEntries[] = {
     {"_carbondate_DPWalkerUpdate_cpp",              (DL_FUNC) &_carbondate_DPWalkerUpdate_cpp,              10},
-    {"_carbondate_LogMarginalNormalGamma",          (DL_FUNC) &_carbondate_LogMarginalNormalGamma,           5},
     {"_carbondate_PolyaUrnUpdateClusterIdentifier", (DL_FUNC) &_carbondate_PolyaUrnUpdateClusterIdentifier,  9},
     {"_carbondate_UpdateCalendarAges_cpp",          (DL_FUNC) &_carbondate_UpdateCalendarAges_cpp,          11},
-    {"_carbondate_lgamma_cpp",                      (DL_FUNC) &_carbondate_lgamma_cpp,                       1},
-    {"_carbondate_log_cpp",                         (DL_FUNC) &_carbondate_log_cpp,                          1},
     {NULL, NULL, 0}
 };
 }

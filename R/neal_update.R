@@ -72,7 +72,8 @@
   logprrat <- stats::dgamma(
       alphanew, shape = prshape, rate = prrate, log = TRUE) -
     stats::dgamma(alpha, shape = prshape, rate = prrate, log = TRUE)
-  loglikrat <- .AlphaLogLiklihood(c, alphanew) - .AlphaLogLiklihood(c, alpha)
+  nci = .NumberOfObservationsInEachCluster(c)
+  loglikrat <- .AlphaLogLiklihood(c, alphanew, nci) - .AlphaLogLiklihood(c, alpha, nci)
   # Adjust for non-symmetric truncated normal proposal
   logproprat <- stats::pnorm(alpha / propsd, log.p = TRUE) -
     stats::pnorm(alphanew / propsd, log.p = TRUE)
@@ -89,10 +90,9 @@
 # c - vector of the classes of each observation
 # alpha - parameter in Dir(alpha)
 # Return the likelihood
-.AlphaLogLiklihood <- function(c, alpha) {
+.AlphaLogLiklihood <- function(c, alpha, nci) {
   n <- length(c)
   nc <- max(c)
-  nci <- .NumberOfObservationsInEachCluster(c)
   # Note we have to use pmax(nci-1, 1) here to account for clusters of
   # size 1 have 0! = 1
   loglik <- nc*log(alpha) + sum(
