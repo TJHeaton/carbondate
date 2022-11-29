@@ -46,22 +46,6 @@ void CreateNewPhiTau(
 }
 
 
-void print_vector(std::vector<double> v) {
-  for (int i = 0; i < v.size(); i++) {
-    printf("%e, ", v[i]);
-  }
-  printf("\n");
-}
-
-
-void print_vector(std::vector<int> v) {
-  for (int i = 0; i < v.size(); i++) {
-    printf("%d, ", v[i]);
-  }
-  printf("\n");
-}
-
-
 [[cpp11::register]] list PolyaUrnUpdateClusterIdentifier(
     doubles calendar_ages,         // calendar each for each observation
     integers current_cluster_ids,  // The cluster each observation belongs to
@@ -145,6 +129,7 @@ void print_vector(std::vector<int> v) {
       cluster_id_map[c] = newc;
       phi[newc - 1] = phi[c - 1];
       tau[newc - 1] = tau[c - 1];
+      observations_per_cluster[newc - 1] = observations_per_cluster[c-1];
       newc++;
     }
   }
@@ -158,5 +143,6 @@ void print_vector(std::vector<int> v) {
   retlist.push_back({"cluster_ids"_nm = cluster_ids});
   retlist.push_back({"phi"_nm = phi});
   retlist.push_back({"tau"_nm = tau});
+  retlist.push_back({"observations_per_cluster"_nm = observations_per_cluster});
   return retlist;
 }

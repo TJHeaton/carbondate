@@ -223,6 +223,7 @@ PolyaUrnBivarDirichlet <- function(
       cluster_identifiers <- newclusters$cluster_ids
       phi <- newclusters$phi
       tau <- newclusters$tau
+      nci <- newclusters$observations_per_cluster
       if (max(cluster_identifiers) != length(phi)) stop("Lengths do not match")
     } else {
       for (i in 1:num_observations) {
@@ -241,6 +242,7 @@ PolyaUrnBivarDirichlet <- function(
         cluster_identifiers <- newclusters$c
         phi <- newclusters$phi
         tau <- newclusters$tau
+        nci <- NULL
         if (max(cluster_identifiers) != length(phi)) stop("Lengths do not match")
       }
     }
@@ -285,7 +287,7 @@ PolyaUrnBivarDirichlet <- function(
     }
 
     alpha <- .UpdateAlphaGammaPrior(
-        cluster_identifiers, alpha, prshape = alpha_shape, prrate = alpha_rate)
+        cluster_identifiers, alpha, prshape = alpha_shape, prrate = alpha_rate, nci = nci)
 
     if (iter %% n_thin == 0) {
       output_index <- output_index + 1
