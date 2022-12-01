@@ -16,14 +16,24 @@ double Mean(const std::vector<double>& vec) {
 }
 
 
-void UpdatePhiTau(
-    const std::vector<double>& calendar_ages,
-    double mu_phi,
+double LogMarginalNormalGamma(
+    double calendar_age,
     double lambda,
     double nu1,
     double nu2,
-    double& phi,
-    double& tau);
+    double mu_phi) {
+
+  double logden, margprec, margdf;
+
+  margprec = (nu1 * lambda) / (nu2 * (lambda + 1.));
+  margdf = 2. * nu1;
+
+  logden = lgamma((margdf + 1.) / 2.) - lgamma(margdf / 2.);
+  logden += 0.5 * (log(margprec) - log(margdf) - log(M_PI));
+  logden -= ((margdf + 1) / 2) * log(1 + margprec * pow(calendar_age - mu_phi, 2) / margdf);
+
+  return logden;
+}
 
 
 double FindNewV(

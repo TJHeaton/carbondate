@@ -61,7 +61,7 @@
 
 # Function as above but using a gamma prior on the value of alpha
 .UpdateAlphaGammaPrior <- function(
-    c, alpha, prshape = 0.5, prrate = 1, propsd = 1) {
+    c, alpha, prshape = 0.5, prrate = 1, propsd = 1, nci = NULL) {
   # Sample new alpha from truncated normal distribution
   repeat {
     alphanew <- stats::rnorm(1, alpha, propsd)
@@ -72,7 +72,6 @@
   logprrat <- stats::dgamma(
       alphanew, shape = prshape, rate = prrate, log = TRUE) -
     stats::dgamma(alpha, shape = prshape, rate = prrate, log = TRUE)
-  nci = .NumberOfObservationsInEachCluster(c)
   loglikrat <- .AlphaLogLiklihood(c, alphanew, nci) - .AlphaLogLiklihood(c, alpha, nci)
   # Adjust for non-symmetric truncated normal proposal
   logproprat <- stats::pnorm(alpha / propsd, log.p = TRUE) -
@@ -91,6 +90,7 @@
 # alpha - parameter in Dir(alpha)
 # Return the likelihood
 .AlphaLogLiklihood <- function(c, alpha, nci) {
+  if (is.null(nci)) nci = .NumberOfObservationsInEachCluster(c)
   n <- length(c)
   nc <- max(c)
   # Note we have to use pmax(nci-1, 1) here to account for clusters of

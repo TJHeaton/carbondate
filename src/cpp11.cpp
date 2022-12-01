@@ -12,6 +12,20 @@ extern "C" SEXP _carbondate_DPWalkerUpdate_cpp(SEXP calendar_ages, SEXP current_
     return cpp11::as_sexp(DPWalkerUpdate_cpp(cpp11::as_cpp<cpp11::decay_t<doubles>>(calendar_ages), cpp11::as_cpp<cpp11::decay_t<doubles>>(current_weight), cpp11::as_cpp<cpp11::decay_t<doubles>>(current_v), cpp11::as_cpp<cpp11::decay_t<integers>>(current_cluster_ids), cpp11::as_cpp<cpp11::decay_t<int>>(current_n_clust), cpp11::as_cpp<cpp11::decay_t<double>>(alpha), cpp11::as_cpp<cpp11::decay_t<double>>(mu_phi), cpp11::as_cpp<cpp11::decay_t<double>>(lambda), cpp11::as_cpp<cpp11::decay_t<double>>(nu1), cpp11::as_cpp<cpp11::decay_t<double>>(nu2)));
   END_CPP11
 }
+// find_predictive_density.cpp
+std::vector<double> FindPredictiveDensityWalker_cpp(doubles calendar_ages, doubles weight, doubles phi, doubles tau, double mu_phi, double lambda, double nu1, double nu2);
+extern "C" SEXP _carbondate_FindPredictiveDensityWalker_cpp(SEXP calendar_ages, SEXP weight, SEXP phi, SEXP tau, SEXP mu_phi, SEXP lambda, SEXP nu1, SEXP nu2) {
+  BEGIN_CPP11
+    return cpp11::as_sexp(FindPredictiveDensityWalker_cpp(cpp11::as_cpp<cpp11::decay_t<doubles>>(calendar_ages), cpp11::as_cpp<cpp11::decay_t<doubles>>(weight), cpp11::as_cpp<cpp11::decay_t<doubles>>(phi), cpp11::as_cpp<cpp11::decay_t<doubles>>(tau), cpp11::as_cpp<cpp11::decay_t<double>>(mu_phi), cpp11::as_cpp<cpp11::decay_t<double>>(lambda), cpp11::as_cpp<cpp11::decay_t<double>>(nu1), cpp11::as_cpp<cpp11::decay_t<double>>(nu2)));
+  END_CPP11
+}
+// find_predictive_density.cpp
+std::vector<double> FindPredictiveDensityPolyaUrn_cpp(doubles calendar_ages, integers cluster_identifiers, doubles phi, doubles tau, double alpha, double mu_phi, double lambda, double nu1, double nu2);
+extern "C" SEXP _carbondate_FindPredictiveDensityPolyaUrn_cpp(SEXP calendar_ages, SEXP cluster_identifiers, SEXP phi, SEXP tau, SEXP alpha, SEXP mu_phi, SEXP lambda, SEXP nu1, SEXP nu2) {
+  BEGIN_CPP11
+    return cpp11::as_sexp(FindPredictiveDensityPolyaUrn_cpp(cpp11::as_cpp<cpp11::decay_t<doubles>>(calendar_ages), cpp11::as_cpp<cpp11::decay_t<integers>>(cluster_identifiers), cpp11::as_cpp<cpp11::decay_t<doubles>>(phi), cpp11::as_cpp<cpp11::decay_t<doubles>>(tau), cpp11::as_cpp<cpp11::decay_t<double>>(alpha), cpp11::as_cpp<cpp11::decay_t<double>>(mu_phi), cpp11::as_cpp<cpp11::decay_t<double>>(lambda), cpp11::as_cpp<cpp11::decay_t<double>>(nu1), cpp11::as_cpp<cpp11::decay_t<double>>(nu2)));
+  END_CPP11
+}
 // polya_urn_update.cpp
 list PolyaUrnUpdateClusterIdentifier(doubles calendar_ages, integers current_cluster_ids, doubles current_phi, doubles current_tau, double alpha, double mu_phi, double lambda, double nu1, double nu2);
 extern "C" SEXP _carbondate_PolyaUrnUpdateClusterIdentifier(SEXP calendar_ages, SEXP current_cluster_ids, SEXP current_phi, SEXP current_tau, SEXP alpha, SEXP mu_phi, SEXP lambda, SEXP nu1, SEXP nu2) {
@@ -29,9 +43,11 @@ extern "C" SEXP _carbondate_UpdateCalendarAges_cpp(SEXP n, SEXP calendar_ages, S
 
 extern "C" {
 static const R_CallMethodDef CallEntries[] = {
-    {"_carbondate_DPWalkerUpdate_cpp",              (DL_FUNC) &_carbondate_DPWalkerUpdate_cpp,              10},
-    {"_carbondate_PolyaUrnUpdateClusterIdentifier", (DL_FUNC) &_carbondate_PolyaUrnUpdateClusterIdentifier,  9},
-    {"_carbondate_UpdateCalendarAges_cpp",          (DL_FUNC) &_carbondate_UpdateCalendarAges_cpp,          11},
+    {"_carbondate_DPWalkerUpdate_cpp",                (DL_FUNC) &_carbondate_DPWalkerUpdate_cpp,                10},
+    {"_carbondate_FindPredictiveDensityPolyaUrn_cpp", (DL_FUNC) &_carbondate_FindPredictiveDensityPolyaUrn_cpp,  9},
+    {"_carbondate_FindPredictiveDensityWalker_cpp",   (DL_FUNC) &_carbondate_FindPredictiveDensityWalker_cpp,    8},
+    {"_carbondate_PolyaUrnUpdateClusterIdentifier",   (DL_FUNC) &_carbondate_PolyaUrnUpdateClusterIdentifier,    9},
+    {"_carbondate_UpdateCalendarAges_cpp",            (DL_FUNC) &_carbondate_UpdateCalendarAges_cpp,            11},
     {NULL, NULL, 0}
 };
 }

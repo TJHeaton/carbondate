@@ -27,4 +27,4 @@ profile_polya_urn <- function(n_iter, n_thin, use_cpp) {
 }
 
 profile_polya_urn(n_iter, n_thin, TRUE)
-# profile_polya_urn(n_iter, n_thin, FALSE)
+profile_polya_urn(n_iter, n_thin, FALSE)
