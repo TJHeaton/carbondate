@@ -4,6 +4,14 @@ DPWalkerUpdate_cpp <- function(calendar_ages, current_weight, current_v, current
   .Call(`_carbondate_DPWalkerUpdate_cpp`, calendar_ages, current_weight, current_v, current_cluster_ids, current_n_clust, alpha, mu_phi, lambda, nu1, nu2)
 }
 
+FindPredictiveDensityWalker_cpp <- function(calendar_ages, weight, phi, tau, mu_phi, lambda, nu1, nu2) {
+  .Call(`_carbondate_FindPredictiveDensityWalker_cpp`, calendar_ages, weight, phi, tau, mu_phi, lambda, nu1, nu2)
+}
+
+FindPredictiveDensityPolyaUrn_cpp <- function(calendar_ages, cluster_identifiers, phi, tau, alpha, mu_phi, lambda, nu1, nu2) {
+  .Call(`_carbondate_FindPredictiveDensityPolyaUrn_cpp`, calendar_ages, cluster_identifiers, phi, tau, alpha, mu_phi, lambda, nu1, nu2)
+}
+
 PolyaUrnUpdateClusterIdentifier <- function(calendar_ages, current_cluster_ids, current_phi, current_tau, alpha, mu_phi, lambda, nu1, nu2) {
   .Call(`_carbondate_PolyaUrnUpdateClusterIdentifier`, calendar_ages, current_cluster_ids, current_phi, current_tau, alpha, mu_phi, lambda, nu1, nu2)
 }

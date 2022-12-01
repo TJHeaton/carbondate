@@ -10,7 +10,7 @@ int SampleInt(int n, std::vector<double> prob, bool one_based) {
 
   int adj = one_based ? 0 : 1;
   double rT, mass, sum_p = 0.;
-  int i, j, ans;
+  int i, j;
   std::vector<double> p(n);
   std::vector<int> perm(n);
 
@@ -23,12 +23,10 @@ int SampleInt(int n, std::vector<double> prob, bool one_based) {
       p[i] = 0.0;
     }
   }
-
   Rf_revsort(&p[0], &perm[0], n);
 
   rT = unif_rand() * sum_p;
   mass = 0.0;
-
   for (j = 0; j < n-1; j++) {
     mass += p[j];
     if (rT <= mass) {
@@ -36,6 +34,5 @@ int SampleInt(int n, std::vector<double> prob, bool one_based) {
     }
   }
 
-  ans = perm[j] - adj;
-  return ans;
+  return perm[j] - adj;
 }

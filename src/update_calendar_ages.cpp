@@ -1,7 +1,5 @@
-#include <iostream>
 #include <limits>
-#include "cpp11/doubles.hpp"
-#include "cpp11/integers.hpp"
+#include "cpp11.hpp"
 #include "Rmath.h"
 #include "local_rng.h"
 using namespace cpp11;

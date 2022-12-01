@@ -32,7 +32,8 @@ FindPredictiveCalendarAgeDensity <- function(
     calendar_age_sequence,
     n_posterior_samples,
     interval_width = "2sigma",
-    bespoke_probability = NA) {
+    bespoke_probability = NA,
+    use_cpp = TRUE) {
 
   arg_check <- checkmate::makeAssertCollection()
 
@@ -43,7 +44,7 @@ FindPredictiveCalendarAgeDensity <- function(
   checkmate::reportAssertions(arg_check)
 
   density_matrix <- .FindDensityPerSampleID(
-    output_data, calendar_age_sequence, n_posterior_samples)
+    output_data, calendar_age_sequence, n_posterior_samples, use_cpp)
 
   edge_width = switch(
     interval_width,
@@ -67,7 +68,7 @@ FindPredictiveCalendarAgeDensity <- function(
 
 # Creates a matrix where each column is the density for a particular sample id
 .FindDensityPerSampleID <- function(
-    output_data, calendar_age_sequence, n_posterior_samples) {
+    output_data, calendar_age_sequence, n_posterior_samples, use_cpp) {
   n_out <- length(output_data$alpha)
   n_burn <- floor(n_out / 2)
 
@@ -76,7 +77,7 @@ FindPredictiveCalendarAgeDensity <- function(
     size = n_posterior_samples,
     replace = n_posterior_samples > (n_out - n_burn))
 
-  posterior_density_matrix <- apply(
+  density_matrix <- apply(
     matrix(sample_ids, 1, n_posterior_samples),
     2,
     function(i, output_data, x) {
@@ -89,7 +90,8 @@ FindPredictiveCalendarAgeDensity <- function(
           mu_phi = output_data$mu_phi[i],
           lambda = output_data$input_parameters$lambda,
           nu1 = output_data$input_parameters$nu1,
-          nu2 = output_data$input_parameters$nu2)
+          nu2 = output_data$input_parameters$nu2,
+          use_cpp)
       } else {
         .FindPredictiveDensityPolyaUrn(
           x,
@@ -100,16 +102,17 @@ FindPredictiveCalendarAgeDensity <- function(
           mu_phi = output_data$mu_phi[i],
           lambda = output_data$input_parameters$lambda,
           nu1 = output_data$input_parameters$nu1,
-          nu2 = output_data$input_parameters$nu2)
+          nu2 = output_data$input_parameters$nu2,
+          use_cpp)
       }
     },
     output_data = output_data, x = calendar_age_sequence)
-  return(posterior_density_matrix)
+  return(density_matrix)
 }
 
 
 .FindPredictiveDensityPolyaUrn <- function(
-    x, cluster_identifiers, phi, tau, alpha, mu_phi, lambda, nu1, nu2) {
+    x, cluster_identifiers, phi, tau, alpha, mu_phi, lambda, nu1, nu2, use_cpp) {
   n_clust <- length(phi)
   nci <- .NumberOfObservationsInEachCluster(cluster_identifiers)
 
@@ -117,17 +120,43 @@ FindPredictiveCalendarAgeDensity <- function(
   pci <- c(nci, alpha) # Could form new cluster
   pci <- pci / sum(pci)
 
-  dens <- .MixtureDens(x, w = pci[1:n_clust], mu = phi, sd = 1 / sqrt(tau)) +
-    .PredNewDens(x, w = pci[n_clust + 1], mu_phi, lambda, nu1, nu2)
+  if (use_cpp){
+    dens <- FindPredictiveDensityPolyaUrn_cpp(
+      calendar_ages = x,
+      cluster_identifiers = as.integer(cluster_identifiers),
+      phi = phi,
+      tau = tau,
+      alpha = alpha,
+      mu_phi = mu_phi,
+      lambda = lambda,
+      nu1 = nu1,
+      nu2 = nu2)
+  } else {
+    dens <- .MixtureDens(x, w = pci[1:n_clust], mu = phi, sd = 1 / sqrt(tau)) +
+      .PredNewDens(x, w = pci[n_clust + 1], mu_phi, lambda, nu1, nu2)
+  }
+  return(dens)
 }
 
 
 .FindPredictiveDensityWalker <- function(
-    x, weight, phi, tau, mu_phi, lambda, nu1, nu2) {
+    x, weight, phi, tau, mu_phi, lambda, nu1, nu2, use_cpp) {
   prob_new_clust <- 1 - sum(weight)
 
-  dens <- .MixtureDens(x, w = weight, mu = phi, sd = 1 / sqrt(tau)) +
-    .PredNewDens(x, w = prob_new_clust, mu_phi, lambda, nu1, nu2)
+  if (use_cpp) {
+    dens <- FindPredictiveDensityWalker_cpp(
+      calendar_ages = x,
+      weight = weight,
+      phi = phi,
+      tau = tau,
+      mu_phi = mu_phi,
+      lambda = lambda,
+      nu1 = nu1,
+      nu2 = nu2)
+  } else {
+    dens <- .MixtureDens(x, w = weight, mu = phi, sd = 1 / sqrt(tau)) +
+      .PredNewDens(x, w = prob_new_clust, mu_phi, lambda, nu1, nu2)
+  }
   return(dens)
 }
 
@@ -147,7 +176,7 @@ FindPredictiveCalendarAgeDensity <- function(
     sd,
     w,
     MoreArgs = list(x = x))
-  apply(DTemp, 1, sum) # Sum up the various mixtures
+  return(apply(DTemp, 1, sum)) # Sum up the various mixtures
 }
 
 

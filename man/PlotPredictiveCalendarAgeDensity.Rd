@@ -16,7 +16,8 @@ PlotPredictiveCalendarAgeDensity(
   xlimscal = 1,
   ylimscal = 1,
   denscale = 3,
-  n_calc = 1001
+  n_calc = 1001,
+  use_cpp = TRUE
 )
 }
 \arguments{
@@ -64,6 +65,8 @@ that the maximum SPD density will be at 1/3 of the height of the plot.}
 
 \item{n_calc}{Number of points to use when calculating the predictive
 density. Default is 1001.}
+
+\item{use_cpp}{TEMPORARY: DEV ONLY. Whether to use C++.}
 }
 \value{
 A list, each item containing a data frame of the \code{calendar_age}, the

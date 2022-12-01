@@ -12,19 +12,7 @@ double LogMarginalNormalGamma(
     double lambda,
     double nu1,
     double nu2,
-    double mu_phi) {
-
-  double logden, margprec, margdf;
-
-  margprec = (nu1 * lambda) / (nu2 * (lambda + 1.));
-  margdf = 2. * nu1;
-
-  logden = lgamma((margdf + 1.) / 2.) - lgamma(margdf / 2.);
-  logden += 0.5 * (log(margprec) - log(margdf) - log(M_PI));
-  logden -= ((margdf + 1) / 2) * log(1 + margprec * pow(calendar_age - mu_phi, 2) / margdf);
-
-  return logden;
-}
+    double mu_phi);
 
 
 void CreateNewPhiTau(
