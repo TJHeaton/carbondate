@@ -116,8 +116,7 @@ WalkerBivarDirichlet <- function(
     alpha_rate = NA,
     mu_phi = NA,
     calendar_ages = NA,
-    n_clust = min(10, length(c14_determinations)),
-    use_cpp = TRUE) {
+    n_clust = min(10, length(c14_determinations))) {
 
   ##############################################################################
   # Check input parameters
@@ -240,79 +239,39 @@ WalkerBivarDirichlet <- function(
         utils::setTxtProgressBar(progress_bar, iter)
       }
     }
-    if (use_cpp) {
-      DPMM_update <- DPWalkerUpdate_cpp(
-        calendar_ages = as.double(calendar_ages),
-        current_weight = weight,
-        current_v = v,
-        current_cluster_ids = cluster_identifiers,
-        current_n_clust = n_clust,
-        alpha = alpha,
-        mu_phi = mu_phi,
-        lambda = lambda,
-        nu1 = nu1,
-        nu2 = nu2)
-      weight <- DPMM_update$weight
-      cluster_identifiers <- DPMM_update$cluster_ids
-      phi <- DPMM_update$phi
-      tau <- DPMM_update$tau
-      v <- DPMM_update$v
-      n_clust <- DPMM_update$n_clust
-    } else {
-      DPMM_update <- .DPWalkerUpdate(
-        theta = calendar_ages,
-        w = weight,
-        v = v,
-        delta = cluster_identifiers,
-        n_clust = n_clust,
-        alpha = alpha,
-        mu_phi = mu_phi,
-        lambda = lambda,
-        nu1 = nu1,
-        nu2 = nu2)
-      weight <- DPMM_update$w
-      cluster_identifiers <- DPMM_update$delta
-      phi <- DPMM_update$phi
-      tau <- DPMM_update$tau
-      v <- DPMM_update$v
-      n_clust <- DPMM_update$n_clust
-    }
-
-
-    alpha <- .WalkerUpdateAlpha(
-      delta = cluster_identifiers,
+    DPMM_update <- DPWalkerUpdate(
+      calendar_ages = as.double(calendar_ages),
+      current_weight = weight,
+      current_v = v,
+      current_cluster_ids = cluster_identifiers,
+      current_n_clust = n_clust,
       alpha = alpha,
-      prshape = alpha_shape,
-      prrate = alpha_rate)
-    mu_phi <- .UpdateMuPhi(phi = phi, tau = tau, lambda = lambda, A = A, B = B)
+      mu_phi = mu_phi,
+      lambda = lambda,
+      nu1 = nu1,
+      nu2 = nu2)
+    weight <- DPMM_update$weight
+    cluster_identifiers <- DPMM_update$cluster_ids
+    phi <- DPMM_update$phi
+    tau <- DPMM_update$tau
+    v <- DPMM_update$v
+    n_clust <- DPMM_update$n_clust
 
-    if (use_cpp) {
-      calendar_ages = UpdateCalendarAges_cpp(
-        num_observations,
-        as.double(calendar_ages),
-        slice_width,
-        slice_multiplier,
-        as.integer(cluster_identifiers),
-        as.double(phi),
-        as.double(tau),
-        as.double(c14_determinations),
-        as.double(c14_sigmas),
-        as.double(interpolated_c14_age),
-        as.double(interpolated_c14_sig))
-    } else {
-      for (k in 1:num_observations) {
-        calendar_ages[k] <- .SliceSample(
-          x0 = calendar_ages[k],
-          w = slice_width,
-          m = slice_multiplier,
-          prmean = phi[cluster_identifiers[k]],
-          prsig = 1 / sqrt(tau[cluster_identifiers[k]]),
-          c14obs = c14_determinations[k],
-          c14sig = c14_sigmas[k],
-          mucalallyr = interpolated_c14_age,
-          sigcalallyr = interpolated_c14_sig)
-      }
-    }
+    alpha <- WalkerUpdateAlpha(cluster_identifiers, alpha, alpha_shape, alpha_rate)
+    mu_phi <- UpdateMuPhi(phi = phi, tau = tau, lambda = lambda, A = A, B = B)
+
+    calendar_ages = UpdateCalendarAges_cpp(
+      num_observations,
+      as.double(calendar_ages),
+      slice_width,
+      slice_multiplier,
+      as.integer(cluster_identifiers),
+      as.double(phi),
+      as.double(tau),
+      as.double(c14_determinations),
+      as.double(c14_sigmas),
+      as.double(interpolated_c14_age),
+      as.double(interpolated_c14_sig))
 
     if (iter %% n_thin == 0) {
       output_index <- output_index + 1

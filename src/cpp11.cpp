@@ -5,13 +5,6 @@
 #include "cpp11/declarations.hpp"
 #include <R_ext/Visibility.h>
 
-// dp_walker_update.cpp
-list DPWalkerUpdate_cpp(doubles calendar_ages, doubles current_weight, doubles current_v, integers current_cluster_ids, int current_n_clust, double alpha, double mu_phi, double lambda, double nu1, double nu2);
-extern "C" SEXP _carbondate_DPWalkerUpdate_cpp(SEXP calendar_ages, SEXP current_weight, SEXP current_v, SEXP current_cluster_ids, SEXP current_n_clust, SEXP alpha, SEXP mu_phi, SEXP lambda, SEXP nu1, SEXP nu2) {
-  BEGIN_CPP11
-    return cpp11::as_sexp(DPWalkerUpdate_cpp(cpp11::as_cpp<cpp11::decay_t<doubles>>(calendar_ages), cpp11::as_cpp<cpp11::decay_t<doubles>>(current_weight), cpp11::as_cpp<cpp11::decay_t<doubles>>(current_v), cpp11::as_cpp<cpp11::decay_t<integers>>(current_cluster_ids), cpp11::as_cpp<cpp11::decay_t<int>>(current_n_clust), cpp11::as_cpp<cpp11::decay_t<double>>(alpha), cpp11::as_cpp<cpp11::decay_t<double>>(mu_phi), cpp11::as_cpp<cpp11::decay_t<double>>(lambda), cpp11::as_cpp<cpp11::decay_t<double>>(nu1), cpp11::as_cpp<cpp11::decay_t<double>>(nu2)));
-  END_CPP11
-}
 // find_predictive_density.cpp
 std::vector<double> FindPredictiveDensityWalker_cpp(doubles calendar_ages, doubles weight, doubles phi, doubles tau, double mu_phi, double lambda, double nu1, double nu2);
 extern "C" SEXP _carbondate_FindPredictiveDensityWalker_cpp(SEXP calendar_ages, SEXP weight, SEXP phi, SEXP tau, SEXP mu_phi, SEXP lambda, SEXP nu1, SEXP nu2) {
@@ -40,14 +33,37 @@ extern "C" SEXP _carbondate_UpdateCalendarAges_cpp(SEXP n, SEXP calendar_ages, S
     return cpp11::as_sexp(UpdateCalendarAges_cpp(cpp11::as_cpp<cpp11::decay_t<int>>(n), cpp11::as_cpp<cpp11::decay_t<doubles>>(calendar_ages), cpp11::as_cpp<cpp11::decay_t<double>>(w), cpp11::as_cpp<cpp11::decay_t<double>>(m), cpp11::as_cpp<cpp11::decay_t<integers>>(cluster_identifiers), cpp11::as_cpp<cpp11::decay_t<doubles>>(phi), cpp11::as_cpp<cpp11::decay_t<doubles>>(tau), cpp11::as_cpp<cpp11::decay_t<doubles>>(c14_determinations), cpp11::as_cpp<cpp11::decay_t<doubles>>(c14_sigmas), cpp11::as_cpp<cpp11::decay_t<doubles>>(mucalallyr), cpp11::as_cpp<cpp11::decay_t<doubles>>(sigcalallyr)));
   END_CPP11
 }
+// walker_update.cpp
+list DPWalkerUpdate(doubles calendar_ages, doubles current_weight, doubles current_v, integers current_cluster_ids, int current_n_clust, double alpha, double mu_phi, double lambda, double nu1, double nu2);
+extern "C" SEXP _carbondate_DPWalkerUpdate(SEXP calendar_ages, SEXP current_weight, SEXP current_v, SEXP current_cluster_ids, SEXP current_n_clust, SEXP alpha, SEXP mu_phi, SEXP lambda, SEXP nu1, SEXP nu2) {
+  BEGIN_CPP11
+    return cpp11::as_sexp(DPWalkerUpdate(cpp11::as_cpp<cpp11::decay_t<doubles>>(calendar_ages), cpp11::as_cpp<cpp11::decay_t<doubles>>(current_weight), cpp11::as_cpp<cpp11::decay_t<doubles>>(current_v), cpp11::as_cpp<cpp11::decay_t<integers>>(current_cluster_ids), cpp11::as_cpp<cpp11::decay_t<int>>(current_n_clust), cpp11::as_cpp<cpp11::decay_t<double>>(alpha), cpp11::as_cpp<cpp11::decay_t<double>>(mu_phi), cpp11::as_cpp<cpp11::decay_t<double>>(lambda), cpp11::as_cpp<cpp11::decay_t<double>>(nu1), cpp11::as_cpp<cpp11::decay_t<double>>(nu2)));
+  END_CPP11
+}
+// walker_update.cpp
+double WalkerUpdateAlpha(integers cluster_ids, double current_alpha, double alpha_shape, double alpha_rate);
+extern "C" SEXP _carbondate_WalkerUpdateAlpha(SEXP cluster_ids, SEXP current_alpha, SEXP alpha_shape, SEXP alpha_rate) {
+  BEGIN_CPP11
+    return cpp11::as_sexp(WalkerUpdateAlpha(cpp11::as_cpp<cpp11::decay_t<integers>>(cluster_ids), cpp11::as_cpp<cpp11::decay_t<double>>(current_alpha), cpp11::as_cpp<cpp11::decay_t<double>>(alpha_shape), cpp11::as_cpp<cpp11::decay_t<double>>(alpha_rate)));
+  END_CPP11
+}
+// walker_update.cpp
+double UpdateMuPhi(doubles phi, doubles tau, double lambda, double A, double B);
+extern "C" SEXP _carbondate_UpdateMuPhi(SEXP phi, SEXP tau, SEXP lambda, SEXP A, SEXP B) {
+  BEGIN_CPP11
+    return cpp11::as_sexp(UpdateMuPhi(cpp11::as_cpp<cpp11::decay_t<doubles>>(phi), cpp11::as_cpp<cpp11::decay_t<doubles>>(tau), cpp11::as_cpp<cpp11::decay_t<double>>(lambda), cpp11::as_cpp<cpp11::decay_t<double>>(A), cpp11::as_cpp<cpp11::decay_t<double>>(B)));
+  END_CPP11
+}
 
 extern "C" {
 static const R_CallMethodDef CallEntries[] = {
-    {"_carbondate_DPWalkerUpdate_cpp",                (DL_FUNC) &_carbondate_DPWalkerUpdate_cpp,                10},
+    {"_carbondate_DPWalkerUpdate",                    (DL_FUNC) &_carbondate_DPWalkerUpdate,                    10},
     {"_carbondate_FindPredictiveDensityPolyaUrn_cpp", (DL_FUNC) &_carbondate_FindPredictiveDensityPolyaUrn_cpp,  9},
     {"_carbondate_FindPredictiveDensityWalker_cpp",   (DL_FUNC) &_carbondate_FindPredictiveDensityWalker_cpp,    8},
     {"_carbondate_PolyaUrnUpdateClusterIdentifier",   (DL_FUNC) &_carbondate_PolyaUrnUpdateClusterIdentifier,    9},
     {"_carbondate_UpdateCalendarAges_cpp",            (DL_FUNC) &_carbondate_UpdateCalendarAges_cpp,            11},
+    {"_carbondate_UpdateMuPhi",                       (DL_FUNC) &_carbondate_UpdateMuPhi,                        5},
+    {"_carbondate_WalkerUpdateAlpha",                 (DL_FUNC) &_carbondate_WalkerUpdateAlpha,                  4},
     {NULL, NULL, 0}
 };
 }

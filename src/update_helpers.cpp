@@ -215,3 +215,8 @@ void WalkerUpdateClusterIdentifiers(
     dens.resize(0);
   }
 }
+
+
+double AlphaLogLikelihood(double n_clust, double alpha, double n) {
+  return n_clust * log(alpha) + lgamma(alpha) - lgamma(alpha + n);
+}
