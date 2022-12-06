@@ -12,18 +12,14 @@ PolyaUrnUpdateClusterIdentifier <- function(calendar_ages, current_cluster_ids, 
   .Call(`_carbondate_PolyaUrnUpdateClusterIdentifier`, calendar_ages, current_cluster_ids, current_phi, current_tau, alpha, mu_phi, lambda, nu1, nu2)
 }
 
-UpdateCalendarAges_cpp <- function(n, calendar_ages, w, m, cluster_identifiers, phi, tau, c14_determinations, c14_sigmas, mucalallyr, sigcalallyr) {
-  .Call(`_carbondate_UpdateCalendarAges_cpp`, n, calendar_ages, w, m, cluster_identifiers, phi, tau, c14_determinations, c14_sigmas, mucalallyr, sigcalallyr)
-}
-
 DPWalkerUpdate <- function(calendar_ages, current_weight, current_v, current_cluster_ids, current_n_clust, alpha, mu_phi, lambda, nu1, nu2) {
   .Call(`_carbondate_DPWalkerUpdate`, calendar_ages, current_weight, current_v, current_cluster_ids, current_n_clust, alpha, mu_phi, lambda, nu1, nu2)
 }
 
-WalkerUpdateAlpha <- function(cluster_ids, current_alpha, alpha_shape, alpha_rate) {
-  .Call(`_carbondate_WalkerUpdateAlpha`, cluster_ids, current_alpha, alpha_shape, alpha_rate)
+WalkerUpdateAlpha_cpp <- function(cluster_ids, current_alpha, alpha_shape, alpha_rate) {
+  .Call(`_carbondate_WalkerUpdateAlpha_cpp`, cluster_ids, current_alpha, alpha_shape, alpha_rate)
 }
 
-UpdateMuPhi <- function(phi, tau, lambda, A, B) {
-  .Call(`_carbondate_UpdateMuPhi`, phi, tau, lambda, A, B)
+WalkerUpdateStep <- function(current_calendar_ages, current_weight, current_v, current_cluster_ids, current_n_clust, current_alpha, current_mu_phi, alpha_shape, alpha_rate, lambda, nu1, nu2, A, B, w, m, c14_determinations, c14_sigmas, mucalallyr, sigcalallyr) {
+  .Call(`_carbondate_WalkerUpdateStep`, current_calendar_ages, current_weight, current_v, current_cluster_ids, current_n_clust, current_alpha, current_mu_phi, alpha_shape, alpha_rate, lambda, nu1, nu2, A, B, w, m, c14_determinations, c14_sigmas, mucalallyr, sigcalallyr)
 }
