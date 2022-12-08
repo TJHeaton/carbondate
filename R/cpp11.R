@@ -12,14 +12,6 @@ PolyaUrnUpdateClusterIdentifier <- function(calendar_ages, current_cluster_ids, 
   .Call(`_carbondate_PolyaUrnUpdateClusterIdentifier`, calendar_ages, current_cluster_ids, current_phi, current_tau, alpha, mu_phi, lambda, nu1, nu2)
 }
 
-DPWalkerUpdate <- function(calendar_ages, current_weight, current_v, current_cluster_ids, current_n_clust, alpha, mu_phi, lambda, nu1, nu2) {
-  .Call(`_carbondate_DPWalkerUpdate`, calendar_ages, current_weight, current_v, current_cluster_ids, current_n_clust, alpha, mu_phi, lambda, nu1, nu2)
-}
-
-WalkerUpdateAlpha_cpp <- function(cluster_ids, current_alpha, alpha_shape, alpha_rate) {
-  .Call(`_carbondate_WalkerUpdateAlpha_cpp`, cluster_ids, current_alpha, alpha_shape, alpha_rate)
-}
-
 WalkerUpdateStep <- function(current_calendar_ages, current_weight, current_v, current_cluster_ids, current_n_clust, current_alpha, current_mu_phi, alpha_shape, alpha_rate, lambda, nu1, nu2, A, B, w, m, c14_determinations, c14_sigmas, mucalallyr, sigcalallyr) {
   .Call(`_carbondate_WalkerUpdateStep`, current_calendar_ages, current_weight, current_v, current_cluster_ids, current_n_clust, current_alpha, current_mu_phi, alpha_shape, alpha_rate, lambda, nu1, nu2, A, B, w, m, c14_determinations, c14_sigmas, mucalallyr, sigcalallyr)
 }

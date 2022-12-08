@@ -26,7 +26,7 @@ PolyaUrnBivarDirichlet(
   mu_phi = NA,
   calendar_ages = NA,
   correct_start_tau = TRUE,
-  use_cpp = TRUE
+  use_cpp = FALSE
 )
 }
 \arguments{

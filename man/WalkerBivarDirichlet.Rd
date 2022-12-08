@@ -24,8 +24,7 @@ WalkerBivarDirichlet(
   alpha_rate = NA,
   mu_phi = NA,
   calendar_ages = NA,
-  n_clust = min(10, length(c14_determinations)),
-  use_cpp = TRUE
+  n_clust = min(10, length(c14_determinations))
 )
 }
 \arguments{
@@ -129,8 +128,8 @@ those calculated using \code{sensible_initialisation}) and update_type
 \item{\code{input_data}}{a list containing the C14 data used and the name of
 the calibration curve used.}
 \item{\code{input_parameters}}{A list containing the values of the fixed
-hyperparameters \code{lambda}, \code{nu1}, \code{nu2}, \code{A}, \code{B}, \code{alpha_shape},
-\code{alpha_rate} and \code{mu_phi}, and the slice parameters \code{slice_width} and
+hyperparameters \code{lambda}, \code{nu1}, \code{nu2}, \code{A}, \code{B}, \code{alpha_shape}, and
+\code{alpha_rate}, and the slice parameters \code{slice_width} and
 \code{slice_multiplier}.}
 }
 }
