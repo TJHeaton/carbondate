@@ -40,7 +40,6 @@
 #' that the maximum SPD density will be at 1/3 of the height of the plot.
 #' @param n_calc Number of points to use when calculating the predictive
 #' density. Default is 1001.
-#' @param use_cpp TEMPORARY: DEV ONLY. Whether to use C++.
 #'
 #' @return A list, each item containing a data frame of the `calendar_age`, the
 #' `density_mean` and the 95% confidence intervals for the density
@@ -79,8 +78,7 @@ PlotPredictiveCalendarAgeDensity <- function(
     xlimscal = 1,
     ylimscal = 1,
     denscale = 3,
-    n_calc = 1001,
-    use_cpp = TRUE) {
+    n_calc = 1001) {
 
   ##############################################################################
   # Check input parameters
@@ -147,8 +145,7 @@ PlotPredictiveCalendarAgeDensity <- function(
       calendar_age_sequence,
       n_posterior_samples,
       interval_width,
-      bespoke_probability,
-      use_cpp)
+      bespoke_probability)
   }
   ##############################################################################
   # Calculate plot scaling
