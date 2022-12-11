@@ -1,4 +1,5 @@
 #include <limits>
+#include <vector>
 #include "cpp11.hpp"
 #include "Rmath.h"
 #include "local_rng.h"
@@ -102,21 +103,20 @@ double SliceSample_cpp(
 }
 
 
-[[cpp11::register]] doubles UpdateCalendarAges_cpp(
+std::vector<double> UpdateCalendarAges(
     int n,
     doubles calendar_ages,
     double w,
     double m,
-    integers cluster_identifiers,
-    doubles phi,
-    doubles tau,
+    std::vector<int> cluster_identifiers,
+    std::vector<double> phi,
+    std::vector<double> tau,
     doubles c14_determinations,
     doubles c14_sigmas,
     doubles mucalallyr,
     doubles sigcalallyr) {
 
-  local_rng rng_state;
-  writable::doubles calendar_ages_new(n);
+  std::vector<double> calendar_ages_new(n);
   double prmean;
   double prsig;
   int ci;

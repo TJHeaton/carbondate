@@ -48,7 +48,6 @@
 #' @param calendar_ages  The initial estimate for the underlying calendar ages
 #' (optional). If supplied it must be a vector with the same length as
 #' `c14_determinations`.  Required if `sensible_initialisation` is `FALSE`.
-#' @param use_cpp DEV ONLY: Use new cpp functions (should be faster).
 #'
 #' @return A list with 11 items. The first 8 items contain output data, each of
 #' which have one dimension of size \eqn{n_{\textrm{out}} =
@@ -85,8 +84,8 @@
 #'  \item{`input_data`}{a list containing the C14 data used and the name of
 #'  the calibration curve used.}
 #'  \item{`input_parameters`}{A list containing the values of the fixed
-#'  hyperparameters `lambda`, `nu1`, `nu2`, `A`, `B`, `alpha_shape`,
-#'  `alpha_rate` and `mu_phi`, and the slice parameters `slice_width` and
+#'  hyperparameters `lambda`, `nu1`, `nu2`, `A`, `B`, `alpha_shape`, and
+#'  `alpha_rate`, and the slice parameters `slice_width` and
 #'  `slice_multiplier`.}
 #' }
 #'
@@ -116,8 +115,7 @@ WalkerBivarDirichlet <- function(
     alpha_rate = NA,
     mu_phi = NA,
     calendar_ages = NA,
-    n_clust = min(10, length(c14_determinations)),
-    use_cpp = TRUE) {
+    n_clust = min(10, length(c14_determinations))) {
 
   ##############################################################################
   # Check input parameters
@@ -182,7 +180,10 @@ WalkerBivarDirichlet <- function(
 
   v <- stats::rbeta(n_clust, 1, alpha)
   weight <- v * c(1, cumprod(1 - v)[-n_clust])
-  cluster_identifiers <- sample(1:n_clust, num_observations, replace = TRUE)
+  cluster_identifiers <- as.integer(sample(1:n_clust, num_observations, replace = TRUE))
+  calendar_ages = as.double(calendar_ages)
+  c14_determinations = as.double(c14_determinations)
+  c14_sigmas = as.double(c14_sigmas)
 
   ##############################################################################
   # Save input data and parameters
@@ -198,7 +199,6 @@ WalkerBivarDirichlet <- function(
     B = B,
     alpha_shape = alpha_shape,
     alpha_rate = alpha_rate,
-    mu_phi = mu_phi,
     slice_width = slice_width,
     slice_multiplier = slice_multiplier)
 
@@ -240,79 +240,36 @@ WalkerBivarDirichlet <- function(
         utils::setTxtProgressBar(progress_bar, iter)
       }
     }
-    if (use_cpp) {
-      DPMM_update <- DPWalkerUpdate_cpp(
-        calendar_ages = as.double(calendar_ages),
-        current_weight = weight,
-        current_v = v,
-        current_cluster_ids = cluster_identifiers,
-        current_n_clust = n_clust,
-        alpha = alpha,
-        mu_phi = mu_phi,
-        lambda = lambda,
-        nu1 = nu1,
-        nu2 = nu2)
-      weight <- DPMM_update$weight
-      cluster_identifiers <- DPMM_update$cluster_ids
-      phi <- DPMM_update$phi
-      tau <- DPMM_update$tau
-      v <- DPMM_update$v
-      n_clust <- DPMM_update$n_clust
-    } else {
-      DPMM_update <- .DPWalkerUpdate(
-        theta = calendar_ages,
-        w = weight,
-        v = v,
-        delta = cluster_identifiers,
-        n_clust = n_clust,
-        alpha = alpha,
-        mu_phi = mu_phi,
-        lambda = lambda,
-        nu1 = nu1,
-        nu2 = nu2)
-      weight <- DPMM_update$w
-      cluster_identifiers <- DPMM_update$delta
-      phi <- DPMM_update$phi
-      tau <- DPMM_update$tau
-      v <- DPMM_update$v
-      n_clust <- DPMM_update$n_clust
-    }
-
-
-    alpha <- .WalkerUpdateAlpha(
-      delta = cluster_identifiers,
-      alpha = alpha,
-      prshape = alpha_shape,
-      prrate = alpha_rate)
-    mu_phi <- .UpdateMuPhi(phi = phi, tau = tau, lambda = lambda, A = A, B = B)
-
-    if (use_cpp) {
-      calendar_ages = UpdateCalendarAges_cpp(
-        num_observations,
-        as.double(calendar_ages),
-        slice_width,
-        slice_multiplier,
-        as.integer(cluster_identifiers),
-        as.double(phi),
-        as.double(tau),
-        as.double(c14_determinations),
-        as.double(c14_sigmas),
-        as.double(interpolated_c14_age),
-        as.double(interpolated_c14_sig))
-    } else {
-      for (k in 1:num_observations) {
-        calendar_ages[k] <- .SliceSample(
-          x0 = calendar_ages[k],
-          w = slice_width,
-          m = slice_multiplier,
-          prmean = phi[cluster_identifiers[k]],
-          prsig = 1 / sqrt(tau[cluster_identifiers[k]]),
-          c14obs = c14_determinations[k],
-          c14sig = c14_sigmas[k],
-          mucalallyr = interpolated_c14_age,
-          sigcalallyr = interpolated_c14_sig)
-      }
-    }
+    DPMM_update <- WalkerUpdateStep(
+      as.double(calendar_ages),
+      weight,
+      v,
+      cluster_identifiers,
+      n_clust,
+      alpha,
+      mu_phi,
+      alpha_shape,
+      alpha_rate,
+      lambda,
+      nu1,
+      nu2,
+      A,
+      B,
+      slice_width,
+      slice_multiplier,
+      c14_determinations,
+      c14_sigmas,
+      interpolated_c14_age,
+      interpolated_c14_sig)
+    weight <- DPMM_update$weight
+    cluster_identifiers <- DPMM_update$cluster_ids
+    phi <- DPMM_update$phi
+    tau <- DPMM_update$tau
+    v <- DPMM_update$v
+    n_clust <- DPMM_update$n_clust
+    alpha <- DPMM_update$alpha
+    mu_phi <- DPMM_update$mu_phi
+    calendar_ages = DPMM_update$calendar_ages
 
     if (iter %% n_thin == 0) {
       output_index <- output_index + 1
