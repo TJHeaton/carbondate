@@ -43,7 +43,7 @@ FindPredictiveCalendarAgeDensity <- function(
   checkmate::reportAssertions(arg_check)
 
   density_matrix <- .FindDensityPerSampleID(
-    output_data, calendar_age_sequence, n_posterior_samples, use_cpp)
+    output_data, calendar_age_sequence, n_posterior_samples)
 
   edge_width = switch(
     interval_width,
@@ -142,4 +142,14 @@ FindPredictiveCalendarAgeDensity <- function(
     lambda = lambda,
     nu1 = nu1,
     nu2 = nu2))
+}
+
+
+.NumberOfObservationsInEachCluster <- function(cluster_identifiers) {
+  n_clust <- max(cluster_identifiers)
+  nci <- apply(
+    t(as.matrix(1:n_clust)), # A row vector
+    2,
+    function(x, c) sum(c == x),
+    c = cluster_identifiers)
 }

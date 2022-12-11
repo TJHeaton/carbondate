@@ -9,8 +9,7 @@ FindPredictiveCalendarAgeDensity(
   calendar_age_sequence,
   n_posterior_samples,
   interval_width = "2sigma",
-  bespoke_probability = NA,
-  use_cpp = TRUE
+  bespoke_probability = NA
 )
 }
 \arguments{
@@ -33,8 +32,6 @@ calibration curve and the predictive density. Choose from one of \code{"1sigma"}
 \item{bespoke_probability}{The probability to use for the confidence interval
 if \code{"bespoke"} is chosen above. E.g. if 0.95 is chosen, then the 95\% confidence
 interval is calculated. Ignored if \code{"bespoke"} is not chosen.}
-
-\item{use_cpp}{TEMPORARY: DEV ONLY. Whether to use C++.}
 }
 \value{
 A data frame of the \code{calendar_age}, the
