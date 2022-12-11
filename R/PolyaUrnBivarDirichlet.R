@@ -9,10 +9,6 @@
 #' considers both the mean and the variance of the clusters to be unknown.
 #'
 #' @inheritParams WalkerBivarDirichlet
-#' @param correct_start_tau Default TRUE. DEV ONLY. If TRUE, uses
-#' ```tau <- rep(1 / (diff(range(c14_determinations)) / 4)^2, n_clust)```
-#' if FALSE uses the value in the original code which is:
-#' ```tau <- rep(n_clust, 1 / (diff(range(c14_determinations)) / 4)^2)```
 #'
 #' @return A list with 10 items. The first 7 items contain output data, each of
 #' which have one dimension of size \eqn{n_{\textrm{out}} =
@@ -78,9 +74,7 @@ PolyaUrnBivarDirichlet <- function(
     alpha_shape = NA,
     alpha_rate = NA,
     mu_phi = NA,
-    calendar_ages = NA,
-    correct_start_tau = TRUE,
-    use_cpp = FALSE) {
+    calendar_ages = NA) {
 
   ##############################################################################
   # Check input parameters
@@ -145,12 +139,7 @@ PolyaUrnBivarDirichlet <- function(
 
   alpha <- 0.0001
 
-  # REMOVE AFTER TESTING COMPLETE
-  if (correct_start_tau) {
-    tau <- rep(1 / (diff(range(c14_determinations)) / 4)^2, n_clust)
-  } else {
-    tau <- rep(n_clust, 1 / (diff(range(c14_determinations)) / 4)^2)
-  }
+  tau <- rep(1 / (diff(range(c14_determinations)) / 4)^2, n_clust)
   phi <- stats::rnorm(
     n_clust, mean = mu_phi, sd = diff(range(c14_determinations)) / 2)
 
@@ -209,85 +198,33 @@ PolyaUrnBivarDirichlet <- function(
         utils::setTxtProgressBar(progress_bar, iter)
       }
     }
-    if (use_cpp) {
-      newclusters <- PolyaUrnUpdateClusterIdentifier(
-        calendar_ages = as.double(calendar_ages),
-        current_cluster_ids = as.integer(cluster_identifiers),
-        current_phi = phi,
-        current_tau = tau,
-        alpha = alpha,
-        mu_phi = mu_phi,
-        lambda = lambda,
-        nu1 = nu1,
-        nu2 = nu2)
-      cluster_identifiers <- newclusters$cluster_ids
-      phi <- newclusters$phi
-      tau <- newclusters$tau
-      nci <- newclusters$observations_per_cluster
-      if (max(cluster_identifiers) != length(phi)) stop("Lengths do not match")
-    } else {
-      for (i in 1:num_observations) {
-        newclusters <- .BivarUpdateClusterIdentifier(
-          i,
-          c = cluster_identifiers,
-          phi = phi,
-          tau = tau,
-          theta = calendar_ages[i],
-          lambda = lambda,
-          nu1 = nu1,
-          nu2 = nu2,
-          mu_phi = mu_phi,
-          alpha = alpha,
-          use_cpp = use_cpp)
-        cluster_identifiers <- newclusters$c
-        phi <- newclusters$phi
-        tau <- newclusters$tau
-        nci <- NULL
-        if (max(cluster_identifiers) != length(phi)) stop("Lengths do not match")
-      }
-    }
-    for (j in 1:length(phi)) {
-      GibbsParams <- .UpdatePhiTau(
-        theta = calendar_ages[cluster_identifiers == j],
-        mu_phi = mu_phi,
-        lambda = lambda,
-        nu1 = nu1,
-        nu2 = nu2)
-      phi[j] <- GibbsParams$phi
-      tau[j] <- GibbsParams$tau
-    }
-    mu_phi <- .UpdateMuPhi(phi = phi, tau = tau, lambda = lambda, A = A, B = B)
-
-    if (use_cpp) {
-      calendar_ages = UpdateCalendarAges_cpp(
-        num_observations,
-        as.double(calendar_ages),
-        slice_width,
-        slice_multiplier,
-        as.integer(cluster_identifiers),
-        as.double(phi),
-        as.double(tau),
-        as.double(c14_determinations),
-        as.double(c14_sigmas),
-        as.double(interpolated_c14_age),
-        as.double(interpolated_c14_sig))
-    } else {
-      for (k in 1:num_observations) {
-        calendar_ages[k] <- .SliceSample(
-          x0 = calendar_ages[k],
-          w = slice_width,
-          m = slice_multiplier,
-          prmean = phi[cluster_identifiers[k]],
-          prsig = 1 / sqrt(tau[cluster_identifiers[k]]),
-          c14obs = c14_determinations[k],
-          c14sig = c14_sigmas[k],
-          mucalallyr = interpolated_c14_age,
-          sigcalallyr = interpolated_c14_sig)
-      }
-    }
-
-    alpha <- .UpdateAlphaGammaPrior(
-        cluster_identifiers, alpha, prshape = alpha_shape, prrate = alpha_rate, nci = nci)
+    DPMM_update <- PolyaUrnUpdateStep(
+      as.double(calendar_ages),
+      as.integer(cluster_identifiers),
+      phi,
+      tau,
+      alpha,
+      mu_phi,
+      alpha_shape,
+      alpha_rate,
+      lambda,
+      nu1,
+      nu2,
+      A,
+      B,
+      slice_width,
+      slice_multiplier,
+      as.double(c14_determinations),
+      as.double(c14_sigmas),
+      interpolated_c14_age,
+      interpolated_c14_sig)
+    cluster_identifiers <- DPMM_update$cluster_ids
+    phi <- DPMM_update$phi
+    tau <- DPMM_update$tau
+    nci <- DPMM_update$observations_per_cluster
+    mu_phi <- DPMM_update$mu_phi
+    calendar_ages <- DPMM_update$calendar_ages
+    alpha <- DPMM_update$alpha
 
     if (iter %% n_thin == 0) {
       output_index <- output_index + 1

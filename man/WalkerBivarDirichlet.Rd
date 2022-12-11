@@ -89,8 +89,6 @@ Required if \code{sensible_initialisation} is \code{FALSE}.}
 \item{n_clust}{The initial number of clusters (optional). Must
 be less than the length of \code{c14_determinations}. Default is 10 or the length
 of \code{c14_determinations} if it is less than 10.}
-
-\item{use_cpp}{DEV ONLY: Use new cpp functions (should be faster).}
 }
 \value{
 A list with 11 items. The first 8 items contain output data, each of

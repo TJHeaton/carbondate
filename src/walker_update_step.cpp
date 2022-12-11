@@ -18,10 +18,10 @@ void WalkerUpdateClusterIdentifiers(
     const std::vector<double>&, std::vector<int>&);
 
 double WalkerUpdateAlpha(
-    std::vector<int>, double, double, double);
+    const std::vector<int>&, double, double, double);
 
 double UpdateMuPhi(
-    std::vector<double>, std::vector<double>, double, double, double);
+    const std::vector<double>&, const std::vector<double>&, double, double, double);
 
 std::vector<double> UpdateCalendarAges(
     int, doubles, double, double, std::vector<int>, std::vector<double>, std::vector<double>,

@@ -164,22 +164,22 @@ double AlphaLogLikelihood(double n_clust, double alpha, double n) {
 // Updates the Dirichlet process parameter alpha via Metropolis-Hastings
 // with truncated proposal distribution
 double WalkerUpdateAlpha(
-    std::vector<int> cluster_ids,   // The cluster each observation belongs to
+    const std::vector<int>& cluster_ids,   // The cluster each observation belongs to
     double current_alpha,
     double alpha_shape,
     double alpha_rate) {
 
   int n = cluster_ids.size();
-  double alpha;         // Updated value of alpha
+  double alpha = -1.;         // Updated value of alpha
+  double prop_sd = 1.;        // Standard deviation for sampling proposed value of alpha
   int cluster_id;
   std::vector<int> observations_per_cluster(2*n, 0);  // Allocate plenty of space
   double log_prior_rate, log_likelihood_rate, log_proposal_rate, hr;
   int n_distinct_clust = 0;
 
   // Sample new alpha from truncated normal distribution
-  while (true) {
-    alpha = Rf_rnorm(current_alpha, 1.);
-    if (alpha > 0.) break;
+  while (alpha <= 0.) {
+    alpha = Rf_rnorm(current_alpha, prop_sd);
   }
 
   // Find number of distinct populated clusters

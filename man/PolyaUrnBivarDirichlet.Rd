@@ -24,9 +24,7 @@ PolyaUrnBivarDirichlet(
   alpha_shape = NA,
   alpha_rate = NA,
   mu_phi = NA,
-  calendar_ages = NA,
-  correct_start_tau = TRUE,
-  use_cpp = FALSE
+  calendar_ages = NA
 )
 }
 \arguments{
@@ -91,13 +89,6 @@ Required if \code{sensible_initialisation} is \code{FALSE}.}
 \item{calendar_ages}{The initial estimate for the underlying calendar ages
 (optional). If supplied it must be a vector with the same length as
 \code{c14_determinations}.  Required if \code{sensible_initialisation} is \code{FALSE}.}
-
-\item{correct_start_tau}{Default TRUE. DEV ONLY. If TRUE, uses
-\code{tau <- rep(1 / (diff(range(c14_determinations)) / 4)^2, n_clust)}
-if FALSE uses the value in the original code which is:
-\code{tau <- rep(n_clust, 1 / (diff(range(c14_determinations)) / 4)^2)}}
-
-\item{use_cpp}{DEV ONLY: Use new cpp functions (should be faster).}
 }
 \value{
 A list with 10 items. The first 7 items contain output data, each of

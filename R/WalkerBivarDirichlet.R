@@ -48,7 +48,6 @@
 #' @param calendar_ages  The initial estimate for the underlying calendar ages
 #' (optional). If supplied it must be a vector with the same length as
 #' `c14_determinations`.  Required if `sensible_initialisation` is `FALSE`.
-#' @param use_cpp DEV ONLY: Use new cpp functions (should be faster).
 #'
 #' @return A list with 11 items. The first 8 items contain output data, each of
 #' which have one dimension of size \eqn{n_{\textrm{out}} =

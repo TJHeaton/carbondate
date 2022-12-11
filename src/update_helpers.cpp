@@ -72,8 +72,8 @@ void UpdatePhiTau(
 
 // Updates mu_phi via Gibbs sampling based upon current (phi, tau) values
 double UpdateMuPhi(
-    std::vector<double> phi,   // means of clusters
-    std::vector<double> tau,   // precisions of clusters
+    const std::vector<double>& phi,   // means of clusters
+    const std::vector<double>& tau,   // precisions of clusters
     double lambda,
     double A,      // prior mean of mu_phi
     double B) {    // prior precision of mu_phi
