@@ -81,8 +81,8 @@ FindPredictiveCalendarAgeDensity <- function(
     2,
     function(i, output_data, x) {
       if (output_data$update_type == "Walker") {
-        .FindPredictiveDensityWalker(
-          x,
+        FindPredictiveDensityWalker(
+          calendar_ages = x,
           weight = output_data$weight[[i]],
           phi = output_data$phi[[i]],
           tau = output_data$tau[[i]],
@@ -91,9 +91,9 @@ FindPredictiveCalendarAgeDensity <- function(
           nu1 = output_data$input_parameters$nu1,
           nu2 = output_data$input_parameters$nu2)
       } else {
-        .FindPredictiveDensityPolyaUrn(
-          x,
-          cluster_identifiers = output_data$cluster_identifiers[i, ],
+        FindPredictiveDensityPolyaUrn(
+          calendar_ages = x,
+          cluster_ids = as.integer(output_data$cluster_identifiers[i, ]),
           phi = output_data$phi[[i]],
           tau = output_data$tau[[i]],
           alpha = output_data$alpha[i],
@@ -105,51 +105,4 @@ FindPredictiveCalendarAgeDensity <- function(
     },
     output_data = output_data, x = calendar_age_sequence)
   return(density_matrix)
-}
-
-
-.FindPredictiveDensityPolyaUrn <- function(
-    x, cluster_identifiers, phi, tau, alpha, mu_phi, lambda, nu1, nu2) {
-  n_clust <- length(phi)
-  nci <- .NumberOfObservationsInEachCluster(cluster_identifiers)
-
-  # Find probability that new theta[i+1] is in a particular cluster or a new one
-  pci <- c(nci, alpha) # Could form new cluster
-  pci <- pci / sum(pci)
-
-  return(FindPredictiveDensityPolyaUrn_cpp(
-    calendar_ages = x,
-    cluster_identifiers = as.integer(cluster_identifiers),
-    phi = phi,
-    tau = tau,
-    alpha = alpha,
-    mu_phi = mu_phi,
-    lambda = lambda,
-    nu1 = nu1,
-    nu2 = nu2))
-}
-
-
-.FindPredictiveDensityWalker <- function(
-    x, weight, phi, tau, mu_phi, lambda, nu1, nu2) {
-  prob_new_clust <- 1 - sum(weight)
-  return(FindPredictiveDensityWalker_cpp(
-    calendar_ages = x,
-    weight = weight,
-    phi = phi,
-    tau = tau,
-    mu_phi = mu_phi,
-    lambda = lambda,
-    nu1 = nu1,
-    nu2 = nu2))
-}
-
-
-.NumberOfObservationsInEachCluster <- function(cluster_identifiers) {
-  n_clust <- max(cluster_identifiers)
-  nci <- apply(
-    t(as.matrix(1:n_clust)), # A row vector
-    2,
-    function(x, c) sum(c == x),
-    c = cluster_identifiers)
 }

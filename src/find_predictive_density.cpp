@@ -33,7 +33,7 @@ std::vector<double> MixtureDensity_cpp(
 }
 
 
-[[cpp11::register]] std::vector<double> FindPredictiveDensityWalker_cpp(
+[[cpp11::register]] std::vector<double> FindPredictiveDensityWalker(
     doubles calendar_ages,
     doubles weight,
     doubles phi,
@@ -62,9 +62,9 @@ std::vector<double> MixtureDensity_cpp(
 }
 
 
-[[cpp11::register]] std::vector<double> FindPredictiveDensityPolyaUrn_cpp(
+[[cpp11::register]] std::vector<double> FindPredictiveDensityPolyaUrn(
     doubles calendar_ages,
-    integers cluster_identifiers,
+    integers cluster_ids,
     doubles phi,
     doubles tau,
     double alpha,
@@ -74,14 +74,14 @@ std::vector<double> MixtureDensity_cpp(
     double nu2) {
 
   int n = calendar_ages.size();
-  int nobs = cluster_identifiers.size();
+  int nobs = cluster_ids.size();
   int nclust = phi.size();
   std::vector<double> density(n, 0.);
   std::vector<int> observations_per_clust(nclust, 0);
   double logmarg;
 
   for (int i = 0; i < nobs; i++) {
-    observations_per_clust[cluster_identifiers[i] - 1] += 1;
+    observations_per_clust[cluster_ids[i] - 1] += 1;
   }
 
   for (int i = 0; i < n; i++) {

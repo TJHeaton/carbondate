@@ -6,17 +6,17 @@
 #include <R_ext/Visibility.h>
 
 // find_predictive_density.cpp
-std::vector<double> FindPredictiveDensityWalker_cpp(doubles calendar_ages, doubles weight, doubles phi, doubles tau, double mu_phi, double lambda, double nu1, double nu2);
-extern "C" SEXP _carbondate_FindPredictiveDensityWalker_cpp(SEXP calendar_ages, SEXP weight, SEXP phi, SEXP tau, SEXP mu_phi, SEXP lambda, SEXP nu1, SEXP nu2) {
+std::vector<double> FindPredictiveDensityWalker(doubles calendar_ages, doubles weight, doubles phi, doubles tau, double mu_phi, double lambda, double nu1, double nu2);
+extern "C" SEXP _carbondate_FindPredictiveDensityWalker(SEXP calendar_ages, SEXP weight, SEXP phi, SEXP tau, SEXP mu_phi, SEXP lambda, SEXP nu1, SEXP nu2) {
   BEGIN_CPP11
-    return cpp11::as_sexp(FindPredictiveDensityWalker_cpp(cpp11::as_cpp<cpp11::decay_t<doubles>>(calendar_ages), cpp11::as_cpp<cpp11::decay_t<doubles>>(weight), cpp11::as_cpp<cpp11::decay_t<doubles>>(phi), cpp11::as_cpp<cpp11::decay_t<doubles>>(tau), cpp11::as_cpp<cpp11::decay_t<double>>(mu_phi), cpp11::as_cpp<cpp11::decay_t<double>>(lambda), cpp11::as_cpp<cpp11::decay_t<double>>(nu1), cpp11::as_cpp<cpp11::decay_t<double>>(nu2)));
+    return cpp11::as_sexp(FindPredictiveDensityWalker(cpp11::as_cpp<cpp11::decay_t<doubles>>(calendar_ages), cpp11::as_cpp<cpp11::decay_t<doubles>>(weight), cpp11::as_cpp<cpp11::decay_t<doubles>>(phi), cpp11::as_cpp<cpp11::decay_t<doubles>>(tau), cpp11::as_cpp<cpp11::decay_t<double>>(mu_phi), cpp11::as_cpp<cpp11::decay_t<double>>(lambda), cpp11::as_cpp<cpp11::decay_t<double>>(nu1), cpp11::as_cpp<cpp11::decay_t<double>>(nu2)));
   END_CPP11
 }
 // find_predictive_density.cpp
-std::vector<double> FindPredictiveDensityPolyaUrn_cpp(doubles calendar_ages, integers cluster_identifiers, doubles phi, doubles tau, double alpha, double mu_phi, double lambda, double nu1, double nu2);
-extern "C" SEXP _carbondate_FindPredictiveDensityPolyaUrn_cpp(SEXP calendar_ages, SEXP cluster_identifiers, SEXP phi, SEXP tau, SEXP alpha, SEXP mu_phi, SEXP lambda, SEXP nu1, SEXP nu2) {
+std::vector<double> FindPredictiveDensityPolyaUrn(doubles calendar_ages, integers cluster_ids, doubles phi, doubles tau, double alpha, double mu_phi, double lambda, double nu1, double nu2);
+extern "C" SEXP _carbondate_FindPredictiveDensityPolyaUrn(SEXP calendar_ages, SEXP cluster_ids, SEXP phi, SEXP tau, SEXP alpha, SEXP mu_phi, SEXP lambda, SEXP nu1, SEXP nu2) {
   BEGIN_CPP11
-    return cpp11::as_sexp(FindPredictiveDensityPolyaUrn_cpp(cpp11::as_cpp<cpp11::decay_t<doubles>>(calendar_ages), cpp11::as_cpp<cpp11::decay_t<integers>>(cluster_identifiers), cpp11::as_cpp<cpp11::decay_t<doubles>>(phi), cpp11::as_cpp<cpp11::decay_t<doubles>>(tau), cpp11::as_cpp<cpp11::decay_t<double>>(alpha), cpp11::as_cpp<cpp11::decay_t<double>>(mu_phi), cpp11::as_cpp<cpp11::decay_t<double>>(lambda), cpp11::as_cpp<cpp11::decay_t<double>>(nu1), cpp11::as_cpp<cpp11::decay_t<double>>(nu2)));
+    return cpp11::as_sexp(FindPredictiveDensityPolyaUrn(cpp11::as_cpp<cpp11::decay_t<doubles>>(calendar_ages), cpp11::as_cpp<cpp11::decay_t<integers>>(cluster_ids), cpp11::as_cpp<cpp11::decay_t<doubles>>(phi), cpp11::as_cpp<cpp11::decay_t<doubles>>(tau), cpp11::as_cpp<cpp11::decay_t<double>>(alpha), cpp11::as_cpp<cpp11::decay_t<double>>(mu_phi), cpp11::as_cpp<cpp11::decay_t<double>>(lambda), cpp11::as_cpp<cpp11::decay_t<double>>(nu1), cpp11::as_cpp<cpp11::decay_t<double>>(nu2)));
   END_CPP11
 }
 // polya_urn_update_helpers.cpp
@@ -43,11 +43,11 @@ extern "C" SEXP _carbondate_WalkerUpdateStep(SEXP current_calendar_ages, SEXP cu
 
 extern "C" {
 static const R_CallMethodDef CallEntries[] = {
-    {"_carbondate_FindPredictiveDensityPolyaUrn_cpp", (DL_FUNC) &_carbondate_FindPredictiveDensityPolyaUrn_cpp,  9},
-    {"_carbondate_FindPredictiveDensityWalker_cpp",   (DL_FUNC) &_carbondate_FindPredictiveDensityWalker_cpp,    8},
-    {"_carbondate_PolyaUrnUpdateAlpha_test",          (DL_FUNC) &_carbondate_PolyaUrnUpdateAlpha_test,           5},
-    {"_carbondate_PolyaUrnUpdateStep",                (DL_FUNC) &_carbondate_PolyaUrnUpdateStep,                19},
-    {"_carbondate_WalkerUpdateStep",                  (DL_FUNC) &_carbondate_WalkerUpdateStep,                  20},
+    {"_carbondate_FindPredictiveDensityPolyaUrn", (DL_FUNC) &_carbondate_FindPredictiveDensityPolyaUrn,  9},
+    {"_carbondate_FindPredictiveDensityWalker",   (DL_FUNC) &_carbondate_FindPredictiveDensityWalker,    8},
+    {"_carbondate_PolyaUrnUpdateAlpha_test",      (DL_FUNC) &_carbondate_PolyaUrnUpdateAlpha_test,       5},
+    {"_carbondate_PolyaUrnUpdateStep",            (DL_FUNC) &_carbondate_PolyaUrnUpdateStep,            19},
+    {"_carbondate_WalkerUpdateStep",              (DL_FUNC) &_carbondate_WalkerUpdateStep,              20},
     {NULL, NULL, 0}
 };
 }
