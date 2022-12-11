@@ -12,6 +12,8 @@ double LogMarginalNormalGamma(
     double mu_phi);
 
 
+// Pass a set of means, sds and weights and it returns the density of the corresponding mixture of
+// normals.
 std::vector<double> MixtureDensity_cpp(
     doubles calendar_ages,
     doubles weight,
@@ -52,6 +54,7 @@ std::vector<double> MixtureDensity_cpp(
       density[i] += weight[j] * Rf_dnorm4(calendar_ages[i], phi[j], 1. / sqrt(tau[j]), 0);
       sum_weight += weight[j];
     }
+    // The predictive density for a new observation is a scaled t-distribution
     logmarg = LogMarginalNormalGamma(calendar_ages[i], lambda, nu1, nu2, mu_phi);
     density[i] += (1. - sum_weight) * exp(logmarg);
   }
@@ -87,6 +90,7 @@ std::vector<double> MixtureDensity_cpp(
         * Rf_dnorm4(calendar_ages[i], phi[j], 1. / sqrt(tau[j]), 0)
         / (nobs + alpha);
     }
+    // The predictive density for a new observation is a scaled t-distribution
     logmarg = LogMarginalNormalGamma(calendar_ages[i], lambda, nu1, nu2, mu_phi);
     density[i] += alpha * exp(logmarg)/(nobs + alpha);
   }

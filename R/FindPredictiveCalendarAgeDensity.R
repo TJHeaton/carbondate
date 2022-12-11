@@ -32,8 +32,7 @@ FindPredictiveCalendarAgeDensity <- function(
     calendar_age_sequence,
     n_posterior_samples,
     interval_width = "2sigma",
-    bespoke_probability = NA,
-    use_cpp = TRUE) {
+    bespoke_probability = NA) {
 
   arg_check <- checkmate::makeAssertCollection()
 
@@ -68,7 +67,7 @@ FindPredictiveCalendarAgeDensity <- function(
 
 # Creates a matrix where each column is the density for a particular sample id
 .FindDensityPerSampleID <- function(
-    output_data, calendar_age_sequence, n_posterior_samples, use_cpp) {
+    output_data, calendar_age_sequence, n_posterior_samples) {
   n_out <- length(output_data$alpha)
   n_burn <- floor(n_out / 2)
 
@@ -90,8 +89,7 @@ FindPredictiveCalendarAgeDensity <- function(
           mu_phi = output_data$mu_phi[i],
           lambda = output_data$input_parameters$lambda,
           nu1 = output_data$input_parameters$nu1,
-          nu2 = output_data$input_parameters$nu2,
-          use_cpp)
+          nu2 = output_data$input_parameters$nu2)
       } else {
         .FindPredictiveDensityPolyaUrn(
           x,
@@ -102,8 +100,7 @@ FindPredictiveCalendarAgeDensity <- function(
           mu_phi = output_data$mu_phi[i],
           lambda = output_data$input_parameters$lambda,
           nu1 = output_data$input_parameters$nu1,
-          nu2 = output_data$input_parameters$nu2,
-          use_cpp)
+          nu2 = output_data$input_parameters$nu2)
       }
     },
     output_data = output_data, x = calendar_age_sequence)
@@ -112,7 +109,7 @@ FindPredictiveCalendarAgeDensity <- function(
 
 
 .FindPredictiveDensityPolyaUrn <- function(
-    x, cluster_identifiers, phi, tau, alpha, mu_phi, lambda, nu1, nu2, use_cpp) {
+    x, cluster_identifiers, phi, tau, alpha, mu_phi, lambda, nu1, nu2) {
   n_clust <- length(phi)
   nci <- .NumberOfObservationsInEachCluster(cluster_identifiers)
 
@@ -120,68 +117,29 @@ FindPredictiveCalendarAgeDensity <- function(
   pci <- c(nci, alpha) # Could form new cluster
   pci <- pci / sum(pci)
 
-  if (use_cpp){
-    dens <- FindPredictiveDensityPolyaUrn_cpp(
-      calendar_ages = x,
-      cluster_identifiers = as.integer(cluster_identifiers),
-      phi = phi,
-      tau = tau,
-      alpha = alpha,
-      mu_phi = mu_phi,
-      lambda = lambda,
-      nu1 = nu1,
-      nu2 = nu2)
-  } else {
-    dens <- .MixtureDens(x, w = pci[1:n_clust], mu = phi, sd = 1 / sqrt(tau)) +
-      .PredNewDens(x, w = pci[n_clust + 1], mu_phi, lambda, nu1, nu2)
-  }
-  return(dens)
+  return(FindPredictiveDensityPolyaUrn_cpp(
+    calendar_ages = x,
+    cluster_identifiers = as.integer(cluster_identifiers),
+    phi = phi,
+    tau = tau,
+    alpha = alpha,
+    mu_phi = mu_phi,
+    lambda = lambda,
+    nu1 = nu1,
+    nu2 = nu2))
 }
 
 
 .FindPredictiveDensityWalker <- function(
-    x, weight, phi, tau, mu_phi, lambda, nu1, nu2, use_cpp) {
+    x, weight, phi, tau, mu_phi, lambda, nu1, nu2) {
   prob_new_clust <- 1 - sum(weight)
-
-  if (use_cpp) {
-    dens <- FindPredictiveDensityWalker_cpp(
-      calendar_ages = x,
-      weight = weight,
-      phi = phi,
-      tau = tau,
-      mu_phi = mu_phi,
-      lambda = lambda,
-      nu1 = nu1,
-      nu2 = nu2)
-  } else {
-    dens <- .MixtureDens(x, w = weight, mu = phi, sd = 1 / sqrt(tau)) +
-      .PredNewDens(x, w = prob_new_clust, mu_phi, lambda, nu1, nu2)
-  }
-  return(dens)
+  return(FindPredictiveDensityWalker_cpp(
+    calendar_ages = x,
+    weight = weight,
+    phi = phi,
+    tau = tau,
+    mu_phi = mu_phi,
+    lambda = lambda,
+    nu1 = nu1,
+    nu2 = nu2))
 }
-
-
-# Find mixture density
-# Function which where you pass it a set of means, sds and weights and it
-# returns the density of the corresponding mixture of normals
-# Arguments:
-# x - vector of values at which to evaluate mixture density
-# w - vector of weights
-# mu - the means
-# sd - the sds
-.MixtureDens <- function(x, w, mu, sd) {
-  DTemp <- mapply(
-    function(mu, sig, w, x) w * stats::dnorm(x, mean = mu, sd = sig),
-    mu,
-    sd,
-    w,
-    MoreArgs = list(x = x))
-  return(apply(DTemp, 1, sum)) # Sum up the various mixtures
-}
-
-
-# The predictive for a new observation is a scaled t-distribution
-.PredNewDens <- function(x, w, mu_phi, lambda, nu1, nu2) {
-  w * exp(.LogMarginalNormalGamma(x, mu_phi, lambda, nu1, nu2))
-}
-
