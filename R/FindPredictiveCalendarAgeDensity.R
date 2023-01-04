@@ -42,67 +42,43 @@ FindPredictiveCalendarAgeDensity <- function(
   checkmate::assertInt(n_posterior_samples, lower = 10, add = arg_check)
   checkmate::reportAssertions(arg_check)
 
-  density_matrix <- .FindDensityPerSampleID(
-    output_data, calendar_age_sequence, n_posterior_samples)
-
   edge_width = switch(
     interval_width,
     "1sigma" = 1 - stats::pnorm(1),
     "2sigma"  = 1 - stats::pnorm(2),
     "bespoke" = (1 - bespoke_probability)/2)
-  density_confidence_intervals <- apply(
-    density_matrix,
-    1,
-    stats::quantile,
-    probs = c(edge_width, 1 - edge_width))
-  density_mean <- apply(density_matrix, 1, mean)
 
-  return(data.frame(
-    calendar_age=calendar_age_sequence,
-    density_mean=density_mean,
-    density_ci_lower=density_confidence_intervals[1, ],
-    density_ci_upper=density_confidence_intervals[2, ]))
-}
-
-
-# Creates a matrix where each column is the density for a particular sample id
-.FindDensityPerSampleID <- function(
-    output_data, calendar_age_sequence, n_posterior_samples) {
-  n_out <- length(output_data$alpha)
-  n_burn <- floor(n_out / 2)
-
-  sample_ids <- sample(
-    x = n_burn:n_out,
-    size = n_posterior_samples,
-    replace = n_posterior_samples > (n_out - n_burn))
-
-  density_matrix <- apply(
-    matrix(sample_ids, 1, n_posterior_samples),
-    2,
-    function(i, output_data, x) {
-      if (output_data$update_type == "Walker") {
-        FindPredictiveDensityWalker(
-          calendar_ages = x,
-          weight = output_data$weight[[i]],
-          phi = output_data$phi[[i]],
-          tau = output_data$tau[[i]],
-          mu_phi = output_data$mu_phi[i],
-          lambda = output_data$input_parameters$lambda,
-          nu1 = output_data$input_parameters$nu1,
-          nu2 = output_data$input_parameters$nu2)
-      } else {
-        FindPredictiveDensityPolyaUrn(
-          calendar_ages = x,
-          cluster_ids = as.integer(output_data$cluster_identifiers[i, ]),
-          phi = output_data$phi[[i]],
-          tau = output_data$tau[[i]],
-          alpha = output_data$alpha[i],
-          mu_phi = output_data$mu_phi[i],
-          lambda = output_data$input_parameters$lambda,
-          nu1 = output_data$input_parameters$nu1,
-          nu2 = output_data$input_parameters$nu2)
-      }
-    },
-    output_data = output_data, x = calendar_age_sequence)
-  return(density_matrix)
+  if (output_data$update_type == "Walker") {
+    return(
+      FindPredictiveDensityAndCIWalker(
+        calendar_ages = calendar_age_sequence,
+        weights = output_data$weight,
+        phis = output_data$phi,
+        taus = output_data$tau,
+        mu_phis = output_data$mu_phi,
+        lambda = output_data$input_parameters$lambda,
+        nu1 = output_data$input_parameters$nu1,
+        nu2 = output_data$input_parameters$nu2,
+        n_posterior_samples = n_posterior_samples,
+        quantile_edge_width = edge_width
+      )
+    )
+  } else {
+    return(
+      FindPredictiveDensityandCIPolyaUrn(
+        calendar_ages = calendar_age_sequence,
+        observations_per_clusters = output_data$observations_per_cluster,
+        phis = output_data$phi,
+        taus = output_data$tau,
+        alphas = output_data$alpha,
+        mu_phis = output_data$mu_phi,
+        n_obs = length(output_data$cluster_identifiers[[1]]),
+        lambda = output_data$input_parameters$lambda,
+        nu1 = output_data$input_parameters$nu1,
+        nu2 = output_data$input_parameters$nu2,
+        n_posterior_samples = n_posterior_samples,
+        quantile_edge_width = edge_width
+      )
+    )
+  }
 }

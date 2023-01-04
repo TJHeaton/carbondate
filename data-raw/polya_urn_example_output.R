@@ -14,7 +14,8 @@ polya_urn_example_output <- PolyaUrnBivarDirichlet(
 n_out = length(polya_urn_example_output$alpha)
 thin_id <- seq((n_out+1)/2, n_out, by = 1)
 
-polya_urn_example_output$cluster_identifiers = polya_urn_example_output$cluster_identifiers[thin_id,]
+polya_urn_example_output$cluster_identifiers = polya_urn_example_output$cluster_identifiers[thin_id]
+polya_urn_example_output$observations_per_cluster = polya_urn_example_output$observations_per_cluster[thin_id]
 polya_urn_example_output$alpha = polya_urn_example_output$alpha[thin_id]
 polya_urn_example_output$n_clust = polya_urn_example_output$n_clust[thin_id]
 polya_urn_example_output$phi = polya_urn_example_output$phi[thin_id]
