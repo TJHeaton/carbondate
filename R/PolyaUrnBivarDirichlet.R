@@ -16,9 +16,9 @@
 #' the result from every \eqn{n_{\textrm{thin}}}th iteration:
 #'
 #' \describe{
-#'  \item{`cluster_identifiers`}{An \eqn{n_{\textrm{out}}} by
-#'     \eqn{n_{\textrm{obs}}} integer matrix. Gives the cluster allocation
-#'      - an integer between 1 and n_clust - for each observation.}
+#'  \item{`cluster_identifiers`}{A list of length \eqn{n_{\textrm{out}}} each entry
+#'      giving the cluster allocation - an integer between 1 and n_clust - for each
+#'      observation.}
 #'  \item{`alpha`}{A double vector of length \eqn{n_{\textrm{out}}} giving the
 #'      DP concentration parameter.}
 #'  \item{`n_clust`}{An integer vector of length \eqn{n_{\textrm{out}}} giving
@@ -27,6 +27,8 @@
 #'      a vector of length n_clust of the cluster means \eqn{\phi_j}.}
 #'  \item{`tau`}{A list of length \eqn{n_{\textrm{out}}} each entry giving
 #'      a vector of length n_clust of the cluster uncertainties \eqn{\tau_j}.}
+#'  \item{`observations_per_cluster`}{A list of length \eqn{n_{\textrm{out}}} each entry giving
+#'      a vector of length n_clust of the number of observations for that cluster.}
 #'  \item{`calendar_ages`}{An \eqn{n_{\textrm{out}}} by \eqn{n_{\textrm{obs}}}
 #'     integer matrix. Gives the calendar age for each observation.}
 #'  \item{`mu_phi`}{A vector of length \eqn{n_{\textrm{out}}} giving the overall
@@ -111,6 +113,10 @@ PolyaUrnBivarDirichlet <- function(
     all_clusters_represented <- (length(unique(cluster_identifiers)) == n_clust)
   }
 
+  observations_per_cluster <- rep(0, n_clust)
+  for (obs in cluster_identifiers)
+    observations_per_cluster[obs] <- observations_per_cluster[obs] + 1
+
   if (sensible_initialisation) {
     initial_probabilities <- mapply(
       .ProbabilitiesForSingleDetermination,
@@ -167,14 +173,14 @@ PolyaUrnBivarDirichlet <- function(
 
   phi_out <- list(phi)
   tau_out <- list(tau)
-  cluster_identifiers_out <- matrix(NA, nrow = n_out, ncol = num_observations)
+  cluster_identifiers_out <- list(as.integer(cluster_identifiers))
+  observations_per_cluster_out <- list(as.integer(observations_per_cluster))
   calendar_ages_out <- matrix(NA, nrow = n_out, ncol = num_observations)
   alpha_out <- rep(NA, length = n_out)
   mu_phi_out <- rep(NA, length = n_out)
   n_clust_out <- rep(NA, length = n_out)
 
   output_index <- 1
-  cluster_identifiers_out[output_index, ] <- cluster_identifiers
   calendar_ages_out[output_index, ] <- calendar_ages
   alpha_out[output_index] <- alpha
   mu_phi_out[output_index] <- mu_phi
@@ -221,7 +227,7 @@ PolyaUrnBivarDirichlet <- function(
     cluster_identifiers <- DPMM_update$cluster_ids
     phi <- DPMM_update$phi
     tau <- DPMM_update$tau
-    nci <- DPMM_update$observations_per_cluster
+    observations_per_cluster <- DPMM_update$observations_per_cluster
     mu_phi <- DPMM_update$mu_phi
     calendar_ages <- DPMM_update$calendar_ages
     alpha <- DPMM_update$alpha
@@ -230,7 +236,8 @@ PolyaUrnBivarDirichlet <- function(
       output_index <- output_index + 1
       phi_out[[output_index]] <- phi
       tau_out[[output_index]] <- tau
-      cluster_identifiers_out[output_index, ] <- cluster_identifiers
+      cluster_identifiers_out[[output_index]] <- cluster_identifiers
+      observations_per_cluster_out[[output_index]] <- observations_per_cluster
       calendar_ages_out[output_index, ] <- calendar_ages
       alpha_out[output_index] <- alpha
       mu_phi_out[output_index] <- mu_phi
@@ -241,6 +248,7 @@ PolyaUrnBivarDirichlet <- function(
     cluster_identifiers = cluster_identifiers_out,
     phi = phi_out,
     tau = tau_out,
+    observations_per_cluster = observations_per_cluster_out,
     calendar_ages = calendar_ages_out,
     alpha = alpha_out,
     mu_phi = mu_phi_out,

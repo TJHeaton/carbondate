@@ -97,9 +97,9 @@ which have one dimension of size \eqn{n_{\textrm{out}} =
 the result from every \eqn{n_{\textrm{thin}}}th iteration:
 
 \describe{
-\item{\code{cluster_identifiers}}{An \eqn{n_{\textrm{out}}} by
-\eqn{n_{\textrm{obs}}} integer matrix. Gives the cluster allocation
-- an integer between 1 and n_clust - for each observation.}
+\item{\code{cluster_identifiers}}{A list of length \eqn{n_{\textrm{out}}} each entry
+giving the cluster allocation - an integer between 1 and n_clust - for each
+observation.}
 \item{\code{alpha}}{A double vector of length \eqn{n_{\textrm{out}}} giving the
 DP concentration parameter.}
 \item{\code{n_clust}}{An integer vector of length \eqn{n_{\textrm{out}}} giving
@@ -108,6 +108,8 @@ the number of clusters.}
 a vector of length n_clust of the cluster means \eqn{\phi_j}.}
 \item{\code{tau}}{A list of length \eqn{n_{\textrm{out}}} each entry giving
 a vector of length n_clust of the cluster uncertainties \eqn{\tau_j}.}
+\item{\code{observations_per_cluster}}{A list of length \eqn{n_{\textrm{out}}} each entry giving
+a vector of length n_clust of the number of observations for that cluster.}
 \item{\code{calendar_ages}}{An \eqn{n_{\textrm{out}}} by \eqn{n_{\textrm{obs}}}
 integer matrix. Gives the calendar age for each observation.}
 \item{\code{mu_phi}}{A vector of length \eqn{n_{\textrm{out}}} giving the overall
