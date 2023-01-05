@@ -23,6 +23,8 @@ library(carbondate)
 
 The **carbondate** package contains functions for analysing multiple related radiocarbon determinations. Due to fluctuations in past radiocarbon (^14^C) levels, calibration is required to convert ^14^C determinations into calendar ages. In many cases, we wish to calibrate a set of samples which are known to be related to one another (for example, arising from a particular site, or set of sites, populated by a particular culture). Each sample has an unknown calendar age but, since they are related, these calendar ages are assumed to arise from the same unknown shared calendar age density. Calibration of these determinations can be improved significantly by incorporating the knowledge that the samples are related.
 
+Temporary Text
+
 This package contains functions for both independent calibration of the ^14^C determinations, and two different functions for jointly calibrating related samples.
 
 ## Calibration Curve
