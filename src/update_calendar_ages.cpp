@@ -12,14 +12,14 @@ double ThetaLogLikelihood_cpp(
     double prsig,
     double c14obs,
     double c14sig,
-    doubles mucalallyr,
-    doubles sigcalallyr) {
+    const doubles& mucalallyr,
+    const doubles& sigcalallyr) {
 
   double loglik;
   double mucal, sigcal;
   int yr;
 
-  yr = floor(theta) - 1;
+  yr = (int) theta - 1;
 
   if ((yr < 0) | (yr >= mucalallyr.size())) {
     return -std::numeric_limits<double>::infinity();
@@ -43,11 +43,11 @@ double SliceSample_cpp(
     double prsig,
     double c14obs,
     double c14sig,
-    doubles mucalallyr,
-    doubles sigcalallyr) {
+    const doubles& mucalallyr,
+    const doubles& sigcalallyr) {
 
   double y;     // Slice height
-  double L, R;  // Each side of calender age slice interval
+  double L, R;  // Each side of calendar age slice interval
   double J, K;  // Max steps on left and right hand sides
   double x1;    // Current sampled value
 
@@ -69,14 +69,14 @@ double SliceSample_cpp(
   K = m - 1 - J;
 
   // LHS stepping out
-  while ((J > 0) & (y < ThetaLogLikelihood_cpp(
+  while ((J > 0) && (y < ThetaLogLikelihood_cpp(
       L, prmean, prsig, c14obs, c14sig, mucalallyr, sigcalallyr))) {
     L -= w;
     J -= 1;
   }
 
   // RHS stepping out
-  while ((K > 0) & (y < ThetaLogLikelihood_cpp(
+  while ((K > 0) && (y < ThetaLogLikelihood_cpp(
       R, prmean, prsig, c14obs, c14sig, mucalallyr, sigcalallyr))) {
     R += w;
     K -= 1;
@@ -84,7 +84,7 @@ double SliceSample_cpp(
 
   //////////////////////////////////////////////
   // Get sampled value from the slice interval
-  while (1) {
+  while (true) {
     x1 = L + Rf_runif(0, 1) * (R - L);
 
     // Break loop if we have sampled satisfactorily
@@ -105,16 +105,16 @@ double SliceSample_cpp(
 
 std::vector<double> UpdateCalendarAges(
     int n,
-    doubles calendar_ages,
+    const doubles& calendar_ages,
     double w,
     double m,
-    std::vector<int> cluster_identifiers,
-    std::vector<double> phi,
-    std::vector<double> tau,
-    doubles c14_determinations,
-    doubles c14_sigmas,
-    doubles mucalallyr,
-    doubles sigcalallyr) {
+    const std::vector<int>& cluster_identifiers,
+    const std::vector<double>& phi,
+    const std::vector<double>& tau,
+    const doubles& c14_determinations,
+    const doubles& c14_sigmas,
+    const doubles& mucalallyr,
+    const doubles& sigcalallyr) {
 
   std::vector<double> calendar_ages_new(n);
   double prmean;
@@ -137,7 +137,5 @@ std::vector<double> UpdateCalendarAges(
       mucalallyr,
       sigcalallyr);
   }
-
   return calendar_ages_new;
 }
-

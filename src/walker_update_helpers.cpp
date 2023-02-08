@@ -113,7 +113,7 @@ void WalkerUpdateClusterPhiTau(
     for (int j = 0; j < n; j++) {
       if (cluster_identifiers[j] == c) cluster_calendar_ages.push_back(calendar_ages[j]);
     }
-    if (cluster_calendar_ages.size() == 0) {
+    if (cluster_calendar_ages.empty()) {
       // No observations in this cluster, so sample from the prior
       tau[c-1] = Rf_rgamma(nu1, 1./nu2);
       phi[c-1] = Rf_rnorm(mu_phi, 1./sqrt(lambda * tau[c-1]));
@@ -203,4 +203,3 @@ double WalkerUpdateAlpha(
   }
   return current_alpha;
 }
-

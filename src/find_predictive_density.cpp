@@ -26,9 +26,9 @@ void EdgeQuantiles(
   int jl, ju;
 
   // The indices we use are defined by type = 7 for the R quantile function
-  indl = edge_width * (vec.size() - 1) + 1.;
+  indl = edge_width * ((double) vec.size() - 1.) + 1.;
   jl = std::floor(indl);
-  indu = (1. - edge_width) * (vec.size() - 1) + 1.;
+  indu = (1. - edge_width) * ((double) vec.size() - 1.) + 1.;
   ju = std::floor(indu);
 
   // Rather than sorting the entire vector, just sort partially to find the elements we'll look up
@@ -48,10 +48,10 @@ void EdgeQuantiles(
 // Pass a set of means, sds and weights and it returns the density of the corresponding mixture of
 // normals.
 std::vector<double> MixtureDensity_cpp(
-    doubles calendar_ages,
-    doubles weight,
-    doubles phi,
-    doubles sd) {
+    const doubles& calendar_ages,
+    const doubles& weight,
+    const doubles& phi,
+    const doubles& sd) {
 
   int n = calendar_ages.size();
   int nclust = weight.size();
@@ -221,5 +221,3 @@ double PolyaUrnDensityForCalendarAge(
 
   return retdata;
 }
-
-
