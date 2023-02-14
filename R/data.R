@@ -13,13 +13,11 @@
 #' (0-55 cal kBP). Radiocarbon 62. doi: 10.1017/RDC.2020.41.
 #'
 #' @format ## `intcal20`
-#' A data frame with 9,501 rows and 5 columns:
+#' A data frame with 9,501 rows and 3 columns:
 #' \describe{
 #'   \item{calendar_age}{The calendar age (yr BP)}
 #'   \item{c14_age}{The 14C age (yr BP)}
 #'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
-#'   \item{Delta14C}{TODO: What does this describe? Do we need it in the package?}
-#'   \item{DeltaSigma}{TODO: What does this describe? Do we need it in the package?}
 #' }
 #' @source <http://doi.org/10.1017/RDC.2020.41>
 "intcal20"

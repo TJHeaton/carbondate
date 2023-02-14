@@ -83,7 +83,7 @@ void PolyaUrnUpdateClusterIds(
       cprob[n_clust] = exp(logmarg) * alpha;
     }
     // Sample cluster ID for the new cluster
-    new_cluster_id = SampleInt(n_clust + 1, cprob, 1);
+    new_cluster_id = SampleInt(n_clust + 1, cprob, true);
 
     // If we've sampled a new cluster, add new phi and tau and update other variables to reflect
     if (new_cluster_id == n_clust + 1) {

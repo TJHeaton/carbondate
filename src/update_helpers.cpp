@@ -6,7 +6,7 @@ double Mean(const std::vector<double>& vec) {
   for (double elem : vec) {
     mean += elem;
   }
-  mean /= vec.size();
+  mean /= (double) vec.size();
   return mean;
 }
 

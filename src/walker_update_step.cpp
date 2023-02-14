@@ -24,9 +24,8 @@ double UpdateMuPhi(
     const std::vector<double>&, const std::vector<double>&, double, double, double);
 
 std::vector<double> UpdateCalendarAges(
-    int, doubles, double, double, std::vector<int>, std::vector<double>, std::vector<double>,
-    doubles, doubles, doubles, doubles);
-
+        int, const doubles&, double, double, const std::vector<int>&, const std::vector<double>&,
+        const std::vector<double>&, const doubles&, const doubles&, const doubles&, const doubles&);
 
 // Performs one iteration of Walker DP update on all model parameters.
 // Updates the following parameters:
