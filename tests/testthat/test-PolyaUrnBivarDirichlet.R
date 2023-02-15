@@ -4,7 +4,7 @@ test_that("PolyaUrnBivarDirichlet gives expected result - all args", {
   # the function again here and compare results to test that the function is
   # working correctly
 
-  load(test_path("testdata", "NPNeal_input.rda"))
+  load(test_path("fixtures", "polya_urn_input.rda"))
   set.seed(seednum)
   calculated_neal_temp = PolyaUrnBivarDirichlet(
     c14_determinations = x,
@@ -26,7 +26,7 @@ test_that("PolyaUrnBivarDirichlet gives expected result - all args", {
     sensible_initialisation = FALSE,
     mu_phi = stats::median(inittheta))
 
-  load(test_path("testdata", "NPNeal_output.rda"))
+  load(test_path("fixtures", "polya_urn_output.rda"))
   expect_equal(calculated_neal_temp$phi, NealTemp$phi)
   expect_equal(calculated_neal_temp$tau, NealTemp$tau)
   expect_equal(calculated_neal_temp$calendar_ages, NealTemp$theta)
@@ -52,7 +52,7 @@ test_that("PolyaUrnBivarDirichlet gives expected result - sensible init", {
   # the function again here and compare results to test that the function is
   # working correctly
 
-  load(test_path("testdata", "NPNeal_input.rda"))
+  load(test_path("fixtures", "polya_urn_input.rda"))
   set.seed(seednum)
   calculated_neal_temp = PolyaUrnBivarDirichlet(
     c14_determinations = x,
@@ -61,7 +61,7 @@ test_that("PolyaUrnBivarDirichlet gives expected result - sensible init", {
     n_iter=niter,
     n_thin=nthin)
 
-  load(test_path("testdata", "NPNeal_output.rda"))
+  load(test_path("fixtures", "polya_urn_output.rda"))
   expect_equal(calculated_neal_temp$phi, NealTemp$phi)
   expect_equal(calculated_neal_temp$tau, NealTemp$tau)
   expect_equal(calculated_neal_temp$calendar_ages, NealTemp$theta)
