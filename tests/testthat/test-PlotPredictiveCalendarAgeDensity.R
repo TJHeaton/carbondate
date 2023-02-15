@@ -1,5 +1,5 @@
 test_that("gives expected result for walker output", {
-  load(test_path("testdata", "NPWalker_input.rda"))
+  load(test_path("fixtures", "walker_input.rda"))
   set.seed(seednum)
   # NOTE this test will fail if the test for the function below which we use to
   # set up the data fails
@@ -9,7 +9,7 @@ test_that("gives expected result for walker output", {
     calibration_curve=intcal20,
     n_iter=niter,
     n_thin=nthin)
-  load(test_path("testdata", "NPWalker_postprocessing.rda"))
+  load(test_path("fixtures", "walker_postprocessing.rda"))
 
   set.seed(seednum)
 
@@ -27,7 +27,7 @@ test_that("gives expected result for walker output", {
 
 
 test_that("gives expected result for neal output", {
-  load(test_path("testdata", "NPNeal_input.rda"))
+  load(test_path("fixtures", "polya_urn_input.rda"))
   set.seed(seednum)
   # NOTE this test will fail if the test for the function below which we use to
   # set up the data fails
@@ -37,7 +37,7 @@ test_that("gives expected result for neal output", {
     calibration_curve = intcal20,
     n_iter = niter,
     n_thin = nthin)
-  load(test_path("testdata", "NPNeal_postprocessing.rda"))
+  load(test_path("fixtures", "polya_urn_postprocessing.rda"))
 
   set.seed(seednum)
 

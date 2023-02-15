@@ -4,7 +4,7 @@ test_that("WalkerBivarDirichlet gives expected result - all args", {
   # the function again here and compare results to test that the function is
   # working correctly
 
-  load(test_path("testdata", "NPWalker_input.rda"))
+  load(test_path("fixtures", "walker_input.rda"))
   set.seed(seednum)
   calculated_walker_temp = WalkerBivarDirichlet(
     c14_determinations=x,
@@ -26,7 +26,7 @@ test_that("WalkerBivarDirichlet gives expected result - all args", {
     sensible_initialisation = FALSE,
     mu_phi = stats::median(inittheta))
 
-  load(test_path("testdata", "NPWalker_output.rda"))
+  load(test_path("fixtures", "walker_output.rda"))
   expect_equal(calculated_walker_temp$cluster_identifiers, WalkerTemp$delta)
   expect_equal(calculated_walker_temp$alpha, WalkerTemp$c)
   expect_equal(calculated_walker_temp$n_clust, WalkerTemp$nclust)
@@ -44,7 +44,7 @@ test_that("WalkerBivarDirichlet gives expected result - sensible init", {
   # the function again here and compare results to test that the function is
   # working correctly
 
-  load(test_path("testdata", "NPWalker_input.rda"))
+  load(test_path("fixtures", "walker_input.rda"))
   set.seed(seednum)
   calculated_walker_temp = WalkerBivarDirichlet(
     c14_determinations=x,
@@ -53,7 +53,7 @@ test_that("WalkerBivarDirichlet gives expected result - sensible init", {
     n_iter=niter,
     n_thin=nthin)
 
-  load(test_path("testdata", "NPWalker_output.rda"))
+  load(test_path("fixtures", "walker_output.rda"))
   expect_equal(calculated_walker_temp$cluster_identifiers, WalkerTemp$delta)
   expect_equal(calculated_walker_temp$alpha, WalkerTemp$c)
   expect_equal(calculated_walker_temp$n_clust, WalkerTemp$nclust)
