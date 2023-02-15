@@ -118,4 +118,8 @@ save(postdenCI, postden, seednum, x, xsig, npostsum, lambda, nu1, nu2,
 
 # If we want to plot e.g. the posterior calendar age density against the curve then we can run the below
 # ident is the determination you want to calibrate
-plotindpost(NealTemp, ident = 15, y = x, er = xsig, calcurve = calcurve)
+ident = 15
+nbreaks = 10
+indpost = plotindpost(NealTemp, ident = ident, y = x, er = xsig, calcurve = calcurve, resolution = 100)
+
+save(indpost, ident, npostsum, file = "tests/testthat/fixtures/polya_urn_independent_posterior.rda")

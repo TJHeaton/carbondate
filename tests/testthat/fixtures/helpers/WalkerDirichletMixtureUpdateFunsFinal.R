@@ -550,11 +550,12 @@ sampnewphi <- function(mu, sigma, range = c(0,50000)) {
 # ident - the determination you want to show the individual posrterior cal age for
 # y, er - vector of c14ages and c14sigs for all observations
 # calcurve - the calibraiton curve you are using
-# nburn and nbreaks - choices of the burn in length and number of breaks in the histogram
+# nburn and nbreaks - choices of the burn in length and the resolution of the histogram
 # Output:
 # A plot of the histogram of the posterior calendar age
-plotindpost <- function(MCMCoutput, ident, y, er, calcurve, nburn = NA, nbreaks = NA) {
+plotindpost <- function(MCMCoutput, ident, y, er, calcurve, nburn = NA, resolution = 5) {
 
+  resolution = ceiling(max(resolution, 1))
   par(mfrow = c(1,1))
   theta <- MCMCoutput$theta[, ident]
   c14age <- y[ident]
@@ -568,13 +569,16 @@ plotindpost <- function(MCMCoutput, ident, y, er, calcurve, nburn = NA, nbreaks 
   theta <- theta[-(1:nburn)]
 
   # Choose the number of breaks
-  if(is.na(nbreaks)) {
-    cat("Setting breaks in posterior histogram as max of 100 and tenth of post burn-in chain \n")
-    nbreaks <- min(100, floor(length(theta)/10))
-  }
+  nbreaks <- min(100, floor(length(theta)/10))
 
   # Find the calendar age range to plot
   xrange <- range(theta)
+  xrange[1] = floor(xrange[1])
+  while (xrange[1] %% resolution != 0) xrange[1] = xrange[1] - 1
+
+  xrange[2] = ceiling(xrange[2])
+  while (xrange[2] %% resolution != 0) xrange[2] = xrange[2] + 1
+
   temp <- c(which.min(abs(calcurve$calage - xrange[1])),which.min(abs(calcurve$calage - xrange[2])))
   idrange <- temp[1]:temp[2]
   calcurve$ub<- calcurve$c14age + 1.96*calcurve$c14sig
@@ -600,11 +604,12 @@ plotindpost <- function(MCMCoutput, ident, y, er, calcurve, nburn = NA, nbreaks 
 
   # Plot the posterior cal age on the x-axis
   par(new = TRUE, las = 1)
-  # Create hist but do not plot - works out senssible ylim
-  temphist <- hist(theta, breaks = nbreaks, plot = FALSE)
-  hist(theta, prob = TRUE, breaks = nbreaks, xlim = rev(xrange),
+  # Create hist but do not plot - works out senssible ylim and allows to work out nbreaks for desired resolution
+  breaks <-seq(xrange[1], xrange[2], by=resolution)
+  temphist <- hist(theta, breaks = breaks, plot = FALSE)
+  finalhist <-hist(theta, prob = TRUE, breaks = breaks, xlim = rev(xrange),
        axes = FALSE, xlab = NA, ylab = NA, main = "", xaxs = "i", ylim = c(0,2.5 * max(temphist$density)))
-  return()
+  return(finalhist)
 }
 
 
