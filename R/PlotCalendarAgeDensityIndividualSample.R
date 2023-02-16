@@ -7,8 +7,8 @@
 #' @inheritParams PlotPredictiveCalendarAgeDensity
 #' @param ident the determination you want to show the individual posterior
 #' calendar age for.
-#' @param n_breaks The number of breaks in the histogram (optional). If not
-#' given then it is set to the max of 100 and 1/tenth of post burn-in chain.
+#' @param resolution The distance between histogram breaks for the calendar age density.
+#' Must be an integer greater than one.
 #' @param interval_width The confidence intervals to show for the
 #' calibration curve. Choose from one of "1sigma", "2sigma" and "bespoke".
 #' Default is "2sigma".
@@ -26,7 +26,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
     ident,
     output_data,
     calibration_curve = NULL,
-    n_breaks = NA,
+    resolution = 5,
     interval_width = "2sigma",
     bespoke_probability = NA) {
 
@@ -34,7 +34,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
   checkmate::assertInt(ident, add = arg_check)
   .CheckOutputData(arg_check, output_data)
   .CheckCalibrationCurveFromOutput(arg_check, output_data, calibration_curve)
-  checkmate::assertInt(n_breaks, na.ok = TRUE, add = arg_check)
+  checkmate::assertInt(resolution, na.ok = FALSE, add = arg_check, lower = 1)
   checkmate::reportAssertions(arg_check)
 
   if (is.null(calibration_curve)) {
@@ -49,14 +49,16 @@ PlotCalendarAgeDensityIndividualSample <- function(
 
   n_out <- length(calendar_age)
   n_burn <- floor(n_out / 2)
-  calendar_age <- calendar_age[n_burn:n_out]
-
-  if (is.na(n_breaks)) {
-    n_breaks <- min(100, floor(length(calendar_age) / 10))
-  }
+  calendar_age <- calendar_age[(n_burn+1):n_out]
 
   # Find the calendar age range to plot
-  xrange <- range(calendar_age) + c(-1, 1) * 20
+  xrange <- range(calendar_age)
+  xrange[1] = floor(xrange[1])
+  while (xrange[1] %% resolution != 0) xrange[1] = xrange[1] - 1
+
+  xrange[2] = ceiling(xrange[2])
+  while (xrange[2] %% resolution != 0) xrange[2] = xrange[2] + 1
+
   cal_age_ind_min <- which.min(abs(calibration_curve$calendar_age - xrange[1]))
   cal_age_ind_max <- which.min(abs(calibration_curve$calendar_age - xrange[2]))
   calendar_age_indices <- cal_age_ind_min:cal_age_ind_max
@@ -100,16 +102,21 @@ PlotCalendarAgeDensityIndividualSample <- function(
   # Plot the posterior cal age on the x-axis
   graphics::par(new = TRUE, las = 1)
   # Create hist but do not plot - works out sensible ylim
-  temphist <- graphics::hist(calendar_age, breaks = n_breaks, plot = FALSE)
-  graphics::hist(
+  breaks <-seq(xrange[1], xrange[2], by=resolution)
+  temphist <- graphics::hist(calendar_age, breaks = breaks, plot = FALSE)
+
+  diff = diff(xrange)
+  xrange = xrange + c(-1,1) * diff * 0.4
+  finalhist <- graphics::hist(
     calendar_age,
     prob = TRUE,
-    breaks = n_breaks,
+    breaks = breaks,
     xlim = rev(xrange),
     axes = FALSE,
     xlab = NA,
     ylab = NA,
     main = "",
     xaxs = "i",
-    ylim = c(0, 2.5 * max(temphist$density)))
+    ylim = c(0, 3 * max(temphist$density)))
+  invisible(finalhist)
 }

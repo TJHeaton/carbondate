@@ -8,7 +8,7 @@ PlotCalendarAgeDensityIndividualSample(
   ident,
   output_data,
   calibration_curve = NULL,
-  n_breaks = NA,
+  resolution = 5,
   interval_width = "2sigma",
   bespoke_probability = NA
 )
@@ -30,8 +30,8 @@ the calibration curve here. If provided this should be a dataframe which
 should contain at least 3 columns entitled calendar_age, c14_age and c14_sig.
 This format matches \link{intcal20}.}
 
-\item{n_breaks}{The number of breaks in the histogram (optional). If not
-given then it is set to the max of 100 and 1/tenth of post burn-in chain.}
+\item{resolution}{The distance between histogram breaks for the calendar age density.
+Must be an integer greater than one.}
 
 \item{interval_width}{The confidence intervals to show for the
 calibration curve. Choose from one of "1sigma", "2sigma" and "bespoke".

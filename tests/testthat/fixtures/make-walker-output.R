@@ -56,9 +56,9 @@ lambda <- (100/maxrange)^2  # Each muclust ~ N(mutheta, sigma2/lambda)
 
 
 # Choose number of iterations for sampler
-niter <- 100
+niter <- 1000
 nthin <- 5 # Don't choose too high, after burn-in we have (niter/nthin)/2 samples from posterior to potentially use
-npostsum <- 100 # Current number of samples it will draw from this posterior to estimate fhat (possibly repeats)
+npostsum <- 500 # Current number of samples it will draw from this posterior to estimate fhat (possibly repeats)
 
 slicew = max(1000, diff(range(x))/2)
 m = 10
@@ -107,4 +107,8 @@ save(postdenCI, postden, seednum, x, xsig, npostsum, lambda, nu1, nu2, file = "t
 
 # If we want to plot e.g. the posterior calendar age density against the curve then we can run the below
 # ident is the determination you want to calibrate
-plotindpost(WalkerTemp, ident = 10, y = x, er = xsig, calcurve = calcurve)
+ident = 10
+resolution = 10
+indpost = plotindpost(WalkerTemp, ident = ident, y = x, er = xsig, calcurve = calcurve, resolution = resolution)
+
+save(indpost, ident, resolution, file = "tests/testthat/fixtures/walker_independent_posterior.rda")

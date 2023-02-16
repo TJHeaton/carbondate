@@ -62,9 +62,9 @@ lambda <- (100/maxrange)^2  # Each muclust ~ N(mutheta, sigma2/lambda)
 
 
 # Choose number of iterations for sampler
-niter <- 100
+niter <- 1000
 nthin <- 5 # Don't choose too high, after burn-in we have (niter/nthin)/2 samples from posterior to potentially use
-npostsum <- 100 # Current number of samples it will draw from this posterior to estimate fhat (possibly repeats)
+npostsum <- 500 # Current number of samples it will draw from this posterior to estimate fhat (possibly repeats)
 
 mualpha = NA
 sigalpha = NA
@@ -101,9 +101,7 @@ CurveR <- FindCalCurve(yfromto, calcurve)
 indprobs <- mapply(calibind, x, xsig, MoreArgs = list(calmu = CurveR$curvemean, calsig = CurveR$curvesd))
 
 # Find the SPD estimate (save as dataframe)
-SPD <- data.frame(calage = yfromto,
-                  prob = apply(indprobs, 1, sum)/dim(indprobs)[2])
-
+SPD <- data.frame(calage = yfromto, prob = apply(indprobs, 1, sum)/dim(indprobs)[2])
 
 # To plot the predictive distribution then you run
 seednum = 14
@@ -118,4 +116,8 @@ save(postdenCI, postden, seednum, x, xsig, npostsum, lambda, nu1, nu2,
 
 # If we want to plot e.g. the posterior calendar age density against the curve then we can run the below
 # ident is the determination you want to calibrate
-plotindpost(NealTemp, ident = 15, y = x, er = xsig, calcurve = calcurve)
+ident = 15
+resolution = 10
+indpost = plotindpost(NealTemp, ident = ident, y = x, er = xsig, calcurve = calcurve, resolution = resolution)
+
+save(indpost, ident, resolution, file = "tests/testthat/fixtures/polya_urn_independent_posterior.rda")
