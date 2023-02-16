@@ -34,7 +34,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
   checkmate::assertInt(ident, add = arg_check)
   .CheckOutputData(arg_check, output_data)
   .CheckCalibrationCurveFromOutput(arg_check, output_data, calibration_curve)
-  checkmate::assertInt(resolution, na.ok = TRUE, add = arg_check, lower = 1)
+  checkmate::assertInt(resolution, na.ok = FALSE, add = arg_check, lower = 1)
   checkmate::reportAssertions(arg_check)
 
   if (is.null(calibration_curve)) {
@@ -49,7 +49,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
 
   n_out <- length(calendar_age)
   n_burn <- floor(n_out / 2)
-  calendar_age <- calendar_age[n_burn:n_out]
+  calendar_age <- calendar_age[(n_burn+1):n_out]
 
   # Find the calendar age range to plot
   xrange <- range(calendar_age)
@@ -104,6 +104,9 @@ PlotCalendarAgeDensityIndividualSample <- function(
   # Create hist but do not plot - works out sensible ylim
   breaks <-seq(xrange[1], xrange[2], by=resolution)
   temphist <- graphics::hist(calendar_age, breaks = breaks, plot = FALSE)
+
+  diff = diff(xrange)
+  xrange = xrange + c(-1,1) * diff * 0.4
   finalhist <- graphics::hist(
     calendar_age,
     prob = TRUE,
@@ -114,6 +117,6 @@ PlotCalendarAgeDensityIndividualSample <- function(
     ylab = NA,
     main = "",
     xaxs = "i",
-    ylim = c(0, 2.5 * max(temphist$density)))
+    ylim = c(0, 3 * max(temphist$density)))
   invisible(finalhist)
 }

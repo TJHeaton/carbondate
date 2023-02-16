@@ -553,6 +553,7 @@ sampnewphi <- function(mu, sigma, range = c(0,50000)) {
 # nburn and nbreaks - choices of the burn in length and the resolution of the histogram
 # Output:
 # A plot of the histogram of the posterior calendar age
+# NOTE: Edited from origianl by S A Al-assam to allow resolution to be set rather than nbreaks
 plotindpost <- function(MCMCoutput, ident, y, er, calcurve, nburn = NA, resolution = 5) {
 
   resolution = ceiling(max(resolution, 1))
@@ -567,9 +568,6 @@ plotindpost <- function(MCMCoutput, ident, y, er, calcurve, nburn = NA, resoluti
   }
   if(nburn > length(theta)) stop("Burn in is longer than MCMC chain")
   theta <- theta[-(1:nburn)]
-
-  # Choose the number of breaks
-  nbreaks <- min(100, floor(length(theta)/10))
 
   # Find the calendar age range to plot
   xrange <- range(theta)
