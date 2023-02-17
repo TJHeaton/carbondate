@@ -31,7 +31,7 @@ CalibrateSingleDetermination <- function(
 
   return(
     data.frame(
-      calendar_age=calibration_curve$c14_age, probability=probabilities))
+      calendar_age=calibration_curve$calendar_age, probability=probabilities))
 }
 
 
