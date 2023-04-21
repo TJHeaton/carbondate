@@ -54,17 +54,17 @@ PlotCalendarAgeDensityIndividualSample <- function(
   # Find the calendar age range to plot
   xrange <- range(calendar_age)
   xrange[1] = floor(xrange[1])
-  while (xrange[1] %% resolution != 0) xrange[1] = xrange[1] - 1
+  if (resolution > 1) while (xrange[1] %% resolution != 0) xrange[1] = xrange[1] - 1
 
   xrange[2] = ceiling(xrange[2])
-  while (xrange[2] %% resolution != 0) xrange[2] = xrange[2] + 1
+  if (resolution > 1) while (xrange[2] %% resolution != 0) xrange[2] = xrange[2] + 1
 
   cal_age_ind_min <- which.min(abs(calibration_curve$calendar_age - xrange[1]))
   cal_age_ind_max <- which.min(abs(calibration_curve$calendar_age - xrange[2]))
   calendar_age_indices <- cal_age_ind_min:cal_age_ind_max
   yrange <- range(
-    calibration_curve$c14_age[calendar_age_indices] + 30,
-    calibration_curve$c14_age[calendar_age_indices] - 30)
+    calibration_curve$c14_age[calendar_age_indices] * 1.2,
+    calibration_curve$c14_age[calendar_age_indices] / 1.2)
 
   graphics::par(xaxs = "i", yaxs = "i")
   .PlotCalibrationCurve(
@@ -88,7 +88,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
       list(i = ident, c14_age = c14_age, c14_sig = c14_sig)))
 
   # Plot the 14C determination on the y-axis
-  yfromto <- seq(c14_age - 4 * c14_sig, c14_age + 4 * c14_sig, by = 1)
+  yfromto <- seq(c14_age - 4 * c14_sig, c14_age + 4 * c14_sig, length.out = 100)
   radpol <- cbind(
     c(0, stats::dnorm(yfromto, mean = c14_age, sd = c14_sig), 0),
     c(min(yfromto), yfromto, max(yfromto))
