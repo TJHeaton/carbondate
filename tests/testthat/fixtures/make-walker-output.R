@@ -36,8 +36,9 @@ cprrate <- alphaprrate <- 1
 
 #### Updated adaptive version
 # Prior on mu theta for DP - very uninformative based on observed data
-initprobs <- mapply(calibind, x, xsig, MoreArgs = list(calmu = calcurve$c14age, calsig = calcurve$c14sig))
-inittheta <- calcurve$calage[apply(initprobs, 2, which.max)]
+IntCalyrgrid <- FindCal(1:50000, calcurve$c14ag, calcurve$calage, calcurve$c14sig)
+initprobs <- mapply(calibind, x, xsig, MoreArgs = list(calmu = IntCalyrgrid$mu, calsig = IntCalyrgrid$sigma))
+inittheta <- apply(initprobs, 2, which.max)
 # Choose A and B from range of theta
 A <- median(inittheta)
 B <- 1 / (max(inittheta) - min(inittheta))^2

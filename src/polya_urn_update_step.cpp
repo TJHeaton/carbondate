@@ -21,7 +21,7 @@ double UpdateMuPhi(
 
 std::vector<double> UpdateCalendarAges(
     int, const doubles&, double, double, const std::vector<int>&, const std::vector<double>&,
-    const std::vector<double>&, const doubles&, const doubles&, const doubles&, const doubles&);
+    const std::vector<double>&, const doubles&, const doubles&, int, const doubles&, const doubles&);
 
 void UpdatePhiTau(
     const std::vector<double>&, double, double, double, double, double&, double&);
@@ -61,6 +61,7 @@ double PolyaUrnUpdateAlpha(int, const std::vector<int>&, double, double, double)
     double m,
     doubles c14_determinations,
     doubles c14_sigmas,
+    int calcurve_yr_index_offset,
     doubles mucalallyr,
     doubles sigcalallyr) {
 
@@ -103,6 +104,7 @@ double PolyaUrnUpdateAlpha(int, const std::vector<int>&, double, double, double)
     tau,
     c14_determinations,
     c14_sigmas,
+    calcurve_yr_index_offset,
     mucalallyr,
     sigcalallyr);
 
