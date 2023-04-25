@@ -20,7 +20,7 @@ double FindNewV(
 
   int n = cluster_ids.size();
   int m = v.size();
-  writable::doubles prodv(m + 1);
+  std::vector<double> prodv(m);
   bool prodv_set = false;  // Flag for whether we've calculated prodv yet
   double b_sub = 0.0;
   double b_sub_max;
@@ -34,10 +34,11 @@ double FindNewV(
         // Vector to aid denominator for b: ith entry is Prod_{l < i, l != j} (1- v_l)
         // In fact strictly here  l == j included, but we multiply by (1 - v_j) below
         prodv[0] = 1.0 - v[0];
-        for (int k = 1; k < m; ++k) prodv[k] = prodv[k-1] * (1.0 - v[k]);
+        for (int j = 1; j < m; ++j) prodv[j] = prodv[j - 1] * (1.0 - v[j]);
         prodv_set = true;
       }
       index = cluster_ids[k] - 1;
+      if (index < 1 || index > m - 1) printf("Error addressing prodv\n");
       b_sub_max = u[k] / (v[index] * prodv[index - 1]);
       if (b_sub_max > b_sub) b_sub = b_sub_max;
     } else if ((cluster_ids[k] == cluster_id) && (u[k] > a)) {
@@ -60,18 +61,18 @@ double FindNewV(
 void WalkerUpdateWeights(
     integers& cluster_ids,
     const std::vector<double>& u,
-    int current_n_clust,
     double min_u,
     double alpha,
     std::vector<double>& v,
-    std::vector<double>& weight,
-    int& n_clust) {
+    std::vector<double>& weight) {
 
   int clust_num = 0;
+  int current_n_clust = v.size();
   double brprod = 1.;
   double sum_weight = 0.;
   double new_weight;
 
+  weight.resize(0);
   while (sum_weight < 1. - min_u) {
     clust_num++;
     if (clust_num <= current_n_clust) {
@@ -80,17 +81,13 @@ void WalkerUpdateWeights(
       // v_(clust_num) just from prior beta
       v.push_back(Rf_rbeta(1., alpha));
     }
-    if (v.size() < clust_num) {
-      printf("Error in addressing v\n");
-      exit(1);
-    }
+    if (v.size() < clust_num) printf("Error in addressing v\n");
     new_weight = brprod * v[clust_num - 1];
     sum_weight += new_weight;
     weight.push_back(new_weight);
     brprod *= (1. - v[clust_num - 1]);
   }
-  n_clust = clust_num;
-  v.resize(n_clust);
+  if (clust_num < v.size()) v.resize(clust_num);
 }
 
 

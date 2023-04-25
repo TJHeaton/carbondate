@@ -245,7 +245,6 @@ WalkerBivarDirichlet <- function(
       weight,
       v,
       cluster_identifiers,
-      n_clust,
       alpha,
       mu_phi,
       alpha_shape,
@@ -267,7 +266,6 @@ WalkerBivarDirichlet <- function(
     phi <- DPMM_update$phi
     tau <- DPMM_update$tau
     v <- DPMM_update$v
-    n_clust <- DPMM_update$n_clust
     alpha <- DPMM_update$alpha
     mu_phi <- DPMM_update$mu_phi
     calendar_ages = DPMM_update$calendar_ages
