@@ -358,7 +358,7 @@ PlotPredictiveCalendarAgeDensity <- function(
     "2sigma"  = "2 sigma interval",
     "bespoke" = paste(round(100*bespoke_probability), "% interval", sep = ""))
 
-  legend_labels = c(output_data[[1]]$input_data$calibration_curve_name, ci_label)
+  legend_labels = c("IntCal20", ci_label)
   lty = c(1, 2)
   pch = c(NA, NA)
   col = c(calibration_curve_colour, calibration_curve_colour)

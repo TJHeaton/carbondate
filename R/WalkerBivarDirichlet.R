@@ -145,23 +145,16 @@ WalkerBivarDirichlet <- function(
   checkmate::reportAssertions(arg_check)
 
   ##############################################################################
-  ## Interpolate cal curve onto single year grid to speed up updating thetas
-  integer_cal_year_curve <- InterpolateCalibrationCurve(NA, calibration_curve)
-  interpolated_calendar_age_start <- integer_cal_year_curve$calendar_age[1]
-  interpolated_c14_age <- integer_cal_year_curve$c14_age
-  interpolated_c14_sig <- integer_cal_year_curve$c14_sig
-
-  ##############################################################################
   # Initialise parameters
   if (sensible_initialisation) {
     initial_probabilities <- mapply(
       .ProbabilitiesForSingleDetermination,
       c14_determinations,
       c14_sigmas,
-      MoreArgs = list(calibration_curve=integer_cal_year_curve))
+      MoreArgs = list(calibration_curve=calibration_curve))
     indices_of_max_probability = apply(initial_probabilities, 2, which.max)
 
-    calendar_ages <- integer_cal_year_curve$calendar_age[indices_of_max_probability]
+    calendar_ages <- calibration_curve$calendar_age[indices_of_max_probability]
     maxrange <- max(calendar_ages) - min(calendar_ages)
 
     mu_phi <- stats::median(calendar_ages)
@@ -230,6 +223,13 @@ WalkerBivarDirichlet <- function(
   theta_out[output_index, ] <- calendar_ages
 
   ##############################################################################
+  ## Interpolate cal curve onto single year grid to speed up updating thetas
+  integer_cal_year_curve <- InterpolateCalibrationCurve(
+    1:pkg.globals$MAX_YEAR_BP, calibration_curve)
+  interpolated_c14_age <- integer_cal_year_curve$c14_age
+  interpolated_c14_sig <- integer_cal_year_curve$c14_sig
+
+  ##############################################################################
   # Now the calibration and DPMM
   if (show_progress) {
     progress_bar <- utils::txtProgressBar(min = 0, max = n_iter, style = 3)
@@ -259,7 +259,6 @@ WalkerBivarDirichlet <- function(
       slice_multiplier,
       c14_determinations,
       c14_sigmas,
-      interpolated_calendar_age_start,
       interpolated_c14_age,
       interpolated_c14_sig)
     weight <- DPMM_update$weight
@@ -271,13 +270,6 @@ WalkerBivarDirichlet <- function(
     alpha <- DPMM_update$alpha
     mu_phi <- DPMM_update$mu_phi
     calendar_ages = DPMM_update$calendar_ages
-    # TODO checks - remove once bug found
-    if (length(weight) != length(phi)) print("error 1")
-    if (length(weight) != length(tau)) print("error 2")
-    if (length(weight) != length(v)) print("error 3")
-    if (length(calendar_ages) != num_observations) print("error 4")
-    if (length(cluster_identifiers) != num_observations) print("error 5")
-    if (any(cluster_identifiers > length(weight))) print("error 6")
 
     if (iter %% n_thin == 0) {
       output_index <- output_index + 1

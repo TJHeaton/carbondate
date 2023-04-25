@@ -60,6 +60,7 @@ double FindNewV(
 void WalkerUpdateWeights(
     integers& cluster_ids,
     const std::vector<double>& u,
+    int n,
     int current_n_clust,
     double min_u,
     double alpha,
@@ -67,22 +68,20 @@ void WalkerUpdateWeights(
     std::vector<double>& weight,
     int& n_clust) {
 
+  double compvar;
   int clust_num = 0;
   double brprod = 1.;
   double sum_weight = 0.;
   double new_weight;
 
-  while (sum_weight < 1. - min_u) {
+  compvar = 1. - min_u;
+  while (sum_weight < compvar) {
     clust_num++;
     if (clust_num <= current_n_clust) {
       v[clust_num - 1] = FindNewV(cluster_ids, clust_num, brprod, alpha, u, v);
     } else {
       // v_(clust_num) just from prior beta
       v.push_back(Rf_rbeta(1., alpha));
-    }
-    if (v.size() < clust_num) {
-      printf("Error in addressing v\n");
-      exit(1);
     }
     new_weight = brprod * v[clust_num - 1];
     sum_weight += new_weight;
@@ -149,9 +148,6 @@ void WalkerUpdateClusterIdentifiers(
         poss_cluster_ids.push_back(c);
         dens.push_back(Rf_dnorm4(phi[c-1], calendar_ages[i], sqrt(1. / tau[c-1]), 0));
       }
-    }
-    if (poss_cluster_ids.size() == 0) {
-      printf("No cluster IDs to choose from \n");
     }
     cluster_ids[i] = poss_cluster_ids[SampleInt(poss_cluster_ids.size(), dens, false)];
     poss_cluster_ids.resize(0);

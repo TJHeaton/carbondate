@@ -16,22 +16,15 @@ InterpolateCalibrationCurve <- function(
     calibration_curve) {
 
   .CheckCalibrationCurve(NULL, calibration_curve)
-  if (!any(is.na(new_calendar_ages))) {
-    checkmate::assertNumeric(new_calendar_ages)
-  } else {
-    start_age <- floor(min(calibration_curve$calendar_age))
-    end_age <- ceiling(max(calibration_curve$calendar_age))
-    diff = 1 # min(diff(calibration_curve$calendar_age))
-    new_calendar_ages = seq(start_age, end_age, by=diff)
-  }
+  checkmate::assertNumeric(new_calendar_ages)
 
-  calendar_ages <-  calibration_curve$calendar_age
-  c14_ages <- calibration_curve$c14_age
-  c14_sigs <- calibration_curve$c14_sig
+  calendar_ages =  calibration_curve$calendar_age
+  c14_ages = calibration_curve$c14_age
+  c14_sigs = calibration_curve$c14_sig
 
-  new_c14_ages <- stats::approx(
+  new_c14_ages = stats::approx(
     calendar_ages, c14_ages, new_calendar_ages, rule=2)$y
-  new_c14_sigs <- stats::approx(
+  new_c14_sigs = stats::approx(
     calendar_ages, c14_sigs, new_calendar_ages, rule=2)$y
 
   new_calibration_curve = data.frame(

@@ -188,8 +188,8 @@ PolyaUrnBivarDirichlet <- function(
 
   ##############################################################################
   ## Interpolate cal curve onto single year grid to speed up updating thetas
-  integer_cal_year_curve <- InterpolateCalibrationCurve(NA, calibration_curve)
-  interpolated_calendar_age_start <- integer_cal_year_curve$calendar_age[1]
+  integer_cal_year_curve <- InterpolateCalibrationCurve(
+    1:pkg.globals$MAX_YEAR_BP, calibration_curve)
   interpolated_c14_age <- integer_cal_year_curve$c14_age
   interpolated_c14_sig <- integer_cal_year_curve$c14_sig
 
@@ -222,7 +222,6 @@ PolyaUrnBivarDirichlet <- function(
       slice_multiplier,
       as.double(c14_determinations),
       as.double(c14_sigmas),
-      interpolated_calendar_age_start,
       interpolated_c14_age,
       interpolated_c14_sig)
     cluster_identifiers <- DPMM_update$cluster_ids
