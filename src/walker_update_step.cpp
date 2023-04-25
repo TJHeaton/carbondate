@@ -6,8 +6,8 @@ using namespace cpp11;
 
 
 void WalkerUpdateWeights(
-    integers&, const std::vector<double>&, double, double,
-    std::vector<double>&, std::vector<double>&);
+    integers&, const std::vector<double>&, int, double, double,
+    std::vector<double>&, std::vector<double>&, int&);
 
 void WalkerUpdateClusterPhiTau(
     int, const doubles&, const integers&, double, double, double, double,
@@ -44,6 +44,7 @@ std::vector<double> UpdateCalendarAges(
     doubles current_weight,        // weight per cluster
     doubles current_v,
     integers current_cluster_ids,  // cluster each observation belongs to
+    int current_n_clust,           // current number of clusters
     double current_alpha,          // current value of the DPMM concentration parameter
     double current_mu_phi,         // current value of the overall cluster centering
     double alpha_shape,
@@ -70,6 +71,7 @@ std::vector<double> UpdateCalendarAges(
   std::vector<int> cluster_ids(n);      // Updated cluster_ids
   std::vector<double> phi, tau;         // Updated cluster means and precisions
   std::vector<double> calendar_ages;    // Updated calendar_ages
+  int n_clust;                          // Updated number of clusters
   double mu_phi, alpha;                 // Updated value of mu_phi and alpha
   double min_u = 1.;                    // Minimum value of auxiliary variables
 
@@ -83,14 +85,15 @@ std::vector<double> UpdateCalendarAges(
     if (u[k] < min_u) min_u = u[k];   // update minimum value of u
   }
 
-  WalkerUpdateWeights(current_cluster_ids, u, min_u, current_alpha, v, weight);
+  WalkerUpdateWeights(
+    current_cluster_ids, u, current_n_clust, min_u, current_alpha, v, weight, n_clust);
 
   // Update the cluster means and precisions, introducing new ones for those without observations
   // First set the vectors to the correct size now n_clust has been updated
-  phi.resize(weight.size());
-  tau.resize(weight.size());
+  phi.resize(n_clust);
+  tau.resize(n_clust);
   WalkerUpdateClusterPhiTau(
-    weight.size(), current_calendar_ages, current_cluster_ids, current_mu_phi, lambda, nu1, nu2, phi, tau);
+    n_clust, current_calendar_ages, current_cluster_ids, current_mu_phi, lambda, nu1, nu2, phi, tau);
 
   // Now update the cluster id for each observation
   WalkerUpdateClusterIdentifiers(current_calendar_ages, u, weight, phi, tau, cluster_ids);
@@ -125,6 +128,7 @@ std::vector<double> UpdateCalendarAges(
   retlist.push_back({"cluster_ids"_nm = cluster_ids_out});
   retlist.push_back({"phi"_nm = phi_out});
   retlist.push_back({"tau"_nm = tau_out});
+  retlist.push_back({"n_clust"_nm = n_clust});
   retlist.push_back({"alpha"_nm = alpha});
   retlist.push_back({"mu_phi"_nm = mu_phi});
   retlist.push_back({"calendar_ages"_nm = calendar_ages_out});
