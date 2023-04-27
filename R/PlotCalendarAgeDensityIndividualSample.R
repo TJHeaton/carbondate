@@ -66,8 +66,10 @@ PlotCalendarAgeDensityIndividualSample <- function(
     calibration_curve$c14_age[calendar_age_indices] * 1.2,
     calibration_curve$c14_age[calendar_age_indices] / 1.2)
 
+  plot_AD = any(calendar_age < 0)
   graphics::par(xaxs = "i", yaxs = "i")
   .PlotCalibrationCurve(
+    plot_AD,
     xlim = rev(xrange),
     ylim = yrange,
     calibration_curve = calibration_curve,
@@ -87,6 +89,11 @@ PlotCalendarAgeDensityIndividualSample <- function(
         "C yr BP"),
       list(i = ident, c14_age = c14_age, c14_sig = c14_sig)))
 
+  if (plot_AD) {
+    calendar_age <- 1950 - calendar_age
+    xrange <- 1950 - xrange
+  }
+
   # Plot the 14C determination on the y-axis
   yfromto <- seq(c14_age - 4 * c14_sig, c14_age + 4 * c14_sig, length.out = 100)
   radpol <- cbind(
@@ -102,7 +109,11 @@ PlotCalendarAgeDensityIndividualSample <- function(
   # Plot the posterior cal age on the x-axis
   graphics::par(new = TRUE, las = 1)
   # Create hist but do not plot - works out sensible ylim
-  breaks <-seq(xrange[1], xrange[2], by=resolution)
+  if (plot_AD) {
+    breaks <-seq(xrange[2], xrange[1], by=resolution)
+  } else {
+    breaks <-seq(xrange[1], xrange[2], by=resolution)
+  }
   temphist <- graphics::hist(calendar_age, breaks = breaks, plot = FALSE)
 
   diff = diff(xrange)
