@@ -124,12 +124,6 @@ std::vector<double> UpdateCalendarAges(
 
   for (int k = 0; k < n; ++k) {
     ci = cluster_identifiers[k];
-    if (ci > phi.size() or ci > tau.size()) {
-      printf("Error, something has gone wrong with cluster identifiers!! \n");
-      printf("ci = %d, phi.size() = %lu, tau.size() = %lu", ci, phi.size(), tau.size());
-      calendar_ages_new[k] = calendar_ages[k];
-      exit(1);
-    }
     prmean = phi[ci-1];
     prsig = 1.0 / sqrt(tau[ci-1]);
 

@@ -38,7 +38,6 @@ double FindNewV(
         prodv_set = true;
       }
       index = cluster_ids[k] - 1;
-      if (index < 1 || index > m - 1) printf("Error addressing prodv\n");
       b_sub_max = u[k] / (v[index] * prodv[index - 1]);
       if (b_sub_max > b_sub) b_sub = b_sub_max;
     } else if ((cluster_ids[k] == cluster_id) && (u[k] > a)) {
@@ -72,7 +71,6 @@ void WalkerUpdateWeights(
   double sum_weight = 0.;
   double new_weight;
 
-  weight.resize(0);
   while (sum_weight < 1. - min_u) {
     clust_num++;
     if (clust_num <= current_n_clust) {
@@ -81,7 +79,6 @@ void WalkerUpdateWeights(
       // v_(clust_num) just from prior beta
       v.push_back(Rf_rbeta(1., alpha));
     }
-    if (v.size() < clust_num) printf("Error in addressing v\n");
     new_weight = brprod * v[clust_num - 1];
     sum_weight += new_weight;
     weight.push_back(new_weight);
@@ -147,9 +144,6 @@ void WalkerUpdateClusterIdentifiers(
         dens.push_back(Rf_dnorm4(phi[c-1], calendar_ages[i], sqrt(1. / tau[c-1]), 0));
       }
     }
-    if (poss_cluster_ids.size() == 0) {
-      printf("No cluster IDs to choose from \n");
-    }
     cluster_ids[i] = poss_cluster_ids[SampleInt(poss_cluster_ids.size(), dens, false)];
     poss_cluster_ids.resize(0);
     dens.resize(0);
@@ -168,13 +162,14 @@ double WalkerUpdateAlpha(
     const std::vector<int>& cluster_ids,   // The cluster each observation belongs to
     double current_alpha,
     double alpha_shape,
-    double alpha_rate) {
+    double alpha_rate,
+    int n_weights) {
 
   int n = cluster_ids.size();
   double alpha = -1.;         // Updated value of alpha
   double prop_sd = 1.;        // Standard deviation for sampling proposed value of alpha
   int cluster_id;
-  std::vector<int> observations_per_cluster(2*n, 0);  // Allocate plenty of space
+  std::vector<int> observations_per_cluster(n_weights, 0);
   double log_prior_rate, log_likelihood_rate, log_proposal_rate, hr;
   int n_distinct_clust = 0;
 

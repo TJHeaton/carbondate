@@ -269,13 +269,6 @@ WalkerBivarDirichlet <- function(
     alpha <- DPMM_update$alpha
     mu_phi <- DPMM_update$mu_phi
     calendar_ages = DPMM_update$calendar_ages
-    # TODO checks - remove once bug found
-    if (length(weight) != length(phi)) print("error 1")
-    if (length(weight) != length(tau)) print("error 2")
-    if (length(weight) != length(v)) print("error 3")
-    if (length(calendar_ages) != num_observations) print("error 4")
-    if (length(cluster_identifiers) != num_observations) print("error 5")
-    if (any(cluster_identifiers > length(weight))) print("error 6")
 
     if (iter %% n_thin == 0) {
       output_index <- output_index + 1

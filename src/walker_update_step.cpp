@@ -18,7 +18,7 @@ void WalkerUpdateClusterIdentifiers(
     const std::vector<double>&, std::vector<int>&);
 
 double WalkerUpdateAlpha(
-    const std::vector<int>&, double, double, double);
+    const std::vector<int>&, double, double, double, int);
 
 double UpdateMuPhi(
     const std::vector<double>&, const std::vector<double>&, double, double, double);
@@ -65,7 +65,7 @@ std::vector<double> UpdateCalendarAges(
   int n = current_calendar_ages.size();  // Number of observations
   std::vector<double> u(n);              // Auxiliary variables
   std::vector<double> weight;            // Updated weights
-  //weight.reserve(5*current_n_clust);     // Reserve extra space for new clusters
+  weight.reserve(2 * current_weight.size());  // Reserve extra space for new clusters
   std::vector<double> v(current_v.begin(), current_v.end());  // Updated v
   std::vector<int> cluster_ids(n);      // Updated cluster_ids
   std::vector<double> phi, tau;         // Updated cluster means and precisions
@@ -78,7 +78,6 @@ std::vector<double> UpdateCalendarAges(
 
   // Create auxiliary variables u
   for (int k = 0; k < n; k++) {
-    if (current_cluster_ids[k] > current_weight.size()) printf("error 1 \n");
     u[k] = Rf_runif(0., current_weight[current_cluster_ids[k] - 1]);
     if (u[k] < min_u) min_u = u[k];   // update minimum value of u
   }
@@ -95,7 +94,7 @@ std::vector<double> UpdateCalendarAges(
   // Now update the cluster id for each observation
   WalkerUpdateClusterIdentifiers(current_calendar_ages, u, weight, phi, tau, cluster_ids);
 
-  alpha = WalkerUpdateAlpha(cluster_ids, current_alpha, alpha_shape, alpha_rate);
+  alpha = WalkerUpdateAlpha(cluster_ids, current_alpha, alpha_shape, alpha_rate, weight.size());
   mu_phi = UpdateMuPhi(phi, tau, lambda, A, B);
 
   calendar_ages = UpdateCalendarAges(
@@ -112,21 +111,14 @@ std::vector<double> UpdateCalendarAges(
     mucalallyr,
     sigcalallyr);
 
-  cpp11::writable::doubles weight_out(weight.begin(), weight.end());
-  cpp11::writable::doubles v_out(v.begin(), v.end());
-  cpp11::writable::doubles phi_out(phi.begin(), phi.end());
-  cpp11::writable::doubles tau_out(tau.begin(), tau.end());
-  cpp11::writable::doubles calendar_ages_out(calendar_ages.begin(), calendar_ages.end());
-  cpp11::writable::integers cluster_ids_out(cluster_ids.begin(), cluster_ids.end());
-
   // Return the updated parameters
-  retlist.push_back({"weight"_nm = weight_out});
-  retlist.push_back({"v"_nm = v_out});
-  retlist.push_back({"cluster_ids"_nm = cluster_ids_out});
-  retlist.push_back({"phi"_nm = phi_out});
-  retlist.push_back({"tau"_nm = tau_out});
+  retlist.push_back({"weight"_nm = weight});
+  retlist.push_back({"v"_nm = v});
+  retlist.push_back({"cluster_ids"_nm = cluster_ids});
+  retlist.push_back({"phi"_nm = phi});
+  retlist.push_back({"tau"_nm = tau});
   retlist.push_back({"alpha"_nm = alpha});
   retlist.push_back({"mu_phi"_nm = mu_phi});
-  retlist.push_back({"calendar_ages"_nm = calendar_ages_out});
+  retlist.push_back({"calendar_ages"_nm = calendar_ages});
   return retlist;
 }
