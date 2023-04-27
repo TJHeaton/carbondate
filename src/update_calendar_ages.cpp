@@ -18,7 +18,7 @@ double ThetaLogLikelihood_cpp(
 
   double loglik;
   double mucal, sigcal;
-  int yr_index = (int) theta - year_index_offset;
+  int yr_index = (int) (theta - year_index_offset);
 
   if ((yr_index < 0) | (yr_index >= mucalallyr.size())) {
     return -std::numeric_limits<double>::infinity();
