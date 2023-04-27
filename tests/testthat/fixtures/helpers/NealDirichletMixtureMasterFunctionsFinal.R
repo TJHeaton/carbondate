@@ -151,8 +151,9 @@ BivarGibbsDirichletwithSlice <- function(x, xsig,
 
   # Initalise theta by choosing maximum posterior from independent coarse version
   if(sensibleinit) {
-    initprobs <- mapply(calibind, x, xsig, MoreArgs = list(calmu = calcurve$c14age, calsig = calcurve$c14sig))
-    theta <- calcurve$calage[apply(initprobs, 2, which.max)]
+    IntCalyrgrid <- FindCal(1:50000, calcurve$c14ag, calcurve$calage, calcurve$c14sig)
+    initprobs <- mapply(calibind, x, xsig, MoreArgs = list(calmu = IntCalyrgrid$mu, calsig = IntCalyrgrid$sigma))
+    theta <- apply(initprobs, 2, which.max)
     muphi <- median(theta)
     # Over-ride A and B in prior for muphi from range of theta
     A <- median(theta)

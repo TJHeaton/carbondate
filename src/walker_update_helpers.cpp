@@ -20,7 +20,7 @@ double FindNewV(
 
   int n = cluster_ids.size();
   int m = v.size();
-  writable::doubles prodv(m + 1);
+  std::vector<double> prodv(m);
   bool prodv_set = false;  // Flag for whether we've calculated prodv yet
   double b_sub = 0.0;
   double b_sub_max;
@@ -34,7 +34,7 @@ double FindNewV(
         // Vector to aid denominator for b: ith entry is Prod_{l < i, l != j} (1- v_l)
         // In fact strictly here  l == j included, but we multiply by (1 - v_j) below
         prodv[0] = 1.0 - v[0];
-        for (int k = 1; k < m; ++k) prodv[k] = prodv[k-1] * (1.0 - v[k]);
+        for (int j = 1; j < m; ++j) prodv[j] = prodv[j - 1] * (1.0 - v[j]);
         prodv_set = true;
       }
       index = cluster_ids[k] - 1;
@@ -60,22 +60,18 @@ double FindNewV(
 void WalkerUpdateWeights(
     integers& cluster_ids,
     const std::vector<double>& u,
-    int n,
-    int current_n_clust,
     double min_u,
     double alpha,
     std::vector<double>& v,
-    std::vector<double>& weight,
-    int& n_clust) {
+    std::vector<double>& weight) {
 
-  double compvar;
   int clust_num = 0;
+  int current_n_clust = v.size();
   double brprod = 1.;
   double sum_weight = 0.;
   double new_weight;
 
-  compvar = 1. - min_u;
-  while (sum_weight < compvar) {
+  while (sum_weight < 1. - min_u) {
     clust_num++;
     if (clust_num <= current_n_clust) {
       v[clust_num - 1] = FindNewV(cluster_ids, clust_num, brprod, alpha, u, v);
@@ -88,8 +84,7 @@ void WalkerUpdateWeights(
     weight.push_back(new_weight);
     brprod *= (1. - v[clust_num - 1]);
   }
-  n_clust = clust_num;
-  v.resize(n_clust);
+  if (clust_num < v.size()) v.resize(clust_num);
 }
 
 
@@ -167,13 +162,14 @@ double WalkerUpdateAlpha(
     const std::vector<int>& cluster_ids,   // The cluster each observation belongs to
     double current_alpha,
     double alpha_shape,
-    double alpha_rate) {
+    double alpha_rate,
+    int n_weights) {
 
   int n = cluster_ids.size();
   double alpha = -1.;         // Updated value of alpha
   double prop_sd = 1.;        // Standard deviation for sampling proposed value of alpha
   int cluster_id;
-  std::vector<int> observations_per_cluster(2*n, 0);  // Allocate plenty of space
+  std::vector<int> observations_per_cluster(n_weights, 0);
   double log_prior_rate, log_likelihood_rate, log_proposal_rate, hr;
   int n_distinct_clust = 0;
 

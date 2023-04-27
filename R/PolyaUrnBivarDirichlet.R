@@ -106,6 +106,13 @@ PolyaUrnBivarDirichlet <- function(
   checkmate::reportAssertions(arg_check)
 
   ##############################################################################
+  ## Interpolate cal curve onto single year grid to speed up updating thetas
+  integer_cal_year_curve <- InterpolateCalibrationCurve(NA, calibration_curve)
+  interpolated_calendar_age_start <- integer_cal_year_curve$calendar_age[1]
+  interpolated_c14_age <- integer_cal_year_curve$c14_age
+  interpolated_c14_sig <- integer_cal_year_curve$c14_sig
+
+  ##############################################################################
   # Initialise parameters
   all_clusters_represented <- FALSE
   while (!all_clusters_represented) {
@@ -122,10 +129,10 @@ PolyaUrnBivarDirichlet <- function(
       .ProbabilitiesForSingleDetermination,
       c14_determinations,
       c14_sigmas,
-      MoreArgs = list(calibration_curve=calibration_curve))
+      MoreArgs = list(calibration_curve=integer_cal_year_curve))
     indices_of_max_probability = apply(initial_probabilities, 2, which.max)
 
-    calendar_ages <- calibration_curve$calendar_age[indices_of_max_probability]
+    calendar_ages <- integer_cal_year_curve$calendar_age[indices_of_max_probability]
     maxrange <- max(calendar_ages) - min(calendar_ages)
 
     mu_phi <- stats::median(calendar_ages)
@@ -187,13 +194,6 @@ PolyaUrnBivarDirichlet <- function(
   n_clust_out[output_index] <- length(unique(cluster_identifiers))
 
   ##############################################################################
-  ## Interpolate cal curve onto single year grid to speed up updating thetas
-  integer_cal_year_curve <- InterpolateCalibrationCurve(
-    1:pkg.globals$MAX_YEAR_BP, calibration_curve)
-  interpolated_c14_age <- integer_cal_year_curve$c14_age
-  interpolated_c14_sig <- integer_cal_year_curve$c14_sig
-
-  ##############################################################################
   # Now the calibration
   if (show_progress) {
     progress_bar <- utils::txtProgressBar(min = 0, max = n_iter, style = 3)
@@ -222,6 +222,7 @@ PolyaUrnBivarDirichlet <- function(
       slice_multiplier,
       as.double(c14_determinations),
       as.double(c14_sigmas),
+      interpolated_calendar_age_start,
       interpolated_c14_age,
       interpolated_c14_sig)
     cluster_identifiers <- DPMM_update$cluster_ids

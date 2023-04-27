@@ -126,7 +126,7 @@ PlotPredictiveCalendarAgeDensity <- function(
   true_density_colour = "red"
 
   calendar_age_sequence <- .CreateRangeToPlotDensity(output_data[[1]], n_calc)
-
+  plot_AD = any(calendar_age_sequence < 0)
   ##############################################################################
   # Calculate density distributions
 
@@ -149,7 +149,6 @@ PlotPredictiveCalendarAgeDensity <- function(
   }
   ##############################################################################
   # Calculate plot scaling
-
   xlim <- .ScaleLimit(rev(range(calendar_age_sequence)), xlimscal)
   ylim_calibration <- .ScaleLimit(
     range(c14_determinations) +
@@ -161,6 +160,7 @@ PlotPredictiveCalendarAgeDensity <- function(
   # Plot curves
 
   .PlotCalibrationCurveAndInputData(
+    plot_AD,
     xlim,
     ylim_calibration,
     calibration_curve,
@@ -170,19 +170,19 @@ PlotPredictiveCalendarAgeDensity <- function(
     interval_width,
     bespoke_probability)
 
-  .SetUpDensityPlot(xlim, ylim_density)
+  .SetUpDensityPlot(plot_AD, xlim, ylim_density)
 
   if (show_SPD){
-    .PlotSPDEstimateOnCurrentPlot(SPD, SPD_colour, xlim, ylim_density)
+    .PlotSPDEstimateOnCurrentPlot(plot_AD, SPD, SPD_colour, xlim, ylim_density)
   }
 
   for (i in 1:num_data) {
     .PlotDensityEstimateOnCurrentPlot(
-      predictive_density[[i]], output_colours[[i]], show_confidence_intervals)
+      plot_AD, predictive_density[[i]], output_colours[[i]], show_confidence_intervals)
   }
 
   if (is.data.frame(true_density)) {
-    .PlotTrueDensityOnCurrentPlot(true_density, true_density_colour)
+    .PlotTrueDensityOnCurrentPlot(plot_AD, true_density, true_density_colour)
   }
 
   .AddLegendToDensityPlot(
@@ -218,6 +218,7 @@ PlotPredictiveCalendarAgeDensity <- function(
 
 
 .PlotCalibrationCurveAndInputData <- function(
+    plot_AD,
     xlim,
     ylim,
     calibration_curve,
@@ -228,6 +229,7 @@ PlotPredictiveCalendarAgeDensity <- function(
     bespoke_probability){
   graphics::par(mar = c(5, 4.5, 4, 2) + 0.1, las = 1)
   .PlotCalibrationCurve(
+    plot_AD,
     xlim,
     ylim,
     calibration_curve,
@@ -241,6 +243,7 @@ PlotPredictiveCalendarAgeDensity <- function(
 
 
 .PlotCalibrationCurve = function(
+    plot_AD,
     xlim,
     ylim,
     calibration_curve,
@@ -250,13 +253,22 @@ PlotPredictiveCalendarAgeDensity <- function(
     bespoke_probability,
     title) {
 
+  if (plot_AD) {
+    cal_age = 1950 - calibration_curve$calendar_age
+    xlim = 1950 - xlim
+    x_label = "Calendar Age (AD)"
+  } else {
+    cal_age = calibration_curve$calendar_age
+    x_label = "Calendar Age (cal yr BP)"
+  }
+
   graphics::plot.default(
-    calibration_curve$calendar_age,
+    cal_age,
     calibration_curve$c14_age,
     col = calibration_curve_colour,
     ylim = ylim,
     xlim = xlim,
-    xlab = "Calendar Age (cal yr BP)",
+    xlab = x_label,
     ylab = expression(paste(""^14, "C", " age (", ""^14, "C yr BP)")),
     type = "l",
     main = title)
@@ -271,26 +283,20 @@ PlotPredictiveCalendarAgeDensity <- function(
   calibration_curve$lb <- calibration_curve$c14_age -
     zquant * calibration_curve$c14_sig
 
-  graphics::lines(
-    calibration_curve$calendar_age,
-    calibration_curve$ub,
-    lty = 2,
-    col = calibration_curve_colour)
-  graphics::lines(
-    calibration_curve$calendar_age,
-    calibration_curve$lb,
-    lty = 2,
-    col = calibration_curve_colour)
+  graphics::lines(cal_age, calibration_curve$ub, lty = 2, col = calibration_curve_colour)
+  graphics::lines(cal_age, calibration_curve$lb, lty = 2, col = calibration_curve_colour)
   graphics::polygon(
-    c(rev(calibration_curve$calendar_age), calibration_curve$calendar_age),
+    c(rev(cal_age), cal_age),
     c(rev(calibration_curve$lb), calibration_curve$ub),
     col = calibration_curve_bg,
     border = NA)
 }
 
 
-.SetUpDensityPlot <- function(xlim, ylim) {
+.SetUpDensityPlot <- function(plot_AD, xlim, ylim) {
   graphics::par(new = TRUE)
+
+  if (plot_AD) xlim = 1950 - xlim
   graphics::plot.default(
     c(),
     c(),
@@ -303,9 +309,15 @@ PlotPredictiveCalendarAgeDensity <- function(
 }
 
 
-.PlotSPDEstimateOnCurrentPlot <- function(SPD, SPD_colour, xlim, ylim) {
+.PlotSPDEstimateOnCurrentPlot <- function(plot_AD, SPD, SPD_colour, xlim, ylim) {
+  if (plot_AD) {
+    cal_age = 1950 - SPD$calendar_age
+  } else {
+    cal_age = SPD$calendar_age
+  }
+
   graphics::polygon(
-    c(SPD$calendar_age, rev(SPD$calendar_age)),
+    c(cal_age, rev(cal_age)),
     c(SPD$probability, rep(0, length(SPD$probability))),
     border = NA,
     col = SPD_colour)
@@ -313,30 +325,30 @@ PlotPredictiveCalendarAgeDensity <- function(
 
 
 .PlotDensityEstimateOnCurrentPlot <- function(
-    predictive_density, output_colour, show_confidence_intervals) {
+    plot_AD, predictive_density, output_colour, show_confidence_intervals) {
 
-  graphics::lines(
-    predictive_density$calendar_age,
-    predictive_density$density_mean,
-    col = output_colour)
+  if (plot_AD) {
+    cal_age = 1950 - predictive_density$calendar_age
+  } else {
+    cal_age = predictive_density$calendar_age
+  }
+
+  graphics::lines(cal_age, predictive_density$density_mean, col = output_colour)
   if (show_confidence_intervals) {
-    graphics::lines(
-      predictive_density$calendar_age,
-      predictive_density$density_ci_lower,
-      col = output_colour,
-      lty = 2)
-    graphics::lines(
-      predictive_density$calendar_age,
-      predictive_density$density_ci_upper,
-      col = output_colour,
-      lty = 2)
+    graphics::lines(cal_age, predictive_density$density_ci_lower, col = output_colour, lty = 2)
+    graphics::lines(cal_age, predictive_density$density_ci_upper, col = output_colour, lty = 2)
   }
 }
 
 
-.PlotTrueDensityOnCurrentPlot <- function(true_density, true_density_colour) {
-  graphics::lines(
-    true_density[[1]], true_density[[2]], col = true_density_colour)
+.PlotTrueDensityOnCurrentPlot <- function(plot_AD, true_density, true_density_colour) {
+  if (plot_AD) {
+    cal_age = 1950 - true_density[[1]]
+  } else {
+    cal_age = true_density[[1]]
+  }
+
+  graphics::lines(cal_age, true_density[[2]], col = true_density_colour)
 }
 
 
@@ -358,7 +370,7 @@ PlotPredictiveCalendarAgeDensity <- function(
     "2sigma"  = "2 sigma interval",
     "bespoke" = paste(round(100*bespoke_probability), "% interval", sep = ""))
 
-  legend_labels = c("IntCal20", ci_label)
+  legend_labels = c(output_data[[1]]$input_data$calibration_curve_name, ci_label)
   lty = c(1, 2)
   pch = c(NA, NA)
   col = c(calibration_curve_colour, calibration_curve_colour)

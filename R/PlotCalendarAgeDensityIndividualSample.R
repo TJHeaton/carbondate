@@ -54,20 +54,22 @@ PlotCalendarAgeDensityIndividualSample <- function(
   # Find the calendar age range to plot
   xrange <- range(calendar_age)
   xrange[1] = floor(xrange[1])
-  while (xrange[1] %% resolution != 0) xrange[1] = xrange[1] - 1
+  if (resolution > 1) while (xrange[1] %% resolution != 0) xrange[1] = xrange[1] - 1
 
   xrange[2] = ceiling(xrange[2])
-  while (xrange[2] %% resolution != 0) xrange[2] = xrange[2] + 1
+  if (resolution > 1) while (xrange[2] %% resolution != 0) xrange[2] = xrange[2] + 1
 
   cal_age_ind_min <- which.min(abs(calibration_curve$calendar_age - xrange[1]))
   cal_age_ind_max <- which.min(abs(calibration_curve$calendar_age - xrange[2]))
   calendar_age_indices <- cal_age_ind_min:cal_age_ind_max
   yrange <- range(
-    calibration_curve$c14_age[calendar_age_indices] + 30,
-    calibration_curve$c14_age[calendar_age_indices] - 30)
+    calibration_curve$c14_age[calendar_age_indices] * 1.2,
+    calibration_curve$c14_age[calendar_age_indices] / 1.2)
 
+  plot_AD = any(calendar_age < 0)
   graphics::par(xaxs = "i", yaxs = "i")
   .PlotCalibrationCurve(
+    plot_AD,
     xlim = rev(xrange),
     ylim = yrange,
     calibration_curve = calibration_curve,
@@ -87,8 +89,13 @@ PlotCalendarAgeDensityIndividualSample <- function(
         "C yr BP"),
       list(i = ident, c14_age = c14_age, c14_sig = c14_sig)))
 
+  if (plot_AD) {
+    calendar_age <- 1950 - calendar_age
+    xrange <- 1950 - xrange
+  }
+
   # Plot the 14C determination on the y-axis
-  yfromto <- seq(c14_age - 4 * c14_sig, c14_age + 4 * c14_sig, by = 1)
+  yfromto <- seq(c14_age - 4 * c14_sig, c14_age + 4 * c14_sig, length.out = 100)
   radpol <- cbind(
     c(0, stats::dnorm(yfromto, mean = c14_age, sd = c14_sig), 0),
     c(min(yfromto), yfromto, max(yfromto))
@@ -102,7 +109,11 @@ PlotCalendarAgeDensityIndividualSample <- function(
   # Plot the posterior cal age on the x-axis
   graphics::par(new = TRUE, las = 1)
   # Create hist but do not plot - works out sensible ylim
-  breaks <-seq(xrange[1], xrange[2], by=resolution)
+  if (plot_AD) {
+    breaks <-seq(xrange[2], xrange[1], by=resolution)
+  } else {
+    breaks <-seq(xrange[1], xrange[2], by=resolution)
+  }
   temphist <- graphics::hist(calendar_age, breaks = breaks, plot = FALSE)
 
   diff = diff(xrange)

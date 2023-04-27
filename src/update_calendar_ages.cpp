@@ -12,21 +12,20 @@ double ThetaLogLikelihood_cpp(
     double prsig,
     double c14obs,
     double c14sig,
+    int year_index_offset,
     const doubles& mucalallyr,
     const doubles& sigcalallyr) {
 
   double loglik;
   double mucal, sigcal;
-  int yr;
+  int yr_index = (int) (theta - year_index_offset);
 
-  yr = (int) theta - 1;
-
-  if ((yr < 0) | (yr >= mucalallyr.size())) {
+  if ((yr_index < 0) | (yr_index >= mucalallyr.size())) {
     return -std::numeric_limits<double>::infinity();
   }
 
-  mucal = mucalallyr[yr];
-  sigcal= sigcalallyr[yr];
+  mucal = mucalallyr[yr_index];
+  sigcal= sigcalallyr[yr_index];
 
   loglik = Rf_dnorm4(theta, prmean, prsig, 1);
   loglik += Rf_dnorm4(c14obs, mucal, sqrt(sigcal*sigcal + c14sig*c14sig), 1);
@@ -43,6 +42,7 @@ double SliceSample_cpp(
     double prsig,
     double c14obs,
     double c14sig,
+    int year_index_offset,
     const doubles& mucalallyr,
     const doubles& sigcalallyr) {
 
@@ -54,7 +54,7 @@ double SliceSample_cpp(
   //////////////////////////////////////////////
   // Slice height
   y = ThetaLogLikelihood_cpp(
-    x0, prmean, prsig, c14obs, c14sig, mucalallyr, sigcalallyr);
+    x0, prmean, prsig, c14obs, c14sig, year_index_offset, mucalallyr, sigcalallyr);
   y -= Rf_rexp(1);
 
   //////////////////////////////////////////////
@@ -70,14 +70,14 @@ double SliceSample_cpp(
 
   // LHS stepping out
   while ((J > 0) && (y < ThetaLogLikelihood_cpp(
-      L, prmean, prsig, c14obs, c14sig, mucalallyr, sigcalallyr))) {
+      L, prmean, prsig, c14obs, c14sig, year_index_offset, mucalallyr, sigcalallyr))) {
     L -= w;
     J -= 1;
   }
 
   // RHS stepping out
   while ((K > 0) && (y < ThetaLogLikelihood_cpp(
-      R, prmean, prsig, c14obs, c14sig, mucalallyr, sigcalallyr))) {
+      R, prmean, prsig, c14obs, c14sig, year_index_offset, mucalallyr, sigcalallyr))) {
     R += w;
     K -= 1;
   }
@@ -89,7 +89,7 @@ double SliceSample_cpp(
 
     // Break loop if we have sampled satisfactorily
     if (y < ThetaLogLikelihood_cpp(
-        x1, prmean, prsig, c14obs, c14sig, mucalallyr, sigcalallyr)) {
+        x1, prmean, prsig, c14obs, c14sig, year_index_offset, mucalallyr, sigcalallyr)) {
       return x1;
     }
 
@@ -113,6 +113,7 @@ std::vector<double> UpdateCalendarAges(
     const std::vector<double>& tau,
     const doubles& c14_determinations,
     const doubles& c14_sigmas,
+    int year_index_offset,
     const doubles& mucalallyr,
     const doubles& sigcalallyr) {
 
@@ -134,6 +135,7 @@ std::vector<double> UpdateCalendarAges(
       prsig,
       c14_determinations[k],
       c14_sigmas[k],
+      year_index_offset,
       mucalallyr,
       sigcalallyr);
   }
