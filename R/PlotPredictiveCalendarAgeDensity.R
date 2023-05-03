@@ -110,8 +110,8 @@ PlotPredictiveCalendarAgeDensity <- function(
   if (is.null(calibration_curve)) {
     calibration_curve = get(output_data[[1]]$input_data$calibration_curve_name)
   }
-  c14_determinations = output_data[[1]]$input_data$c14_determinations
-  c14_sigmas = output_data[[1]]$input_data$c14_sigmas
+  c14_determinations = output_data[[1]]$input_data$rc_determinations
+  c14_sigmas = output_data[[1]]$input_data$rc_sigmas
 
   ##############################################################################
   # Initialise plotting parameters

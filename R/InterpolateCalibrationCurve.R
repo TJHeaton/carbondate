@@ -1,42 +1,64 @@
 #' Interpolate calendar ages for a calibration curve
 #'
-#' @inheritParams CalibrateSingleDetermination
-#' @param new_calendar_ages A scalar or vector containing calendar ages to
-#' interpolate the calibration curve to.
+#' @inheritParams FindSummedProbabilityDistribution
+#' @param new_calendar_ages A scalar or vector containing calendar ages (in yr BP) to
+#' interpolate the calibration curve to. If not provided (and `NA` is given) uses the range
+#' from the minimum calendar age to the maximum calendar age of the original calibration curve
+#' spaced by 1.
+#' @param F14C_outputs `TRUE` if only F14C concentrations are required, `FALSE`
+#' if only radiocarbon age BP are required and `NA` if both are required for the new curve.
 #'
-#' @return A new dataframe with entries for the interpolated `c14_age` and
-#' `c14_sig` values at the `calendar_age` values given in `new_calendar_ages`
+#' @return A new dataframe with entries for the interpolated `c14_age`, and
+#' `c14_sig`, `f14c` and `f14c_sig` values at the `calendar_age_BP` values given
+#' in `new_calendar_ages`
 #' @export
 #'
 #' @examples
 #' InterpolateCalibrationCurve(51020.5, intcal20)
-#' InterpolateCalibrationCurve(c(51020.5, 51021.5), intcal20)
-InterpolateCalibrationCurve <- function(
-    new_calendar_ages,
-    calibration_curve) {
+#' InterpolateCalibrationCurve(c(51020.5, 51021.5), intcal20, TRUE)
+#' InterpolateCalibrationCurve(c(51020.5, 51021.5), intcal20, FALSE)
+#' InterpolateCalibrationCurve(NA, intcal20)
+InterpolateCalibrationCurve <- function(new_calendar_ages, calibration_curve, F14C_outputs = NA) {
 
-  .CheckCalibrationCurve(NULL, calibration_curve)
+  .CheckCalibrationCurve(NULL, calibration_curve, NA)
   if (!any(is.na(new_calendar_ages))) {
     checkmate::assertNumeric(new_calendar_ages)
   } else {
-    start_age <- floor(min(calibration_curve$calendar_age))
-    end_age <- ceiling(max(calibration_curve$calendar_age))
-    diff = 1 # min(diff(calibration_curve$calendar_age))
-    new_calendar_ages = seq(start_age, end_age, by=diff)
+    start_age <- floor(min(calibration_curve$calendar_age_BP))
+    end_age <- ceiling(max(calibration_curve$calendar_age_BP))
+    diff <- 1
+    new_calendar_ages <- seq(start_age, end_age, by=diff)
   }
 
-  calendar_ages <-  calibration_curve$calendar_age
-  c14_ages <- calibration_curve$c14_age
-  c14_sigs <- calibration_curve$c14_sig
+  new_calibration_curve <- data.frame(calendar_age_BP=new_calendar_ages)
 
-  new_c14_ages <- stats::approx(
-    calendar_ages, c14_ages, new_calendar_ages, rule=2)$y
-  new_c14_sigs <- stats::approx(
-    calendar_ages, c14_sigs, new_calendar_ages, rule=2)$y
+  calendar_ages <- calibration_curve$calendar_age_BP
 
-  new_calibration_curve = data.frame(
-    calendar_age=new_calendar_ages,
-    c14_age=new_c14_ages,
-    c14_sig=new_c14_sigs)
+  if (is.na(F14C_outputs) || F14C_outputs == FALSE) {
+    if (any(names(calibration_curve) == "c14_age")) {
+      c14_age <- calibration_curve$c14_age
+      c14_sig <- calibration_curve$c14_sig
+    } else {
+      c14_age <- -8033 * log(calibration_curve$f14c)
+      c14_sig <- 8033 * calibration_curve$f14c_sig / calibration_curve$f14c
+    }
+    new_calibration_curve$c14_age <- stats::approx(
+      calendar_ages, c14_age, new_calendar_ages, rule=2)$y
+    new_calibration_curve$c14_sig <- stats::approx(
+      calendar_ages, c14_sig, new_calendar_ages, rule=2)$y
+  }
+  if (is.na(F14C_outputs) || F14C_outputs == TRUE) {
+    if (any(names(calibration_curve) == "f14c")) {
+      f14c <- calibration_curve$f14c
+      f14c_sig <- calibration_curve$f14c_sig
+    } else {
+      f14c <- exp(-calibration_curve$c14_age / 8033)
+      f14c_sig = f14c * calibration_curve$c14_sig / 8033
+    }
+    new_calibration_curve$f14c <- stats::approx(calendar_ages, f14c, new_calendar_ages, rule=2)$y
+    new_calibration_curve$f14c_sig <- stats::approx(
+      calendar_ages, f14c_sig, new_calendar_ages, rule=2)$y
+  }
+
   return(new_calibration_curve)
 }

@@ -1,48 +1,60 @@
 #' Calibrate a single radiocarbon determination
 #'
-#' Uses the supplied calibration curve to take a single radiocardbon
-#' determination and uncertainty and calculate the calendar age probability
-#' density for it.
+#' Uses the supplied calibration curve to take a single radiocarbon
+#' determination and uncertainty (expressed as the radiocarbon age BP or F14C concentration) and
+#' calculate the calendar age probability density for it.
 #'
-#' @param c14_determination A single observed radiocarbon determination (c14 age)
-#' @param c14_sigma The uncertainty of the radiocarbon determination
-#' @param calibration_curve A dataframe which should contain at least 3 columns
-#' entitled `calendar_age`, `c14_age` and `c14_sig`.
-#' This format matches [carbondate::intcal20].
+#' @param rc_determination A single observed radiocarbon determination
+#' (14C BP age or F14C concentration)
+#' @param rc_sigma The uncertainty of the radiocarbon determination in the same units
+#' @param F14C_inputs `TRUE` if the provided rc_determinations are F14C concentrations and `FALSE`
+#' if they are radiocarbon age BP.
+#' @param calibration_curve A dataframe which must contain one column `calendar_age_BP`, and also
+#' columns `c14_age` and `c14_sig` if `F14C_inputs` is `FALSE` or `f14c` and `f14c_sig`
+#' otherwise.
+#' This format matches the curves supplied with this package e.g. [carbondate::intcal20],
+#' which contain all 5 columns.
 #'
-#' @return A data frame with one column `calendar_age` containing the calendar
+#' @return A data frame with one column `calendar_age_BP` containing the calendar
 #' ages, and the other column `probability` containing the probability at that
 #' calendar age.
-#' @export
 #'
 #' @examples
-#' CalibrateSingleDetermination(31020, 35, intcal20)
+#' CalibrateSingleDetermination(31020, 35, FALSE, intcal20)
+#' CalibrateSingleDetermination(0.23, 0.001, TRUE, intcal20)
 CalibrateSingleDetermination <- function(
-    c14_determination, c14_sigma, calibration_curve) {
+    rc_determination, rc_sigma, F14C_inputs, calibration_curve) {
 
   arg_check <- checkmate::makeAssertCollection()
-  checkmate::assertNumber(c14_determination, add = arg_check)
-  checkmate::assertNumber(c14_sigma, add = arg_check)
-  .CheckCalibrationCurve(arg_check, calibration_curve)
+  checkmate::assertNumber(rc_determination, add = arg_check)
+  checkmate::assertNumber(rc_sigma, add = arg_check)
+  checkmate::assert_flag(F14C_inputs, add=arg_check)
+  .CheckCalibrationCurve(arg_check, calibration_curve, F14C_inputs)
   checkmate::reportAssertions(arg_check)
 
   probabilities <- .ProbabilitiesForSingleDetermination(
-    c14_determination, c14_sigma, calibration_curve)
+    rc_determination, rc_sigma, F14C_inputs, calibration_curve)
 
   return(
     data.frame(
-      calendar_age=calibration_curve$calendar_age, probability=probabilities))
+      calendar_age_BP=calibration_curve$calendar_age, probability=probabilities))
 }
 
 
 .ProbabilitiesForSingleDetermination <- function(
-    c14_determination, c14_sigma, calibration_curve) {
+    rc_determination, rc_sigma, F14C_inputs, calibration_curve) {
 
-  c14_ages = calibration_curve$c14_age
-  c14_sigs = calibration_curve$c14_sig
+  if (F14C_inputs) {
+    c14_ages = calibration_curve$f14c
+    c14_sigs = calibration_curve$f14c_sig
+  } else {
+    c14_ages = calibration_curve$c14_age
+    c14_sigs = calibration_curve$c14_sig
+  }
+
 
   probabilities <- stats::dnorm(
-    c14_determination, mean=c14_ages, sd=sqrt(c14_sigs^2 + c14_sigma^2))
+    rc_determination, mean=c14_ages, sd=sqrt(c14_sigs^2 + rc_sigma^2))
   probabilities <- probabilities / sum(probabilities)
   return(probabilities)
 }

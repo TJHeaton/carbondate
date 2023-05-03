@@ -13,11 +13,13 @@
 #' (0-55 cal kBP). Radiocarbon 62. doi: 10.1017/RDC.2020.41.
 #'
 #' @format ## `intcal20`
-#' A data frame with 9,501 rows and 3 columns:
+#' A data frame with 9,501 rows and 5 columns:
 #' \describe{
 #'   \item{calendar_age}{The calendar age (yr BP)}
 #'   \item{c14_age}{The 14C age (yr BP)}
 #'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+#'   \item{f14c}{The radiocarbon age expressed as F14C conctration}
+#'   \item{f14c_sig}{The uncertainty in F14C}
 #' }
 #' @source <http://doi.org/10.1017/RDC.2020.41>
 "intcal20"
@@ -35,11 +37,13 @@
 #' Radiocarbon 55(4). DOI: 10.2458/azu_js_rc.55.16947
 #'
 #' @format ## `intcal13`
-#' A data frame with 5,141 rows and 3 columns:
+#' A data frame with 5,141 rows and 5 columns:
 #' \describe{
 #'   \item{calendar_age}{The calendar age (yr BP)}
 #'   \item{c14_age}{The 14C age (yr BP)}
 #'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+#'   \item{f14c}{The radiocarbon age expressed as F14C conctration}
+#'   \item{f14c_sig}{The uncertainty in F14C}
 #' }
 #' @source <http://doi.org/10.2458/azu_js_rc.55.16947>
 "intcal13"
@@ -55,11 +59,13 @@
 #' CSM Turney, J van der Plicht, CE Weyhenmeyer (2009) Radiocarbon 51:1111-1150
 #'
 #' @format ## `intcal09`
-#' A data frame with 3,521 rows and 3 columns:
+#' A data frame with 3,521 rows and 5 columns:
 #' \describe{
 #'   \item{calendar_age}{The calendar age (yr BP)}
 #'   \item{c14_age}{The 14C age (yr BP)}
 #'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+#'   \item{f14c}{The radiocarbon age expressed as F14C conctration}
+#'   \item{f14c_sig}{The uncertainty in F14C}
 #' }
 #' @source <http://doi.org/10.1017/S0033822200034202>
 "intcal09"
@@ -75,11 +81,13 @@
 #' J van der Plicht, and CE Weyhenmeyer (2004), Radiocarbon 46:1029-1058.
 #'
 #' @format ## `intcal04`
-#' A data frame with 3,301 rows and 3 columns:
+#' A data frame with 3,301 rows and 5 columns:
 #' \describe{
 #'   \item{calendar_age}{The calendar age (yr BP)}
 #'   \item{c14_age}{The 14C age (yr BP)}
 #'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+#'   \item{f14c}{The radiocarbon age expressed as F14C conctration}
+#'   \item{f14c_sig}{The uncertainty in F14C}
 #' }
 #' @source <https://doi.org/10.1017/S0033822200032999>
 "intcal04"
@@ -94,11 +102,13 @@
 #' Radiocarbon 40, 1041-1083 (1998).
 #'
 #' @format ## `intcal98`
-#' A data frame with 1,538 rows and 3 columns:
+#' A data frame with 1,538 rows and 5 columns:
 #' \describe{
 #'   \item{calendar_age}{The calendar age (yr BP)}
 #'   \item{c14_age}{The 14C age (yr BP)}
 #'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+#'   \item{f14c}{The radiocarbon age expressed as F14C conctration}
+#'   \item{f14c_sig}{The uncertainty in F14C}
 #' }
 #' @source <https://doi.org/10.1017/S0033822200019123>
 "intcal98"

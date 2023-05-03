@@ -28,14 +28,10 @@ PolyaUrnBivarDirichlet(
 )
 }
 \arguments{
-\item{c14_determinations}{A vector of observed radiocarbon determinations}
-
-\item{c14_sigmas}{A vector of the radiocarbon determinations
-uncertainties (1-sigma). Must be the same length as \code{c14_determinations}.}
-
-\item{calibration_curve}{A dataframe which should contain at least 3 columns
-entitled \code{calendar_age}, \code{c14_age} and \code{c14_sig}.
-This format matches \link{intcal20}.}
+\item{calibration_curve}{A dataframe which must contain one column \code{calendar_age_BP}, and also
+columns \code{c14_age} and \code{c14_sig} or \code{f14c} and \code{f14c_sig}.
+This format matches the curves supplied with this package e.g. \link{intcal20},
+which contain all 5 columns.}
 
 \item{n_iter}{The number of MCMC iterations (optional). Default is 100.}
 
@@ -52,8 +48,8 @@ either 1000 or half the width of the c14 determinations, whichever is larger.}
 Default is 10. Limits the slice size to \code{slice_multiplier * slice_width}.}
 
 \item{n_clust}{The initial number of clusters (optional). Must
-be less than the length of \code{c14_determinations}. Default is 10 or the length
-of \code{c14_determinations} if it is less than 10.}
+be less than the length of \code{rc_determinations}. Default is 10 or the length
+of \code{rc_determinations} if it is less than 10.}
 
 \item{show_progress}{Whether to show a progress bar in the console during
 execution. Default is \code{TRUE}.}
@@ -88,7 +84,7 @@ Required if \code{sensible_initialisation} is \code{FALSE}.}
 
 \item{calendar_ages}{The initial estimate for the underlying calendar ages
 (optional). If supplied it must be a vector with the same length as
-\code{c14_determinations}.  Required if \code{sensible_initialisation} is \code{FALSE}.}
+\code{rc_determinations}.  Required if \code{sensible_initialisation} is \code{FALSE}.}
 }
 \value{
 A list with 10 items. The first 7 items contain output data, each of
