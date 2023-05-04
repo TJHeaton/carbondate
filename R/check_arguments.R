@@ -172,12 +172,13 @@
     if (
       !identical(first$c14_determinations, other$c14_determinations)
       || !identical(first$sigma, other$sigma)
+      || first$F14C_inputs != other$F14C_inputs
       || first$calibration_curve_name != other$calibration_curve_name) {
       cli::cli_abort(
         c(
           "Output data is not consistent.",
           "Ensure all output data given in the list comes from the same
-          calibration curve and c14 values."
+          calibration curve and radiocarbon values, in the same scale."
         )
       )
     }

@@ -110,8 +110,9 @@ PlotPredictiveCalendarAgeDensity <- function(
   if (is.null(calibration_curve)) {
     calibration_curve = get(output_data[[1]]$input_data$calibration_curve_name)
   }
-  c14_determinations = output_data[[1]]$input_data$rc_determinations
-  c14_sigmas = output_data[[1]]$input_data$rc_sigmas
+  rc_determinations = output_data[[1]]$input_data$rc_determinations
+  rc_sigmas = output_data[[1]]$input_data$rc_sigmas
+  F14C_inputs = output_data[[1]]$input_data$F14C_inputs
 
   ##############################################################################
   # Initialise plotting parameters
@@ -135,6 +136,7 @@ PlotPredictiveCalendarAgeDensity <- function(
       calendar_age_range = floor(range(calendar_age_sequence)),
       c14_determinations = c14_determinations,
       c14_sigmas = c14_sigmas,
+      F14C_inputs = F14C_inputs,
       calibration_curve = calibration_curve)
   }
 
@@ -151,9 +153,7 @@ PlotPredictiveCalendarAgeDensity <- function(
   # Calculate plot scaling
   xlim <- .ScaleLimit(rev(range(calendar_age_sequence)), xlimscal)
   ylim_calibration <- .ScaleLimit(
-    range(c14_determinations) +
-      c(-2, 2) * stats::quantile(c14_sigmas, 0.9),
-    ylimscal)
+    range(rc_determinations) +  c(-2, 2) * stats::quantile(rc_sigmas, 0.9), ylimscal)
   ylim_density = c(0, denscale * max(predictive_density[[1]]$density_mean))
 
   ##############################################################################
@@ -164,7 +164,8 @@ PlotPredictiveCalendarAgeDensity <- function(
     xlim,
     ylim_calibration,
     calibration_curve,
-    c14_determinations,
+    rc_determinations,
+    F14C_inputs,
     calibration_curve_colour,
     calibration_curve_bg,
     interval_width,
@@ -222,7 +223,8 @@ PlotPredictiveCalendarAgeDensity <- function(
     xlim,
     ylim,
     calibration_curve,
-    c14_determinations,
+    rc_determinations,
+    F14C_inputs,
     calibration_curve_colour,
     calibration_curve_bg,
     interval_width,
@@ -232,13 +234,14 @@ PlotPredictiveCalendarAgeDensity <- function(
     plot_AD,
     xlim,
     ylim,
+    F14C_inputs,
     calibration_curve,
     calibration_curve_colour,
     calibration_curve_bg,
     interval_width,
     bespoke_probability,
     title = "Calendar age density estimate")
-  graphics::rug(c14_determinations, side = 2)
+  graphics::rug(rc_determinations, side = 2)
 }
 
 
@@ -246,6 +249,7 @@ PlotPredictiveCalendarAgeDensity <- function(
     plot_AD,
     xlim,
     ylim,
+    F14C_inputs,
     calibration_curve,
     calibration_curve_colour,
     calibration_curve_bg,
@@ -262,14 +266,24 @@ PlotPredictiveCalendarAgeDensity <- function(
     x_label = "Calendar Age (cal yr BP)"
   }
 
+  if (F14C_inputs) {
+    rc_age = calibration_curve$f14c
+    rc_sig = calibration_curve$f14c_sig
+    y_label = expression(paste("F ", ""^14, "C"))
+  } else {
+    rc_age = calibration_curve$c14_age
+    rc_sig = calibration_curve$c14_sig
+    y_label = expression(paste(""^14, "C", " age (yr BP)"))
+  }
+
   graphics::plot.default(
     cal_age,
-    calibration_curve$c14_age,
+    rc_age,
     col = calibration_curve_colour,
     ylim = ylim,
     xlim = xlim,
     xlab = x_label,
-    ylab = expression(paste(""^14, "C", " age (", ""^14, "C yr BP)")),
+    ylab = y_label,
     type = "l",
     main = title)
   # multiplier for the confidence interval if you have a standard deviation
@@ -278,10 +292,8 @@ PlotPredictiveCalendarAgeDensity <- function(
     "1sigma" = 1,
     "2sigma" = 2,
     "bespoke" = - stats::qnorm((1 - bespoke_probability) / 2))
-  calibration_curve$ub <- calibration_curve$c14_age +
-    zquant * calibration_curve$c14_sig
-  calibration_curve$lb <- calibration_curve$c14_age -
-    zquant * calibration_curve$c14_sig
+  calibration_curve$ub <- rc_age + zquant * rc_sig
+  calibration_curve$lb <- rc_age - zquant * rc_sig
 
   graphics::lines(cal_age, calibration_curve$ub, lty = 2, col = calibration_curve_colour)
   graphics::lines(cal_age, calibration_curve$lb, lty = 2, col = calibration_curve_colour)
