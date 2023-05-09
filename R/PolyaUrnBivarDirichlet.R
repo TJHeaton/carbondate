@@ -35,7 +35,7 @@
 #'      centering \eqn{\mu_{\phi}} of the clusters.}
 #' }
 #' where \eqn{n_{\textrm{obs}}} is the number of radiocarbon observations i.e.
-#' the length of `c14_determinations`.
+#' the length of `rc_determinations`.
 #'
 #' The remaining items give information about input data, input parameters (or
 #' those calculated using `sensible_initialisation`) and update_type
@@ -56,16 +56,18 @@
 #' # Basic usage making use of sensible initialisation to set most values and
 #' # using a saved example data set. Note iterations are kept very small here
 #' # for a faster run time.
-#' PolyaUrnBivarDirichlet(kerr$c14_ages, kerr$c14_sig, intcal20, n_iter=100, n_thin=10)
+#' PolyaUrnBivarDirichlet(kerr$c14_ages, kerr$c14_sig, FALSE, intcal20, n_iter=100, n_thin=10)
 PolyaUrnBivarDirichlet <- function(
-    c14_determinations,
-    c14_sigmas,
+    rc_determinations,
+    rc_sigmas,
+    F14C_inputs,
     calibration_curve,
     n_iter = 100,
     n_thin = 10,
-    slice_width = max(1000, diff(range(c14_determinations)) / 2),
+    use_F14C_space = TRUE,
+    slice_width = max(1000, diff(range(rc_determinations)) / 2),
     slice_multiplier = 10,
-    n_clust = min(10, length(c14_determinations)),
+    n_clust = min(10, length(rc_determinations)),
     show_progress = TRUE,
     sensible_initialisation = TRUE,
     lambda = NA,
@@ -80,12 +82,12 @@ PolyaUrnBivarDirichlet <- function(
 
   ##############################################################################
   # Check input parameters
-  num_observations <- length(c14_determinations)
+  num_observations <- length(rc_determinations)
 
   arg_check <- checkmate::makeAssertCollection()
 
   .CheckInputData(
-    arg_check, c14_determinations, c14_sigmas, calibration_curve)
+    arg_check, rc_determinations, rc_sigmas, calibration_curve, NA)
   .CheckDpmmParameters(
     arg_check,
     sensible_initialisation,
@@ -107,10 +109,40 @@ PolyaUrnBivarDirichlet <- function(
 
   ##############################################################################
   ## Interpolate cal curve onto single year grid to speed up updating thetas
-  integer_cal_year_curve <- InterpolateCalibrationCurve(NA, calibration_curve)
-  interpolated_calendar_age_start <- integer_cal_year_curve$calendar_age[1]
-  interpolated_c14_age <- integer_cal_year_curve$c14_age
-  interpolated_c14_sig <- integer_cal_year_curve$c14_sig
+  integer_cal_year_curve <- InterpolateCalibrationCurve(NA, calibration_curve, use_F14C_space)
+  interpolated_calendar_age_start <- integer_cal_year_curve$calendar_age_BP[1]
+  if (use_F14C_space) {
+    interpolated_rc_age <- integer_cal_year_curve$f14c
+    interpolated_rc_sig <- integer_cal_year_curve$f14c_sig
+  } else {
+    interpolated_rc_age <- integer_cal_year_curve$c14_age
+    interpolated_rc_sig <- integer_cal_year_curve$c14_sig
+  }
+
+  ##############################################################################
+  # Save input data
+  input_data = list(
+    rc_determinations = rc_determinations,
+    rc_sigmas = rc_sigmas,
+    F14C_inputs = F14C_inputs,
+    calibration_curve_name = deparse(substitute(calibration_curve)))
+
+  ##############################################################################
+  # Convert the scale of the initial determinations to F14C or C14_age as appropriate
+  # if they aren't already
+
+  if (F14C_inputs == use_F14C_space) {
+    rc_determinations <- as.double(rc_determinations)
+    rc_sigmas <- as.double(rc_sigmas)
+  } else if (F14C_inputs == FALSE) {
+    # convert from 14C yr BP to F14C
+    rc_determinations <- exp(-rc_determinations / 8033)
+    rc_sigmas <- rc_determinations * rc_sigmas / 8033
+  } else {
+    # convert from F14C to 14C yr BP
+    rc_sigmas <- 8033 * rc_sigmas / rc_determinations
+    rc_determinations <- -8033 * log(rc_determinations)
+  }
 
   ##############################################################################
   # Initialise parameters
@@ -127,9 +159,9 @@ PolyaUrnBivarDirichlet <- function(
   if (sensible_initialisation) {
     initial_probabilities <- mapply(
       .ProbabilitiesForSingleDetermination,
-      c14_determinations,
-      c14_sigmas,
-      MoreArgs = list(calibration_curve=integer_cal_year_curve))
+      rc_determinations,
+      rc_sigmas,
+      MoreArgs = list(F14C_inputs=use_F14C_space, calibration_curve=integer_cal_year_curve))
     indices_of_max_probability = apply(initial_probabilities, 2, which.max)
 
     calendar_ages <- integer_cal_year_curve$calendar_age[indices_of_max_probability]
@@ -152,16 +184,12 @@ PolyaUrnBivarDirichlet <- function(
 
   alpha <- 0.0001
 
-  tau <- rep(1 / (diff(range(c14_determinations)) / 4)^2, n_clust)
+  tau <- rep(1 / (diff(range(rc_determinations)) / 4)^2, n_clust)
   phi <- stats::rnorm(
-    n_clust, mean = mu_phi, sd = diff(range(c14_determinations)) / 2)
+    n_clust, mean = mu_phi, sd = diff(range(rc_determinations)) / 2)
 
   ##############################################################################
-  # Save input data and parameters
-  input_data = list(
-    c14_determinations = c14_determinations,
-    c14_sigmas = c14_sigmas,
-    calibration_curve_name = deparse(substitute(calibration_curve)))
+  # Save input parameters
   input_parameters = list(
     lambda = lambda,
     nu1 = nu1,
@@ -220,11 +248,11 @@ PolyaUrnBivarDirichlet <- function(
       B,
       slice_width,
       slice_multiplier,
-      as.double(c14_determinations),
-      as.double(c14_sigmas),
+      as.double(rc_determinations),
+      as.double(rc_sigmas),
       interpolated_calendar_age_start,
-      interpolated_c14_age,
-      interpolated_c14_sig)
+      interpolated_rc_age,
+      interpolated_rc_sig)
     cluster_identifiers <- DPMM_update$cluster_ids
     phi <- DPMM_update$phi
     tau <- DPMM_update$tau
