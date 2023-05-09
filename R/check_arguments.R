@@ -10,9 +10,9 @@
     required_column_names = c("calendar_age_BP")
     # TODO: need to check they have one type of the other
   } else if (F14C_inputs == TRUE) {
-    required_column_names = c("calendar_age_BP", "c14_age", "c14_sig")
-  } else if (F14C_inputs == FALSE) {
     required_column_names = c("calendar_age_BP", "f14c", "f14c_sig")
+  } else if (F14C_inputs == FALSE) {
+    required_column_names = c("calendar_age_BP", "c14_age", "c14_sig")
   }
   checkmate::assertSubset(
     required_column_names,
