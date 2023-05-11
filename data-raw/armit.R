@@ -8,4 +8,7 @@ raw_data <- raw_data[-remove, ]
 
 armit = data.frame(c14_ages = raw_data$X14C.age, c14_sig = raw_data$error)
 
+armit$f14c = exp(-armit$c14_ages / 8033)
+armit$f14c_sig = armit$f14c * armit$c14_sig / 8033
+
 usethis::use_data(armit, overwrite = TRUE)

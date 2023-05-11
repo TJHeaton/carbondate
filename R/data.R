@@ -122,10 +122,12 @@
 #' Journal of Archaeological Science 41, 493 – 501.
 #'
 #' @format ## `kerr`
-#' A data frame with 255 rows and 2 columns:
+#' A data frame with 255 rows and 4 columns:
 #' \describe{
 #'   \item{c14_age}{The 14C age (yr BP)}
 #'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+#'   \item{f14c_age}{The F14C concentration}
+#'   \item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
 #' }
 #' @source <http://doi.org/10.1016/j.jas.2013.09.002>
 "kerr"
@@ -141,10 +143,12 @@
 #' of Sciences 105, 11651–11654.
 #'
 #' @format ## `buchanan`
-#' A data frame with 628 rows and 2 columns:
+#' A data frame with 628 rows and 4 columns:
 #' \describe{
 #'   \item{c14_age}{The 14C age (yr BP)}
 #'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+#'   \item{f14c_age}{The F14C concentration}
+#'   \item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
 #' }
 #' @source <http://doi.org/10.1073/pnas.0803762105>
 "buchanan"
@@ -160,10 +164,12 @@
 #' Bronze Age. Proceedings of the National Academy of Sciences 111, 17045–17049.
 #'
 #' @format ## `armit`
-#' A data frame with 2021 rows and 2 columns:
+#' A data frame with 2021 rows and 4 columns:
 #' \describe{
 #'   \item{c14_age}{The 14C age (yr BP)}
 #'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+#'   \item{f14c_age}{The F14C concentration}
+#'   \item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
 #' }
 #' @source <http://doi.org/10.1073/pnas.1408028111>
 "armit"

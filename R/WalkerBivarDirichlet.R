@@ -99,6 +99,9 @@
 #' # using a saved example data set. Note iterations are kept very small here
 #' # for a faster run time.
 #' WalkerBivarDirichlet(kerr$c14_ages, kerr$c14_sig, FALSE, intcal20, n_iter=1000, n_thin=10)
+#'
+#' # It is also possible to give the radiocarbon determinations as F14C concentrations
+#' WalkerBivarDirichlet(kerr$f14c, kerr$f14c_sig, FALSE, intcal20, n_iter=1000, n_thin=10)
 WalkerBivarDirichlet <- function(
     rc_determinations,
     rc_sigmas,

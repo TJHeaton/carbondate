@@ -13,7 +13,7 @@ WalkerBivarDirichlet(
   n_iter = 100,
   n_thin = 10,
   use_F14C_space = TRUE,
-  slice_width = max(1000, diff(range(rc_determinations))/2),
+  slice_width = NA,
   slice_multiplier = 10,
   show_progress = TRUE,
   sensible_initialisation = TRUE,
@@ -54,8 +54,9 @@ potentially use.}
 \item{use_F14C_space}{Whether the calculations are carried out in F14C space (default is TRUE).
 If FALSE, calculations are carried out in 14C yr BP space.}
 
-\item{slice_width}{Parameter for slice sampling (optional). Default is
-either 1000 or half the width of the c14 determinations, whichever is larger.}
+\item{slice_width}{Parameter for slice sampling (optional). If not given a value
+is chosen intelligently based on the spread of the initial calendar ages.
+Must be given if \code{sensible_initialisation} is \code{FALSE}.}
 
 \item{slice_multiplier}{Integer parameter for slice sampling (optional).
 Default is 10. Limits the slice size to \code{slice_multiplier * slice_width}.}
@@ -151,4 +152,7 @@ joint calendar age density and cluster.
 # using a saved example data set. Note iterations are kept very small here
 # for a faster run time.
 WalkerBivarDirichlet(kerr$c14_ages, kerr$c14_sig, FALSE, intcal20, n_iter=1000, n_thin=10)
+
+# It is also possible to give the radiocarbon determinations as F14C concentrations
+WalkerBivarDirichlet(kerr$f14c, kerr$f14c_sig, FALSE, intcal20, n_iter=1000, n_thin=10)
 }
