@@ -39,7 +39,7 @@ illustrative purposes.)
 library(carbondate)
 
 walker_output <- WalkerBivarDirichlet(
-  c14_determinations = kerr$c14_ages,
+  c14_determinations = kerr$c14_age,
   c14_sigmas = kerr$c14_sig,
   calibration_curve=intcal20,
   n_iter = 100,

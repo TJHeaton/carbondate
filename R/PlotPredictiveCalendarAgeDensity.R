@@ -19,6 +19,8 @@
 #' the calibration curve here. If provided this should be a dataframe which
 #' should contain at least 3 columns entitled calendar_age, c14_age and c14_sig.
 #' This format matches [carbondate::intcal20].
+#' @param plot_14C_age Whether to use the 14C yr BP as the units of the y-axis.
+#' Defaults to TRUE. If FALSE uses F14C concentration instead.
 #' @param show_SPD Whether to calculate and show the summed probability
 #' distribution on the plot (optional). Default is `FALSE`.
 #' @param show_confidence_intervals Whether to show the confidence intervals
@@ -70,6 +72,7 @@ PlotPredictiveCalendarAgeDensity <- function(
     output_data,
     n_posterior_samples,
     calibration_curve = NULL,
+    plot_14C_age = TRUE,
     show_SPD = FALSE,
     show_confidence_intervals = TRUE,
     interval_width = "2sigma",
@@ -114,6 +117,22 @@ PlotPredictiveCalendarAgeDensity <- function(
   rc_sigmas = output_data[[1]]$input_data$rc_sigmas
   F14C_inputs = output_data[[1]]$input_data$F14C_inputs
 
+  if (plot_14C_age == TRUE) {
+    calibration_curve = .AddC14ageColumns(calibration_curve)
+    if (F14C_inputs == TRUE) {
+      # convert from F14C to 14C yr BP
+      rc_sigmas <- 8033 * rc_sigmas / rc_determinations
+      rc_determinations <- -8033 * log(rc_determinations)
+    }
+  } else {
+    if (F14C_inputs == FALSE) {
+      calibration_curve = .AddF14cColumns(calibration_curve)
+      # convert from 14C yr BP to F14C
+      rc_determinations <- exp(-rc_determinations / 8033)
+      rc_sigmas <- rc_determinations * rc_sigmas / 8033
+    }
+  }
+
   ##############################################################################
   # Initialise plotting parameters
 
@@ -134,9 +153,9 @@ PlotPredictiveCalendarAgeDensity <- function(
   if (show_SPD){
     SPD = FindSummedProbabilityDistribution(
       calendar_age_range = floor(range(calendar_age_sequence)),
-      c14_determinations = c14_determinations,
-      c14_sigmas = c14_sigmas,
-      F14C_inputs = F14C_inputs,
+      rc_determinations = rc_determinations,
+      rc_sigmas = rc_sigmas,
+      F14C_inputs = !plot_14C_age,
       calibration_curve = calibration_curve)
   }
 
@@ -165,7 +184,7 @@ PlotPredictiveCalendarAgeDensity <- function(
     ylim_calibration,
     calibration_curve,
     rc_determinations,
-    F14C_inputs,
+    plot_14C_age,
     calibration_curve_colour,
     calibration_curve_bg,
     interval_width,
@@ -224,7 +243,7 @@ PlotPredictiveCalendarAgeDensity <- function(
     ylim,
     calibration_curve,
     rc_determinations,
-    F14C_inputs,
+    plot_14C_age,
     calibration_curve_colour,
     calibration_curve_bg,
     interval_width,
@@ -234,7 +253,7 @@ PlotPredictiveCalendarAgeDensity <- function(
     plot_AD,
     xlim,
     ylim,
-    F14C_inputs,
+    plot_14C_age,
     calibration_curve,
     calibration_curve_colour,
     calibration_curve_bg,
@@ -249,7 +268,7 @@ PlotPredictiveCalendarAgeDensity <- function(
     plot_AD,
     xlim,
     ylim,
-    F14C_inputs,
+    plot_14C_age,
     calibration_curve,
     calibration_curve_colour,
     calibration_curve_bg,
@@ -266,14 +285,14 @@ PlotPredictiveCalendarAgeDensity <- function(
     x_label = "Calendar Age (cal yr BP)"
   }
 
-  if (F14C_inputs) {
-    rc_age = calibration_curve$f14c
-    rc_sig = calibration_curve$f14c_sig
-    y_label = expression(paste("F ", ""^14, "C"))
-  } else {
+  if (plot_14C_age) {
     rc_age = calibration_curve$c14_age
     rc_sig = calibration_curve$c14_sig
     y_label = expression(paste(""^14, "C", " age (yr BP)"))
+  } else {
+    rc_age = calibration_curve$f14c
+    rc_sig = calibration_curve$f14c_sig
+    y_label = expression(paste("F ", ""^14, "C"))
   }
 
   graphics::plot.default(

@@ -26,6 +26,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
     ident,
     output_data,
     calibration_curve = NULL,
+    plot_14C_age = TRUE,
     resolution = 5,
     interval_width = "2sigma",
     bespoke_probability = NA) {
@@ -43,6 +44,22 @@ PlotCalendarAgeDensityIndividualSample <- function(
   rc_determinations <- output_data$input_data$rc_determinations
   rc_sigmas <- output_data$input_data$rc_sigmas
   F14C_inputs <-output_data$input_data$F14C_inputs
+
+  if (plot_14C_age == TRUE) {
+    calibration_curve = .AddC14ageColumns(calibration_curve)
+    if (F14C_inputs == TRUE) {
+      # convert from F14C to 14C yr BP
+      rc_sigmas <- 8033 * rc_sigmas / rc_determinations
+      rc_determinations <- -8033 * log(rc_determinations)
+    }
+  } else {
+    if (F14C_inputs == FALSE) {
+      calibration_curve = .AddF14cColumns(calibration_curve)
+      # convert from 14C yr BP to F14C
+      rc_determinations <- exp(-rc_determinations / 8033)
+      rc_sigmas <- rc_determinations * rc_sigmas / 8033
+    }
+  }
 
   calendar_age <- output_data$calendar_ages[, ident]
   rc_age <- rc_determinations[ident]
@@ -63,7 +80,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
   cal_age_ind_min <- which.min(abs(calibration_curve$calendar_age - xrange[1]))
   cal_age_ind_max <- which.min(abs(calibration_curve$calendar_age - xrange[2]))
   calendar_age_indices <- cal_age_ind_min:cal_age_ind_max
-  if (F14C_inputs) {
+  if (plot_14C_age == FALSE) {
     range_f14c <- range(calibration_curve$f14c[calendar_age_indices])
     yrange <- range_f14c + 0.25 * c(-1, 1) * diff(range_f14c)
     title <- substitute(
@@ -101,7 +118,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
     plot_AD,
     xlim = rev(xrange),
     ylim = yrange,
-    F14C_inputs = F14C_inputs,
+    plot_14C_age = plot_14C_age,
     calibration_curve = calibration_curve,
     calibration_curve_colour = "blue",
     calibration_curve_bg = grDevices::rgb(0, 0, 1, .3),

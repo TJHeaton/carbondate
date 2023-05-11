@@ -104,7 +104,7 @@ test_that("PolyaUrnBivarDirichlet gives error if no sensible init and not all pa
   # This should fail with multiple assertions. Just test one of them.
   expect_error(
     PolyaUrnBivarDirichlet(
-      rc_determinations=kerr$c14_ages,
+      rc_determinations=kerr$c14_age,
       rc_sigmas=kerr$c14_sig,
       F14C_inputs = FALSE,
       calibration_curve=intcal20,

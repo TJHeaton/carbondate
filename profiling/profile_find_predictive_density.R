@@ -9,7 +9,7 @@ profile_walker <- function(n_iter, n_thin, use_cpp) {
   file_pref = paste("Density", n_iter, n_thin, "cpp", use_cpp, sep="_")
 
   walker_output = WalkerBivarDirichlet(
-    kerr$c14_ages,
+    kerr$c14_age,
     kerr$c14_sig,
     intcal20,
     n_iter,
@@ -17,7 +17,7 @@ profile_walker <- function(n_iter, n_thin, use_cpp) {
     use_cpp = use_cpp)
 
   polya_urn_output = PolyaUrnBivarDirichlet(
-    kerr$c14_ages,
+    kerr$c14_age,
     kerr$c14_sig,
     intcal20,
     n_iter,

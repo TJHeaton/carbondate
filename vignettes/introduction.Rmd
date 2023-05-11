@@ -62,7 +62,7 @@ The most common approach to summarise calendar age information of multiple ^14^C
 To calculate the SPD for a set of radiocarbon determinations (here we use the example dataset `armit`) see the example below, where we also plot the results.
 
 ```{r find_spd, out.width="100%", fig.width=10, fig.height=8}
-spd = FindSummedProbabilityDistribution(c(1000, 4500), armit$c14_ages, armit$c14_sig, intcal20)
+spd = FindSummedProbabilityDistribution(c(1000, 4500), armit$c14_age, armit$c14_sig, intcal20)
 plot(
   spd,
   type="l", 
@@ -90,7 +90,7 @@ Run using the Walker method:
 
 ```{r calculate_walker, results=FALSE}
 walker_output <- WalkerBivarDirichlet(
-  c14_determinations = kerr$c14_ages,
+  c14_determinations = kerr$c14_age,
   c14_sigmas = kerr$c14_sig,
   calibration_curve=intcal20,
   n_iter = 100,
@@ -101,7 +101,7 @@ or the Poly Urn method as follows:
 
 ```{r calculate_neal, results=FALSE}
 polya_urn_output <- PolyaUrnBivarDirichlet(
-  c14_determinations = kerr$c14_ages,
+  c14_determinations = kerr$c14_age,
   c14_sigmas = kerr$c14_sig,
   calibration_curve = intcal20,
   n_iter = 100,

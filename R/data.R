@@ -126,7 +126,7 @@
 #' \describe{
 #'   \item{c14_age}{The 14C age (yr BP)}
 #'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
-#'   \item{f14c_age}{The F14C concentration}
+#'   \item{f14c}{The F14C concentration}
 #'   \item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
 #' }
 #' @source <http://doi.org/10.1016/j.jas.2013.09.002>
@@ -147,7 +147,7 @@
 #' \describe{
 #'   \item{c14_age}{The 14C age (yr BP)}
 #'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
-#'   \item{f14c_age}{The F14C concentration}
+#'   \item{f14c}{The F14C concentration}
 #'   \item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
 #' }
 #' @source <http://doi.org/10.1073/pnas.0803762105>
@@ -168,7 +168,7 @@
 #' \describe{
 #'   \item{c14_age}{The 14C age (yr BP)}
 #'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
-#'   \item{f14c_age}{The F14C concentration}
+#'   \item{f14c}{The F14C concentration}
 #'   \item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
 #' }
 #' @source <http://doi.org/10.1073/pnas.1408028111>

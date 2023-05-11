@@ -8,6 +8,7 @@ PlotCalendarAgeDensityIndividualSample(
   ident,
   output_data,
   calibration_curve = NULL,
+  plot_14C_age = TRUE,
   resolution = 5,
   interval_width = "2sigma",
   bespoke_probability = NA
@@ -29,6 +30,9 @@ variable with this name is no longer in your environment then you should pass
 the calibration curve here. If provided this should be a dataframe which
 should contain at least 3 columns entitled calendar_age, c14_age and c14_sig.
 This format matches \link{intcal20}.}
+
+\item{plot_14C_age}{Whether to use the 14C yr BP as the units of the y-axis.
+Defaults to TRUE. If FALSE uses F14C concentration instead.}
 
 \item{resolution}{The distance between histogram breaks for the calendar age density.
 Must be an integer greater than one.}

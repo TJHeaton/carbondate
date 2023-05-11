@@ -56,7 +56,7 @@
 #' # Basic usage making use of sensible initialisation to set most values and
 #' # using a saved example data set. Note iterations are kept very small here
 #' # for a faster run time.
-#' PolyaUrnBivarDirichlet(kerr$c14_ages, kerr$c14_sig, FALSE, intcal20, n_iter=100, n_thin=10)
+#' PolyaUrnBivarDirichlet(kerr$c14_age, kerr$c14_sig, FALSE, intcal20, n_iter=100, n_thin=10)
 PolyaUrnBivarDirichlet <- function(
     rc_determinations,
     rc_sigmas,

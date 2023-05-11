@@ -35,29 +35,18 @@ InterpolateCalibrationCurve <- function(new_calendar_ages, calibration_curve, F1
   calendar_ages <- calibration_curve$calendar_age_BP
 
   if (is.na(F14C_outputs) || F14C_outputs == FALSE) {
-    if (any(names(calibration_curve) == "c14_age")) {
-      c14_age <- calibration_curve$c14_age
-      c14_sig <- calibration_curve$c14_sig
-    } else {
-      c14_age <- -8033 * log(calibration_curve$f14c)
-      c14_sig <- 8033 * calibration_curve$f14c_sig / calibration_curve$f14c
-    }
+    calibration_curve = .AddC14ageColumns(calibration_curve)
     new_calibration_curve$c14_age <- stats::approx(
-      calendar_ages, c14_age, new_calendar_ages, rule=2)$y
+      calendar_ages, calibration_curve$c14_age, new_calendar_ages, rule=2)$y
     new_calibration_curve$c14_sig <- stats::approx(
-      calendar_ages, c14_sig, new_calendar_ages, rule=2)$y
+      calendar_ages, calibration_curve$c14_sig, new_calendar_ages, rule=2)$y
   }
   if (is.na(F14C_outputs) || F14C_outputs == TRUE) {
-    if (any(names(calibration_curve) == "f14c")) {
-      f14c <- calibration_curve$f14c
-      f14c_sig <- calibration_curve$f14c_sig
-    } else {
-      f14c <- exp(-calibration_curve$c14_age / 8033)
-      f14c_sig = f14c * calibration_curve$c14_sig / 8033
-    }
-    new_calibration_curve$f14c <- stats::approx(calendar_ages, f14c, new_calendar_ages, rule=2)$y
+    calibration_curve = .AddF14cColumns(calibration_curve)
+    new_calibration_curve$f14c <- stats::approx(
+      calendar_ages, calibration_curve$f14c, new_calendar_ages, rule=2)$y
     new_calibration_curve$f14c_sig <- stats::approx(
-      calendar_ages, f14c_sig, new_calendar_ages, rule=2)$y
+      calendar_ages, calibration_curve$f14c_sig, new_calendar_ages, rule=2)$y
   }
 
   return(new_calibration_curve)
