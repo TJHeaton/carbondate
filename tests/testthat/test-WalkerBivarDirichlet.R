@@ -64,8 +64,7 @@ test_that("WalkerBivarDirichlet gives expected result - sensible init, F14C spac
   pred_dens = FindPredictiveCalendarAgeDensity(walker_output, tempx, 5000)
 
   print(.KLD(postden, pred_dens$density_mean))
-  # TODO - we probably need a lower bound, change after adding improved convergence
-  expect_lt(.KLD(postden, pred_dens$density_mean), 3e-3)
+  expect_lt(.KLD(postden, pred_dens$density_mean), 1e-3)
 })
 
 test_that("WalkerBivarDirichlet gives expected result - sensible init, F14C space, F14C inputs", {
@@ -96,8 +95,7 @@ test_that("WalkerBivarDirichlet gives expected result - sensible init, F14C spac
   pred_dens = FindPredictiveCalendarAgeDensity(walker_output, tempx, 5000)
 
   print(.KLD(postden, pred_dens$density_mean))
-  # TODO - we probably need a lower bound, change after adding improved convergence
-  expect_lt(.KLD(postden, pred_dens$density_mean), 3e-3)
+  expect_lt(.KLD(postden, pred_dens$density_mean), 1e-3)
 })
 
 

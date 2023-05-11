@@ -34,6 +34,7 @@ test_that("PolyaUrnBivarDirichlet gives expected result - C14 space and same par
   # Here tempx is the calendar age sequence used to find the predictive density in the legacy code.
   pred_dens = FindPredictiveCalendarAgeDensity(polya_urn_output, tempx, 5000)
 
+  print(.KLD(postden, pred_dens$density_mean))
   expect_lt(.KLD(postden, pred_dens$density_mean), 1e-3)
 })
 
@@ -62,6 +63,7 @@ test_that("PolyaUrnBivarDirichlet gives expected result - sensible init, F14C sp
   # Here tempx is the calendar age sequence used to find the predictive density in the legacy code.
   pred_dens = FindPredictiveCalendarAgeDensity(polya_urn_output, tempx, 5000)
 
+  print(.KLD(postden, pred_dens$density_mean))
   expect_lt(.KLD(postden, pred_dens$density_mean), 1e-3)
 })
 
@@ -92,6 +94,8 @@ test_that("PolyaUrnBivarDirichlet gives expected result - sensible init, F14C sp
 
   # Here tempx is the calendar age sequence used to find the predictive density in the legacy code.
   pred_dens = FindPredictiveCalendarAgeDensity(polya_urn_output, tempx, 5000)
+
+  print(.KLD(postden, pred_dens$density_mean))
   expect_lt(.KLD(postden, pred_dens$density_mean), 1e-3)
 })
 

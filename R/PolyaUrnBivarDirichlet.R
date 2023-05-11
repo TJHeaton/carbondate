@@ -65,7 +65,7 @@ PolyaUrnBivarDirichlet <- function(
     n_iter = 100,
     n_thin = 10,
     use_F14C_space = TRUE,
-    slice_width = max(1000, diff(range(rc_determinations)) / 2),
+    slice_width = NA,
     slice_multiplier = 10,
     n_clust = min(10, length(rc_determinations)),
     show_progress = TRUE,
@@ -103,7 +103,7 @@ PolyaUrnBivarDirichlet <- function(
     calendar_ages,
     n_clust)
   .CheckIterationParameters(arg_check, n_iter, n_thin)
-  .CheckSliceParameters(arg_check, slice_width, slice_multiplier)
+  .CheckSliceParameters(arg_check, slice_width, slice_multiplier, sensible_initialisation)
 
   checkmate::reportAssertions(arg_check)
 
@@ -180,6 +180,15 @@ PolyaUrnBivarDirichlet <- function(
 
     alpha_shape <- 1
     alpha_rate <- 1
+
+    if (is.na(slice_width)) {
+      spd = apply(initial_probabilities, 1, sum)
+      spd = spd / sum(spd)
+      cumulative_spd = cumsum(spd)
+      min_year = integer_cal_year_curve$calendar_age_BP[min(which(cumulative_spd > 0.05))]
+      max_year = integer_cal_year_curve$calendar_age_BP[max(which(cumulative_spd < 0.95))]
+      slice_width = (max_year - min_year) / 2
+    }
   }
 
   alpha <- 0.0001

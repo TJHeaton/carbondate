@@ -15,7 +15,9 @@
 #' potentially use.
 #' @param use_F14C_space Whether the calculations are carried out in F14C space (default is TRUE).
 #' If FALSE, calculations are carried out in 14C yr BP space.
-#' @param slice_width  Chosen intelligently blah blah
+#' @param slice_width Parameter for slice sampling (optional). If not given a value
+#' is chosen intelligently based on the spread of the initial calendar ages.
+#' Must be given if `sensible_initialisation` is `FALSE`.
 #' @param slice_multiplier  Integer parameter for slice sampling (optional).
 #' Default is 10. Limits the slice size to `slice_multiplier * slice_width`.
 #' @param n_clust The initial number of clusters (optional). Must
@@ -105,7 +107,7 @@ WalkerBivarDirichlet <- function(
     n_iter = 100,
     n_thin = 10,
     use_F14C_space = TRUE,
-    slice_width = max(1000, diff(range(rc_determinations)) / 2),
+    slice_width = NA,
     slice_multiplier = 10,
     show_progress = TRUE,
     sensible_initialisation = TRUE,
@@ -143,7 +145,7 @@ WalkerBivarDirichlet <- function(
     calendar_ages,
     n_clust)
   .CheckIterationParameters(arg_check, n_iter, n_thin)
-  .CheckSliceParameters(arg_check, slice_width, slice_multiplier)
+  .CheckSliceParameters(arg_check, slice_width, slice_multiplier, sensible_initialisation)
 
   checkmate::reportAssertions(arg_check)
 
@@ -210,6 +212,15 @@ WalkerBivarDirichlet <- function(
 
     alpha_shape <- 1
     alpha_rate <- 1
+
+    if (is.na(slice_width)) {
+      spd = apply(initial_probabilities, 1, sum)
+      spd = spd / sum(spd)
+      cumulative_spd = cumsum(spd)
+      min_year = integer_cal_year_curve$calendar_age_BP[min(which(cumulative_spd > 0.05))]
+      max_year = integer_cal_year_curve$calendar_age_BP[max(which(cumulative_spd < 0.95))]
+      slice_width = (max_year - min_year) / 2
+    }
   }
 
   # do not allow very small values of alpha as this causes crashes

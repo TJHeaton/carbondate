@@ -103,9 +103,13 @@
 
 
 .CheckSliceParameters <- function(
-    arg_check, slice_width, slice_multiplier){
-  checkmate::assertNumber(slice_width, lower = 1, add = arg_check)
+    arg_check, slice_width, slice_multiplier, sensible_initialisation) {
   checkmate::assertNumber(slice_multiplier, lower = 1, add = arg_check)
+  if (sensible_initialisation) {
+    checkmate::assertNumber(slice_width, lower = 1, na.ok = TRUE, add = arg_check)
+  } else {
+    checkmate::assertNumber(slice_width, lower = 1, na.ok = FALSE, add = arg_check)
+  }
 }
 
 
