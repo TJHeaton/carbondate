@@ -29,6 +29,9 @@ Kerr <- read.csv("tests/testthat/fixtures/helpers/kerr2014sss_sup.csv", header =
 x <- Kerr[,3]
 xsig <- Kerr[,4]
 
+# Only choose the first 100 points for speed
+x <- x[1:100]
+xsig <- xsig[1:100]
 #############################################################################
 # Now choose hyperparameters
 ############################################################
@@ -63,7 +66,7 @@ lambda <- (100/maxrange)^2  # Each muclust ~ N(mutheta, sigma2/lambda)
 
 
 # Choose number of iterations for sampler
-niter <- 1000
+niter <- 1e5
 nthin <- 5 # Don't choose too high, after burn-in we have (niter/nthin)/2 samples from posterior to potentially use
 npostsum <- 500 # Current number of samples it will draw from this posterior to estimate fhat (possibly repeats)
 
@@ -84,8 +87,6 @@ NealTemp <- BivarGibbsDirichletwithSlice(x = x, xsig = xsig,
                                          niter = niter, nthin = nthin, theta = inittheta,
                                          w = w, m = m,
                                          calcurve = calcurve, nclusinit = nclusinit)
-
-save(NealTemp, file="tests/testthat/fixtures/polya_urn_output.rda")
 
 ##############################
 # Also find the SPD estimate to plot alongside
@@ -109,8 +110,7 @@ seednum = 14
 set.seed(seednum)
 source("tests/testthat/fixtures/helpers/NealPostProcessingFinal.R")
 
-save(postdenCI, postden, seednum, x, xsig, npostsum, lambda, nu1, nu2,
-     file = "tests/testthat/fixtures/polya_urn_postprocessing.rda")
+save(x, xsig, postdenCI, postden, tempx, file = "tests/testthat/fixtures/polya_urn_output.rda")
 
 # To access the posterior calendar age estimate for individual determination then you can look at:
 # NealTemp$theta[,10] # MCMC chain for 10th determination (will need to remove burn in)
@@ -120,5 +120,3 @@ save(postdenCI, postden, seednum, x, xsig, npostsum, lambda, nu1, nu2,
 ident = 15
 resolution = 10
 indpost = plotindpost(NealTemp, ident = ident, y = x, er = xsig, calcurve = calcurve, resolution = resolution)
-
-save(indpost, ident, resolution, file = "tests/testthat/fixtures/polya_urn_independent_posterior.rda")

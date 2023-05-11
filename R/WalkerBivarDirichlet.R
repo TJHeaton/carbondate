@@ -15,8 +15,7 @@
 #' potentially use.
 #' @param use_F14C_space Whether the calculations are carried out in F14C space (default is TRUE).
 #' If FALSE, calculations are carried out in 14C yr BP space.
-#' @param slice_width  Parameter for slice sampling (optional). Default is
-#' either 1000 or half the width of the c14 determinations, whichever is larger.
+#' @param slice_width  Chosen intelligently blah blah
 #' @param slice_multiplier  Integer parameter for slice sampling (optional).
 #' Default is 10. Limits the slice size to `slice_multiplier * slice_width`.
 #' @param n_clust The initial number of clusters (optional). Must

@@ -164,7 +164,7 @@ PolyaUrnBivarDirichlet <- function(
       MoreArgs = list(F14C_inputs=use_F14C_space, calibration_curve=integer_cal_year_curve))
     indices_of_max_probability = apply(initial_probabilities, 2, which.max)
 
-    calendar_ages <- integer_cal_year_curve$calendar_age[indices_of_max_probability]
+    calendar_ages <- integer_cal_year_curve$calendar_age_BP[indices_of_max_probability]
     maxrange <- max(calendar_ages) - min(calendar_ages)
 
     mu_phi <- stats::median(calendar_ages)
