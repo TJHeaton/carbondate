@@ -40,11 +40,10 @@ FindSummedProbabilityDistribution <- function(
     calibration_curve) {
 
   arg_check <- checkmate::makeAssertCollection()
-  checkmate::assertNumeric(
-    calendar_age_range, len = 2, any.missing = FALSE, add = arg_check)
+  checkmate::assertNumeric(calendar_age_range, len = 2, any.missing = FALSE, add = arg_check)
   checkmate::assert_flag(F14C_inputs, add=arg_check)
-  .CheckInputData(
-    arg_check, rc_determinations, rc_sigmas, calibration_curve, NA)
+  .CheckInputData(arg_check, rc_determinations, rc_sigmas, F14C_inputs)
+  .CheckCalibrationCurve(arg_check, calibration_curve, NA)
   checkmate::reportAssertions(arg_check)
 
   calibration_data_range = range(calibration_curve$calendar_age)

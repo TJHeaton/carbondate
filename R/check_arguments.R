@@ -22,8 +22,7 @@
 }
 
 
-.CheckInputData <- function(
-    arg_check, rc_determinations, rc_sigmas, calibration_curve, F14C_inputs){
+.CheckInputData <- function(arg_check, rc_determinations, rc_sigmas, F14C_inputs){
 
   checkmate::assertNumeric(
     rc_determinations,
@@ -39,8 +38,19 @@
     null.ok = FALSE,
     typed.missing = FALSE,
     add = arg_check)
-  .CheckCalibrationCurve(arg_check, calibration_curve, F14C_inputs)
-
+  if (F14C_inputs == TRUE) {
+    if (any(rc_determinations > 2) || any(rc_determinations < 0)) {
+      warning(
+        "You have specified F14C_inputs = TRUE but it looks the rc_determinations may be 14C ages.",
+        immediate. = TRUE, call. = FALSE)
+    }
+  } else {
+    if (all(rc_determinations < 2) && all(rc_determinations > 0)) {
+      warning(
+        "You have specified F14C_inputs = FALSE but it looks the rc_determinations may be F14C concentrations",
+        immediate. = TRUE, call. = FALSE)
+    }
+  }
 }
 
 

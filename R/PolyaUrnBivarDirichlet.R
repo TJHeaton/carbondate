@@ -86,8 +86,8 @@ PolyaUrnBivarDirichlet <- function(
 
   arg_check <- checkmate::makeAssertCollection()
 
-  .CheckInputData(
-    arg_check, rc_determinations, rc_sigmas, calibration_curve, NA)
+  .CheckInputData(arg_check, rc_determinations, rc_sigmas, F14C_inputs)
+  .CheckCalibrationCurve(arg_check, calibration_curve, NA)
   .CheckDpmmParameters(
     arg_check,
     sensible_initialisation,

@@ -106,6 +106,7 @@ test_that("PolyaUrnBivarDirichlet gives error if no sensible init and not all pa
     PolyaUrnBivarDirichlet(
       rc_determinations=kerr$c14_ages,
       rc_sigmas=kerr$c14_sig,
+      F14C_inputs = FALSE,
       calibration_curve=intcal20,
       sensible_initialisation = FALSE),
     regexp = "Variable 'lambda': May not be NA."
