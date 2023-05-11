@@ -14,6 +14,7 @@
 #' otherwise.
 #' This format matches the curves supplied with this package e.g. [carbondate::intcal20],
 #' which contain all 5 columns.
+#' @export
 #'
 #' @return A data frame with one column `calendar_age_BP` containing the calendar
 #' ages, and the other column `probability` containing the probability at that

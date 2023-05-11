@@ -154,5 +154,5 @@ joint calendar age density and cluster.
 WalkerBivarDirichlet(kerr$c14_age, kerr$c14_sig, FALSE, intcal20, n_iter=1000, n_thin=10)
 
 # It is also possible to give the radiocarbon determinations as F14C concentrations
-WalkerBivarDirichlet(kerr$f14c, kerr$f14c_sig, FALSE, intcal20, n_iter=1000, n_thin=10)
+WalkerBivarDirichlet(kerr$f14c, kerr$f14c_sig, TRUE, intcal20, n_iter=1000, n_thin=10)
 }
