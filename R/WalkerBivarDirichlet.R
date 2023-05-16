@@ -237,6 +237,11 @@ WalkerBivarDirichlet <- function(
   cluster_identifiers <- as.integer(sample(1:n_clust, num_observations, replace = TRUE))
   calendar_ages = as.double(calendar_ages)
 
+  range_cal_ages = range(calendar_ages) + c(-1, 1) * range(v)
+  predictive_density_calendar_ages = seq(range_cal_ages[1], range_cal_ages[2], by=1)
+  predictive_density_start = FindInstantPredictiveDensityWalker(
+    predictive_density_calendar_ages, weight, phi, tau, mu_phi, lambda, nu1, nu2)
+  previous_predictive_density = predictive_density_start
   ##############################################################################
   # Save input parameters
   input_parameters = list(
@@ -269,6 +274,11 @@ WalkerBivarDirichlet <- function(
   n_clust_out[output_index] <- length(unique(cluster_identifiers))
   mu_phi_out[output_index] <- mu_phi
   theta_out[output_index, ] <- calendar_ages
+
+  kld_from_beginning <- rep(NA, length=n_out)
+  kld_from_beginning[1] = 0
+
+  kld_instant <- rep(NA, length=n_out-1)
 
   ##############################################################################
   # Now the calibration and DPMM
@@ -321,8 +331,20 @@ WalkerBivarDirichlet <- function(
       theta_out[output_index, ] <- calendar_ages
       w_out[[output_index]] <- weight
       mu_phi_out[output_index] <- mu_phi
+
+      current_predictive_density = FindInstantPredictiveDensityWalker(
+        predictive_density_calendar_ages, weight, phi, tau, mu_phi, lambda, nu1, nu2)
+
+      kld_instant[output_index - 1] <- .KLD(previous_predictive_density, current_predictive_density)
+      kld_from_beginning[output_index] <- .KLD(predictive_density_start, current_predictive_density)
+
+      previous_predictive_density = current_predictive_density
     }
   }
+
+  plot(1:n_out, kld_from_beginning, type="l")
+  plot(1:(n_out-1), kld_instant, type="l")
+
   return_list <- list(
     cluster_identifiers = cluster_identifiers_out,
     alpha = alpha_out,

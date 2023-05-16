@@ -8,6 +8,10 @@ FindPredictiveDensityandCIPolyaUrn <- function(calendar_ages, observations_per_c
   .Call(`_carbondate_FindPredictiveDensityandCIPolyaUrn`, calendar_ages, observations_per_clusters, phis, taus, alphas, mu_phis, n_obs, lambda, nu1, nu2, n_posterior_samples, quantile_edge_width)
 }
 
+FindInstantPredictiveDensityWalker <- function(calendar_ages, weight, phi, tau, mu_phi, lambda, nu1, nu2) {
+  .Call(`_carbondate_FindInstantPredictiveDensityWalker`, calendar_ages, weight, phi, tau, mu_phi, lambda, nu1, nu2)
+}
+
 PolyaUrnUpdateAlpha_test <- function(n, nci, current_alpha, alpha_shape, alpha_rate) {
   .Call(`_carbondate_PolyaUrnUpdateAlpha_test`, n, nci, current_alpha, alpha_shape, alpha_rate)
 }

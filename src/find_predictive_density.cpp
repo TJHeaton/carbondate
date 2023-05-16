@@ -221,3 +221,25 @@ double PolyaUrnDensityForCalendarAge(
 
   return retdata;
 }
+
+[[cpp11::register]] doubles FindInstantPredictiveDensityWalker(
+    doubles calendar_ages,
+    doubles weight,
+    doubles phi,
+    doubles tau,
+    double mu_phi,
+    double lambda,
+    double nu1,
+    double nu2) {
+
+  int n = calendar_ages.size();
+  writable::doubles instant_density(n);
+
+  for (int i = 0; i < n; i++) {
+    instant_density[i] = WalkerDensityForCalendarAge(
+      calendar_ages[i], weight, phi, tau, mu_phi, lambda, nu1, nu2
+    );
+  }
+
+  return instant_density;
+}

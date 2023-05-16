@@ -19,6 +19,13 @@ extern "C" SEXP _carbondate_FindPredictiveDensityandCIPolyaUrn(SEXP calendar_age
     return cpp11::as_sexp(FindPredictiveDensityandCIPolyaUrn(cpp11::as_cpp<cpp11::decay_t<doubles>>(calendar_ages), cpp11::as_cpp<cpp11::decay_t<list>>(observations_per_clusters), cpp11::as_cpp<cpp11::decay_t<list>>(phis), cpp11::as_cpp<cpp11::decay_t<list>>(taus), cpp11::as_cpp<cpp11::decay_t<doubles>>(alphas), cpp11::as_cpp<cpp11::decay_t<doubles>>(mu_phis), cpp11::as_cpp<cpp11::decay_t<double>>(n_obs), cpp11::as_cpp<cpp11::decay_t<double>>(lambda), cpp11::as_cpp<cpp11::decay_t<double>>(nu1), cpp11::as_cpp<cpp11::decay_t<double>>(nu2), cpp11::as_cpp<cpp11::decay_t<int>>(n_posterior_samples), cpp11::as_cpp<cpp11::decay_t<double>>(quantile_edge_width)));
   END_CPP11
 }
+// find_predictive_density.cpp
+doubles FindInstantPredictiveDensityWalker(doubles calendar_ages, doubles weight, doubles phi, doubles tau, double mu_phi, double lambda, double nu1, double nu2);
+extern "C" SEXP _carbondate_FindInstantPredictiveDensityWalker(SEXP calendar_ages, SEXP weight, SEXP phi, SEXP tau, SEXP mu_phi, SEXP lambda, SEXP nu1, SEXP nu2) {
+  BEGIN_CPP11
+    return cpp11::as_sexp(FindInstantPredictiveDensityWalker(cpp11::as_cpp<cpp11::decay_t<doubles>>(calendar_ages), cpp11::as_cpp<cpp11::decay_t<doubles>>(weight), cpp11::as_cpp<cpp11::decay_t<doubles>>(phi), cpp11::as_cpp<cpp11::decay_t<doubles>>(tau), cpp11::as_cpp<cpp11::decay_t<double>>(mu_phi), cpp11::as_cpp<cpp11::decay_t<double>>(lambda), cpp11::as_cpp<cpp11::decay_t<double>>(nu1), cpp11::as_cpp<cpp11::decay_t<double>>(nu2)));
+  END_CPP11
+}
 // polya_urn_update_helpers.cpp
 double PolyaUrnUpdateAlpha_test(int n, integers nci, double current_alpha, double alpha_shape, double alpha_rate);
 extern "C" SEXP _carbondate_PolyaUrnUpdateAlpha_test(SEXP n, SEXP nci, SEXP current_alpha, SEXP alpha_shape, SEXP alpha_rate) {
@@ -43,6 +50,7 @@ extern "C" SEXP _carbondate_WalkerUpdateStep(SEXP current_calendar_ages, SEXP cu
 
 extern "C" {
 static const R_CallMethodDef CallEntries[] = {
+    {"_carbondate_FindInstantPredictiveDensityWalker", (DL_FUNC) &_carbondate_FindInstantPredictiveDensityWalker,  8},
     {"_carbondate_FindPredictiveDensityAndCIWalker",   (DL_FUNC) &_carbondate_FindPredictiveDensityAndCIWalker,   10},
     {"_carbondate_FindPredictiveDensityandCIPolyaUrn", (DL_FUNC) &_carbondate_FindPredictiveDensityandCIPolyaUrn, 12},
     {"_carbondate_PolyaUrnUpdateAlpha_test",           (DL_FUNC) &_carbondate_PolyaUrnUpdateAlpha_test,            5},
