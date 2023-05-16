@@ -10,10 +10,10 @@
 #' @param F14C_inputs `TRUE` if the provided rc_determinations are F14C concentrations and `FALSE`
 #' if they are radiocarbon age BP.
 #' @param calibration_curve A dataframe which must contain one column `calendar_age_BP`, and also
-#' columns `c14_age` and `c14_sig` if `F14C_inputs` is `FALSE` or `f14c` and `f14c_sig`
-#' otherwise.
+#' columns `c14_age` and `c14_sig` or `f14c` and `f14c_sig` (or both sets).
 #' This format matches the curves supplied with this package e.g. [carbondate::intcal20],
 #' which contain all 5 columns.
+#'
 #' @export
 #'
 #' @return A data frame with one column `calendar_age_BP` containing the calendar
@@ -46,16 +46,17 @@ CalibrateSingleDetermination <- function(
     rc_determination, rc_sigma, F14C_inputs, calibration_curve) {
 
   if (F14C_inputs) {
-    c14_ages = calibration_curve$f14c
-    c14_sigs = calibration_curve$f14c_sig
+    calibration_curve = .AddF14cColumns(calibration_curve)
+    calcurve_rc_ages = calibration_curve$f14c
+    calcurve_rc_sigs = calibration_curve$f14c_sig
   } else {
-    c14_ages = calibration_curve$c14_age
-    c14_sigs = calibration_curve$c14_sig
+    calibration_curve = .AddC14ageColumns(calibration_curve)
+    calcurve_rc_ages = calibration_curve$c14_age
+    calcurve_rc_sigs = calibration_curve$c14_sig
   }
 
-
   probabilities <- stats::dnorm(
-    rc_determination, mean=c14_ages, sd=sqrt(c14_sigs^2 + rc_sigma^2))
+    rc_determination, mean=calcurve_rc_ages, sd=sqrt(calcurve_rc_sigs^2 + rc_sigma^2))
   probabilities <- probabilities / sum(probabilities)
   return(probabilities)
 }

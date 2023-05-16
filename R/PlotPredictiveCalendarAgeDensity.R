@@ -111,25 +111,25 @@ PlotPredictiveCalendarAgeDensity <- function(
   checkmate::reportAssertions(arg_check)
 
   if (is.null(calibration_curve)) {
-    calibration_curve = get(output_data[[1]]$input_data$calibration_curve_name)
+    calibration_curve = get(output_data$input_data$calibration_curve_name)
   }
-  rc_determinations = output_data[[1]]$input_data$rc_determinations
-  rc_sigmas = output_data[[1]]$input_data$rc_sigmas
-  F14C_inputs = output_data[[1]]$input_data$F14C_inputs
+  rc_determinations <- output_data$input_data$rc_determinations
+  rc_sigmas <- output_data$input_data$rc_sigmas
+  F14C_inputs <-output_data$input_data$F14C_inputs
 
   if (plot_14C_age == TRUE) {
     calibration_curve = .AddC14ageColumns(calibration_curve)
     if (F14C_inputs == TRUE) {
-      # convert from F14C to 14C yr BP
-      rc_sigmas <- 8033 * rc_sigmas / rc_determinations
-      rc_determinations <- -8033 * log(rc_determinations)
+      converted <- .ConvertF14cTo14Cage(rc_determinations, rc_sigmas)
+      rc_determinations <- converted$f14c
+      rc_sigmas <- converted$f14c_sig
     }
   } else {
+    calibration_curve = .AddF14cColumns(calibration_curve)
     if (F14C_inputs == FALSE) {
-      calibration_curve = .AddF14cColumns(calibration_curve)
-      # convert from 14C yr BP to F14C
-      rc_determinations <- exp(-rc_determinations / 8033)
-      rc_sigmas <- rc_determinations * rc_sigmas / 8033
+      converted <- .Convert14CageToF14c(rc_determinations, rc_sigmas)
+      rc_determinations <- converted$c14_age
+      rc_sigmas <- converted$c14_sig
     }
   }
 

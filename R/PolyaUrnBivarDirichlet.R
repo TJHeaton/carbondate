@@ -135,13 +135,13 @@ PolyaUrnBivarDirichlet <- function(
     rc_determinations <- as.double(rc_determinations)
     rc_sigmas <- as.double(rc_sigmas)
   } else if (F14C_inputs == FALSE) {
-    # convert from 14C yr BP to F14C
-    rc_determinations <- exp(-rc_determinations / 8033)
-    rc_sigmas <- rc_determinations * rc_sigmas / 8033
+    converted <- .Convert14CageToF14c(rc_determinations, rc_sigmas)
+    rc_determinations <- converted$c14_age
+    rc_sigmas <- converted$c14_sig
   } else {
-    # convert from F14C to 14C yr BP
-    rc_sigmas <- 8033 * rc_sigmas / rc_determinations
-    rc_determinations <- -8033 * log(rc_determinations)
+    converted <- .ConvertF14cTo14Cage(rc_determinations, rc_sigmas)
+    rc_determinations <- converted$f14c
+    rc_sigmas <- converted$f14c_sig
   }
 
   ##############################################################################
