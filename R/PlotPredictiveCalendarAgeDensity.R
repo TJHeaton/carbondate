@@ -111,11 +111,11 @@ PlotPredictiveCalendarAgeDensity <- function(
   checkmate::reportAssertions(arg_check)
 
   if (is.null(calibration_curve)) {
-    calibration_curve = get(output_data$input_data$calibration_curve_name)
+    calibration_curve = get(output_data[[1]]$input_data$calibration_curve_name)
   }
-  rc_determinations <- output_data$input_data$rc_determinations
-  rc_sigmas <- output_data$input_data$rc_sigmas
-  F14C_inputs <-output_data$input_data$F14C_inputs
+  rc_determinations <- output_data[[1]]$input_data$rc_determinations
+  rc_sigmas <- output_data[[1]]$input_data$rc_sigmas
+  F14C_inputs <-output_data[[1]]$input_data$F14C_inputs
 
   if (plot_14C_age == TRUE) {
     calibration_curve = .AddC14ageColumns(calibration_curve)
@@ -152,7 +152,7 @@ PlotPredictiveCalendarAgeDensity <- function(
 
   if (show_SPD){
     SPD = FindSummedProbabilityDistribution(
-      calendar_age_range = floor(range(calendar_age_sequence)),
+      calendar_age_range_BP = floor(range(calendar_age_sequence)),
       rc_determinations = rc_determinations,
       rc_sigmas = rc_sigmas,
       F14C_inputs = !plot_14C_age,

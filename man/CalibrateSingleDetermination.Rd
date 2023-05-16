@@ -21,8 +21,7 @@ CalibrateSingleDetermination(
 if they are radiocarbon age BP.}
 
 \item{calibration_curve}{A dataframe which must contain one column \code{calendar_age_BP}, and also
-columns \code{c14_age} and \code{c14_sig} if \code{F14C_inputs} is \code{FALSE} or \code{f14c} and \code{f14c_sig}
-otherwise.
+columns \code{c14_age} and \code{c14_sig} or \code{f14c} and \code{f14c_sig} (or both sets).
 This format matches the curves supplied with this package e.g. \link{intcal20},
 which contain all 5 columns.}
 }

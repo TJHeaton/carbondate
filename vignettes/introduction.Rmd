@@ -68,7 +68,7 @@ To calculate the SPD for a set of radiocarbon determinations (here we use the ex
 
 ```{r find_spd, out.width="100%", fig.width=10, fig.height=8}
 spd = FindSummedProbabilityDistribution(
-  calendar_age_range = c(1000, 4500), 
+  calendar_age_range_BP = c(1000, 4500), 
   rc_determinations = armit$c14_age, 
   rc_sigmas = armit$c14_sig, 
   F14C_inputs = FALSE, 
