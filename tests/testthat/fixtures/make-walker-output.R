@@ -23,6 +23,9 @@ Kerr <- read.csv("tests/testthat/fixtures/helpers/kerr2014sss_sup.csv", header =
 x <- Kerr[,3]
 xsig <- Kerr[,4]
 
+# Only choose the first 100 points for speed
+x <- x[1:100]
+xsig <- xsig[1:100]
 #############################################################################
 # Now choose hyperparameters
 ############################################################
@@ -57,9 +60,9 @@ lambda <- (100/maxrange)^2  # Each muclust ~ N(mutheta, sigma2/lambda)
 
 
 # Choose number of iterations for sampler
-niter <- 1000
-nthin <- 5 # Don't choose too high, after burn-in we have (niter/nthin)/2 samples from posterior to potentially use
-npostsum <- 500 # Current number of samples it will draw from this posterior to estimate fhat (possibly repeats)
+niter <- 1e5
+nthin <- 10 # Don't choose too high, after burn-in we have (niter/nthin)/2 samples from posterior to potentially use
+npostsum <- 5000 # Current number of samples it will draw from this posterior to estimate fhat (possibly repeats)
 
 slicew = max(1000, diff(range(x))/2)
 m = 10
@@ -73,8 +76,6 @@ WalkerTemp <- WalkerBivarDirichlet(x = x, xsig = xsig,
                                    cprshape = cprshape, cprrate = cprrate,
                                    niter = niter, nthin = nthin, theta = inittheta,
                                    slicew = slicew, m = m, calcurve = calcurve, kstar = kstar)
-
-save(WalkerTemp, file="tests/testthat/fixtures/walker_output.rda")
 
 ##############################
 # Also find the SPD estimate to plot alongside  -> New function CreateSPD
@@ -101,7 +102,7 @@ seednum = 14
 set.seed(seednum)
 source("tests/testthat/fixtures/helpers/WalkerPostProcessingFinal.R")
 
-save(postdenCI, postden, seednum, x, xsig, npostsum, lambda, nu1, nu2, file = "tests/testthat/fixtures/walker_postprocessing.rda")
+save(x, xsig, postdenCI, postden, tempx, file = "tests/testthat/fixtures/walker_output.rda")
 
 # To access the posterior calendar age estimate for individual determination then you can look at:
 # WalkerTemp$theta[,10] # MCMC chain for 10th determination (will need to remove burn in)
@@ -112,4 +113,3 @@ ident = 10
 resolution = 10
 indpost = plotindpost(WalkerTemp, ident = ident, y = x, er = xsig, calcurve = calcurve, resolution = resolution)
 
-save(indpost, ident, resolution, file = "tests/testthat/fixtures/walker_independent_posterior.rda")

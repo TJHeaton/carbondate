@@ -4,27 +4,38 @@
 \alias{CalibrateSingleDetermination}
 \title{Calibrate a single radiocarbon determination}
 \usage{
-CalibrateSingleDetermination(c14_determination, c14_sigma, calibration_curve)
+CalibrateSingleDetermination(
+  rc_determination,
+  rc_sigma,
+  F14C_inputs,
+  calibration_curve
+)
 }
 \arguments{
-\item{c14_determination}{A single observed radiocarbon determination (c14 age)}
+\item{rc_determination}{A single observed radiocarbon determination
+(14C BP age or F14C concentration)}
 
-\item{c14_sigma}{The uncertainty of the radiocarbon determination}
+\item{rc_sigma}{The uncertainty of the radiocarbon determination in the same units}
 
-\item{calibration_curve}{A dataframe which should contain at least 3 columns
-entitled \code{calendar_age}, \code{c14_age} and \code{c14_sig}.
-This format matches \link{intcal20}.}
+\item{F14C_inputs}{\code{TRUE} if the provided rc_determinations are F14C concentrations and \code{FALSE}
+if they are radiocarbon age BP.}
+
+\item{calibration_curve}{A dataframe which must contain one column \code{calendar_age_BP}, and also
+columns \code{c14_age} and \code{c14_sig} or \code{f14c} and \code{f14c_sig} (or both sets).
+This format matches the curves supplied with this package e.g. \link{intcal20},
+which contain all 5 columns.}
 }
 \value{
-A data frame with one column \code{calendar_age} containing the calendar
+A data frame with one column \code{calendar_age_BP} containing the calendar
 ages, and the other column \code{probability} containing the probability at that
 calendar age.
 }
 \description{
-Uses the supplied calibration curve to take a single radiocardbon
-determination and uncertainty and calculate the calendar age probability
-density for it.
+Uses the supplied calibration curve to take a single radiocarbon
+determination and uncertainty (expressed as the radiocarbon age BP or F14C concentration) and
+calculate the calendar age probability density for it.
 }
 \examples{
-CalibrateSingleDetermination(31020, 35, intcal20)
+CalibrateSingleDetermination(31020, 35, FALSE, intcal20)
+CalibrateSingleDetermination(0.23, 0.001, TRUE, intcal20)
 }

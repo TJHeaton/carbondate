@@ -13,13 +13,16 @@
 #' than 1 and not too close to `n_iter`, since after burn-in there are
 #' \eqn{(n_{\textrm{iter}}/n_{\textrm{thin}})/2} samples from posterior to
 #' potentially use.
-#' @param slice_width  Parameter for slice sampling (optional). Default is
-#' either 1000 or half the width of the c14 determinations, whichever is larger.
+#' @param use_F14C_space Whether the calculations are carried out in F14C space (default is TRUE).
+#' If FALSE, calculations are carried out in 14C yr BP space.
+#' @param slice_width Parameter for slice sampling (optional). If not given a value
+#' is chosen intelligently based on the spread of the initial calendar ages.
+#' Must be given if `sensible_initialisation` is `FALSE`.
 #' @param slice_multiplier  Integer parameter for slice sampling (optional).
 #' Default is 10. Limits the slice size to `slice_multiplier * slice_width`.
 #' @param n_clust The initial number of clusters (optional). Must
-#' be less than the length of `c14_determinations`. Default is 10 or the length
-#' of `c14_determinations` if it is less than 10.
+#' be less than the length of `rc_determinations`. Default is 10 or the length
+#' of `rc_determinations` if it is less than 10.
 #' @param show_progress Whether to show a progress bar in the console during
 #' execution. Default is `TRUE`.
 #' @param sensible_initialisation Whether to use sensible start values and
@@ -47,7 +50,7 @@
 #' clusters).  Required if `sensible_initialisation` is `FALSE`.
 #' @param calendar_ages  The initial estimate for the underlying calendar ages
 #' (optional). If supplied it must be a vector with the same length as
-#' `c14_determinations`.  Required if `sensible_initialisation` is `FALSE`.
+#' `rc_determinations`.  Required if `sensible_initialisation` is `FALSE`.
 #'
 #' @return A list with 11 items. The first 8 items contain output data, each of
 #' which have one dimension of size \eqn{n_{\textrm{out}} =
@@ -74,7 +77,7 @@
 #'      centering \eqn{\mu_{\phi}} of the clusters.}
 #' }
 #' where \eqn{n_{\textrm{obs}}} is the number of radiocarbon observations i.e.
-#' the length of `c14_determinations`.
+#' the length of `rc_determinations`.
 #'
 #' The remaining items give information about input data, input parameters (or
 #' those calculated using `sensible_initialisation`) and update_type
@@ -95,14 +98,19 @@
 #' # Basic usage making use of sensible initialisation to set most values and
 #' # using a saved example data set. Note iterations are kept very small here
 #' # for a faster run time.
-#' WalkerBivarDirichlet(kerr$c14_ages, kerr$c14_sig, intcal20, n_iter=1000, n_thin=10)
+#' WalkerBivarDirichlet(kerr$c14_age, kerr$c14_sig, FALSE, intcal20, n_iter=1000, n_thin=10)
+#'
+#' # It is also possible to give the radiocarbon determinations as F14C concentrations
+#' WalkerBivarDirichlet(kerr$f14c, kerr$f14c_sig, TRUE, intcal20, n_iter=1000, n_thin=10)
 WalkerBivarDirichlet <- function(
-    c14_determinations,
-    c14_sigmas,
+    rc_determinations,
+    rc_sigmas,
+    F14C_inputs,
     calibration_curve,
     n_iter = 100,
     n_thin = 10,
-    slice_width = max(1000, diff(range(c14_determinations)) / 2),
+    use_F14C_space = TRUE,
+    slice_width = NA,
     slice_multiplier = 10,
     show_progress = TRUE,
     sensible_initialisation = TRUE,
@@ -115,16 +123,16 @@ WalkerBivarDirichlet <- function(
     alpha_rate = NA,
     mu_phi = NA,
     calendar_ages = NA,
-    n_clust = min(10, length(c14_determinations))) {
+    n_clust = min(10, length(rc_determinations))) {
 
   ##############################################################################
   # Check input parameters
-  num_observations <- length(c14_determinations)
+  num_observations <- length(rc_determinations)
 
   arg_check <- checkmate::makeAssertCollection()
 
-  .CheckInputData(
-    arg_check, c14_determinations, c14_sigmas, calibration_curve)
+  .CheckInputData(arg_check, rc_determinations, rc_sigmas, F14C_inputs)
+  .CheckCalibrationCurve(arg_check, calibration_curve, NA)
   .CheckDpmmParameters(
     arg_check,
     sensible_initialisation,
@@ -140,28 +148,58 @@ WalkerBivarDirichlet <- function(
     calendar_ages,
     n_clust)
   .CheckIterationParameters(arg_check, n_iter, n_thin)
-  .CheckSliceParameters(arg_check, slice_width, slice_multiplier)
+  .CheckSliceParameters(arg_check, slice_width, slice_multiplier, sensible_initialisation)
 
   checkmate::reportAssertions(arg_check)
 
   ##############################################################################
   ## Interpolate cal curve onto single year grid to speed up updating thetas
-  integer_cal_year_curve <- InterpolateCalibrationCurve(NA, calibration_curve)
-  interpolated_calendar_age_start <- integer_cal_year_curve$calendar_age[1]
-  interpolated_c14_age <- integer_cal_year_curve$c14_age
-  interpolated_c14_sig <- integer_cal_year_curve$c14_sig
+  integer_cal_year_curve <- InterpolateCalibrationCurve(NA, calibration_curve, use_F14C_space)
+  interpolated_calendar_age_start <- integer_cal_year_curve$calendar_age_BP[1]
+  if (use_F14C_space) {
+    interpolated_rc_age <- integer_cal_year_curve$f14c
+    interpolated_rc_sig <- integer_cal_year_curve$f14c_sig
+  } else {
+    interpolated_rc_age <- integer_cal_year_curve$c14_age
+    interpolated_rc_sig <- integer_cal_year_curve$c14_sig
+  }
+
+  ##############################################################################
+  # Save input data
+  input_data = list(
+    rc_determinations = rc_determinations,
+    rc_sigmas = rc_sigmas,
+    F14C_inputs = F14C_inputs,
+    calibration_curve_name = deparse(substitute(calibration_curve)))
+
+  ##############################################################################
+  # Convert the scale of the initial determinations to F14C or C14_age as appropriate
+  # if they aren't already
+
+  if (F14C_inputs == use_F14C_space) {
+    rc_determinations <- as.double(rc_determinations)
+    rc_sigmas <- as.double(rc_sigmas)
+  } else if (F14C_inputs == FALSE) {
+    converted <- .Convert14CageToF14c(rc_determinations, rc_sigmas)
+    rc_determinations <- converted$c14_age
+    rc_sigmas <- converted$c14_sig
+  } else {
+    converted <- .ConvertF14cTo14Cage(rc_determinations, rc_sigmas)
+    rc_determinations <- converted$f14c
+    rc_sigmas <- converted$f14c_sig
+  }
 
   ##############################################################################
   # Initialise parameters
   if (sensible_initialisation) {
     initial_probabilities <- mapply(
       .ProbabilitiesForSingleDetermination,
-      c14_determinations,
-      c14_sigmas,
-      MoreArgs = list(calibration_curve=integer_cal_year_curve))
+      rc_determinations,
+      rc_sigmas,
+      MoreArgs = list(F14C_inputs=use_F14C_space, calibration_curve=integer_cal_year_curve))
     indices_of_max_probability = apply(initial_probabilities, 2, which.max)
 
-    calendar_ages <- integer_cal_year_curve$calendar_age[indices_of_max_probability]
+    calendar_ages <- integer_cal_year_curve$calendar_age_BP[indices_of_max_probability]
     maxrange <- max(calendar_ages) - min(calendar_ages)
 
     mu_phi <- stats::median(calendar_ages)
@@ -177,6 +215,15 @@ WalkerBivarDirichlet <- function(
 
     alpha_shape <- 1
     alpha_rate <- 1
+
+    if (is.na(slice_width)) {
+      spd = apply(initial_probabilities, 1, sum)
+      spd = spd / sum(spd)
+      cumulative_spd = cumsum(spd)
+      min_year = integer_cal_year_curve$calendar_age_BP[min(which(cumulative_spd > 0.05))]
+      max_year = integer_cal_year_curve$calendar_age_BP[max(which(cumulative_spd < 0.95))]
+      slice_width = (max_year - min_year) / 2
+    }
   }
 
   # do not allow very small values of alpha as this causes crashes
@@ -189,15 +236,9 @@ WalkerBivarDirichlet <- function(
   weight <- v * c(1, cumprod(1 - v)[-n_clust])
   cluster_identifiers <- as.integer(sample(1:n_clust, num_observations, replace = TRUE))
   calendar_ages = as.double(calendar_ages)
-  c14_determinations = as.double(c14_determinations)
-  c14_sigmas = as.double(c14_sigmas)
 
   ##############################################################################
-  # Save input data and parameters
-  input_data = list(
-    c14_determinations = c14_determinations,
-    c14_sigmas = c14_sigmas,
-    calibration_curve_name = deparse(substitute(calibration_curve)))
+  # Save input parameters
   input_parameters = list(
     lambda = lambda,
     nu1 = nu1,
@@ -256,11 +297,11 @@ WalkerBivarDirichlet <- function(
       B,
       slice_width,
       slice_multiplier,
-      c14_determinations,
-      c14_sigmas,
+      rc_determinations,
+      rc_sigmas,
       interpolated_calendar_age_start,
-      interpolated_c14_age,
-      interpolated_c14_sig)
+      interpolated_rc_age,
+      interpolated_rc_sig)
     weight <- DPMM_update$weight
     cluster_identifiers <- DPMM_update$cluster_ids
     phi <- DPMM_update$phi

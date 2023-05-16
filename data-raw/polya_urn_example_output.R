@@ -3,8 +3,9 @@ set.seed(8)
 library(carbondate)
 
 polya_urn_example_output <- PolyaUrnBivarDirichlet(
-  c14_determinations = kerr$c14_ages,
-  c14_sigmas = kerr$c14_sig,
+  rc_determinations = kerr$c14_age,
+  rc_sigmas = kerr$c14_sig,
+  F14C_inputs = FALSE,
   calibration_curve=intcal20,
   n_iter = 1e5,
   n_thin = 100)

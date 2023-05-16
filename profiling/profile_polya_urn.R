@@ -10,7 +10,7 @@ profile_polya_urn <- function(n_iter, n_thin, use_cpp) {
 
   Rprof(paste("profiling/", file_pref, ".out", sep = ""))
   walker_output = PolyaUrnBivarDirichlet(
-    kerr$c14_ages,
+    kerr$c14_age,
     kerr$c14_sig,
     intcal20,
     n_iter,

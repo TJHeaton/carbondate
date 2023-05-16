@@ -26,6 +26,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
     ident,
     output_data,
     calibration_curve = NULL,
+    plot_14C_age = TRUE,
     resolution = 5,
     interval_width = "2sigma",
     bespoke_probability = NA) {
@@ -40,12 +41,29 @@ PlotCalendarAgeDensityIndividualSample <- function(
   if (is.null(calibration_curve)) {
     calibration_curve = get(output_data$input_data$calibration_curve_name)
   }
-  c14_determinations = output_data$input_data$c14_determinations
-  c14_sigmas = output_data$input_data$c14_sigmas
+  rc_determinations <- output_data$input_data$rc_determinations
+  rc_sigmas <- output_data$input_data$rc_sigmas
+  F14C_inputs <-output_data$input_data$F14C_inputs
+
+  if (plot_14C_age == TRUE) {
+    calibration_curve = .AddC14ageColumns(calibration_curve)
+    if (F14C_inputs == TRUE) {
+      converted <- .ConvertF14cTo14Cage(rc_determinations, rc_sigmas)
+      rc_determinations <- converted$f14c
+      rc_sigmas <- converted$f14c_sig
+    }
+  } else {
+    calibration_curve = .AddF14cColumns(calibration_curve)
+    if (F14C_inputs == FALSE) {
+      converted <- .Convert14CageToF14c(rc_determinations, rc_sigmas)
+      rc_determinations <- converted$c14_age
+      rc_sigmas <- converted$c14_sig
+    }
+  }
 
   calendar_age <- output_data$calendar_ages[, ident]
-  c14_age <- c14_determinations[ident]
-  c14_sig <- c14_sigmas[ident]
+  rc_age <- rc_determinations[ident]
+  rc_sig <- rc_sigmas[ident]
 
   n_out <- length(calendar_age)
   n_burn <- floor(n_out / 2)
@@ -62,22 +80,25 @@ PlotCalendarAgeDensityIndividualSample <- function(
   cal_age_ind_min <- which.min(abs(calibration_curve$calendar_age - xrange[1]))
   cal_age_ind_max <- which.min(abs(calibration_curve$calendar_age - xrange[2]))
   calendar_age_indices <- cal_age_ind_min:cal_age_ind_max
-  yrange <- range(
-    calibration_curve$c14_age[calendar_age_indices] * 1.2,
-    calibration_curve$c14_age[calendar_age_indices] / 1.2)
-
-  plot_AD = any(calendar_age < 0)
-  graphics::par(xaxs = "i", yaxs = "i")
-  .PlotCalibrationCurve(
-    plot_AD,
-    xlim = rev(xrange),
-    ylim = yrange,
-    calibration_curve = calibration_curve,
-    calibration_curve_colour = "blue",
-    calibration_curve_bg = grDevices::rgb(0, 0, 1, .3),
-    interval_width = interval_width,
-    bespoke_probability = bespoke_probability,
-    title = substitute(
+  if (plot_14C_age == FALSE) {
+    range_f14c <- range(calibration_curve$f14c[calendar_age_indices])
+    yrange <- range_f14c + 0.25 * c(-1, 1) * diff(range_f14c)
+    title <- substitute(
+      paste(
+        "Posterior of ",
+        i^th,
+        " determination ",
+        f14c_age,
+        "\u00B1",
+        f14c_sig,
+        " F ",
+        ""^14,
+        "C"),
+      list(i = ident, f14c_age = signif(rc_age, 2), f14c_sig = signif(rc_sig, 2)))
+  } else {
+    range_c14 <- range(calibration_curve$c14_age[calendar_age_indices])
+    yrange <- range_c14 + 0.25 * c(-1, 1) * diff(range_c14)
+    title <- substitute(
       paste(
         "Posterior of ",
         i^th,
@@ -87,7 +108,23 @@ PlotCalendarAgeDensityIndividualSample <- function(
         c14_sig,
         ""^14,
         "C yr BP"),
-      list(i = ident, c14_age = c14_age, c14_sig = c14_sig)))
+      list(i = ident, c14_age = rc_age, c14_sig = rc_sig))
+  }
+
+
+  plot_AD = any(calendar_age < 0)
+  graphics::par(xaxs = "i", yaxs = "i")
+  .PlotCalibrationCurve(
+    plot_AD,
+    xlim = rev(xrange),
+    ylim = yrange,
+    plot_14C_age = plot_14C_age,
+    calibration_curve = calibration_curve,
+    calibration_curve_colour = "blue",
+    calibration_curve_bg = grDevices::rgb(0, 0, 1, .3),
+    interval_width = interval_width,
+    bespoke_probability = bespoke_probability,
+    title = title)
 
   if (plot_AD) {
     calendar_age <- 1950 - calendar_age
@@ -95,9 +132,9 @@ PlotCalendarAgeDensityIndividualSample <- function(
   }
 
   # Plot the 14C determination on the y-axis
-  yfromto <- seq(c14_age - 4 * c14_sig, c14_age + 4 * c14_sig, length.out = 100)
+  yfromto <- seq(rc_age - 4 * rc_sig, rc_age + 4 * rc_sig, length.out = 100)
   radpol <- cbind(
-    c(0, stats::dnorm(yfromto, mean = c14_age, sd = c14_sig), 0),
+    c(0, stats::dnorm(yfromto, mean =rc_age, sd = rc_sig), 0),
     c(min(yfromto), yfromto, max(yfromto))
   )
   relative_height = 0.1

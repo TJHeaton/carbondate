@@ -1,4 +1,4 @@
-.CheckCalibrationCurve <- function(arg_check, calibration_curve){
+.CheckCalibrationCurve <- function(arg_check, calibration_curve, F14C_inputs){
   checkmate::assertDataFrame(
     calibration_curve,
     types = "numeric",
@@ -6,34 +6,51 @@
     min.cols = 3,
     col.names = "named",
     add = arg_check)
+  if (is.na(F14C_inputs)) {
+    required_column_names = c("calendar_age_BP")
+    # TODO: need to check they have one type of the other
+  } else if (F14C_inputs == TRUE) {
+    required_column_names = c("calendar_age_BP", "f14c", "f14c_sig")
+  } else if (F14C_inputs == FALSE) {
+    required_column_names = c("calendar_age_BP", "c14_age", "c14_sig")
+  }
   checkmate::assertSubset(
-    c("calendar_age", "c14_age", "c14_sig"),
+    required_column_names,
     names(calibration_curve),
     .var.name ="calibration_curve required column names",
     add = arg_check)
 }
 
 
-.CheckInputData <- function(
-    arg_check, c14_determinations, c14_sigmas, calibration_curve){
+.CheckInputData <- function(arg_check, rc_determinations, rc_sigmas, F14C_inputs){
 
   checkmate::assertNumeric(
-    c14_determinations,
+    rc_determinations,
     any.missing = FALSE,
-    lower = 0,
     null.ok = FALSE,
     typed.missing = FALSE,
     add = arg_check)
   checkmate::assertNumeric(
-    c14_sigmas,
+    rc_sigmas,
     any.missing = FALSE,
     lower = 0,
-    len = length(c14_determinations),
+    len = length(rc_determinations),
     null.ok = FALSE,
     typed.missing = FALSE,
     add = arg_check)
-  .CheckCalibrationCurve(arg_check, calibration_curve)
-
+  if (F14C_inputs == TRUE) {
+    if (any(rc_determinations > 2) || any(rc_determinations < 0)) {
+      warning(
+        "You have specified F14C_inputs = TRUE but it looks the rc_determinations may be 14C ages.",
+        immediate. = TRUE, call. = FALSE)
+    }
+  } else {
+    if (all(rc_determinations < 2) && all(rc_determinations > 0)) {
+      warning(
+        "You have specified F14C_inputs = FALSE but it looks the rc_determinations may be F14C concentrations",
+        immediate. = TRUE, call. = FALSE)
+    }
+  }
 }
 
 
@@ -96,9 +113,13 @@
 
 
 .CheckSliceParameters <- function(
-    arg_check, slice_width, slice_multiplier){
-  checkmate::assertNumber(slice_width, lower = 1, add = arg_check)
+    arg_check, slice_width, slice_multiplier, sensible_initialisation) {
   checkmate::assertNumber(slice_multiplier, lower = 1, add = arg_check)
+  if (sensible_initialisation) {
+    checkmate::assertNumber(slice_width, lower = 1, na.ok = TRUE, add = arg_check)
+  } else {
+    checkmate::assertNumber(slice_width, lower = 1, na.ok = FALSE, add = arg_check)
+  }
 }
 
 
@@ -165,12 +186,13 @@
     if (
       !identical(first$c14_determinations, other$c14_determinations)
       || !identical(first$sigma, other$sigma)
+      || first$F14C_inputs != other$F14C_inputs
       || first$calibration_curve_name != other$calibration_curve_name) {
       cli::cli_abort(
         c(
           "Output data is not consistent.",
           "Ensure all output data given in the list comes from the same
-          calibration curve and c14 values."
+          calibration curve and radiocarbon values, in the same scale."
         )
       )
     }

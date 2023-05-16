@@ -47,7 +47,10 @@ Although this package is concerned with the calibration of multiple related ^14^
 
 ```{r single_calibration, out.width="100%", fig.width=10, fig.height=8}
 calibration_result = CalibrateSingleDetermination(
-  c14_determination = 1413, c14_sigma = 25, intcal20)
+  rc_determination = 1413, 
+  rc_sigma = 25, 
+  F14C_inputs = FALSE, 
+  calibration_curve = intcal20)
 plot(
   calibration_result,
   type="l", 
@@ -57,12 +60,19 @@ plot(
   yaxt="n")
 ```
 
+For all functions the radiocarbon determinations can be entered as F^14^C concentrations or as the ^14^C age BP. The flag `F14C_inputs` used above and in other functions below lets the function know what units have been used for the radiocarbon determinations.
+
 The most common approach to summarise calendar age information of multiple ^14^C determinations is via summed probability distributions (SPD). Here, the posterior calendar age density of each object is first calculated independently from the others as using the function above. These individual densities are then summed/averaged to give an SPD estimate. SPDs are not statistically valid estimators of the calendar age of a potential future object. The independence assumed in the separate calibration of each sample, followed by subsequent summarisation, generates a contradiction. The function is provided here as a useful comparison with the other routines.
 
 To calculate the SPD for a set of radiocarbon determinations (here we use the example dataset `armit`) see the example below, where we also plot the results.
 
 ```{r find_spd, out.width="100%", fig.width=10, fig.height=8}
-spd = FindSummedProbabilityDistribution(c(1000, 4500), armit$c14_ages, armit$c14_sig, intcal20)
+spd = FindSummedProbabilityDistribution(
+  calendar_age_range_BP = c(1000, 4500), 
+  rc_determinations = armit$c14_age, 
+  rc_sigmas = armit$c14_sig, 
+  F14C_inputs = FALSE, 
+  calibration_curve = intcal20)
 plot(
   spd,
   type="l", 
@@ -90,8 +100,9 @@ Run using the Walker method:
 
 ```{r calculate_walker, results=FALSE}
 walker_output <- WalkerBivarDirichlet(
-  c14_determinations = kerr$c14_ages,
-  c14_sigmas = kerr$c14_sig,
+  rc_determinations = kerr$c14_age,
+  rc_sigmas = kerr$c14_sig,
+  F14C_inputs = FALSE,
   calibration_curve=intcal20,
   n_iter = 100,
   n_thin = 5)
@@ -101,8 +112,9 @@ or the Poly Urn method as follows:
 
 ```{r calculate_neal, results=FALSE}
 polya_urn_output <- PolyaUrnBivarDirichlet(
-  c14_determinations = kerr$c14_ages,
-  c14_sigmas = kerr$c14_sig,
+  rc_determinations = kerr$c14_age,
+  rc_sigmas = kerr$c14_sig,
+  F14C_inputs = FALSE,
   calibration_curve = intcal20,
   n_iter = 100,
   n_thin = 5)
@@ -139,16 +151,17 @@ densities = PlotPredictiveCalendarAgeDensity(
   denscale = 2.5)
 ```
 
-We also have the option to plot the SPD, and change the confidence intervals on the plot.
+We also have the option to plot the SPD, plot in the F^14^C scale and change the confidence intervals on the plot.
 
 ```{r plot_density_2, out.width="100%", fig.width=10, fig.height=8}
 densities = PlotPredictiveCalendarAgeDensity(
-  output_data = list(walker_example_output, polya_urn_example_output),
+  output_data = walker_example_output,
   n_posterior_samples = 500,
   denscale = 2.5,
   show_SPD = TRUE,
   interval_width = "bespoke",
-  bespoke_probability = 0.8)
+  bespoke_probability = 0.8,
+  plot_14C_age = FALSE)
 ```
 
 #### Number of Clusters
