@@ -240,6 +240,42 @@ double PolyaUrnDensityForCalendarAge(
       calendar_ages[i], weight, phi, tau, mu_phi, lambda, nu1, nu2
     );
   }
-
   return instant_density;
+}
+
+[[cpp11::register]] doubles FindPredictiveDensityWalker(
+    doubles calendar_ages,
+    list weights,
+    list phis,
+    list taus,
+    doubles mu_phis,
+    double lambda,
+    double nu1,
+    double nu2,
+    int n_posterior_samples) {
+
+  int n_points = calendar_ages.size();
+  int n_out = weights.size();
+  writable::doubles mean_density(n_points);
+  std::vector<int> sample_ids;
+
+  if (n_posterior_samples < 1) {
+    // We take this to mean sample every point
+    sample_ids.resize(n_out);
+    for (int i = 0; i < n_out; i++) sample_ids[i] = i;
+  } else {
+    sample_ids = GetSampleIds(0, n_out - 1, n_posterior_samples);
+  }
+
+  for (int i = 0; i < n_points; i++) {
+    mean_density[i] = 0.;
+    for (int s : sample_ids) {
+      mean_density[i] += WalkerDensityForCalendarAge(
+        calendar_ages[i], weights[s], phis[s], taus[s], mu_phis[s], lambda, nu1, nu2
+      );
+    }
+    mean_density[i] /= n_out;
+  }
+
+  return mean_density;
 }

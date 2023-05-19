@@ -123,7 +123,10 @@ WalkerBivarDirichlet <- function(
     alpha_rate = NA,
     mu_phi = NA,
     calendar_ages = NA,
-    n_clust = min(10, length(rc_determinations))) {
+    n_clust = min(10, length(rc_determinations)),
+    calculate_density_for_convergence = TRUE,
+    num_points_per_density_calculation = 1000,
+    num_samples_per_density_calculation = 20) {
 
   ##############################################################################
   # Check input parameters
@@ -237,11 +240,14 @@ WalkerBivarDirichlet <- function(
   cluster_identifiers <- as.integer(sample(1:n_clust, num_observations, replace = TRUE))
   calendar_ages = as.double(calendar_ages)
 
-  range_cal_ages = range(calendar_ages) + c(-1, 1) * range(v)
-  predictive_density_calendar_ages = seq(range_cal_ages[1], range_cal_ages[2], by=1)
-  predictive_density_start = FindInstantPredictiveDensityWalker(
-    predictive_density_calendar_ages, weight, phi, tau, mu_phi, lambda, nu1, nu2)
-  previous_predictive_density = predictive_density_start
+  if (calculate_density_for_convergence == TRUE) {
+    range_cal_ages = range(calendar_ages) + c(-1, 1) * range(v)
+    calendar_ages_kld = seq(range_cal_ages[1], range_cal_ages[2], length.out=100)
+    mean_density = FindInstantPredictiveDensityWalker(
+      calendar_ages_kld, weight, phi, tau, mu_phi, lambda, nu1, nu2)
+    # mean_density <- mean_density / sum(mean_density)
+  }
+
   ##############################################################################
   # Save input parameters
   input_parameters = list(
@@ -275,11 +281,26 @@ WalkerBivarDirichlet <- function(
   mu_phi_out[output_index] <- mu_phi
   theta_out[output_index, ] <- calendar_ages
 
-  kld_from_beginning <- rep(NA, length=n_out)
-  kld_from_beginning[1] = 0
+  ##############################################################################
+  # Create storage for calculating the convergence
+  if (calculate_density_for_convergence) {
+    n_out_kld = 1 + n_iter/(num_points_per_density_calculation * n_thin)
 
-  kld_instant <- rep(NA, length=n_out-1)
+    weights_kld <- list(weight)
+    phis_kld <- list(phi)
+    taus_kld <- list(tau)
+    mu_phis_kld <- rep(NA, length = num_points_per_density_calculation)
 
+    densities <- matrix(NA, nrow = n_out_kld, ncol = length(calendar_ages_kld))
+    density_iters = rep(0, length = n_out_kld)
+
+    density_index = 1;
+    mu_phis_kld[1] <- mu_phi
+
+    all_densities_index = 1;
+    densities[all_densities_index, ] <- mean_density
+    density_iters[all_densities_index] <- 0
+  }
   ##############################################################################
   # Now the calibration and DPMM
   if (show_progress) {
@@ -321,6 +342,7 @@ WalkerBivarDirichlet <- function(
     mu_phi <- DPMM_update$mu_phi
     calendar_ages = DPMM_update$calendar_ages
 
+
     if (iter %% n_thin == 0) {
       output_index <- output_index + 1
       cluster_identifiers_out[output_index, ] <- cluster_identifiers
@@ -332,18 +354,35 @@ WalkerBivarDirichlet <- function(
       w_out[[output_index]] <- weight
       mu_phi_out[output_index] <- mu_phi
 
-      current_predictive_density = FindInstantPredictiveDensityWalker(
-        predictive_density_calendar_ages, weight, phi, tau, mu_phi, lambda, nu1, nu2)
+      if (calculate_density_for_convergence) {
+        if (density_index == num_points_per_density_calculation) {
+          density_index <- 1;
+          all_densities_index <- all_densities_index + 1
 
-      kld_instant[output_index - 1] <- .KLD(previous_predictive_density, current_predictive_density)
-      kld_from_beginning[output_index] <- .KLD(predictive_density_start, current_predictive_density)
-
-      previous_predictive_density = current_predictive_density
+          mean_density = FindPredictiveDensityWalker(
+            calendar_ages_kld, weights_kld, phis_kld, taus_kld, mu_phis_kld, lambda, nu1, nu2, num_samples_per_density_calculation)
+          densities[all_densities_index, ] <- mean_density #/ sum(mean_density)
+          density_iters[all_densities_index] = iter
+        } else {
+          density_index <- density_index + 1;
+        }
+        weights_kld[[density_index]] <- weight
+        phis_kld[[density_index]] <- phi
+        taus_kld[[density_index]] <- tau
+        mu_phis_kld[density_index] <- mu_phi
+      }
     }
   }
 
-  plot(1:n_out, kld_from_beginning, type="l")
-  plot(1:(n_out-1), kld_instant, type="l")
+  if (calculate_density_for_convergence) {
+    density_data = list(
+      densities = densities,
+      iters = density_iters,
+      calendar_ages = calendar_ages_kld
+    )
+  } else {
+    density_data = NULL
+  }
 
   return_list <- list(
     cluster_identifiers = cluster_identifiers_out,
@@ -356,7 +395,8 @@ WalkerBivarDirichlet <- function(
     mu_phi = mu_phi_out,
     update_type="Walker",
     input_data = input_data,
-    input_parameters = input_parameters)
+    input_parameters = input_parameters,
+    density_data = density_data)
   if (show_progress) close(progress_bar)
   return(return_list)
 }
