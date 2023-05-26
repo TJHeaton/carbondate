@@ -124,7 +124,6 @@ WalkerBivarDirichlet <- function(
     mu_phi = NA,
     calendar_ages = NA,
     n_clust = min(10, length(rc_determinations)),
-    calculate_density_for_convergence = TRUE,
     num_points_per_density_calculation = 1000,
     num_samples_per_density_calculation = 20) {
 
@@ -194,25 +193,45 @@ WalkerBivarDirichlet <- function(
 
   ##############################################################################
   # Initialise parameters
-  if (sensible_initialisation) {
-    initial_probabilities <- mapply(
-      .ProbabilitiesForSingleDetermination,
-      rc_determinations,
-      rc_sigmas,
-      MoreArgs = list(F14C_inputs=use_F14C_space, calibration_curve=integer_cal_year_curve))
-    indices_of_max_probability = apply(initial_probabilities, 2, which.max)
+  initial_probabilities <- mapply(
+    .ProbabilitiesForSingleDetermination,
+    rc_determinations,
+    rc_sigmas,
+    MoreArgs = list(F14C_inputs=use_F14C_space, calibration_curve=integer_cal_year_curve))
 
+  spd = apply(initial_probabilities, 1, sum)
+  cumulative_spd = cumsum(spd) / sum(spd)
+  spd_range_1_sigma = c(
+    integer_cal_year_curve$calendar_age_BP[min(which(cumulative_spd > 0.16))],
+    integer_cal_year_curve$calendar_age_BP[max(which(cumulative_spd < 0.84))])
+  spd_range_2_sigma = c(
+    integer_cal_year_curve$calendar_age_BP[min(which(cumulative_spd > 0.025))],
+    integer_cal_year_curve$calendar_age_BP[max(which(cumulative_spd < 0.975))])
+  spd_range_3_sigma = c(
+    integer_cal_year_curve$calendar_age_BP[min(which(cumulative_spd > 0.001))],
+    integer_cal_year_curve$calendar_age_BP[max(which(cumulative_spd < 0.999))])
+
+  plot_range = spd_range_3_sigma + c(-1, 1) * diff(spd_range_3_sigma) * 0.1
+  plot_range = c(
+    max(plot_range[1], min(calibration_curve$calendar_age_BP)),
+    min(plot_range[2], max(calibration_curve$calendar_age_BP)))
+
+  densities_cal_age_sequence = seq(plot_range[1], plot_range[2], length.out=100)
+
+  if (sensible_initialisation) {
+    indices_of_max_probability = apply(initial_probabilities, 2, which.max)
     calendar_ages <- integer_cal_year_curve$calendar_age_BP[indices_of_max_probability]
+
     maxrange <- max(calendar_ages) - min(calendar_ages)
 
-    mu_phi <- stats::median(calendar_ages)
-    A <- stats::median(calendar_ages)
-    B <- 1 / (maxrange)^2
+    mu_phi <- stats::median(calendar_ages) # midpoint of 95% SPD range
+    A <- stats::median(calendar_ages) # midpoint of 95% SPD range
+    B <- 1 / (maxrange)^2 # use SPD range
 
-    tempspread <- 0.1 * stats::mad(calendar_ages)
+    tempspread <- 0.1 * stats::mad(calendar_ages) # use 68% SPD range (check with previous on intcal data)
     tempprec <- 1/(tempspread)^2
 
-    lambda <- (100 / maxrange)^2
+    lambda <- (100 / maxrange)^2 # use 95% SPD range
     nu1 <- 0.25
     nu2 <- nu1 / tempprec
 
@@ -220,12 +239,10 @@ WalkerBivarDirichlet <- function(
     alpha_rate <- 1
 
     if (is.na(slice_width)) {
-      spd = apply(initial_probabilities, 1, sum)
-      spd = spd / sum(spd)
-      cumulative_spd = cumsum(spd)
-      min_year = integer_cal_year_curve$calendar_age_BP[min(which(cumulative_spd > 0.05))]
-      max_year = integer_cal_year_curve$calendar_age_BP[max(which(cumulative_spd < 0.95))]
-      slice_width = (max_year - min_year) / 2
+      spd_range = c(
+        integer_cal_year_curve$calendar_age_BP[min(which(cumulative_spd > 0.05))],
+        integer_cal_year_curve$calendar_age_BP[max(which(cumulative_spd < 0.95))])
+      slice_width = diff(spd_range)
     }
   }
 
@@ -239,14 +256,6 @@ WalkerBivarDirichlet <- function(
   weight <- v * c(1, cumprod(1 - v)[-n_clust])
   cluster_identifiers <- as.integer(sample(1:n_clust, num_observations, replace = TRUE))
   calendar_ages = as.double(calendar_ages)
-
-  if (calculate_density_for_convergence == TRUE) {
-    range_cal_ages = range(calendar_ages) + c(-1, 1) * range(v)
-    calendar_ages_kld = seq(range_cal_ages[1], range_cal_ages[2], length.out=100)
-    mean_density = FindInstantPredictiveDensityWalker(
-      calendar_ages_kld, weight, phi, tau, mu_phi, lambda, nu1, nu2)
-    # mean_density <- mean_density / sum(mean_density)
-  }
 
   ##############################################################################
   # Save input parameters
@@ -283,24 +292,13 @@ WalkerBivarDirichlet <- function(
 
   ##############################################################################
   # Create storage for calculating the convergence
-  if (calculate_density_for_convergence) {
-    n_out_kld = 1 + n_iter/(num_points_per_density_calculation * n_thin)
+  n_burn = 10000
+  n_out_densities = n_out - n_burn/n_thin
 
-    weights_kld <- list(weight)
-    phis_kld <- list(phi)
-    taus_kld <- list(tau)
-    mu_phis_kld <- rep(NA, length = num_points_per_density_calculation)
+  densities <- matrix(NA, nrow = length(densities_cal_age_sequence), ncol = n_out_densities)
+  density_iters = rep(0, length = n_out_densities)
 
-    densities <- matrix(NA, nrow = n_out_kld, ncol = length(calendar_ages_kld))
-    density_iters = rep(0, length = n_out_kld)
-
-    density_index = 1;
-    mu_phis_kld[1] <- mu_phi
-
-    all_densities_index = 1;
-    densities[all_densities_index, ] <- mean_density
-    density_iters[all_densities_index] <- 0
-  }
+  densities_index = 1;
   ##############################################################################
   # Now the calibration and DPMM
   if (show_progress) {
@@ -354,35 +352,21 @@ WalkerBivarDirichlet <- function(
       w_out[[output_index]] <- weight
       mu_phi_out[output_index] <- mu_phi
 
-      if (calculate_density_for_convergence) {
-        if (density_index == num_points_per_density_calculation) {
-          density_index <- 1;
-          all_densities_index <- all_densities_index + 1
-
-          mean_density = FindPredictiveDensityWalker(
-            calendar_ages_kld, weights_kld, phis_kld, taus_kld, mu_phis_kld, lambda, nu1, nu2, num_samples_per_density_calculation)
-          densities[all_densities_index, ] <- mean_density #/ sum(mean_density)
-          density_iters[all_densities_index] = iter
-        } else {
-          density_index <- density_index + 1;
-        }
-        weights_kld[[density_index]] <- weight
-        phis_kld[[density_index]] <- phi
-        taus_kld[[density_index]] <- tau
-        mu_phis_kld[density_index] <- mu_phi
+      if (iter == n_burn) {
+        densities[, 1] <- FindPredictiveDensityWalker(
+          densities_cal_age_sequence, w_out, phi_out, tau_out, mu_phi_out, lambda, nu1, nu2)
+        density_iters[1] = iter
+      } else if (iter > n_burn) {
+        densities_index <- densities_index + 1
+        densities[, densities_index] <- FindInstantPredictiveDensityWalker(
+          densities_cal_age_sequence, weight, phi, tau, mu_phi, lambda, nu1, nu2)
+        density_iters[densities_index] = iter
       }
     }
   }
 
-  if (calculate_density_for_convergence) {
-    density_data = list(
-      densities = densities,
-      iters = density_iters,
-      calendar_ages = calendar_ages_kld
-    )
-  } else {
-    density_data = NULL
-  }
+  density_data = list(
+      densities = densities, iters = density_iters, calendar_ages = densities_cal_age_sequence)
 
   return_list <- list(
     cluster_identifiers = cluster_identifiers_out,

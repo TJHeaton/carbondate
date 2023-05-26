@@ -12,8 +12,8 @@ FindInstantPredictiveDensityWalker <- function(calendar_ages, weight, phi, tau, 
   .Call(`_carbondate_FindInstantPredictiveDensityWalker`, calendar_ages, weight, phi, tau, mu_phi, lambda, nu1, nu2)
 }
 
-FindPredictiveDensityWalker <- function(calendar_ages, weights, phis, taus, mu_phis, lambda, nu1, nu2, n_posterior_samples) {
-  .Call(`_carbondate_FindPredictiveDensityWalker`, calendar_ages, weights, phis, taus, mu_phis, lambda, nu1, nu2, n_posterior_samples)
+FindPredictiveDensityWalker <- function(calendar_ages, weights, phis, taus, mu_phis, lambda, nu1, nu2) {
+  .Call(`_carbondate_FindPredictiveDensityWalker`, calendar_ages, weights, phis, taus, mu_phis, lambda, nu1, nu2)
 }
 
 PolyaUrnUpdateAlpha_test <- function(n, nci, current_alpha, alpha_shape, alpha_rate) {

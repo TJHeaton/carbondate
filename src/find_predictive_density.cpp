@@ -167,6 +167,8 @@ double PolyaUrnDensityForCalendarAge(
   return retdata;
 }
 
+// Finds mean predictive density and confidence intervals, sampling over a given number of points
+// in the provided data
 [[cpp11::register]] data_frame FindPredictiveDensityandCIPolyaUrn(
     doubles calendar_ages,
     list observations_per_clusters,
@@ -222,6 +224,7 @@ double PolyaUrnDensityForCalendarAge(
   return retdata;
 }
 
+// Finds predictive density at a single data point
 [[cpp11::register]] doubles FindInstantPredictiveDensityWalker(
     doubles calendar_ages,
     doubles weight,
@@ -243,6 +246,7 @@ double PolyaUrnDensityForCalendarAge(
   return instant_density;
 }
 
+// Finds mean predictive density over a set of points, using every point
 [[cpp11::register]] doubles FindPredictiveDensityWalker(
     doubles calendar_ages,
     list weights,
@@ -251,27 +255,18 @@ double PolyaUrnDensityForCalendarAge(
     doubles mu_phis,
     double lambda,
     double nu1,
-    double nu2,
-    int n_posterior_samples) {
+    double nu2) {
 
   int n_points = calendar_ages.size();
   int n_out = weights.size();
   writable::doubles mean_density(n_points);
   std::vector<int> sample_ids;
 
-  if (n_posterior_samples < 1) {
-    // We take this to mean sample every point
-    sample_ids.resize(n_out);
-    for (int i = 0; i < n_out; i++) sample_ids[i] = i;
-  } else {
-    sample_ids = GetSampleIds(0, n_out - 1, n_posterior_samples);
-  }
-
   for (int i = 0; i < n_points; i++) {
     mean_density[i] = 0.;
-    for (int s : sample_ids) {
+    for (int j = 0; j < n_out; j++) {
       mean_density[i] += WalkerDensityForCalendarAge(
-        calendar_ages[i], weights[s], phis[s], taus[s], mu_phis[s], lambda, nu1, nu2
+        calendar_ages[i], weights[j], phis[j], taus[j], mu_phis[j], lambda, nu1, nu2
       );
     }
     mean_density[i] /= n_out;
