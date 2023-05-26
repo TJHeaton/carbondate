@@ -77,12 +77,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
   xrange[2] = ceiling(xrange[2])
   if (resolution > 1) while (xrange[2] %% resolution != 0) xrange[2] = xrange[2] + 1
 
-  cal_age_ind_min <- which.min(abs(calibration_curve$calendar_age - xrange[1]))
-  cal_age_ind_max <- which.min(abs(calibration_curve$calendar_age - xrange[2]))
-  calendar_age_indices <- cal_age_ind_min:cal_age_ind_max
   if (plot_14C_age == FALSE) {
-    range_f14c <- range(calibration_curve$f14c[calendar_age_indices])
-    yrange <- range_f14c + 0.25 * c(-1, 1) * diff(range_f14c)
     title <- substitute(
       paste(
         "Posterior of ",
@@ -96,8 +91,6 @@ PlotCalendarAgeDensityIndividualSample <- function(
         "C"),
       list(i = ident, f14c_age = signif(rc_age, 2), f14c_sig = signif(rc_sig, 2)))
   } else {
-    range_c14 <- range(calibration_curve$c14_age[calendar_age_indices])
-    yrange <- range_c14 + 0.25 * c(-1, 1) * diff(range_c14)
     title <- substitute(
       paste(
         "Posterior of ",
@@ -117,7 +110,6 @@ PlotCalendarAgeDensityIndividualSample <- function(
   .PlotCalibrationCurve(
     plot_AD,
     xlim = rev(xrange),
-    ylim = yrange,
     plot_14C_age = plot_14C_age,
     calibration_curve = calibration_curve,
     calibration_curve_colour = "blue",

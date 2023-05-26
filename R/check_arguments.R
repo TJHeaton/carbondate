@@ -8,7 +8,7 @@
     add = arg_check)
   if (is.na(F14C_inputs)) {
     required_column_names = c("calendar_age_BP")
-    # TODO: need to check they have one type of the other
+    # TODO: need to check they have one type or the other
   } else if (F14C_inputs == TRUE) {
     required_column_names = c("calendar_age_BP", "f14c", "f14c_sig")
   } else if (F14C_inputs == FALSE) {
@@ -170,7 +170,7 @@
     )
   }
   if (!is.null(calibration_curve)) {
-    .CheckCalibrationCurve(arg_check, calibration_curve)
+    .CheckCalibrationCurve(arg_check, calibration_curve, NA)
   }
 
 }

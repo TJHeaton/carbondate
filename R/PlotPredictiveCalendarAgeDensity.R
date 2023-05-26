@@ -34,9 +34,6 @@
 #' @param true_density The true calendar age density (optional). Expects a data
 #' frame with two columns, the first column being calendar age and the right
 #' column being the normalized density.
-#' @param xlimscal,ylimscal Whether to scale the x or y limits (optional).
-#' Default is 1. Values more than 1 will increase range of the limits,
-#' values less than 1 will decrease the range of the limits.
 #' @param denscale Whether to scale the vertical range of the density plot
 #' relative to the calibration curve plot (optional). Default is 3 which means
 #' that the maximum SPD density will be at 1/3 of the height of the plot.
@@ -78,8 +75,6 @@ PlotPredictiveCalendarAgeDensity <- function(
     interval_width = "2sigma",
     bespoke_probability = NA,
     true_density = NULL,
-    xlimscal = 1,
-    ylimscal = 1,
     denscale = 3,
     n_calc = 1001) {
 
@@ -103,8 +98,6 @@ PlotPredictiveCalendarAgeDensity <- function(
   }
   checkmate::assertInt(n_posterior_samples, lower = 10, add = arg_check)
   .CheckIntervalWidth(arg_check, interval_width, bespoke_probability)
-  checkmate::assertNumber(xlimscal, lower = 0, add = arg_check)
-  checkmate::assertNumber(ylimscal, lower = 0, add = arg_check)
   checkmate::assertNumber(denscale, lower = 0, add = arg_check)
   checkmate::assertDataFrame(
     true_density, types = "numeric", null.ok = TRUE, add = arg_check)
@@ -145,7 +138,7 @@ PlotPredictiveCalendarAgeDensity <- function(
   }
   true_density_colour = "red"
 
-  calendar_age_sequence <- .CreateRangeToPlotDensity(output_data[[1]], n_calc)
+  calendar_age_sequence <- .CreateXRangeToPlotDensity(output_data[[1]], n_calc)
   plot_AD = any(calendar_age_sequence < 0)
   ##############################################################################
   # Calculate density distributions
@@ -170,9 +163,7 @@ PlotPredictiveCalendarAgeDensity <- function(
   }
   ##############################################################################
   # Calculate plot scaling
-  xlim <- .ScaleLimit(rev(range(calendar_age_sequence)), xlimscal)
-  ylim_calibration <- .ScaleLimit(
-    range(rc_determinations) +  c(-2, 2) * stats::quantile(rc_sigmas, 0.9), ylimscal)
+  xlim <- rev(range(calendar_age_sequence))
   ylim_density = c(0, denscale * max(predictive_density[[1]]$density_mean))
 
   ##############################################################################
@@ -181,7 +172,6 @@ PlotPredictiveCalendarAgeDensity <- function(
   .PlotCalibrationCurveAndInputData(
     plot_AD,
     xlim,
-    ylim_calibration,
     calibration_curve,
     rc_determinations,
     plot_14C_age,
@@ -221,26 +211,16 @@ PlotPredictiveCalendarAgeDensity <- function(
 }
 
 
-.CreateRangeToPlotDensity <- function(output_data, n_calc) {
-  calendar_age_sequence <- seq(
-    floor(min(output_data$calendar_ages, na.rm = TRUE)),
-    ceiling(max(output_data$calendar_ages, na.rm = TRUE)),
-    length = n_calc,
-  )
+.CreateXRangeToPlotDensity <- function(output_data, n_calc) {
+  start_age = min(output_data$calendar_ages, output_data$density_data$calendar_ages[1])
+  end_age = max(output_data$calendar_ages, output_data$density_data$calendar_ages[2])
+  calendar_age_sequence <- seq(start_age, end_age, length = n_calc)
   return(calendar_age_sequence)
 }
-
-
-.ScaleLimit <- function(lim, limscal) {
-  lim <- lim + c(1, -1) * diff(lim) * (1 - limscal)
-  return(lim)
-}
-
 
 .PlotCalibrationCurveAndInputData <- function(
     plot_AD,
     xlim,
-    ylim,
     calibration_curve,
     rc_determinations,
     plot_14C_age,
@@ -252,7 +232,6 @@ PlotPredictiveCalendarAgeDensity <- function(
   .PlotCalibrationCurve(
     plot_AD,
     xlim,
-    ylim,
     plot_14C_age,
     calibration_curve,
     calibration_curve_colour,
@@ -267,7 +246,6 @@ PlotPredictiveCalendarAgeDensity <- function(
 .PlotCalibrationCurve = function(
     plot_AD,
     xlim,
-    ylim,
     plot_14C_age,
     calibration_curve,
     calibration_curve_colour,
@@ -275,6 +253,10 @@ PlotPredictiveCalendarAgeDensity <- function(
     interval_width,
     bespoke_probability,
     title) {
+
+  cal_age_ind_min <- which.min(abs(calibration_curve$calendar_age_BP - min(xlim)))
+  cal_age_ind_max <- which.min(abs(calibration_curve$calendar_age_BP - max(xlim)))
+  calendar_age_indices <- cal_age_ind_min:cal_age_ind_max
 
   if (plot_AD) {
     cal_age = 1950 - calibration_curve$calendar_age
@@ -295,6 +277,22 @@ PlotPredictiveCalendarAgeDensity <- function(
     y_label = expression(paste("F ", ""^14, "C"))
   }
 
+  # multiplier for the confidence interval if you have a standard deviation
+  zquant <- switch(
+    interval_width,
+    "1sigma" = 1,
+    "2sigma" = 2,
+    "bespoke" = - stats::qnorm((1 - bespoke_probability) / 2))
+  calibration_curve$ub <- rc_age + zquant * rc_sig
+  calibration_curve$lb <- rc_age - zquant * rc_sig
+
+  # calculate the limits for the y axis
+  ylim = c(
+    min(calibration_curve$lb[calendar_age_indices]),
+    max(calibration_curve$ub[calendar_age_indices])
+    )
+  ylim = ylim + 0.25 * c(-1, 1) * diff(ylim)
+
   graphics::plot.default(
     cal_age,
     rc_age,
@@ -305,15 +303,6 @@ PlotPredictiveCalendarAgeDensity <- function(
     ylab = y_label,
     type = "l",
     main = title)
-  # multiplier for the confidence interval if you have a standard deviation
-  zquant <- switch(
-    interval_width,
-    "1sigma" = 1,
-    "2sigma" = 2,
-    "bespoke" = - stats::qnorm((1 - bespoke_probability) / 2))
-  calibration_curve$ub <- rc_age + zquant * rc_sig
-  calibration_curve$lb <- rc_age - zquant * rc_sig
-
   graphics::lines(cal_age, calibration_curve$ub, lty = 2, col = calibration_curve_colour)
   graphics::lines(cal_age, calibration_curve$lb, lty = 2, col = calibration_curve_colour)
   graphics::polygon(
