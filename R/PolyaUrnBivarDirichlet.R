@@ -156,39 +156,50 @@ PolyaUrnBivarDirichlet <- function(
   for (obs in cluster_identifiers)
     observations_per_cluster[obs] <- observations_per_cluster[obs] + 1
 
+  initial_probabilities <- mapply(
+    .ProbabilitiesForSingleDetermination,
+    rc_determinations,
+    rc_sigmas,
+    MoreArgs = list(F14C_inputs=use_F14C_space, calibration_curve=integer_cal_year_curve))
+
+  spd = apply(initial_probabilities, 1, sum)
+  cumulative_spd = cumsum(spd) / sum(spd)
+  spd_range_1_sigma = c(
+    integer_cal_year_curve$calendar_age_BP[min(which(cumulative_spd > 0.16))],
+    integer_cal_year_curve$calendar_age_BP[max(which(cumulative_spd < 0.84))])
+  spd_range_2_sigma = c(
+    integer_cal_year_curve$calendar_age_BP[min(which(cumulative_spd > 0.025))],
+    integer_cal_year_curve$calendar_age_BP[max(which(cumulative_spd < 0.975))])
+  spd_range_3_sigma = c(
+    integer_cal_year_curve$calendar_age_BP[min(which(cumulative_spd > 0.001))],
+    integer_cal_year_curve$calendar_age_BP[max(which(cumulative_spd < 0.999))])
+
+  plot_range = spd_range_3_sigma + c(-1, 1) * diff(spd_range_3_sigma) * 0.1
+  plot_range = c(
+    max(plot_range[1], min(calibration_curve$calendar_age_BP)),
+    min(plot_range[2], max(calibration_curve$calendar_age_BP)))
+
+  densities_cal_age_sequence = seq(plot_range[1], plot_range[2], length.out=100)
+
   if (sensible_initialisation) {
-    initial_probabilities <- mapply(
-      .ProbabilitiesForSingleDetermination,
-      rc_determinations,
-      rc_sigmas,
-      MoreArgs = list(F14C_inputs=use_F14C_space, calibration_curve=integer_cal_year_curve))
     indices_of_max_probability = apply(initial_probabilities, 2, which.max)
-
     calendar_ages <- integer_cal_year_curve$calendar_age_BP[indices_of_max_probability]
-    maxrange <- max(calendar_ages) - min(calendar_ages)
 
-    mu_phi <- stats::median(calendar_ages)
-    A <- stats::median(calendar_ages)
-    B <- 1 / (maxrange)^2
+    mu_phi <- mean(spd_range_2_sigma)
+    A <- mean(spd_range_2_sigma)
+    B <- 1 / (diff(spd_range_2_sigma))^2
 
-    tempspread <- 0.1 * stats::mad(calendar_ages)
+    tempspread <- 0.05 * diff(spd_range_1_sigma)
     tempprec <- 1/(tempspread)^2
 
-    lambda <- (100 / maxrange)^2
+    lambda <- (100 / diff(spd_range_3_sigma))^2
     nu1 <- 0.25
     nu2 <- nu1 / tempprec
 
     alpha_shape <- 1
     alpha_rate <- 1
 
-    if (is.na(slice_width)) {
-      spd = apply(initial_probabilities, 1, sum)
-      spd = spd / sum(spd)
-      cumulative_spd = cumsum(spd)
-      min_year = integer_cal_year_curve$calendar_age_BP[min(which(cumulative_spd > 0.05))]
-      max_year = integer_cal_year_curve$calendar_age_BP[max(which(cumulative_spd < 0.95))]
-      slice_width = (max_year - min_year) / 2
-    }
+    if (is.na(slice_width)) slice_width = diff(spd_range_3_sigma)
   }
 
   alpha <- 0.0001

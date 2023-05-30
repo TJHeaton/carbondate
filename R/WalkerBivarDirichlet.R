@@ -222,28 +222,21 @@ WalkerBivarDirichlet <- function(
     indices_of_max_probability = apply(initial_probabilities, 2, which.max)
     calendar_ages <- integer_cal_year_curve$calendar_age_BP[indices_of_max_probability]
 
-    maxrange <- max(calendar_ages) - min(calendar_ages)
+    mu_phi <- mean(spd_range_2_sigma)
+    A <- mean(spd_range_2_sigma)
+    B <- 1 / (diff(spd_range_2_sigma))^2
 
-    mu_phi <- stats::median(calendar_ages) # midpoint of 95% SPD range
-    A <- stats::median(calendar_ages) # midpoint of 95% SPD range
-    B <- 1 / (maxrange)^2 # use SPD range
-
-    tempspread <- 0.1 * stats::mad(calendar_ages) # use 68% SPD range (check with previous on intcal data)
+    tempspread <- 0.05 * diff(spd_range_1_sigma)
     tempprec <- 1/(tempspread)^2
 
-    lambda <- (100 / maxrange)^2 # use 95% SPD range
+    lambda <- (100 / diff(spd_range_3_sigma))^2
     nu1 <- 0.25
     nu2 <- nu1 / tempprec
 
     alpha_shape <- 1
     alpha_rate <- 1
 
-    if (is.na(slice_width)) {
-      spd_range = c(
-        integer_cal_year_curve$calendar_age_BP[min(which(cumulative_spd > 0.05))],
-        integer_cal_year_curve$calendar_age_BP[max(which(cumulative_spd < 0.95))])
-      slice_width = diff(spd_range)
-    }
+    if (is.na(slice_width)) slice_width = diff(spd_range_3_sigma)
   }
 
   # do not allow very small values of alpha as this causes crashes
