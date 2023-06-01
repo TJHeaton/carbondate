@@ -113,6 +113,22 @@
 #' @source <https://doi.org/10.1017/S0033822200019123>
 "intcal98"
 
+#' Example artificial data - Mixture of Normal Phases
+#'
+#' 50 radiocarbon determinations for which the underlying calendar ages are
+#' drawn from a mixture of two normals. This dataset is included simply to give
+#' some quick-to-run examples.
+#'
+#' @format ## `two_normals`
+#' A data frame with 50 rows and 4 columns:
+#' \describe{
+#'   \item{c14_age}{The 14C age (yr BP)}
+#'   \item{c14_sig}{The uncertainty in the 14C age}
+#'   \item{f14c}{The F14C concentration}
+#'   \item{f14c_sig}{The uncertainty in the F14C concentration}
+#' }
+"two_normals"
+
 #' Example real-life data - Irish Rath
 #'
 #' 255 radiocarbon determinations collated by Kerr and McCormick related to the
@@ -179,14 +195,14 @@
 #'
 #' This output has been provided for trying out the plotting and summarisation
 #' functions without having to first run a calibration. It shows the output from
-#' running [carbondate::WalkerBivarDirichlet] with the [carbondate::kerr]
+#' running [carbondate::WalkerBivarDirichlet] with the [carbondate::two_normals]
 #' radiocarbon input data and the [carbondate::intcal20] calibration curve for
 #' 100,000 iterations. To reduce file size a large \eqn{n_{\textrm{thin}} = 100}
-#' was used and the first half of the observations where discarded.
+#' was used.
 #'
 #' @format ## `walker_example_output`
 #' A list with 11 items, as described in [carbondate::WalkerBivarDirichlet]. In
-#' this case \eqn{n_{\textrm{out}}} is 501 and \eqn{n_{\textrm{obs}}} is 255.
+#' this case \eqn{n_{\textrm{out}}} is 1001 and \eqn{n_{\textrm{obs}}} is 50.
 "walker_example_output"
 
 
@@ -194,13 +210,13 @@
 #'
 #' This output has been provided for trying out the plotting and summarisation
 #' functions without having to first run a calibration. It shows the output from
-#' running [carbondate::PolyaUrnBivarDirichlet] with the [carbondate::kerr]
+#' running [carbondate::PolyaUrnBivarDirichlet] with the [carbondate::two_normals]
 #' radiocarbon input data and the [carbondate::intcal20] calibration curve for
 #' 100,000 iterations. To reduce file size a large \eqn{n_{\textrm{thin}} = 100}
-#' was used and the first half of the observations where discarded.
+#' was used.
 #'
 #' @format ## `polya_urn_example_output`
 #' A list with 10 items, as described in [carbondate::PolyaUrnBivarDirichlet]. In
-#' this case \eqn{n_{\textrm{out}}} is 501 and \eqn{n_{\textrm{obs}}} is 255.
+#' this case \eqn{n_{\textrm{out}}} is 1001 and \eqn{n_{\textrm{obs}}} is 50.
 "polya_urn_example_output"
 
