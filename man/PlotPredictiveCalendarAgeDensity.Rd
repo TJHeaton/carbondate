@@ -14,10 +14,9 @@ PlotPredictiveCalendarAgeDensity(
   interval_width = "2sigma",
   bespoke_probability = NA,
   true_density = NULL,
-  xlimscal = 1,
-  ylimscal = 1,
   denscale = 3,
-  n_calc = 1001
+  n_calc = 1001,
+  n_burn = NA
 )
 }
 \arguments{
@@ -58,16 +57,19 @@ interval is calculated. Ignored if \code{"bespoke"} is not chosen.}
 frame with two columns, the first column being calendar age and the right
 column being the normalized density.}
 
-\item{xlimscal, ylimscal}{Whether to scale the x or y limits (optional).
-Default is 1. Values more than 1 will increase range of the limits,
-values less than 1 will decrease the range of the limits.}
-
 \item{denscale}{Whether to scale the vertical range of the density plot
 relative to the calibration curve plot (optional). Default is 3 which means
 that the maximum SPD density will be at 1/3 of the height of the plot.}
 
 \item{n_calc}{Number of points to use when calculating the predictive
 density. Default is 1001.}
+
+\item{n_burn}{The number of samples required for burn-in - any samples before this
+are not used to calculate the predictive density. If not given, the first half of the
+MCMC chain is discarded. Looking at the output of \link{PlotConvergenceData} can
+help determine what an appropriate value is for a given output. Note that the maximum
+value that can be chosen is \code{n_iter - 100 * n_thin} (where \code{n_iter} and \code{n_thin} are the
+arguments given to \link{WalkerBivarDirichlet} or c\link{PolyaUrnBivarDirichlet}).}
 }
 \value{
 A list, each item containing a data frame of the \code{calendar_age}, the

@@ -9,7 +9,8 @@ FindPredictiveCalendarAgeDensity(
   calendar_age_sequence,
   n_posterior_samples,
   interval_width = "2sigma",
-  bespoke_probability = NA
+  bespoke_probability = NA,
+  n_burn = NA
 )
 }
 \arguments{
@@ -32,6 +33,13 @@ calibration curve and the predictive density. Choose from one of \code{"1sigma"}
 \item{bespoke_probability}{The probability to use for the confidence interval
 if \code{"bespoke"} is chosen above. E.g. if 0.95 is chosen, then the 95\% confidence
 interval is calculated. Ignored if \code{"bespoke"} is not chosen.}
+
+\item{n_burn}{The number of samples required for burn-in - any samples before this
+are not used to calculate the predictive density. If not given, the first half of the
+MCMC chain is discarded. Looking at the output of \link{PlotConvergenceData} can
+help determine what an appropriate value is for a given output. Note that the maximum
+value that can be chosen is \code{n_iter - 100 * n_thin} (where \code{n_iter} and \code{n_thin} are the
+arguments given to \link{WalkerBivarDirichlet} or c\link{PolyaUrnBivarDirichlet}).}
 }
 \value{
 A data frame of the \code{calendar_age}, the

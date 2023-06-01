@@ -125,7 +125,8 @@ double PolyaUrnDensityForCalendarAge(
     double nu1,
     double nu2,
     int n_posterior_samples,
-    double quantile_edge_width) {
+    double quantile_edge_width,
+    int n_burn) {
 
   local_rng rng_state;// Ensures RNG follows R and R follows after
   int n = calendar_ages.size();
@@ -133,11 +134,11 @@ double PolyaUrnDensityForCalendarAge(
   std::vector<std::vector<double>> density_samples(n, std::vector<double>(n_posterior_samples));
   std::vector<double> mean_density(n, 0);
   std::vector<double> ci_lower(n), ci_upper(n);
-  int n_out = weights.size(), n_burn = floor(n_out/2);
+  int n_out = weights.size();
   int s; //current sample id
   std::vector<int> sample_ids;
 
-  sample_ids = GetSampleIds(n_burn - 1, n_out - 1, n_posterior_samples);
+  sample_ids = GetSampleIds(n_burn, n_out - 1, n_posterior_samples);
 
   for (int j = 0; j < n_posterior_samples; j++) {
     s = sample_ids[j];
@@ -181,7 +182,8 @@ double PolyaUrnDensityForCalendarAge(
     double nu1,
     double nu2,
     int n_posterior_samples,
-    double quantile_edge_width) {
+    double quantile_edge_width,
+    int n_burn) {
 
   local_rng rng_state;// Ensures RNG follows R and R follows after
   int n = calendar_ages.size();
@@ -189,11 +191,11 @@ double PolyaUrnDensityForCalendarAge(
   std::vector<std::vector<double>> density_samples(n, std::vector<double>(n_posterior_samples));
   std::vector<double> mean_density(n, 0);
   std::vector<double> ci_lower(n), ci_upper(n);
-  int n_out = phis.size(), n_burn = floor(n_out/2);
+  int n_out = phis.size();
   int s; //current sample id
   std::vector<int> sample_ids;
 
-  sample_ids = GetSampleIds(n_burn - 1, n_out - 1, n_posterior_samples);
+  sample_ids = GetSampleIds(n_burn, n_out - 1, n_posterior_samples);
 
   for (int j = 0; j < n_posterior_samples; j++) {
     s = sample_ids[j];
@@ -242,6 +244,31 @@ double PolyaUrnDensityForCalendarAge(
     instant_density[i] = WalkerDensityForCalendarAge(
       calendar_ages[i], weight, phi, tau, mu_phi, lambda, nu1, nu2
     );
+  }
+  return instant_density;
+}
+
+
+// Finds predictive density at a single data point
+
+[[cpp11::register]] doubles FindInstantPredictiveDensityPolyaUrn(
+    doubles calendar_ages,
+    integers observations_per_cluster,
+    doubles phi,
+    doubles tau,
+    double alpha,
+    double mu_phi,
+    double lambda,
+    double nu1,
+    double nu2) {
+
+  int n = calendar_ages.size();
+  writable::doubles instant_density(n);
+
+
+  for (int i = 0; i < n; i++) {
+    instant_density[i] = PolyaUrnDensityForCalendarAge(
+      calendar_ages[i], observations_per_cluster, phi, tau, alpha, mu_phi, lambda, nu1, nu2, n);
   }
   return instant_density;
 }

@@ -39,6 +39,12 @@
 #' that the maximum SPD density will be at 1/3 of the height of the plot.
 #' @param n_calc Number of points to use when calculating the predictive
 #' density. Default is 1001.
+#' @param n_burn The number of samples required for burn-in - any samples before this
+#' are not used to calculate the predictive density. If not given, the first half of the
+#' MCMC chain is discarded. Looking at the output of [carbondate::PlotConvergenceData] can
+#' help determine what an appropriate value is for a given output. Note that the maximum
+#' value that can be chosen is `n_iter - 100 * n_thin` (where `n_iter` and `n_thin` are the
+#' arguments given to [carbondate::WalkerBivarDirichlet] or c[carbondate::PolyaUrnBivarDirichlet]).
 #'
 #' @return A list, each item containing a data frame of the `calendar_age`, the
 #' `density_mean` and the 95% confidence intervals for the density
@@ -76,7 +82,8 @@ PlotPredictiveCalendarAgeDensity <- function(
     bespoke_probability = NA,
     true_density = NULL,
     denscale = 3,
-    n_calc = 1001) {
+    n_calc = 1001,
+    n_burn = NA) {
 
   ##############################################################################
   # Check input parameters
@@ -159,7 +166,8 @@ PlotPredictiveCalendarAgeDensity <- function(
       calendar_age_sequence,
       n_posterior_samples,
       interval_width,
-      bespoke_probability)
+      bespoke_probability,
+      n_burn)
   }
   ##############################################################################
   # Calculate plot scaling
