@@ -54,15 +54,17 @@
 #'
 #' @examples
 #' # Basic usage making use of sensible initialisation to set most values and
-#' # using a saved example data set. Note iterations are kept very small here
-#' # for a faster run time.
-#' PolyaUrnBivarDirichlet(kerr$c14_age, kerr$c14_sig, FALSE, intcal20, n_iter=100, n_thin=10)
+#' # using a saved example data set.
+#'  output = PolyaUrnBivarDirichlet(two_normals$c14_age, two_normals$c14_sig, intcal20)
+#'
+#' # The radiocarbon determinations can be given as F14C concentrations
+#' output = PolyaUrnBivarDirichlet(two_normals$f14c, two_normals$f14c_sig, intcal20, F14C_inputs = TRUE)
 PolyaUrnBivarDirichlet <- function(
     rc_determinations,
     rc_sigmas,
-    F14C_inputs,
     calibration_curve,
-    n_iter = 100,
+    F14C_inputs = FALSE,
+    n_iter = 1e5,
     n_thin = 10,
     use_F14C_space = TRUE,
     slice_width = NA,
@@ -220,7 +222,9 @@ PolyaUrnBivarDirichlet <- function(
     alpha_rate = alpha_rate,
     mu_phi = mu_phi,
     slice_width = slice_width,
-    slice_multiplier = slice_multiplier)
+    slice_multiplier = slice_multiplier,
+    n_iter = n_iter,
+    n_thin = n_thin)
 
   ##############################################################################
   # Create storage for output
@@ -234,13 +238,15 @@ PolyaUrnBivarDirichlet <- function(
   alpha_out <- rep(NA, length = n_out)
   mu_phi_out <- rep(NA, length = n_out)
   n_clust_out <- rep(NA, length = n_out)
+  densities_out <- matrix(NA, nrow = n_out, ncol = length(densities_cal_age_sequence))
 
   output_index <- 1
   calendar_ages_out[output_index, ] <- calendar_ages
   alpha_out[output_index] <- alpha
   mu_phi_out[output_index] <- mu_phi
   n_clust_out[output_index] <- length(unique(cluster_identifiers))
-
+  densities_out[output_index, ] <- FindInstantPredictiveDensityPolyaUrn(
+    densities_cal_age_sequence, as.integer(observations_per_cluster), phi, tau, alpha, mu_phi, lambda, nu1, nu2)
   ##############################################################################
   # Now the calibration
   if (show_progress) {
@@ -291,8 +297,13 @@ PolyaUrnBivarDirichlet <- function(
       alpha_out[output_index] <- alpha
       mu_phi_out[output_index] <- mu_phi
       n_clust_out[output_index] <- max(cluster_identifiers)
+      densities_out[output_index, ] <- FindInstantPredictiveDensityPolyaUrn(
+        densities_cal_age_sequence, as.integer(observations_per_cluster), phi, tau, alpha, mu_phi, lambda, nu1, nu2)
     }
   }
+
+  density_data = list(densities = densities_out, calendar_ages = densities_cal_age_sequence)
+
   return_list <- list(
     cluster_identifiers = cluster_identifiers_out,
     phi = phi_out,
@@ -304,7 +315,8 @@ PolyaUrnBivarDirichlet <- function(
     n_clust = n_clust_out,
     update_type="Polya Urn",
     input_data = input_data,
-    input_parameters = input_parameters)
+    input_parameters = input_parameters,
+    density_data = density_data)
 
   if (show_progress) close(progress_bar)
   return(return_list)
