@@ -11,7 +11,7 @@
 #' uncertainties (1-sigma). Must be the same length as `rc_determinations`.
 #' @param calibration_curve A dataframe which must contain one column `calendar_age_BP`, and also
 #' columns `c14_age` and `c14_sig` or `f14c` and `f14c_sig` (or both sets).
-#' This format matches the curves supplied with this package e.g. [carbondate::intcal20],
+#' This format matches the curves supplied with this package e.g. [carbondate::intcal20], [carbondate::intcal13],
 #' which contain all 5 columns.
 #'
 #' @return A data frame with one column `calendar_age_BP` containing the calendar
@@ -20,27 +20,26 @@
 #' @export
 #'
 #' @examples
-#' # An example using 14C age BP
+#' # An example using 14C age BP and the IntCal 20 curve
 #' FindSummedProbabilityDistribution(
 #'    calendar_age_range_BP=c(600, 1600),
 #'    rc_determinations=c(602, 805, 1554),
 #'    rc_sigmas=c(35, 34, 45),
-#'    F14C_inputs=FALSE,
 #'    calibration_curve=intcal20)
 #'
-#' # An example using F14C concentrations
+#' # An example using F14C concentrations and the IntCal 13 curve
 #' FindSummedProbabilityDistribution(
 #'    calendar_age_range_BP=c(600, 1600),
 #'    rc_determinations=c(0.8, 0.85, 0.9),
 #'    rc_sigmas=c(0.01, 0.015, 0.012),
 #'    F14C_inputs=TRUE,
-#'    calibration_curve=intcal20)
+#'    calibration_curve=intcal13)
 FindSummedProbabilityDistribution <- function(
     calendar_age_range_BP,
     rc_determinations,
     rc_sigmas,
-    F14C_inputs,
-    calibration_curve) {
+    calibration_curve,
+    F14C_inputs = FALSE) {
 
   arg_check <- checkmate::makeAssertCollection()
   checkmate::assertNumeric(calendar_age_range_BP, len = 2, any.missing = FALSE, add = arg_check)

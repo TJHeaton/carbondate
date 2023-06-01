@@ -7,12 +7,12 @@
 #' @param rc_determination A single observed radiocarbon determination
 #' (14C BP age or F14C concentration)
 #' @param rc_sigma The uncertainty of the radiocarbon determination in the same units
-#' @param F14C_inputs `TRUE` if the provided rc_determinations are F14C concentrations and `FALSE`
-#' if they are radiocarbon age BP.
 #' @param calibration_curve A dataframe which must contain one column `calendar_age_BP`, and also
 #' columns `c14_age` and `c14_sig` or `f14c` and `f14c_sig` (or both sets).
 #' This format matches the curves supplied with this package e.g. [carbondate::intcal20],
 #' which contain all 5 columns.
+#' @param F14C_inputs `TRUE` if the provided rc_determinations are F14C concentrations and `FALSE`
+#' if they are radiocarbon age BP. Defaults to `FALSE`.
 #'
 #' @export
 #'
@@ -21,10 +21,10 @@
 #' calendar age.
 #'
 #' @examples
-#' CalibrateSingleDetermination(31020, 35, FALSE, intcal20)
-#' CalibrateSingleDetermination(0.23, 0.001, TRUE, intcal20)
+#' CalibrateSingleDetermination(31020, 35, intcal20)
+#' CalibrateSingleDetermination(0.23, 0.001, intcal20, F14C_inputs = TRUE)
 CalibrateSingleDetermination <- function(
-    rc_determination, rc_sigma, F14C_inputs, calibration_curve) {
+    rc_determination, rc_sigma, calibration_curve, F14C_inputs = FALSE) {
 
   arg_check <- checkmate::makeAssertCollection()
   checkmate::assertNumber(rc_determination, add = arg_check)
