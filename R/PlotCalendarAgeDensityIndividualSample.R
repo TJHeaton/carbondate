@@ -29,13 +29,18 @@ PlotCalendarAgeDensityIndividualSample <- function(
     plot_14C_age = TRUE,
     resolution = 5,
     interval_width = "2sigma",
-    bespoke_probability = NA) {
+    bespoke_probability = NA,
+    n_burn = NA) {
 
   arg_check <- checkmate::makeAssertCollection()
   checkmate::assertInt(ident, add = arg_check)
   .CheckOutputData(arg_check, output_data)
+  n_iter = output_data$input_parameters$n_iter
+  n_thin = output_data$input_parameters$n_thin
+
   .CheckCalibrationCurveFromOutput(arg_check, output_data, calibration_curve)
   checkmate::assertInt(resolution, na.ok = FALSE, add = arg_check, lower = 1)
+  checkmate::assertInt(n_burn, lower = 0, upper = n_iter - 100 * n_thin, na.ok = TRUE)
   checkmate::reportAssertions(arg_check)
 
   if (is.null(calibration_curve)) {
@@ -66,7 +71,11 @@ PlotCalendarAgeDensityIndividualSample <- function(
   rc_sig <- rc_sigmas[ident]
 
   n_out <- length(calendar_age)
-  n_burn <- floor(n_out / 2)
+  if (is.na(n_burn)) {
+    n_burn = floor(length(calendar_age) / 2)
+  } else {
+    n_burn = floor(n_burn / n_thin)
+  }
   calendar_age <- calendar_age[(n_burn+1):n_out]
 
   # Find the calendar age range to plot

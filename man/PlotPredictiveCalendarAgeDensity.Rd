@@ -65,7 +65,7 @@ that the maximum SPD density will be at 1/3 of the height of the plot.}
 density. Default is 1001.}
 
 \item{n_burn}{The number of samples required for burn-in - any samples before this
-are not used to calculate the predictive density. If not given, the first half of the
+are not used to calculate the density. If not given, the first half of the
 MCMC chain is discarded. Looking at the output of \link{PlotConvergenceData} can
 help determine what an appropriate value is for a given output. Note that the maximum
 value that can be chosen is \code{n_iter - 100 * n_thin} (where \code{n_iter} and \code{n_thin} are the

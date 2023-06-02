@@ -40,7 +40,7 @@
 #' @param n_calc Number of points to use when calculating the predictive
 #' density. Default is 1001.
 #' @param n_burn The number of samples required for burn-in - any samples before this
-#' are not used to calculate the predictive density. If not given, the first half of the
+#' are not used to calculate the density. If not given, the first half of the
 #' MCMC chain is discarded. Looking at the output of [carbondate::PlotConvergenceData] can
 #' help determine what an appropriate value is for a given output. Note that the maximum
 #' value that can be chosen is `n_iter - 100 * n_thin` (where `n_iter` and `n_thin` are the
@@ -103,6 +103,7 @@ PlotPredictiveCalendarAgeDensity <- function(
       output_data[[i]]$label <- output_data[[i]]$update_type
     }
   }
+
   checkmate::assertInt(n_posterior_samples, lower = 10, add = arg_check)
   .CheckIntervalWidth(arg_check, interval_width, bespoke_probability)
   checkmate::assertNumber(denscale, lower = 0, add = arg_check)
