@@ -52,15 +52,19 @@ PlotConvergenceData <- function(output_data, n_initial = 1000) {
   graphics::plot(
     iters[(final_initial_index + 1):n_out]/1000,
     (kld_instant),
-    ylab = "Kullback–Leibler divergence",
+    ylab = "Kullback Leibler divergence",
     xlab = "k iterations", type="p", pch=".",
     main = paste(
-      "Kullback–Leibler divergence between mean density of first",
-      n_initial,
-      "iterations \n and density for later iteration"))
+      "Kullback Leibler divergence between \n initial and a later iteration"))
   graphics::lines(iters_avg/1000, (kld_instant_avg), col="red")
   graphics::legend(
     "topright", legend = c("Single KLD", "Average of 100 KLDs"),
     lty = c(-1, 1), pch = c(".", NA), col = c("black", "red"))
 
+}
+
+.KLD <- function(P, Q) {
+  P = P/sum(P)
+  Q = Q/sum(Q)
+  return (sum(P * log(P / Q)))
 }

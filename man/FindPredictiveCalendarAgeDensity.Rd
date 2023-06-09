@@ -10,7 +10,8 @@ FindPredictiveCalendarAgeDensity(
   n_posterior_samples,
   interval_width = "2sigma",
   bespoke_probability = NA,
-  n_burn = NA
+  n_burn = NA,
+  n_end = NA
 )
 }
 \arguments{
@@ -40,6 +41,9 @@ MCMC chain is discarded. Looking at the output of \link{PlotConvergenceData} can
 help determine what an appropriate value is for a given output. Note that the maximum
 value that can be chosen is \code{n_iter - 100 * n_thin} (where \code{n_iter} and \code{n_thin} are the
 arguments given to \link{WalkerBivarDirichlet} or c\link{PolyaUrnBivarDirichlet}).}
+
+\item{n_end}{The iteration number of the last sample to use. Assumed to be the number of iterations
+if not given.}
 }
 \value{
 A data frame of the \code{calendar_age}, the
