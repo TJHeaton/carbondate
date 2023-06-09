@@ -126,7 +126,8 @@ double PolyaUrnDensityForCalendarAge(
     double nu2,
     int n_posterior_samples,
     double quantile_edge_width,
-    int n_burn) {
+    int n_burn,
+    int n_end) {
 
   local_rng rng_state;// Ensures RNG follows R and R follows after
   int n = calendar_ages.size();
@@ -134,11 +135,10 @@ double PolyaUrnDensityForCalendarAge(
   std::vector<std::vector<double>> density_samples(n, std::vector<double>(n_posterior_samples));
   std::vector<double> mean_density(n, 0);
   std::vector<double> ci_lower(n), ci_upper(n);
-  int n_out = weights.size();
   int s; //current sample id
   std::vector<int> sample_ids;
 
-  sample_ids = GetSampleIds(n_burn, n_out - 1, n_posterior_samples);
+  sample_ids = GetSampleIds(n_burn, n_end - 1, n_posterior_samples);
 
   for (int j = 0; j < n_posterior_samples; j++) {
     s = sample_ids[j];
@@ -183,7 +183,8 @@ double PolyaUrnDensityForCalendarAge(
     double nu2,
     int n_posterior_samples,
     double quantile_edge_width,
-    int n_burn) {
+    int n_burn,
+    int n_end) {
 
   local_rng rng_state;// Ensures RNG follows R and R follows after
   int n = calendar_ages.size();
@@ -191,11 +192,10 @@ double PolyaUrnDensityForCalendarAge(
   std::vector<std::vector<double>> density_samples(n, std::vector<double>(n_posterior_samples));
   std::vector<double> mean_density(n, 0);
   std::vector<double> ci_lower(n), ci_upper(n);
-  int n_out = phis.size();
   int s; //current sample id
   std::vector<int> sample_ids;
 
-  sample_ids = GetSampleIds(n_burn, n_out - 1, n_posterior_samples);
+  sample_ids = GetSampleIds(n_burn, n_end - 1, n_posterior_samples);
 
   for (int j = 0; j < n_posterior_samples; j++) {
     s = sample_ids[j];

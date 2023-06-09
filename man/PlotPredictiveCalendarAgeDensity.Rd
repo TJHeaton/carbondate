@@ -13,10 +13,10 @@ PlotPredictiveCalendarAgeDensity(
   show_confidence_intervals = TRUE,
   interval_width = "2sigma",
   bespoke_probability = NA,
-  true_density = NULL,
   denscale = 3,
   n_calc = 1001,
-  n_burn = NA
+  n_burn = NA,
+  n_end = NA
 )
 }
 \arguments{
@@ -53,10 +53,6 @@ calibration curve and the predictive density. Choose from one of \code{"1sigma"}
 if \code{"bespoke"} is chosen above. E.g. if 0.95 is chosen, then the 95\% confidence
 interval is calculated. Ignored if \code{"bespoke"} is not chosen.}
 
-\item{true_density}{The true calendar age density (optional). Expects a data
-frame with two columns, the first column being calendar age and the right
-column being the normalized density.}
-
 \item{denscale}{Whether to scale the vertical range of the density plot
 relative to the calibration curve plot (optional). Default is 3 which means
 that the maximum SPD density will be at 1/3 of the height of the plot.}
@@ -70,6 +66,9 @@ MCMC chain is discarded. Looking at the output of \link{PlotConvergenceData} can
 help determine what an appropriate value is for a given output. Note that the maximum
 value that can be chosen is \code{n_iter - 100 * n_thin} (where \code{n_iter} and \code{n_thin} are the
 arguments given to \link{WalkerBivarDirichlet} or c\link{PolyaUrnBivarDirichlet}).}
+
+\item{n_end}{The iteration number of the last sample to use. Assumed to be the number of iterations
+if not given.}
 }
 \value{
 A list, each item containing a data frame of the \code{calendar_age}, the

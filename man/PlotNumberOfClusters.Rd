@@ -4,7 +4,7 @@
 \alias{PlotNumberOfClusters}
 \title{Plots the number of clusters}
 \usage{
-PlotNumberOfClusters(output_data, title = NULL)
+PlotNumberOfClusters(output_data, title = NULL, n_burn = NA, n_end = NA)
 }
 \arguments{
 \item{output_data}{The return value from one of the updating functions e.g.
@@ -17,6 +17,16 @@ named \code{label} which is used to set the label on the plot legend.}
 whatever is assigned to the \code{label} field of the \code{output_data}. If there is
 no label, and nothing is provided as an argument, then no title will be
 shown.}
+
+\item{n_burn}{The number of samples required for burn-in - any samples before this
+are not used to calculate the density. If not given, the first half of the
+MCMC chain is discarded. Looking at the output of \link{PlotConvergenceData} can
+help determine what an appropriate value is for a given output. Note that the maximum
+value that can be chosen is \code{n_iter - 100 * n_thin} (where \code{n_iter} and \code{n_thin} are the
+arguments given to \link{WalkerBivarDirichlet} or c\link{PolyaUrnBivarDirichlet}).}
+
+\item{n_end}{The iteration number of the last sample to use. Assumed to be the number of iterations
+if not given.}
 }
 \value{
 No return value

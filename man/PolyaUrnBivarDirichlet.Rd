@@ -153,5 +153,6 @@ considers both the mean and the variance of the clusters to be unknown.
  output = PolyaUrnBivarDirichlet(two_normals$c14_age, two_normals$c14_sig, intcal20)
 
 # The radiocarbon determinations can be given as F14C concentrations
-output = PolyaUrnBivarDirichlet(two_normals$f14c, two_normals$f14c_sig, intcal20, F14C_inputs = TRUE)
+output = PolyaUrnBivarDirichlet(
+    two_normals$f14c, two_normals$f14c_sig, intcal20, F14C_inputs = TRUE)
 }

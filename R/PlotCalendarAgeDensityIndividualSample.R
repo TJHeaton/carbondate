@@ -30,7 +30,8 @@ PlotCalendarAgeDensityIndividualSample <- function(
     resolution = 5,
     interval_width = "2sigma",
     bespoke_probability = NA,
-    n_burn = NA) {
+    n_burn = NA,
+    n_end = NA) {
 
   arg_check <- checkmate::makeAssertCollection()
   checkmate::assertInt(ident, add = arg_check)
@@ -72,11 +73,16 @@ PlotCalendarAgeDensityIndividualSample <- function(
 
   n_out <- length(calendar_age)
   if (is.na(n_burn)) {
-    n_burn = floor(length(calendar_age) / 2)
+    n_burn = floor(n_out / 2)
   } else {
     n_burn = floor(n_burn / n_thin)
   }
-  calendar_age <- calendar_age[(n_burn+1):n_out]
+  if (is.na(n_end)) {
+    n_end = n_out
+  } else {
+    n_end = floor(n_end / n_thin)
+  }
+  calendar_age <- calendar_age[(n_burn+1):n_end]
 
   # Find the calendar age range to plot
   xrange <- range(calendar_age)
