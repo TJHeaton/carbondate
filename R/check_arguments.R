@@ -184,8 +184,8 @@
     first = output_data_list[[1]]$input_data
     other = output_data_list[[i]]$input_data
     if (
-      !identical(first$c14_determinations, other$c14_determinations)
-      || !identical(first$sigma, other$sigma)
+      !identical(first$rc_determinations, other$rc_determinations)
+      || !identical(first$rc_sigmas, other$rc_sigmas)
       || first$F14C_inputs != other$F14C_inputs
       || first$calibration_curve_name != other$calibration_curve_name) {
       cli::cli_abort(

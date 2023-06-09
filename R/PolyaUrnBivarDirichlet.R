@@ -207,9 +207,8 @@ PolyaUrnBivarDirichlet <- function(
 
   alpha <- 0.0001
 
-  tau <- rep(1 / (diff(range(rc_determinations)) / 4)^2, n_clust)
-  phi <- stats::rnorm(
-    n_clust, mean = mu_phi, sd = diff(range(rc_determinations)) / 2)
+  tau <- rep(1 / (diff(spd_range_3_sigma) / 4)^2, n_clust)
+  phi <- stats::rnorm(n_clust, mean = mu_phi, sd = diff(spd_range_3_sigma) / 2)
 
   ##############################################################################
   # Save input parameters
@@ -221,7 +220,6 @@ PolyaUrnBivarDirichlet <- function(
     B = B,
     alpha_shape = alpha_shape,
     alpha_rate = alpha_rate,
-    mu_phi = mu_phi,
     slice_width = slice_width,
     slice_multiplier = slice_multiplier,
     n_iter = n_iter,
