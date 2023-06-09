@@ -1,46 +1,166 @@
 library(devtools)
 load_all()
 
-plot_convergence_walker_kerr <- function(seeds, n_iter, n_thin) {
+plot_convergence_walker_kerr <- function(seeds, n_iter, n_thin, n_burn) {
+  pdf(
+    file = paste("experimenting/convergence_2/kerr_walker_B_", n_iter/1000, ".pdf", sep=""),
+    width = 10, height = 5, pointsize = 10)
+  for (seed in seeds) {
+    print(paste("seed =", seed))
+    set.seed(seed)
+
+    filename = paste("experimenting/convergence_2/kerr_walker_B_seed_", seed, ".rda", sep="")
+
+    if (file.exists(filename)) {
+      load(filename)
+    } else {
+      wo = WalkerBivarDirichlet(kerr$c14_age, kerr$c14_sig, intcal20, n_iter = n_iter, n_thin = n_thin)
+      save(wo, file=filename)
+    }
+
+    n_posterior_samples = 20000
+    layout.matrix <- matrix(c(1, 2), nrow = 1, ncol = 2)
+    layout(mat = layout.matrix, heights = c(1, 1), widths = c(1, 1))
+
+    PlotPredictiveCalendarAgeDensity(wo, n_posterior_samples, n_burn = n_burn)
+    title(sub = paste("n_burn =", n_burn, "n_samples = ", n_posterior_samples))
+    PlotConvergenceData(wo)
+    title(sub = paste("seed =", seed))
+  }
+  p = dev.cur()
+  dev.off(p)
+}
+
+plot_convergence_kerr_shifted <- function(seeds, n_iter, n_thin, n_burn) {
+  pdf(
+    file = paste("experimenting/convergence_2/kerr_walker_shifted_", n_iter/1000, ".pdf", sep=""),
+    width = 10, height = 5, pointsize = 10)
+  for (seed in seeds) {
+    print(paste("seed =", seed))
+    set.seed(seed)
+
+    filename = paste("experimenting/convergence_2/kerr_walker_shifted_", n_iter/1000,"_seed_", seed, ".rda", sep="")
+
+    if (file.exists(filename)) {
+      load(filename)
+    } else {
+      wo = WalkerBivarDirichlet(kerr$c14_age + 2000, kerr$c14_sig, intcal20, n_iter = n_iter, n_thin = n_thin)
+      save(wo, file=filename)
+    }
+
+    n_posterior_samples = 20000
+    layout.matrix <- matrix(c(1, 2), nrow = 1, ncol = 2)
+    layout(mat = layout.matrix, heights = c(1, 1), widths = c(1, 1))
+
+    PlotPredictiveCalendarAgeDensity(wo, n_posterior_samples, n_burn = n_burn)
+    title(sub = paste("n_burn =", n_burn, "n_samples = ", n_posterior_samples))
+    PlotConvergenceData(wo)
+    title(sub = paste("seed =", seed))
+  }
+  p = dev.cur()
+  dev.off(p)
+}
+
+plot_convergence_walker_pu_kerr <- function(seeds, n_iter, n_thin, n_burn) {
   pdf(
     file = paste("experimenting/convergence_2/kerr_", n_iter/1000, ".pdf", sep=""),
-    width = 10, height = 5, pointsize = 10)
+    width = 12, height = 5, pointsize = 10)
   for (seed in seeds) {
+    print(paste("seed =", seed))
     set.seed(seed)
 
-    wo = WalkerBivarDirichlet(kerr$c14_age, kerr$c14_sig, intcal20, n_iter = n_iter, n_thin = n_thin)
+    filename = paste("experimenting/convergence_2/data/kerr_walker_A_", n_iter/1000, "_seed_", seed, ".rda", sep="")
 
-    layout.matrix <- matrix(c(1, 2), nrow = 1, ncol = 2)
-    layout(mat = layout.matrix, heights = c(1, 1), widths = c(1, 1))
+    if (file.exists(filename)) {
+      load(filename)
+    } else {
+      wo = WalkerBivarDirichlet(kerr$c14_age, kerr$c14_sig, intcal20, n_iter = n_iter, n_thin = n_thin)
+      save(wo, file=filename)
+    }
 
-    PlotPredictiveCalendarAgeDensity(wo, 5000)
+    set.seed(seed)
+    filename = paste("experimenting/convergence_2/data/kerr_polya_A_", n_iter/1000, "_seed_", seed, ".rda", sep="")
+    if (file.exists(filename)) {
+      load(filename)
+    } else {
+      po = PolyaUrnBivarDirichlet(kerr$c14_age, kerr$c14_sig, intcal20, n_iter = n_iter, n_thin = n_thin)
+      save(po, file=filename)
+    }
+
+    n_posterior_samples = 10000
+    layout.matrix <- matrix(c(1, 1, 2, 3, 4, 5), nrow = 2, ncol = 3)
+    layout(mat = layout.matrix, heights = c(3, 3), widths = c(1.7, 1, 1))
+
+    PlotPredictiveCalendarAgeDensity(list(wo, po), n_posterior_samples, n_burn = n_burn)
+    title(sub = paste("n_burn =", n_burn, "n_samples = ", n_posterior_samples))
+
+    PlotNumberOfClusters(wo)
+    title(main="Walker")
+
+    PlotNumberOfClusters(po)
+    title(main="Polya Urn")
+
     PlotConvergenceData(wo)
-    title(paste("seed =", seed))
+    title(sub = paste("seed =", seed))
+
+    PlotConvergenceData(po)
+    title(sub = paste("seed =", seed))
   }
   p = dev.cur()
   dev.off(p)
 }
 
-plot_convergence_pu_kerr <- function(seeds, n_iter, n_thin) {
+
+plot_all_kerr <- function(seeds, n_iter, n_thin) {
   pdf(
-    file = paste("experimenting/convergence_2/kerr_pu_", n_iter/1000, ".pdf", sep=""),
-    width = 10, height = 5, pointsize = 10)
+    file = paste("experimenting/convergence_2/kerr_all_", n_iter/1000, "_2_sigma.pdf", sep=""),
+    width = 12, height = 5, pointsize = 10)
+  walker = list()
+  pu = list()
   for (seed in seeds) {
+    print(paste("seed =", seed))
     set.seed(seed)
 
-    wo = PolyaUrnBivarDirichlet(kerr$c14_age, kerr$c14_sig, intcal20, n_iter = n_iter, n_thin = n_thin)
+    filename = paste("experimenting/convergence_2/data/kerr_walker_A_", n_iter/1000, "_seed_", seed, ".rda", sep="")
 
-    layout.matrix <- matrix(c(1, 2), nrow = 1, ncol = 2)
-    layout(mat = layout.matrix, heights = c(1, 1), widths = c(1, 1))
+    if (file.exists(filename)) {
+      load(filename)
+    } else {
+      wo = WalkerBivarDirichlet(kerr$c14_age, kerr$c14_sig, intcal20, n_iter = n_iter, n_thin = n_thin)
+      save(wo, file=filename)
+    }
+    wo$label = paste(seed)
+    walker[[seed]] = wo
 
-    PlotPredictiveCalendarAgeDensity(wo, 5000)
-    PlotConvergenceData(wo)
-    title(paste("seed =", seed))
+    set.seed(seed)
+    filename = paste("experimenting/convergence_2/data/kerr_polya_A_", n_iter/1000, "_seed_", seed, ".rda", sep="")
+    if (file.exists(filename)) {
+      load(filename)
+    } else {
+      po = PolyaUrnBivarDirichlet(kerr$c14_age, kerr$c14_sig, intcal20, n_iter = n_iter, n_thin = n_thin)
+      save(po, file=filename)
+    }
+    po$label = paste(seed)
+    pu[[seed]] = po
   }
+
+  for (n_end in seq(1e5, 1e6, by = 1e5)) {
+    print(n_end)
+    n_posterior_samples = 1000
+    n_burn = n_end / 2
+    layout.matrix <- matrix(c(1, 2), nrow = 1, ncol = 2)
+    layout(mat = layout.matrix, heights = c(3), widths = c(1, 1))
+
+    PlotPredictiveCalendarAgeDensity(walker, n_posterior_samples, n_burn = n_burn, n_end = n_end, interval_width = "2sigma")
+    title(sub = paste("Walker: n_burn =", n_burn, "n_end = ", n_end))
+
+    PlotPredictiveCalendarAgeDensity(pu, n_posterior_samples, n_burn = n_burn, n_end = n_end, interval_width = "2sigma")
+    title(sub = paste("Polya: n_burn =", n_burn, "n_end = ", n_end))
+  }
+
   p = dev.cur()
   dev.off(p)
 }
-
 
 get_data_postbomb <- function(seeds) {
   HOBS2022 = get_hobs_calcurve()
@@ -55,135 +175,82 @@ get_data_postbomb <- function(seeds) {
   }
 }
 
-
-plot_data <- function(seeds, prefix, save_file = TRUE) {
-  if (save_file) {
-    pdf(
-      file = paste("experimenting/convergence/", prefix, ".pdf", sep=""), width = 10, height = 10,
-      pointsize = 10)
-  }
-  for (seed in seeds) {
-    load(paste("experimenting/convergence/", prefix ,"_seed_", seed, ".rda", sep=""))
-
-    calendar_ages = wo$density_data$calendar_ages
-    iters = wo$density_data$iters/1000
-    densities = wo$density_data$densities
-
-    layout.matrix <- matrix(c(1, 4, 2, 3), nrow = 2, ncol = 2)
-    layout(mat = layout.matrix, heights = c(1, 1), widths = c(1, 1))
-
-    if (prefix == "postbomb") {
-      PlotPredictiveCalendarAgeDensity(
-        wo, 5000, plot_14C_age = FALSE, denscale = 5, show_SPD = TRUE,
-        calibration_curve = get_hobs_calcurve())
-      image_calendar_ages = rev(1950 - calendar_ages)
-      densities = densities[length(calendar_ages):1, ]
-      zlim = c(0, max(wo$density_data$densities) / 6)
-      xlab = "Calendar Age (AD)"
-    } else {
-      PlotPredictiveCalendarAgeDensity(wo, 5000, show_SPD = TRUE)
-      image_calendar_ages = calendar_ages
-      zlim = c(0, max(wo$density_data$densities))
-      xlab = "Calendar Age (yr BP)"
-    }
-
-    image(
-      x=image_calendar_ages,
-      y=iters,
-      z=densities,
-      xlab=xlab,
-      ylab="k iterations",
-      col = hcl.colors(256, "Spectral"),
-      main = paste("Seed = ", seed),
-      zlim = zlim)
-
-    n_out = length(wo$density_data$iters)
-    kld_instant = rep(NA, n_out - 1)
-    kld_mean = rep(NA, n_out - 1)
-    kld_instant_avg = rep(0, (n_out - 1) / 100)
-    kld_mean_avg = rep(0, (n_out - 1) / 100)
-    iters_avg = rep(NA, (n_out - 1) / 100)
-    mean_density = densities[ ,1]
-    avg_index = 1
-    for (i in 1:(n_out - 1)) {
-      kld_instant[i] = .KLD(densities[, 1], densities[, i + 1])
-      kld_mean[i] = .KLD(mean_density, densities[, i + 1])
-
-      kld_instant_avg[avg_index] = kld_instant_avg[avg_index] + kld_instant[i]
-      kld_mean_avg[avg_index] = kld_mean_avg[avg_index] + kld_mean[i]
-      if (i %% 100 == 0) {
-        kld_instant_avg[avg_index] = kld_instant_avg[avg_index] / 100
-        kld_mean_avg[avg_index] = kld_mean_avg[avg_index] / 100
-        iters_avg[avg_index] = iters[i]
-        avg_index = avg_index + 1
-      }
-
-      mean_density = mean_density + densities[, i + 1]
-    }
-
-    plot(iters[-1], log10(kld_instant), ylab = "log10 of KLD with first 10k iters", xlab = "k iterations", type="p", pch=".")
-    lines(iters_avg, log10(kld_instant_avg), col="red")
-    plot(iters[-1], log10(kld_mean), ylab = "log10 of KLD with mean density", xlab = "k iterations", type="p", pch=".")
-    lines(iters_avg, log10(kld_mean_avg), col="red")
-  }
-  if (save_file) dev.off()
-}
-
-gellman_rubin <- function(output_list, prefix) {
-
-  M = length(output_list)
-  theta = list()
-  theta_mean = rep(0, M)
-  theta_variance = rep(0, M)
-
-  for (m in 1:M) {
-    theta[[m]] = output_list[[m]]$calendar_ages[, 10]
-  }
-
-  n_out = length(theta[[1]])
-  B = rep(0, n_out - 1)
-  W = rep(0, n_out - 1)
-  for (N in 2:n_out) {
-    for (m in 1:M) {
-      theta_mean[m] = mean(theta[[m]][1:N])
-      theta_variance[m] = var(theta[[m]][1:N])
-    }
-    overall_mean = mean(theta_mean)
-    B[N - 1] = N / (M - 1) * sum((theta_mean - overall_mean) ^ 2)
-    W[N - 1] = 1 / M * sum(theta_variance)
-  }
-  plot(B, type="l")
-  plot(W, type="l")
-}
-
-gellman_rubin_single <- function(seed, prefix) {
+gellman_rubin <- function(seeds, prefix) {
 
   M = length(seeds)
   theta = list()
-  theta_mean = rep(0, M)
-  theta_variance = rep(0, M)
 
   for (m in 1:M) {
-    load(paste("experimenting/convergence/", prefix ,"_seed_", seeds[m], ".rda", sep=""))
+    load(paste("experimenting/convergence_2/data/", prefix ,"_seed_", seeds[m], ".rda", sep=""))
 
     theta[[m]] = wo$calendar_ages[, 10]
   }
+  R = CalculatePsrf(theta, 10, length(theta[[1]]))
+  plot(R, type="l")
+}
+
+
+single_chain_gellman_rubin <- function(output, n_burn) {
+  n_obs = length(output$input_data$rc_determinations)
+  n_thin = output$input_parameters$n_thin
+  R = rep(0, n_obs)
+
+  for (i in 1:n_obs) {
+    R[i] = single_chain_psrf(output$calendar_ages[, i], n_burn, n_thin)
+  }
+
+  return (R)
+}
+
+
+single_chain_psrf <- function(theta, n_burn, n_thin) {
+  n_out = length(theta)
+  n_burn = floor(n_burn / n_thin) + 1
+  n_chain = floor((n_out - n_burn) / 3)
+
+  chain_one = theta[(n_burn + 1):(n_burn + n_chain)]
+  chain_two = theta[(n_burn + n_chain + 1):(n_burn + 2 * n_chain)]
+  chain_three = theta[(n_burn + 2 * n_chain + 1):(n_burn + 3 * n_chain)]
+
+  overall_mean = mean(theta[n_burn:(n_burn + 3 * n_chain)])
+
+  within_chain_variance = 0.5 * (var(chain_one) + var(chain_two) + var(chain_three))
+  between_chain_variance = 0.5 * n_chain * (
+    (mean(chain_one) - overall_mean)^2
+    + (mean(chain_two) - overall_mean)^2
+    + (mean(chain_three) - overall_mean)^2
+  )
+
+  pooled_variance = (n_chain - 1) / n_chain * within_chain_variance
+  pooled_variance = pooled_variance + 4 / (3 * n_chain) * between_chain_variance;
+
+  return(pooled_variance / within_chain_variance)
+}
+
+calculate_psrf <- function(theta) {
+
+  M = length(theta)
+  theta_mean = rep(0, M)
+  theta_variance = rep(0, M)
 
   n_out = length(theta[[1]])
-  B = rep(0, n_out - 1)
-  W = rep(0, n_out - 1)
-  for (N in 2:n_out) {
+  B = rep(0, n_out - 10)
+  W = rep(0, n_out - 10)
+  V = rep(0, n_out - 10)
+  for (N in 11:n_out) {
     for (m in 1:M) {
       theta_mean[m] = mean(theta[[m]][1:N])
       theta_variance[m] = var(theta[[m]][1:N])
     }
     overall_mean = mean(theta_mean)
-    B[N - 1] = N / (M - 1) * sum((theta_mean - overall_mean) ^ 2)
-    W[N - 1] = 1 / M * sum(theta_variance)
+    B[N - 10] = N / (M - 1) * sum((theta_mean - overall_mean) ^ 2)
+    W[N - 10] = 1 / M * sum(theta_variance)
+
+    V[N - 10] = (N - 1) / N * W[N - 10] + (M + 1) / (M * N) * B[N - 10]
   }
-  plot(B, type="l")
-  plot(W, type="l")
+  return(V / W)
 }
+
 
 
 get_hobs_calcurve <- function() {
