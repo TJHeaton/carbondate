@@ -41,7 +41,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
 
   .CheckCalibrationCurveFromOutput(arg_check, output_data, calibration_curve)
   checkmate::assertInt(resolution, na.ok = FALSE, add = arg_check, lower = 1)
-  checkmate::assertInt(n_burn, lower = 0, upper = n_iter - 100 * n_thin, na.ok = TRUE)
+  .CheckNBurn(arg_check, n_burn, n_iter, n_thin)
   checkmate::reportAssertions(arg_check)
 
   if (is.null(calibration_curve)) {

@@ -48,11 +48,11 @@ if "bespoke" is chosen above. E.g. if 0.95 is chosen, then the 95\% confidence
 interval is calculated. Ignored if "bespoke" is not chosen.}
 
 \item{n_burn}{The number of samples required for burn-in - any samples before this
-are not used to calculate the density. If not given, the first half of the
+are not used in the calculation. If not given, the first half of the
 MCMC chain is discarded. Looking at the output of \link{PlotConvergenceData} can
 help determine what an appropriate value is for a given output. Note that the maximum
 value that can be chosen is \code{n_iter - 100 * n_thin} (where \code{n_iter} and \code{n_thin} are the
-arguments given to \link{WalkerBivarDirichlet} or c\link{PolyaUrnBivarDirichlet}).}
+arguments given to \link{PolyaUrnBivarDirichlet} or c\link{WalkerBivarDirichlet}).}
 
 \item{n_end}{The iteration number of the last sample to use. Assumed to be the number of iterations
 if not given.}

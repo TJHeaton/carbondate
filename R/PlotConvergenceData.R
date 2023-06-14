@@ -5,8 +5,8 @@
 #' estimate whether the calibration function has converged.
 #'
 #' @param output_data The return value from one of the updating functions e.g.
-#' [carbondate::WalkerBivarDirichlet] or
-#' [carbondate::PolyaUrnBivarDirichlet].
+#' [carbondate::PolyaUrnBivarDirichlet] or
+#' [carbondate::WalkerBivarDirichlet].
 #' @param n_initial The number of samples to use for the 'initial' predictive density,
 #' which is then compared with all subsequent data points. If not given 1000 data points will
 #' be used.
@@ -17,14 +17,18 @@
 #'
 #' @examples
 #' # Plot results for the example data
-#' PlotConvergenceData(walker_example_output, 500)
+#' PlotConvergenceData(polya_urn_example_output)
 PlotConvergenceData <- function(output_data, n_initial = 1000) {
 
-  .CheckOutputData(NULL, output_data)
+  arg_check <- checkmate::makeAssertCollection()
+  .CheckOutputData(arg_check, output_data)
 
   n_iter <- output_data$input_parameters$n_iter
   n_thin <- output_data$input_parameters$n_thin
   n_out <- length(output_data$mu_phi)
+
+  checkmate::assertNumeric(n_initial, lower = 10, upper = n_out / 10, add = arg_check)
+  checkmate::reportAssertions(arg_check)
 
   calendar_ages <- output_data$density_data$calendar_ages
   densities <- output_data$density_data$densities

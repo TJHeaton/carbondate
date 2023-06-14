@@ -8,8 +8,8 @@ PlotConvergenceData(output_data, n_initial = 1000)
 }
 \arguments{
 \item{output_data}{The return value from one of the updating functions e.g.
-\link{WalkerBivarDirichlet} or
-\link{PolyaUrnBivarDirichlet}.}
+\link{PolyaUrnBivarDirichlet} or
+\link{WalkerBivarDirichlet}.}
 
 \item{n_initial}{The number of samples to use for the 'initial' predictive density,
 which is then compared with all subsequent data points. If not given 1000 data points will
@@ -25,5 +25,5 @@ estimate whether the calibration function has converged.
 }
 \examples{
 # Plot results for the example data
-PlotConvergenceData(walker_example_output, 500)
+PlotConvergenceData(polya_urn_example_output)
 }

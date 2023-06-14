@@ -147,6 +147,8 @@ WalkerBivarDirichlet <- function(
     n_clust)
   .CheckIterationParameters(arg_check, n_iter, n_thin)
   .CheckSliceParameters(arg_check, slice_width, slice_multiplier, sensible_initialisation)
+  checkmate::assert_flag(F14C_inputs, arg_check)
+  checkmate::assert_flag(use_F14C_space, arg_check)
 
   checkmate::reportAssertions(arg_check)
 

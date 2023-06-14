@@ -37,11 +37,11 @@
 #' @param n_calc Number of points to use when calculating the predictive
 #' density. Default is 1001.
 #' @param n_burn The number of samples required for burn-in - any samples before this
-#' are not used to calculate the density. If not given, the first half of the
+#' are not used in the calculation. If not given, the first half of the
 #' MCMC chain is discarded. Looking at the output of [carbondate::PlotConvergenceData] can
 #' help determine what an appropriate value is for a given output. Note that the maximum
 #' value that can be chosen is `n_iter - 100 * n_thin` (where `n_iter` and `n_thin` are the
-#' arguments given to [carbondate::WalkerBivarDirichlet] or c[carbondate::PolyaUrnBivarDirichlet]).
+#' arguments given to [carbondate::PolyaUrnBivarDirichlet] or c[carbondate::WalkerBivarDirichlet]).
 #' @param n_end The iteration number of the last sample to use. Assumed to be the number of iterations
 #' if not given.
 #'
@@ -54,23 +54,23 @@
 #'
 #' @examples
 #' # Plot results for a single calibration
-#' PlotPredictiveCalendarAgeDensity(walker_example_output, 500)
+#' PlotPredictiveCalendarAgeDensity(polya_urn_example_output, 500)
 #'
 #' # Plot results from a calibration, and add a label
-#' new_output = walker_example_output
-#' new_output$label = "My plot"
-#' PlotPredictiveCalendarAgeDensity(new_output, 500)
+#' op = PolyaUrnBivarDirichlet(two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter=1e4)
+#' op$label = "My plot"
+#' PlotPredictiveCalendarAgeDensity(op, 500)
 #'
 #' # Plot results from two calibrations on the same plot, and show the SPD
 #' PlotPredictiveCalendarAgeDensity(
 #'   list(walker_example_output, polya_urn_example_output), 500, show_SPD = TRUE)
 #'
 #' # Plot and show the 1-sigma confidence interval
-#' PlotPredictiveCalendarAgeDensity(walker_example_output, 500, interval_width = "1sigma")
+#' PlotPredictiveCalendarAgeDensity(polya_urn_example_output, 500, interval_width = "1sigma")
 #'
 #' # Plot and show the 80% confidence interval
 #' PlotPredictiveCalendarAgeDensity(
-#'   walker_example_output, 500, interval_width = "bespoke", bespoke_probability = 0.8)
+#'   polya_urn_example_output, 500, interval_width = "bespoke", bespoke_probability = 0.8)
 PlotPredictiveCalendarAgeDensity <- function(
     output_data,
     n_posterior_samples,
