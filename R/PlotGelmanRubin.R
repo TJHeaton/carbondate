@@ -48,7 +48,7 @@ PlotGelmanRubinDiagnosticSingleChain <- function(output_data, n_burn = NA, n_seg
     R[i] = .SingleChainPsrf(output_data$calendar_ages[, i], n_burn, n_thin, n_segments)
   }
 
-  hist(R, xlab = "", main = "Histogram of PSRF for posterior calendar ages")
+  graphics::hist(R, xlab = "", main = "Histogram of PSRF for posterior calendar ages")
 }
 
 
@@ -75,8 +75,10 @@ PlotGelmanRubinDiagnosticSingleChain <- function(output_data, n_burn = NA, n_seg
 #' @export
 #'
 #' @examples
-#' # Plot results for the example data
-#' PlotGelmanRubinDiagnosticMultiChain(walker_example_output, 500)
+#' # Plot results for the many chains
+#' po = list()
+#' for (i in 1:3) po[[i]] = PolyaUrnBivarDirichlet(kerr$c14_age, kerr$c14_sig, intcal20, n_iter=1e4)
+#' PlotGelmanRubinDiagnosticMultiChain(po, 5000)
 PlotGelmanRubinDiagnosticMultiChain <- function(output_data_list, n_burn) {
 
   arg_check <- checkmate::makeAssertCollection()
@@ -106,7 +108,7 @@ PlotGelmanRubinDiagnosticMultiChain <- function(output_data_list, n_burn) {
     R[i] = .MultiChainPsrf(theta_list, n_burn, n_thin)
   }
 
-  hist(R, xlab = "", main = "Histogram of PSRF for posterior calendar ages")
+  graphics::hist(R, xlab = "", main = "Histogram of PSRF for posterior calendar ages")
 }
 
 
@@ -141,7 +143,7 @@ PlotGelmanRubinDiagnosticMultiChain <- function(output_data_list, n_burn) {
   overall_mean = mean(unlist(chains))
   diff_from_mean <- function(chain, overall_mean) return((mean(chain) - overall_mean)^2)
 
-  within_chain_variance = sum(unlist(lapply(chains, var))) / M
+  within_chain_variance = sum(unlist(lapply(chains, stats::var))) / M
   between_chain_variance = N * sum(unlist(lapply(chains, diff_from_mean, overall_mean))) / (M - 1)
 
   pooled_variance = (N - 1) / N * within_chain_variance

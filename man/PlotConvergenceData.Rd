@@ -4,16 +4,16 @@
 \alias{PlotConvergenceData}
 \title{Plots data that can be used to estimate convergence of the MCMC sampler}
 \usage{
-PlotConvergenceData(output_data, n_initial = 1000)
+PlotConvergenceData(output_data, n_initial = NA)
 }
 \arguments{
 \item{output_data}{The return value from one of the updating functions e.g.
 \link{PolyaUrnBivarDirichlet} or
 \link{WalkerBivarDirichlet}.}
 
-\item{n_initial}{The number of samples to use for the 'initial' predictive density,
-which is then compared with all subsequent data points. If not given 1000 data points will
-be used.}
+\item{n_initial}{The number of iterations to use for the 'initial' predictive density,
+which is then compared with all subsequent data points. If not given the minimum of 1000
+iterations, or 1 / 10 of the the total number of data points, will be used.}
 }
 \value{
 No value

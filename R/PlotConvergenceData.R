@@ -7,9 +7,9 @@
 #' @param output_data The return value from one of the updating functions e.g.
 #' [carbondate::PolyaUrnBivarDirichlet] or
 #' [carbondate::WalkerBivarDirichlet].
-#' @param n_initial The number of samples to use for the 'initial' predictive density,
-#' which is then compared with all subsequent data points. If not given 1000 data points will
-#' be used.
+#' @param n_initial The number of iterations to use for the 'initial' predictive density,
+#' which is then compared with all subsequent data points. If not given the minimum of 1000
+#' iterations, or 1 / 10 of the the total number of data points, will be used.
 #'
 #' @return No value
 #'
@@ -18,7 +18,7 @@
 #' @examples
 #' # Plot results for the example data
 #' PlotConvergenceData(polya_urn_example_output)
-PlotConvergenceData <- function(output_data, n_initial = 1000) {
+PlotConvergenceData <- function(output_data, n_initial = NA) {
 
   arg_check <- checkmate::makeAssertCollection()
   .CheckOutputData(arg_check, output_data)
@@ -26,6 +26,12 @@ PlotConvergenceData <- function(output_data, n_initial = 1000) {
   n_iter <- output_data$input_parameters$n_iter
   n_thin <- output_data$input_parameters$n_thin
   n_out <- length(output_data$mu_phi)
+
+  if (is.na(n_initial)) {
+    n_initial = min(floor(n_out / 10), floor(1000 / n_thin))
+  } else {
+    n_initial = floor(n_initial / n_thin)
+  }
 
   checkmate::assertNumeric(n_initial, lower = 10, upper = n_out / 10, add = arg_check)
   checkmate::reportAssertions(arg_check)
