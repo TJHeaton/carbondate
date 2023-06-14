@@ -156,6 +156,12 @@
 }
 
 
+.CheckNBurn <- function(arg_check, n_burn, n_iter, n_thin) {
+  checkmate::assertInt(
+    n_burn, lower = 0, upper = n_iter - 100 * n_thin, na.ok = TRUE, add=arg_check)
+}
+
+
 .CheckCalibrationCurveFromOutput <- function(
     arg_check, output_data, calibration_curve) {
   calibration_curve_name = output_data$input_data$calibration_curve_name

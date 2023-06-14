@@ -63,7 +63,7 @@ plot_convergence_kerr_shifted <- function(seeds, n_iter, n_thin, n_burn) {
 
 plot_convergence_walker_pu_kerr <- function(seeds, n_iter, n_thin, n_burn) {
   pdf(
-    file = paste("experimenting/convergence_2/kerr_", n_iter/1000, ".pdf", sep=""),
+    file = paste("experimenting/convergence_2/kerr_with_clusters_", n_iter/1000, ".pdf", sep=""),
     width = 12, height = 5, pointsize = 10)
   for (seed in seeds) {
     print(paste("seed =", seed))
