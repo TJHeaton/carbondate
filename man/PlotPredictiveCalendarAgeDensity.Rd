@@ -6,7 +6,7 @@
 \usage{
 PlotPredictiveCalendarAgeDensity(
   output_data,
-  n_posterior_samples,
+  n_posterior_samples = 5000,
   calibration_curve = NULL,
   plot_14C_age = TRUE,
   show_SPD = FALSE,
@@ -21,13 +21,14 @@ PlotPredictiveCalendarAgeDensity(
 }
 \arguments{
 \item{output_data}{The return value from one of the updating functions e.g.
-\link{WalkerBivarDirichlet} or
-\link{PolyaUrnBivarDirichlet} or a list, each item containing
+\link{PolyaUrnBivarDirichlet} or
+\link{WalkerBivarDirichlet} or a list, each item containing
 one of these values. Optionally, the output data can have an extra list item
 named \code{label} which is used to set the label on the plot legend.}
 
 \item{n_posterior_samples}{Current number of samples it will draw from this
-posterior to estimate the calendar age density (possibly repeats).}
+posterior to estimate the calendar age density (possibly repeats). If not
+given 5000 is used.}
 
 \item{calibration_curve}{This is usually not required since the name of the
 calibration curve variable is saved in the output data. However if the
@@ -65,14 +66,14 @@ are not used in the calculation. If not given, the first half of the
 MCMC chain is discarded. Looking at the output of \link{PlotConvergenceData} can
 help determine what an appropriate value is for a given output. Note that the maximum
 value that can be chosen is \code{n_iter - 100 * n_thin} (where \code{n_iter} and \code{n_thin} are the
-arguments given to \link{PolyaUrnBivarDirichlet} or c\link{WalkerBivarDirichlet}).}
+arguments given to \link{PolyaUrnBivarDirichlet} or \link{WalkerBivarDirichlet}).}
 
 \item{n_end}{The iteration number of the last sample to use. Assumed to be the number of iterations
 if not given.}
 }
 \value{
 A list, each item containing a data frame of the \code{calendar_age}, the
-\code{density_mean} and the 95\% confidence intervals for the density
+\code{density_mean} and the confidence intervals for the density
 \code{density_ci_lower} and \code{density_ci_upper} for each set of output data.
 }
 \description{
@@ -84,21 +85,22 @@ data, without an accompanying plot, you can use
 }
 \examples{
 # Plot results for a single calibration
-PlotPredictiveCalendarAgeDensity(polya_urn_example_output, 500)
+PlotPredictiveCalendarAgeDensity(polya_urn_example_output)
 
 # Plot results from a calibration, and add a label
 op = PolyaUrnBivarDirichlet(two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter=1e4)
 op$label = "My plot"
-PlotPredictiveCalendarAgeDensity(op, 500)
+PlotPredictiveCalendarAgeDensity(op)
 
 # Plot results from two calibrations on the same plot, and show the SPD
 PlotPredictiveCalendarAgeDensity(
-  list(walker_example_output, polya_urn_example_output), 500, show_SPD = TRUE)
+  list(walker_example_output, polya_urn_example_output), show_SPD = TRUE)
 
-# Plot and show the 1-sigma confidence interval
-PlotPredictiveCalendarAgeDensity(polya_urn_example_output, 500, interval_width = "1sigma")
+# Plot and show the 1-sigma confidence interval, and use F14C scale
+PlotPredictiveCalendarAgeDensity(
+    polya_urn_example_output, interval_width = "1sigma", plot_14C_age = FALSE)
 
 # Plot and show the 80\% confidence interval
 PlotPredictiveCalendarAgeDensity(
-  polya_urn_example_output, 500, interval_width = "bespoke", bespoke_probability = 0.8)
+  polya_urn_example_output, interval_width = "bespoke", bespoke_probability = 0.8)
 }

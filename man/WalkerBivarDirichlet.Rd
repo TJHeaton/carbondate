@@ -148,9 +148,17 @@ joint calendar age density and cluster.
 }
 \examples{
 # Basic usage making use of sensible initialisation to set most values and
-# using a saved example data set and the IntCal20 curve.
-output = WalkerBivarDirichlet(two_normals$c14_age, two_normals$c14_age, intcal20)
+# using a saved example data set and the IntCal20 curve. See the result by plotting the predictive
+# density
+output = WalkerBivarDirichlet(two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4)
+PlotPredictiveCalendarAgeDensity(output)
 
 # The radiocarbon determinations can be given as F14C concentrations
-output = WalkerBivarDirichlet(two_normals$f14c, two_normals$f14c_sig, intcal20, F14C_inputs = TRUE)
+output = WalkerBivarDirichlet(
+    two_normals$f14c,
+    two_normals$f14c_sig,
+    intcal20,
+    F14C_inputs = TRUE,
+    n_iter = 1e4)
+PlotPredictiveCalendarAgeDensity(output)
 }

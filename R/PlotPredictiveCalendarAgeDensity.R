@@ -7,12 +7,13 @@
 #' [carbondate::FindPredictiveCalendarAgeDensity] instead.
 #'
 #' @param output_data The return value from one of the updating functions e.g.
-#' [carbondate::WalkerBivarDirichlet] or
-#' [carbondate::PolyaUrnBivarDirichlet] or a list, each item containing
+#' [carbondate::PolyaUrnBivarDirichlet] or
+#' [carbondate::WalkerBivarDirichlet] or a list, each item containing
 #' one of these values. Optionally, the output data can have an extra list item
 #' named `label` which is used to set the label on the plot legend.
 #' @param n_posterior_samples Current number of samples it will draw from this
-#' posterior to estimate the calendar age density (possibly repeats).
+#' posterior to estimate the calendar age density (possibly repeats). If not
+#' given 5000 is used.
 #' @param calibration_curve This is usually not required since the name of the
 #' calibration curve variable is saved in the output data. However if the
 #' variable with this name is no longer in your environment then you should pass
@@ -41,39 +42,40 @@
 #' MCMC chain is discarded. Looking at the output of [carbondate::PlotConvergenceData] can
 #' help determine what an appropriate value is for a given output. Note that the maximum
 #' value that can be chosen is `n_iter - 100 * n_thin` (where `n_iter` and `n_thin` are the
-#' arguments given to [carbondate::PolyaUrnBivarDirichlet] or c[carbondate::WalkerBivarDirichlet]).
+#' arguments given to [carbondate::PolyaUrnBivarDirichlet] or [carbondate::WalkerBivarDirichlet]).
 #' @param n_end The iteration number of the last sample to use. Assumed to be the number of iterations
 #' if not given.
 #'
 #'
 #' @return A list, each item containing a data frame of the `calendar_age`, the
-#' `density_mean` and the 95% confidence intervals for the density
+#' `density_mean` and the confidence intervals for the density
 #' `density_ci_lower` and `density_ci_upper` for each set of output data.
 #'
 #' @export
 #'
 #' @examples
 #' # Plot results for a single calibration
-#' PlotPredictiveCalendarAgeDensity(polya_urn_example_output, 500)
+#' PlotPredictiveCalendarAgeDensity(polya_urn_example_output)
 #'
 #' # Plot results from a calibration, and add a label
 #' op = PolyaUrnBivarDirichlet(two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter=1e4)
 #' op$label = "My plot"
-#' PlotPredictiveCalendarAgeDensity(op, 500)
+#' PlotPredictiveCalendarAgeDensity(op)
 #'
 #' # Plot results from two calibrations on the same plot, and show the SPD
 #' PlotPredictiveCalendarAgeDensity(
-#'   list(walker_example_output, polya_urn_example_output), 500, show_SPD = TRUE)
+#'   list(walker_example_output, polya_urn_example_output), show_SPD = TRUE)
 #'
-#' # Plot and show the 1-sigma confidence interval
-#' PlotPredictiveCalendarAgeDensity(polya_urn_example_output, 500, interval_width = "1sigma")
+#' # Plot and show the 1-sigma confidence interval, and use F14C scale
+#' PlotPredictiveCalendarAgeDensity(
+#'     polya_urn_example_output, interval_width = "1sigma", plot_14C_age = FALSE)
 #'
 #' # Plot and show the 80% confidence interval
 #' PlotPredictiveCalendarAgeDensity(
-#'   polya_urn_example_output, 500, interval_width = "bespoke", bespoke_probability = 0.8)
+#'   polya_urn_example_output, interval_width = "bespoke", bespoke_probability = 0.8)
 PlotPredictiveCalendarAgeDensity <- function(
     output_data,
-    n_posterior_samples,
+    n_posterior_samples = 5000,
     calibration_curve = NULL,
     plot_14C_age = TRUE,
     show_SPD = FALSE,

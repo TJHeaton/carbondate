@@ -21,7 +21,7 @@
 #'
 #' @examples
 #' # Plot results for the 10th determinations
-#' PlotCalendarAgeDensityIndividualSample(10, walker_example_output)
+#' PlotCalendarAgeDensityIndividualSample(10, polya_urn_example_output)
 PlotCalendarAgeDensityIndividualSample <- function(
     ident,
     output_data,

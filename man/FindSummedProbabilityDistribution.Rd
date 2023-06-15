@@ -40,17 +40,19 @@ calibrates each one, and then averages them to give the SPD estimate.
 }
 \examples{
 # An example using 14C age BP and the IntCal 20 curve
-FindSummedProbabilityDistribution(
+SPD = FindSummedProbabilityDistribution(
    calendar_age_range_BP=c(600, 1600),
    rc_determinations=c(602, 805, 1554),
    rc_sigmas=c(35, 34, 45),
    calibration_curve=intcal20)
+plot(SPD, type = "l")
 
 # An example using F14C concentrations and the IntCal 13 curve
-FindSummedProbabilityDistribution(
+SPD = FindSummedProbabilityDistribution(
    calendar_age_range_BP=c(600, 1600),
    rc_determinations=c(0.8, 0.85, 0.9),
    rc_sigmas=c(0.01, 0.015, 0.012),
    F14C_inputs=TRUE,
    calibration_curve=intcal13)
+plot(SPD, type = "l")
 }

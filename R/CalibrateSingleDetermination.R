@@ -21,8 +21,13 @@
 #' calendar age.
 #'
 #' @examples
-#' CalibrateSingleDetermination(31020, 35, intcal20)
-#' CalibrateSingleDetermination(0.23, 0.001, intcal20, F14C_inputs = TRUE)
+#' # Calibration of a single determination expressed as 14C age BP
+#' calib = CalibrateSingleDetermination(31020, 35, intcal20)
+#' plot(calib, type = "l", xlim = c(36000, 34000))
+#'
+#' # Calibration of a single determination expressed as F14C concentration
+#' calib = CalibrateSingleDetermination(0.02103493, 9.164975e-05, intcal20, F14C_inputs = TRUE)
+#' plot(calib, type = "l", xlim = c(36000, 34000))
 CalibrateSingleDetermination <- function(
     rc_determination, rc_sigma, calibration_curve, F14C_inputs = FALSE) {
 

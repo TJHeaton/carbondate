@@ -4,7 +4,7 @@
 \alias{PlotGelmanRubinDiagnosticMultiChain}
 \title{Plots a histogram of the Gelman–Rubin convergence diagnostic for a multiple chains}
 \usage{
-PlotGelmanRubinDiagnosticMultiChain(output_data_list, n_burn)
+PlotGelmanRubinDiagnosticMultiChain(output_data_list, n_burn = NA)
 }
 \arguments{
 \item{output_data_list}{A list, each item containing the return value from one of the updating
@@ -27,5 +27,5 @@ for all calendar ages.
 # Plot results for the many chains
 po = list()
 for (i in 1:3) po[[i]] = PolyaUrnBivarDirichlet(kerr$c14_age, kerr$c14_sig, intcal20, n_iter=1e4)
-PlotGelmanRubinDiagnosticMultiChain(po, 5000)
+PlotGelmanRubinDiagnosticMultiChain(po)
 }

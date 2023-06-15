@@ -21,8 +21,8 @@ PlotCalendarAgeDensityIndividualSample(
 calendar age for.}
 
 \item{output_data}{The return value from one of the updating functions e.g.
-\link{WalkerBivarDirichlet} or
-\link{PolyaUrnBivarDirichlet} or a list, each item containing
+\link{PolyaUrnBivarDirichlet} or
+\link{WalkerBivarDirichlet} or a list, each item containing
 one of these values. Optionally, the output data can have an extra list item
 named \code{label} which is used to set the label on the plot legend.}
 
@@ -52,7 +52,7 @@ are not used in the calculation. If not given, the first half of the
 MCMC chain is discarded. Looking at the output of \link{PlotConvergenceData} can
 help determine what an appropriate value is for a given output. Note that the maximum
 value that can be chosen is \code{n_iter - 100 * n_thin} (where \code{n_iter} and \code{n_thin} are the
-arguments given to \link{PolyaUrnBivarDirichlet} or c\link{WalkerBivarDirichlet}).}
+arguments given to \link{PolyaUrnBivarDirichlet} or \link{WalkerBivarDirichlet}).}
 
 \item{n_end}{The iteration number of the last sample to use. Assumed to be the number of iterations
 if not given.}
@@ -67,5 +67,5 @@ plotted using this function.
 }
 \examples{
 # Plot results for the 10th determinations
-PlotCalendarAgeDensityIndividualSample(10, walker_example_output)
+PlotCalendarAgeDensityIndividualSample(10, polya_urn_example_output)
 }

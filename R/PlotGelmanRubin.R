@@ -78,7 +78,7 @@ PlotGelmanRubinDiagnosticSingleChain <- function(output_data, n_burn = NA, n_seg
 #' # Plot results for the many chains
 #' po = list()
 #' for (i in 1:3) po[[i]] = PolyaUrnBivarDirichlet(kerr$c14_age, kerr$c14_sig, intcal20, n_iter=1e4)
-#' PlotGelmanRubinDiagnosticMultiChain(po, 5000)
+#' PlotGelmanRubinDiagnosticMultiChain(po)
 PlotGelmanRubinDiagnosticMultiChain <- function(output_data_list, n_burn = NA) {
 
   arg_check <- checkmate::makeAssertCollection()
