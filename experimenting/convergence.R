@@ -1,5 +1,5 @@
 library(devtools)
-load_all()
+library(carbondate)
 
 plot_convergence_walker_kerr <- function(seeds, n_iter, n_thin, n_burn) {
   pdf(
@@ -87,18 +87,12 @@ plot_convergence_walker_pu_kerr <- function(seeds, n_iter, n_thin, n_burn) {
       save(po, file=filename)
     }
 
-    n_posterior_samples = 10000
-    layout.matrix <- matrix(c(1, 1, 2, 3, 4, 5), nrow = 2, ncol = 3)
-    layout(mat = layout.matrix, heights = c(3, 3), widths = c(1.7, 1, 1))
+    n_posterior_samples = 5000
+    layout.matrix <- matrix(c(1, 1, 2, 3), nrow = 2, ncol = 2)
+    layout(mat = layout.matrix, heights = c(3, 3), widths = c(1.7, 1))
 
     PlotPredictiveCalendarAgeDensity(list(wo, po), n_posterior_samples, n_burn = n_burn)
     title(sub = paste("n_burn =", n_burn, "n_samples = ", n_posterior_samples))
-
-    PlotNumberOfClusters(wo)
-    title(main="Walker")
-
-    PlotNumberOfClusters(po)
-    title(main="Polya Urn")
 
     PlotConvergenceData(wo)
     title(sub = paste("seed =", seed))

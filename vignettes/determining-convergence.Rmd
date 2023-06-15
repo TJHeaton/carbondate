@@ -22,16 +22,44 @@ library(carbondate)
 
 A few tools to determine how well the result has converged.
 
-## Compare multiple runs
+## Examining the Gelman–Rubin convergence diagnostic
 
-Running a few time with different random number seeds can give an idea of how many iterations are
-needed for convergence. If the result is converged each run should lead to a similar result. E.g.
+This is often used to evaluate MCMC convergence. It compares the between-chains variance with the within-chains variance of the model parameters for multiple chains. If the chain have converged to the target posterior distribution, then the potential scale reduction factor (PSRF) should be close to 1 for every calendar age observation.
 
-```{r calculate_walker, fig.width=10, fig.height=8, results=FALSE}
+In the first case, the calculation can be run multiple times to generate different chains.
+
+```{r calculate_gr_multiple, fig.width=10, fig.height=8, results=FALSE}
 all_outputs = list()
 for (i in 1:3) {
-  set.seed(i)
-  all_outputs[[i]] <- WalkerBivarDirichlet(
+  set.seed(i + 1)
+  all_outputs[[i]] <- PolyaUrnBivarDirichlet(kerr$c14_age, kerr$c14_sig, intcal20, n_iter = 1e4)
+}
+PlotGelmanRubinDiagnosticMultiChain(all_outputs)
+```
+
+It can also be calculated by taking a single chain, and splitting it into multiple parts to compare the within-segment variance with the between-segment variance for each calendar age observation. 
+
+```{r calculate_gr, fig.width=10, fig.height=8, results=FALSE}
+set.seed(3)
+output <- PolyaUrnBivarDirichlet(kerr$c14_age, kerr$c14_sig, intcal20, n_iter = 2e4)
+
+PlotGelmanRubinDiagnosticSingleChain(output, n_burn = 5e3)
+```
+
+As you can see, even with a few iterations (where we would expect the result not to have converged yet)
+the PSRF is close to one. For this model the posterior calendar ages are not suitable parameters to
+use rather we are interested in the number and distribution of clusters. However they cannot be easily
+compared using this diagnostic as the number and identity of clusters can change with each iteration. For this model, the predictive density is a much more useful indicator.
+
+## Compare multiple runs
+
+Running a few time with different random number seeds can give an idea of how many iterations are needed for convergence. If the result is converged each run should lead to a similar result for the predictive density. E.g.
+
+```{r calculate_polya_kerr, fig.width=10, fig.height=8, results=FALSE}
+all_outputs = list()
+for (i in 1:3) {
+  set.seed(i+1)
+  all_outputs[[i]] <- PolyaUrnBivarDirichlet(
   rc_determinations = kerr$c14_age,
   rc_sigmas = kerr$c14_sig,
   calibration_curve=intcal20,
@@ -42,17 +70,34 @@ PlotPredictiveCalendarAgeDensity(
   output_data = all_outputs, n_posterior_samples = 500, denscale = 2.5, interval_width = "1sigma")
 ```
 
-As you can see the different runs do not have similar outputs, so more iterations would be needed
-to ensure convergence.
+As you can see, in this case (255 determinations collated by Kerr and McCormick [@kerr2014]) the different runs do not have similar outputs, so more iterations would be needed to ensure convergence.
+
+In contrast if we run a much simpler example (that of artificial data comprised of two normals), we can see that convergence appears to be achieved in a small number of iterations.
+
+```{r calculate_polya_normals, fig.width=10, fig.height=8, results=FALSE}
+all_outputs = list()
+for (i in 1:3) {
+  set.seed(i + 1)
+  all_outputs[[i]] <- PolyaUrnBivarDirichlet(
+  rc_determinations = two_normals$c14_age,
+  rc_sigmas = two_normals$c14_sig,
+  calibration_curve=intcal20,
+  n_iter = 1e4)
+  all_outputs[[i]]$label = paste("Seed =", i)
+}
+PlotPredictiveCalendarAgeDensity(
+  output_data = all_outputs, n_posterior_samples = 500, denscale = 2.5, interval_width = "1sigma")
+```
+
 
 ## Examining the Kullback–Leibler divergence
 
-This gives a measure of the difference between the initial predicitive density and the predictive
+This gives a measure of the difference between the initial predictive density and the predictive
 density as the simulation progresses.
 
 ```{r calculate_kld, fig.width=10, fig.height=8, results=FALSE}
-set.seed(1)
-output <- PolyaUrnBivarDirichlet(
+set.seed(50)
+output <- WalkerBivarDirichlet(
 rc_determinations = kerr$c14_age,
 rc_sigmas = kerr$c14_sig,
 calibration_curve=intcal20,
@@ -62,19 +107,6 @@ PlotConvergenceData(output)
 ```
 
 It can give an idea of convergence as well as which iteration number to use for `n_burn` when
-calculating the predictive density (by default set to half the chain)
+calculating the predictive density (by default set to half the chain). [I've chosen an example where
+there appears to be a trend, but many don't, so we want to say something about that?]
 
-## Examining the Gelman–Rubin convergence diagnostic
-
-This takes a single chain, splits it into 3 and compares the within-chain variance with the between chains variance for each calendar age observation. If the chain have converged to the target posterior distribution, then PSRF should be close to 1 for every calendar age observation.
-
-```{r calculate_gr, fig.width=10, fig.height=8, results=FALSE}
-set.seed(1)
-output <- PolyaUrnBivarDirichlet(
-rc_determinations = kerr$c14_age,
-rc_sigmas = kerr$c14_sig,
-calibration_curve=intcal20,
-n_iter = 1e5)
-
-PlotGelmanRubinDiagnosticSingleChain(output, 5e4)
-```
