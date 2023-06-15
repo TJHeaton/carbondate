@@ -8,8 +8,8 @@ FindSummedProbabilityDistribution(
   calendar_age_range_BP,
   rc_determinations,
   rc_sigmas,
-  F14C_inputs,
-  calibration_curve
+  calibration_curve,
+  F14C_inputs = FALSE
 )
 }
 \arguments{
@@ -21,13 +21,13 @@ calendar age BP to calculate the SPD over}
 \item{rc_sigmas}{A vector of the radiocarbon determinations
 uncertainties (1-sigma). Must be the same length as \code{rc_determinations}.}
 
-\item{F14C_inputs}{\code{TRUE} if the provided rc_determinations are F14C concentrations and \code{FALSE}
-if they are radiocarbon age BP.}
-
 \item{calibration_curve}{A dataframe which must contain one column \code{calendar_age_BP}, and also
 columns \code{c14_age} and \code{c14_sig} or \code{f14c} and \code{f14c_sig} (or both sets).
-This format matches the curves supplied with this package e.g. \link{intcal20},
+This format matches the curves supplied with this package e.g. \link{intcal20}, \link{intcal13},
 which contain all 5 columns.}
+
+\item{F14C_inputs}{\code{TRUE} if the provided rc_determinations are F14C concentrations and \code{FALSE}
+if they are radiocarbon age BP. Defaults to \code{FALSE}.}
 }
 \value{
 A data frame with one column \code{calendar_age_BP} containing the calendar
@@ -39,19 +39,20 @@ Takes a set of radiocarbon determinations and uncertainties and independently
 calibrates each one, and then averages them to give the SPD estimate.
 }
 \examples{
-# An example using 14C age BP
-FindSummedProbabilityDistribution(
+# An example using 14C age BP and the IntCal 20 curve
+SPD = FindSummedProbabilityDistribution(
    calendar_age_range_BP=c(600, 1600),
    rc_determinations=c(602, 805, 1554),
    rc_sigmas=c(35, 34, 45),
-   F14C_inputs=FALSE,
    calibration_curve=intcal20)
+plot(SPD, type = "l")
 
-# An example using F14C concentrations
-FindSummedProbabilityDistribution(
+# An example using F14C concentrations and the IntCal 13 curve
+SPD = FindSummedProbabilityDistribution(
    calendar_age_range_BP=c(600, 1600),
    rc_determinations=c(0.8, 0.85, 0.9),
    rc_sigmas=c(0.01, 0.015, 0.012),
    F14C_inputs=TRUE,
-   calibration_curve=intcal20)
+   calibration_curve=intcal13)
+plot(SPD, type = "l")
 }

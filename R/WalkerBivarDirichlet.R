@@ -7,12 +7,11 @@
 #' joint calendar age density and cluster.
 #'
 #' @inheritParams FindSummedProbabilityDistribution
-#' @param n_iter  The number of MCMC iterations (optional). Default is 100.
+#' @param n_iter  The number of MCMC iterations (optional). Default is 100,000.
 #' @param n_thin  How much to thin the output (optional). 1 is no thinning,
 #' a larger number is more thinning. Default is 10. Must choose an integer more
-#' than 1 and not too close to `n_iter`, since after burn-in there are
-#' \eqn{(n_{\textrm{iter}}/n_{\textrm{thin}})/2} samples from posterior to
-#' potentially use.
+#' than 1 and not too close to `n_iter`, to ensure there are enought samples from
+#' posterior to potentially use.
 #' @param use_F14C_space Whether the calculations are carried out in F14C space (default is TRUE).
 #' If FALSE, calculations are carried out in 14C yr BP space.
 #' @param slice_width Parameter for slice sampling (optional). If not given a value
@@ -96,18 +95,25 @@
 #'
 #' @examples
 #' # Basic usage making use of sensible initialisation to set most values and
-#' # using a saved example data set. Note iterations are kept very small here
-#' # for a faster run time.
-#' WalkerBivarDirichlet(kerr$c14_age, kerr$c14_sig, FALSE, intcal20, n_iter=1000, n_thin=10)
+#' # using a saved example data set and the IntCal20 curve. See the result by plotting the predictive
+#' # density
+#' output = WalkerBivarDirichlet(two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4)
+#' PlotPredictiveCalendarAgeDensity(output)
 #'
-#' # It is also possible to give the radiocarbon determinations as F14C concentrations
-#' WalkerBivarDirichlet(kerr$f14c, kerr$f14c_sig, TRUE, intcal20, n_iter=1000, n_thin=10)
+#' # The radiocarbon determinations can be given as F14C concentrations
+#' output = WalkerBivarDirichlet(
+#'     two_normals$f14c,
+#'     two_normals$f14c_sig,
+#'     intcal20,
+#'     F14C_inputs = TRUE,
+#'     n_iter = 1e4)
+#' PlotPredictiveCalendarAgeDensity(output)
 WalkerBivarDirichlet <- function(
     rc_determinations,
     rc_sigmas,
-    F14C_inputs,
     calibration_curve,
-    n_iter = 100,
+    F14C_inputs = FALSE,
+    n_iter = 1e5,
     n_thin = 10,
     use_F14C_space = TRUE,
     slice_width = NA,
@@ -149,6 +155,8 @@ WalkerBivarDirichlet <- function(
     n_clust)
   .CheckIterationParameters(arg_check, n_iter, n_thin)
   .CheckSliceParameters(arg_check, slice_width, slice_multiplier, sensible_initialisation)
+  checkmate::assert_flag(F14C_inputs, arg_check)
+  checkmate::assert_flag(use_F14C_space, arg_check)
 
   checkmate::reportAssertions(arg_check)
 
@@ -191,39 +199,50 @@ WalkerBivarDirichlet <- function(
 
   ##############################################################################
   # Initialise parameters
+  initial_probabilities <- mapply(
+    .ProbabilitiesForSingleDetermination,
+    rc_determinations,
+    rc_sigmas,
+    MoreArgs = list(F14C_inputs=use_F14C_space, calibration_curve=integer_cal_year_curve))
+
+  spd = apply(initial_probabilities, 1, sum)
+  cumulative_spd = cumsum(spd) / sum(spd)
+  spd_range_1_sigma = c(
+    integer_cal_year_curve$calendar_age_BP[min(which(cumulative_spd > 0.16))],
+    integer_cal_year_curve$calendar_age_BP[max(which(cumulative_spd < 0.84))])
+  spd_range_2_sigma = c(
+    integer_cal_year_curve$calendar_age_BP[min(which(cumulative_spd > 0.025))],
+    integer_cal_year_curve$calendar_age_BP[max(which(cumulative_spd < 0.975))])
+  spd_range_3_sigma = c(
+    integer_cal_year_curve$calendar_age_BP[min(which(cumulative_spd > 0.001))],
+    integer_cal_year_curve$calendar_age_BP[max(which(cumulative_spd < 0.999))])
+
+  plot_range = spd_range_3_sigma + c(-1, 1) * diff(spd_range_3_sigma) * 0.1
+  plot_range = c(
+    max(plot_range[1], min(calibration_curve$calendar_age_BP)),
+    min(plot_range[2], max(calibration_curve$calendar_age_BP)))
+
+  densities_cal_age_sequence = seq(plot_range[1], plot_range[2], length.out=100)
+
   if (sensible_initialisation) {
-    initial_probabilities <- mapply(
-      .ProbabilitiesForSingleDetermination,
-      rc_determinations,
-      rc_sigmas,
-      MoreArgs = list(F14C_inputs=use_F14C_space, calibration_curve=integer_cal_year_curve))
     indices_of_max_probability = apply(initial_probabilities, 2, which.max)
-
     calendar_ages <- integer_cal_year_curve$calendar_age_BP[indices_of_max_probability]
-    maxrange <- max(calendar_ages) - min(calendar_ages)
 
-    mu_phi <- stats::median(calendar_ages)
-    A <- stats::median(calendar_ages)
-    B <- 1 / (maxrange)^2
+    mu_phi <- mean(spd_range_2_sigma)
+    A <- mean(spd_range_2_sigma)
+    B <- 1 / (diff(spd_range_2_sigma))^2
 
-    tempspread <- 0.1 * stats::mad(calendar_ages)
+    tempspread <- 0.05 * diff(spd_range_1_sigma)
     tempprec <- 1/(tempspread)^2
 
-    lambda <- (100 / maxrange)^2
+    lambda <- (100 / diff(spd_range_3_sigma))^2
     nu1 <- 0.25
     nu2 <- nu1 / tempprec
 
     alpha_shape <- 1
     alpha_rate <- 1
 
-    if (is.na(slice_width)) {
-      spd = apply(initial_probabilities, 1, sum)
-      spd = spd / sum(spd)
-      cumulative_spd = cumsum(spd)
-      min_year = integer_cal_year_curve$calendar_age_BP[min(which(cumulative_spd > 0.05))]
-      max_year = integer_cal_year_curve$calendar_age_BP[max(which(cumulative_spd < 0.95))]
-      slice_width = (max_year - min_year) / 2
-    }
+    if (is.na(slice_width)) slice_width = diff(spd_range_3_sigma)
   }
 
   # do not allow very small values of alpha as this causes crashes
@@ -248,7 +267,9 @@ WalkerBivarDirichlet <- function(
     alpha_shape = alpha_shape,
     alpha_rate = alpha_rate,
     slice_width = slice_width,
-    slice_multiplier = slice_multiplier)
+    slice_multiplier = slice_multiplier,
+    n_iter = n_iter,
+    n_thin = n_thin)
 
   ##############################################################################
   # Create storage for output
@@ -262,6 +283,7 @@ WalkerBivarDirichlet <- function(
   n_clust_out <- rep(NA, length = n_out)
   mu_phi_out <- rep(NA, length = n_out)
   theta_out <- matrix(NA, nrow = n_out, ncol = num_observations)
+  densities_out <- matrix(NA, nrow = n_out, ncol = length(densities_cal_age_sequence))
 
   output_index <- 1
   cluster_identifiers_out[output_index, ] <- cluster_identifiers
@@ -269,7 +291,8 @@ WalkerBivarDirichlet <- function(
   n_clust_out[output_index] <- length(unique(cluster_identifiers))
   mu_phi_out[output_index] <- mu_phi
   theta_out[output_index, ] <- calendar_ages
-
+  densities_out[output_index, ] <- FindInstantPredictiveDensityWalker(
+    densities_cal_age_sequence, weight, phi, tau, mu_phi, lambda, nu1, nu2)
   ##############################################################################
   # Now the calibration and DPMM
   if (show_progress) {
@@ -311,6 +334,7 @@ WalkerBivarDirichlet <- function(
     mu_phi <- DPMM_update$mu_phi
     calendar_ages = DPMM_update$calendar_ages
 
+
     if (iter %% n_thin == 0) {
       output_index <- output_index + 1
       cluster_identifiers_out[output_index, ] <- cluster_identifiers
@@ -321,8 +345,13 @@ WalkerBivarDirichlet <- function(
       theta_out[output_index, ] <- calendar_ages
       w_out[[output_index]] <- weight
       mu_phi_out[output_index] <- mu_phi
+      densities_out[output_index, ] <- FindInstantPredictiveDensityWalker(
+        densities_cal_age_sequence, weight, phi, tau, mu_phi, lambda, nu1, nu2)
     }
   }
+
+  density_data = list(densities = densities_out, calendar_ages = densities_cal_age_sequence)
+
   return_list <- list(
     cluster_identifiers = cluster_identifiers_out,
     alpha = alpha_out,
@@ -334,7 +363,8 @@ WalkerBivarDirichlet <- function(
     mu_phi = mu_phi_out,
     update_type="Walker",
     input_data = input_data,
-    input_parameters = input_parameters)
+    input_parameters = input_parameters,
+    density_data = density_data)
   if (show_progress) close(progress_bar)
   return(return_list)
 }

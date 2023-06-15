@@ -11,7 +11,9 @@ PlotCalendarAgeDensityIndividualSample(
   plot_14C_age = TRUE,
   resolution = 5,
   interval_width = "2sigma",
-  bespoke_probability = NA
+  bespoke_probability = NA,
+  n_burn = NA,
+  n_end = NA
 )
 }
 \arguments{
@@ -19,8 +21,8 @@ PlotCalendarAgeDensityIndividualSample(
 calendar age for.}
 
 \item{output_data}{The return value from one of the updating functions e.g.
-\link{WalkerBivarDirichlet} or
-\link{PolyaUrnBivarDirichlet} or a list, each item containing
+\link{PolyaUrnBivarDirichlet} or
+\link{WalkerBivarDirichlet} or a list, each item containing
 one of these values. Optionally, the output data can have an extra list item
 named \code{label} which is used to set the label on the plot legend.}
 
@@ -44,6 +46,16 @@ Default is "2sigma".}
 \item{bespoke_probability}{The probability to use for the confidence interval
 if "bespoke" is chosen above. E.g. if 0.95 is chosen, then the 95\% confidence
 interval is calculated. Ignored if "bespoke" is not chosen.}
+
+\item{n_burn}{The number of samples required for burn-in - any samples before this
+are not used in the calculation. If not given, the first half of the
+MCMC chain is discarded. Looking at the output of \link{PlotConvergenceData} can
+help determine what an appropriate value is for a given output. Note that the maximum
+value that can be chosen is \code{n_iter - 100 * n_thin} (where \code{n_iter} and \code{n_thin} are the
+arguments given to \link{PolyaUrnBivarDirichlet} or \link{WalkerBivarDirichlet}).}
+
+\item{n_end}{The iteration number of the last sample to use. Assumed to be the number of iterations
+if not given.}
 }
 \value{
 No return value
@@ -55,5 +67,5 @@ plotted using this function.
 }
 \examples{
 # Plot results for the 10th determinations
-PlotCalendarAgeDensityIndividualSample(10, walker_example_output)
+PlotCalendarAgeDensityIndividualSample(10, polya_urn_example_output)
 }

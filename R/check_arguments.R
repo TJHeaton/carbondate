@@ -8,7 +8,7 @@
     add = arg_check)
   if (is.na(F14C_inputs)) {
     required_column_names = c("calendar_age_BP")
-    # TODO: need to check they have one type of the other
+    # TODO: need to check they have one type or the other
   } else if (F14C_inputs == TRUE) {
     required_column_names = c("calendar_age_BP", "f14c", "f14c_sig")
   } else if (F14C_inputs == FALSE) {
@@ -156,6 +156,12 @@
 }
 
 
+.CheckNBurn <- function(arg_check, n_burn, n_iter, n_thin) {
+  checkmate::assertInt(
+    n_burn, lower = 0, upper = n_iter - 100 * n_thin, na.ok = TRUE, add=arg_check)
+}
+
+
 .CheckCalibrationCurveFromOutput <- function(
     arg_check, output_data, calibration_curve) {
   calibration_curve_name = output_data$input_data$calibration_curve_name
@@ -170,7 +176,7 @@
     )
   }
   if (!is.null(calibration_curve)) {
-    .CheckCalibrationCurve(arg_check, calibration_curve)
+    .CheckCalibrationCurve(arg_check, calibration_curve, NA)
   }
 
 }
@@ -184,8 +190,8 @@
     first = output_data_list[[1]]$input_data
     other = output_data_list[[i]]$input_data
     if (
-      !identical(first$c14_determinations, other$c14_determinations)
-      || !identical(first$sigma, other$sigma)
+      !identical(first$rc_determinations, other$rc_determinations)
+      || !identical(first$rc_sigmas, other$rc_sigmas)
       || first$F14C_inputs != other$F14C_inputs
       || first$calibration_curve_name != other$calibration_curve_name) {
       cli::cli_abort(

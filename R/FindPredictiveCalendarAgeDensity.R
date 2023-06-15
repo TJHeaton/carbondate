@@ -18,27 +18,34 @@
 #' @examples
 #' # Find results for example output, 2-sigma confidence interval (default)
 #' FindPredictiveCalendarAgeDensity(
-#'   walker_example_output, seq(600, 1700, length=12), 500)
+#'   polya_urn_example_output, seq(600, 1700, length=12), 500)
 #'
 #' # Find results for example output, 1-sigma confidence interval (default)
 #' FindPredictiveCalendarAgeDensity(
-#'   walker_example_output, seq(600, 1700, length=12), 500, "1sigma")
+#'   polya_urn_example_output, seq(600, 1700, length=12), 500, "1sigma")
 #'
 #' # Find results for example output, 95% confidence interval (default)
 #' FindPredictiveCalendarAgeDensity(
-#'   walker_example_output, seq(600, 1700, length=12), 500, "bespoke", 0.95)
+#'   polya_urn_example_output, seq(600, 1700, length=12), 500, "bespoke", 0.95)
 FindPredictiveCalendarAgeDensity <- function(
     output_data,
     calendar_age_sequence,
     n_posterior_samples,
     interval_width = "2sigma",
-    bespoke_probability = NA) {
+    bespoke_probability = NA,
+    n_burn = NA,
+    n_end = NA) {
 
   arg_check <- checkmate::makeAssertCollection()
 
   .CheckOutputData(arg_check, output_data)
+  n_iter = output_data$input_parameters$n_iter
+  n_thin = output_data$input_parameters$n_thin
+  n_out = length(output_data$mu_phi)
+
   .CheckCalendarAgeSequence(arg_check, calendar_age_sequence)
   .CheckIntervalWidth(arg_check, interval_width, bespoke_probability)
+  .CheckNBurn(arg_check, n_burn, n_iter, n_thin)
   checkmate::assertInt(n_posterior_samples, lower = 10, add = arg_check)
   checkmate::reportAssertions(arg_check)
 
@@ -47,6 +54,17 @@ FindPredictiveCalendarAgeDensity <- function(
     "1sigma" = 1 - stats::pnorm(1),
     "2sigma"  = 1 - stats::pnorm(2),
     "bespoke" = (1 - bespoke_probability)/2)
+
+  if (is.na(n_burn)) {
+    n_burn = floor(n_out / 2)
+  } else {
+    n_burn = floor(n_burn / n_thin)
+  }
+  if (is.na(n_end)) {
+    n_end = n_out
+  } else {
+    n_end = floor(n_end / n_thin)
+  }
 
   if (output_data$update_type == "Walker") {
     return(
@@ -60,7 +78,9 @@ FindPredictiveCalendarAgeDensity <- function(
         nu1 = output_data$input_parameters$nu1,
         nu2 = output_data$input_parameters$nu2,
         n_posterior_samples = n_posterior_samples,
-        quantile_edge_width = edge_width
+        quantile_edge_width = edge_width,
+        n_burn = n_burn,
+        n_end = n_end
       )
     )
   } else {
@@ -77,7 +97,9 @@ FindPredictiveCalendarAgeDensity <- function(
         nu1 = output_data$input_parameters$nu1,
         nu2 = output_data$input_parameters$nu2,
         n_posterior_samples = n_posterior_samples,
-        quantile_edge_width = edge_width
+        quantile_edge_width = edge_width,
+        n_burn = n_burn,
+        n_end = n_end
       )
     )
   }

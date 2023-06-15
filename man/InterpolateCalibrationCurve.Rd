@@ -18,7 +18,7 @@ spaced by 1.}
 
 \item{calibration_curve}{A dataframe which must contain one column \code{calendar_age_BP}, and also
 columns \code{c14_age} and \code{c14_sig} or \code{f14c} and \code{f14c_sig} (or both sets).
-This format matches the curves supplied with this package e.g. \link{intcal20},
+This format matches the curves supplied with this package e.g. \link{intcal20}, \link{intcal13},
 which contain all 5 columns.}
 
 \item{F14C_outputs}{\code{TRUE} if only F14C concentrations are required, \code{FALSE}

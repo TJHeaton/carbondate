@@ -8,9 +8,9 @@ of the DPMM}
 WalkerBivarDirichlet(
   rc_determinations,
   rc_sigmas,
-  F14C_inputs,
   calibration_curve,
-  n_iter = 100,
+  F14C_inputs = FALSE,
+  n_iter = 1e+05,
   n_thin = 10,
   use_F14C_space = TRUE,
   slice_width = NA,
@@ -35,21 +35,20 @@ WalkerBivarDirichlet(
 \item{rc_sigmas}{A vector of the radiocarbon determinations
 uncertainties (1-sigma). Must be the same length as \code{rc_determinations}.}
 
-\item{F14C_inputs}{\code{TRUE} if the provided rc_determinations are F14C concentrations and \code{FALSE}
-if they are radiocarbon age BP.}
-
 \item{calibration_curve}{A dataframe which must contain one column \code{calendar_age_BP}, and also
 columns \code{c14_age} and \code{c14_sig} or \code{f14c} and \code{f14c_sig} (or both sets).
-This format matches the curves supplied with this package e.g. \link{intcal20},
+This format matches the curves supplied with this package e.g. \link{intcal20}, \link{intcal13},
 which contain all 5 columns.}
 
-\item{n_iter}{The number of MCMC iterations (optional). Default is 100.}
+\item{F14C_inputs}{\code{TRUE} if the provided rc_determinations are F14C concentrations and \code{FALSE}
+if they are radiocarbon age BP. Defaults to \code{FALSE}.}
+
+\item{n_iter}{The number of MCMC iterations (optional). Default is 100,000.}
 
 \item{n_thin}{How much to thin the output (optional). 1 is no thinning,
 a larger number is more thinning. Default is 10. Must choose an integer more
-than 1 and not too close to \code{n_iter}, since after burn-in there are
-\eqn{(n_{\textrm{iter}}/n_{\textrm{thin}})/2} samples from posterior to
-potentially use.}
+than 1 and not too close to \code{n_iter}, to ensure there are enought samples from
+posterior to potentially use.}
 
 \item{use_F14C_space}{Whether the calculations are carried out in F14C space (default is TRUE).
 If FALSE, calculations are carried out in 14C yr BP space.}
@@ -149,10 +148,17 @@ joint calendar age density and cluster.
 }
 \examples{
 # Basic usage making use of sensible initialisation to set most values and
-# using a saved example data set. Note iterations are kept very small here
-# for a faster run time.
-WalkerBivarDirichlet(kerr$c14_age, kerr$c14_sig, FALSE, intcal20, n_iter=1000, n_thin=10)
+# using a saved example data set and the IntCal20 curve. See the result by plotting the predictive
+# density
+output = WalkerBivarDirichlet(two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4)
+PlotPredictiveCalendarAgeDensity(output)
 
-# It is also possible to give the radiocarbon determinations as F14C concentrations
-WalkerBivarDirichlet(kerr$f14c, kerr$f14c_sig, TRUE, intcal20, n_iter=1000, n_thin=10)
+# The radiocarbon determinations can be given as F14C concentrations
+output = WalkerBivarDirichlet(
+    two_normals$f14c,
+    two_normals$f14c_sig,
+    intcal20,
+    F14C_inputs = TRUE,
+    n_iter = 1e4)
+PlotPredictiveCalendarAgeDensity(output)
 }

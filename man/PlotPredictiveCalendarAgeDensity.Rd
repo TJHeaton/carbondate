@@ -6,29 +6,29 @@
 \usage{
 PlotPredictiveCalendarAgeDensity(
   output_data,
-  n_posterior_samples,
+  n_posterior_samples = 5000,
   calibration_curve = NULL,
   plot_14C_age = TRUE,
   show_SPD = FALSE,
   show_confidence_intervals = TRUE,
   interval_width = "2sigma",
   bespoke_probability = NA,
-  true_density = NULL,
-  xlimscal = 1,
-  ylimscal = 1,
   denscale = 3,
-  n_calc = 1001
+  n_calc = 1001,
+  n_burn = NA,
+  n_end = NA
 )
 }
 \arguments{
 \item{output_data}{The return value from one of the updating functions e.g.
-\link{WalkerBivarDirichlet} or
-\link{PolyaUrnBivarDirichlet} or a list, each item containing
+\link{PolyaUrnBivarDirichlet} or
+\link{WalkerBivarDirichlet} or a list, each item containing
 one of these values. Optionally, the output data can have an extra list item
 named \code{label} which is used to set the label on the plot legend.}
 
 \item{n_posterior_samples}{Current number of samples it will draw from this
-posterior to estimate the calendar age density (possibly repeats).}
+posterior to estimate the calendar age density (possibly repeats). If not
+given 5000 is used.}
 
 \item{calibration_curve}{This is usually not required since the name of the
 calibration curve variable is saved in the output data. However if the
@@ -54,24 +54,26 @@ calibration curve and the predictive density. Choose from one of \code{"1sigma"}
 if \code{"bespoke"} is chosen above. E.g. if 0.95 is chosen, then the 95\% confidence
 interval is calculated. Ignored if \code{"bespoke"} is not chosen.}
 
-\item{true_density}{The true calendar age density (optional). Expects a data
-frame with two columns, the first column being calendar age and the right
-column being the normalized density.}
-
-\item{xlimscal, ylimscal}{Whether to scale the x or y limits (optional).
-Default is 1. Values more than 1 will increase range of the limits,
-values less than 1 will decrease the range of the limits.}
-
 \item{denscale}{Whether to scale the vertical range of the density plot
 relative to the calibration curve plot (optional). Default is 3 which means
 that the maximum SPD density will be at 1/3 of the height of the plot.}
 
 \item{n_calc}{Number of points to use when calculating the predictive
 density. Default is 1001.}
+
+\item{n_burn}{The number of samples required for burn-in - any samples before this
+are not used in the calculation. If not given, the first half of the
+MCMC chain is discarded. Looking at the output of \link{PlotConvergenceData} can
+help determine what an appropriate value is for a given output. Note that the maximum
+value that can be chosen is \code{n_iter - 100 * n_thin} (where \code{n_iter} and \code{n_thin} are the
+arguments given to \link{PolyaUrnBivarDirichlet} or \link{WalkerBivarDirichlet}).}
+
+\item{n_end}{The iteration number of the last sample to use. Assumed to be the number of iterations
+if not given.}
 }
 \value{
 A list, each item containing a data frame of the \code{calendar_age}, the
-\code{density_mean} and the 95\% confidence intervals for the density
+\code{density_mean} and the confidence intervals for the density
 \code{density_ci_lower} and \code{density_ci_upper} for each set of output data.
 }
 \description{
@@ -83,21 +85,22 @@ data, without an accompanying plot, you can use
 }
 \examples{
 # Plot results for a single calibration
-PlotPredictiveCalendarAgeDensity(walker_example_output, 500)
+PlotPredictiveCalendarAgeDensity(polya_urn_example_output)
 
 # Plot results from a calibration, and add a label
-new_output = walker_example_output
-new_output$label = "My plot"
-PlotPredictiveCalendarAgeDensity(new_output, 500)
+op = PolyaUrnBivarDirichlet(two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter=1e4)
+op$label = "My plot"
+PlotPredictiveCalendarAgeDensity(op)
 
 # Plot results from two calibrations on the same plot, and show the SPD
 PlotPredictiveCalendarAgeDensity(
-  list(walker_example_output, polya_urn_example_output), 500, show_SPD = TRUE)
+  list(walker_example_output, polya_urn_example_output), show_SPD = TRUE)
 
-# Plot and show the 1-sigma confidence interval
-PlotPredictiveCalendarAgeDensity(walker_example_output, 500, interval_width = "1sigma")
+# Plot and show the 1-sigma confidence interval, and use F14C scale
+PlotPredictiveCalendarAgeDensity(
+    polya_urn_example_output, interval_width = "1sigma", plot_14C_age = FALSE)
 
 # Plot and show the 80\% confidence interval
 PlotPredictiveCalendarAgeDensity(
-  walker_example_output, 500, interval_width = "bespoke", bespoke_probability = 0.8)
+  polya_urn_example_output, interval_width = "bespoke", bespoke_probability = 0.8)
 }

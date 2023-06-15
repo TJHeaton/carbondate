@@ -21,7 +21,7 @@
 #'
 #' @examples
 #' # Plot results for the 10th determinations
-#' PlotCalendarAgeDensityIndividualSample(10, walker_example_output)
+#' PlotCalendarAgeDensityIndividualSample(10, polya_urn_example_output)
 PlotCalendarAgeDensityIndividualSample <- function(
     ident,
     output_data,
@@ -29,13 +29,19 @@ PlotCalendarAgeDensityIndividualSample <- function(
     plot_14C_age = TRUE,
     resolution = 5,
     interval_width = "2sigma",
-    bespoke_probability = NA) {
+    bespoke_probability = NA,
+    n_burn = NA,
+    n_end = NA) {
 
   arg_check <- checkmate::makeAssertCollection()
   checkmate::assertInt(ident, add = arg_check)
   .CheckOutputData(arg_check, output_data)
+  n_iter = output_data$input_parameters$n_iter
+  n_thin = output_data$input_parameters$n_thin
+
   .CheckCalibrationCurveFromOutput(arg_check, output_data, calibration_curve)
   checkmate::assertInt(resolution, na.ok = FALSE, add = arg_check, lower = 1)
+  .CheckNBurn(arg_check, n_burn, n_iter, n_thin)
   checkmate::reportAssertions(arg_check)
 
   if (is.null(calibration_curve)) {
@@ -66,8 +72,17 @@ PlotCalendarAgeDensityIndividualSample <- function(
   rc_sig <- rc_sigmas[ident]
 
   n_out <- length(calendar_age)
-  n_burn <- floor(n_out / 2)
-  calendar_age <- calendar_age[(n_burn+1):n_out]
+  if (is.na(n_burn)) {
+    n_burn = floor(n_out / 2)
+  } else {
+    n_burn = floor(n_burn / n_thin)
+  }
+  if (is.na(n_end)) {
+    n_end = n_out
+  } else {
+    n_end = floor(n_end / n_thin)
+  }
+  calendar_age <- calendar_age[(n_burn+1):n_end]
 
   # Find the calendar age range to plot
   xrange <- range(calendar_age)
@@ -77,12 +92,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
   xrange[2] = ceiling(xrange[2])
   if (resolution > 1) while (xrange[2] %% resolution != 0) xrange[2] = xrange[2] + 1
 
-  cal_age_ind_min <- which.min(abs(calibration_curve$calendar_age - xrange[1]))
-  cal_age_ind_max <- which.min(abs(calibration_curve$calendar_age - xrange[2]))
-  calendar_age_indices <- cal_age_ind_min:cal_age_ind_max
   if (plot_14C_age == FALSE) {
-    range_f14c <- range(calibration_curve$f14c[calendar_age_indices])
-    yrange <- range_f14c + 0.25 * c(-1, 1) * diff(range_f14c)
     title <- substitute(
       paste(
         "Posterior of ",
@@ -96,8 +106,6 @@ PlotCalendarAgeDensityIndividualSample <- function(
         "C"),
       list(i = ident, f14c_age = signif(rc_age, 2), f14c_sig = signif(rc_sig, 2)))
   } else {
-    range_c14 <- range(calibration_curve$c14_age[calendar_age_indices])
-    yrange <- range_c14 + 0.25 * c(-1, 1) * diff(range_c14)
     title <- substitute(
       paste(
         "Posterior of ",
@@ -117,7 +125,6 @@ PlotCalendarAgeDensityIndividualSample <- function(
   .PlotCalibrationCurve(
     plot_AD,
     xlim = rev(xrange),
-    ylim = yrange,
     plot_14C_age = plot_14C_age,
     calibration_curve = calibration_curve,
     calibration_curve_colour = "blue",

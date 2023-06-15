@@ -9,13 +9,15 @@ FindPredictiveCalendarAgeDensity(
   calendar_age_sequence,
   n_posterior_samples,
   interval_width = "2sigma",
-  bespoke_probability = NA
+  bespoke_probability = NA,
+  n_burn = NA,
+  n_end = NA
 )
 }
 \arguments{
 \item{output_data}{The return value from one of the updating functions e.g.
-\link{WalkerBivarDirichlet} or
-\link{PolyaUrnBivarDirichlet} or a list, each item containing
+\link{PolyaUrnBivarDirichlet} or
+\link{WalkerBivarDirichlet} or a list, each item containing
 one of these values. Optionally, the output data can have an extra list item
 named \code{label} which is used to set the label on the plot legend.}
 
@@ -23,7 +25,8 @@ named \code{label} which is used to set the label on the plot legend.}
 calculate the predictive density for.}
 
 \item{n_posterior_samples}{Current number of samples it will draw from this
-posterior to estimate the calendar age density (possibly repeats).}
+posterior to estimate the calendar age density (possibly repeats). If not
+given 5000 is used.}
 
 \item{interval_width}{The confidence intervals to show for both the
 calibration curve and the predictive density. Choose from one of \code{"1sigma"},
@@ -32,6 +35,16 @@ calibration curve and the predictive density. Choose from one of \code{"1sigma"}
 \item{bespoke_probability}{The probability to use for the confidence interval
 if \code{"bespoke"} is chosen above. E.g. if 0.95 is chosen, then the 95\% confidence
 interval is calculated. Ignored if \code{"bespoke"} is not chosen.}
+
+\item{n_burn}{The number of samples required for burn-in - any samples before this
+are not used in the calculation. If not given, the first half of the
+MCMC chain is discarded. Looking at the output of \link{PlotConvergenceData} can
+help determine what an appropriate value is for a given output. Note that the maximum
+value that can be chosen is \code{n_iter - 100 * n_thin} (where \code{n_iter} and \code{n_thin} are the
+arguments given to \link{PolyaUrnBivarDirichlet} or \link{WalkerBivarDirichlet}).}
+
+\item{n_end}{The iteration number of the last sample to use. Assumed to be the number of iterations
+if not given.}
 }
 \value{
 A data frame of the \code{calendar_age}, the
@@ -47,13 +60,13 @@ intervals. Note if you want to calculate and plot the result, use
 \examples{
 # Find results for example output, 2-sigma confidence interval (default)
 FindPredictiveCalendarAgeDensity(
-  walker_example_output, seq(600, 1700, length=12), 500)
+  polya_urn_example_output, seq(600, 1700, length=12), 500)
 
 # Find results for example output, 1-sigma confidence interval (default)
 FindPredictiveCalendarAgeDensity(
-  walker_example_output, seq(600, 1700, length=12), 500, "1sigma")
+  polya_urn_example_output, seq(600, 1700, length=12), 500, "1sigma")
 
 # Find results for example output, 95\% confidence interval (default)
 FindPredictiveCalendarAgeDensity(
-  walker_example_output, seq(600, 1700, length=12), 500, "bespoke", 0.95)
+  polya_urn_example_output, seq(600, 1700, length=12), 500, "bespoke", 0.95)
 }
