@@ -147,12 +147,12 @@ PolyaUrnBivarDirichlet <- function(
     rc_sigmas <- as.double(rc_sigmas)
   } else if (F14C_inputs == FALSE) {
     converted <- .Convert14CageToF14c(rc_determinations, rc_sigmas)
-    rc_determinations <- converted$c14_age
-    rc_sigmas <- converted$c14_sig
-  } else {
-    converted <- .ConvertF14cTo14Cage(rc_determinations, rc_sigmas)
     rc_determinations <- converted$f14c
     rc_sigmas <- converted$f14c_sig
+  } else {
+    converted <- .ConvertF14cTo14Cage(rc_determinations, rc_sigmas)
+    rc_determinations <- converted$c14_age
+    rc_sigmas <- converted$c14_sig
   }
 
   ##############################################################################
@@ -253,7 +253,16 @@ PolyaUrnBivarDirichlet <- function(
   mu_phi_out[output_index] <- mu_phi
   n_clust_out[output_index] <- length(unique(cluster_identifiers))
   densities_out[output_index, ] <- FindInstantPredictiveDensityPolyaUrn(
-    densities_cal_age_sequence, as.integer(observations_per_cluster), phi, tau, alpha, mu_phi, lambda, nu1, nu2)
+    densities_cal_age_sequence,
+    as.integer(observations_per_cluster),
+    phi,
+    tau,
+    alpha,
+    mu_phi,
+    num_observations,
+    lambda,
+    nu1,
+    nu2)
   ##############################################################################
   # Now the calibration
   if (show_progress) {
@@ -305,7 +314,16 @@ PolyaUrnBivarDirichlet <- function(
       mu_phi_out[output_index] <- mu_phi
       n_clust_out[output_index] <- max(cluster_identifiers)
       densities_out[output_index, ] <- FindInstantPredictiveDensityPolyaUrn(
-        densities_cal_age_sequence, as.integer(observations_per_cluster), phi, tau, alpha, mu_phi, lambda, nu1, nu2)
+        densities_cal_age_sequence,
+        as.integer(observations_per_cluster),
+        phi,
+        tau,
+        alpha,
+        mu_phi,
+        num_observations,
+        lambda,
+        nu1,
+        nu2)
     }
   }
 

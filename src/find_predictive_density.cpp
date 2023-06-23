@@ -177,7 +177,7 @@ double PolyaUrnDensityForCalendarAge(
     list taus,
     doubles alphas,
     doubles mu_phis,
-    double n_obs,
+    int n_obs,
     double lambda,
     double nu1,
     double nu2,
@@ -250,7 +250,6 @@ double PolyaUrnDensityForCalendarAge(
 
 
 // Finds predictive density at a single data point
-
 [[cpp11::register]] doubles FindInstantPredictiveDensityPolyaUrn(
     doubles calendar_ages,
     integers observations_per_cluster,
@@ -258,6 +257,7 @@ double PolyaUrnDensityForCalendarAge(
     doubles tau,
     double alpha,
     double mu_phi,
+    double n_obs,
     double lambda,
     double nu1,
     double nu2) {
@@ -265,10 +265,9 @@ double PolyaUrnDensityForCalendarAge(
   int n = calendar_ages.size();
   writable::doubles instant_density(n);
 
-
   for (int i = 0; i < n; i++) {
     instant_density[i] = PolyaUrnDensityForCalendarAge(
-      calendar_ages[i], observations_per_cluster, phi, tau, alpha, mu_phi, lambda, nu1, nu2, n);
+      calendar_ages[i], observations_per_cluster, phi, tau, alpha, mu_phi, lambda, nu1, nu2, n_obs);
   }
   return instant_density;
 }
