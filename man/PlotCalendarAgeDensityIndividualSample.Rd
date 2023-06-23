@@ -13,7 +13,9 @@ PlotCalendarAgeDensityIndividualSample(
   interval_width = "2sigma",
   bespoke_probability = NA,
   n_burn = NA,
-  n_end = NA
+  n_end = NA,
+  show_hpd_ranges = TRUE,
+  show_unmodelled_density = TRUE
 )
 }
 \arguments{
@@ -40,8 +42,8 @@ Defaults to TRUE. If FALSE uses F14C concentration instead.}
 Must be an integer greater than one.}
 
 \item{interval_width}{The confidence intervals to show for the
-calibration curve. Choose from one of "1sigma", "2sigma" and "bespoke".
-Default is "2sigma".}
+calibration curve and for the highest posterior density ranges.
+Choose from one of "1sigma", "2sigma" and "bespoke". Default is "2sigma".}
 
 \item{bespoke_probability}{The probability to use for the confidence interval
 if "bespoke" is chosen above. E.g. if 0.95 is chosen, then the 95\% confidence
@@ -62,10 +64,14 @@ No return value
 }
 \description{
 Once a function has been run to calibrate a set of radiocarbon
-determinations, the posterior density for a single determination can be
-plotted using this function.
+determinations, the posterior density histogram for a single determination can be
+plotted using this function. This also plots a kernel density estimation from the histogram data
+and shows the highest posterior density range for the interval width specified (default 2\eqn{\sigma}).
 }
 \examples{
-# Plot results for the 10th determinations
+# Plot results for the 10th determination
 PlotCalendarAgeDensityIndividualSample(10, polya_urn_example_output)
+
+# Plot results for the 10th determinations but change to a 1 sigma interval for HDD range
+PlotCalendarAgeDensityIndividualSample(10, polya_urn_example_output, interval_width = "1sigma")
 }

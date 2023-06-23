@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(carbondate)
+set.seed(5)
 ```
 
 # Introduction
@@ -96,33 +97,31 @@ For full technical details of the models used, and explanation of the model para
 
 Updating is performed within an overall Gibbs MCMC scheme by sampling the model parameters. There are two different schemes provided to update the DPMM --- a Polya Urn approach [@neal2000] which integrates out the mixing weights of each cluster; and a slice sampling approach in which they are explicitly retained [@walker2007].
 
-Run using the Walker method:
+Run using the Poly Urn method:
 
 ```{r calculate_walker, results=FALSE}
-walker_output <- WalkerBivarDirichlet(
-  rc_determinations = kerr$c14_age,
-  rc_sigmas = kerr$c14_sig,
-  F14C_inputs = FALSE,
-  calibration_curve=intcal20,
-  n_iter = 100,
-  n_thin = 5)
-```
-
-or the Poly Urn method as follows:
-
-```{r calculate_neal, results=FALSE}
 polya_urn_output <- PolyaUrnBivarDirichlet(
   rc_determinations = kerr$c14_age,
   rc_sigmas = kerr$c14_sig,
-  F14C_inputs = FALSE,
-  calibration_curve = intcal20,
-  n_iter = 100,
+  calibration_curve=intcal20,
+  n_iter = 1e4,
   n_thin = 5)
 ```
 
-Note this example only runs for 100 iterations - this is to keep the run time short, but is not enough to lead to a converged results. We suggest running for 100,000 iterations to arrive at the converged results, which are shown in [@heaton2021]. There are also example datasets from running the above for 100,000 iterations available in the package called `walker_example_output` and `polya_urn_example_output`.
+or the Walker method as follows:
 
-Both of these method will output a list containing the sampler outputs at every $n_{\textrm{thin}}$ iteration, with the values of the model parameters and the calendar ages.
+```{r calculate_neal, results=FALSE}
+walker_output <- WalkerBivarDirichlet(
+  rc_determinations = kerr$c14_age,
+  rc_sigmas = kerr$c14_sig,
+  calibration_curve = intcal20,
+  n_iter = 1e4,
+  n_thin = 5)
+```
+
+Note this example only runs for 10,000 iterations - this is to keep the run time short, but is not enough to lead to a converged results. We suggest running for at least 100,000 iterations to arrive at the converged results, which are shown in [@heaton2021]. 
+
+Both of these methods will output a list containing the sampler outputs at every $n_{\textrm{thin}}$ iteration, with the values of the model parameters and the calendar ages.
 
 ## Post-processing
 
@@ -135,8 +134,9 @@ As described above, the output data includes the calendar age estimate for each 
 You can calculate and plot this using `PlotCalendarAgeDensityIndividualSample` - for example to calculate the posterior calendar age distribution for the 10th ^14^C determination:
 
 ```{r plot_individual, out.width="100%", fig.width=10, fig.height=8}
-PlotCalendarAgeDensityIndividualSample(10, walker_example_output)
+PlotCalendarAgeDensityIndividualSample(21, polya_urn_output)
 ```
+It also shows the highest posterior density ranges for the $2\sigma$ interval, and other intervals can be chosen by specifying this in the arguments.
 
 #### Density Estimate to Summarise Objects {#plot_density}
 
@@ -146,7 +146,7 @@ The function allows calculation using multiple outputs so that their results can
 
 ```{r plot_density, out.width="100%", fig.width=10, fig.height=8}
 densities = PlotPredictiveCalendarAgeDensity(
-  output_data = list(walker_example_output, polya_urn_example_output),
+  output_data = list(walker_output, polya_urn_output),
   n_posterior_samples = 500,
   denscale = 2.5)
 ```
@@ -155,7 +155,7 @@ We also have the option to plot the SPD, plot in the F^14^C scale and change the
 
 ```{r plot_density_2, out.width="100%", fig.width=10, fig.height=8}
 densities = PlotPredictiveCalendarAgeDensity(
-  output_data = walker_example_output,
+  output_data = polya_urn_output,
   n_posterior_samples = 500,
   denscale = 2.5,
   show_SPD = TRUE,
@@ -169,7 +169,7 @@ densities = PlotPredictiveCalendarAgeDensity(
 The output data also contains information about the cluster allocation of each sampled object, which we can use to build the probability for there being a given number of total clusters. If we believe the underlying individual clusters in the model have inherent meaning in terms of representing genuine and distinct periods of site usage, as opposed to simply providing a tool to enable a non-parametric density estimate, this information may be archaeologically useful.
 
 ```{r plot_clusters, out.width="50%", fig.width=5, fig.height=6}
-PlotNumberOfClusters(output_data = walker_example_output)
+PlotNumberOfClusters(output_data = polya_urn_output)
 ```
 
 # References
