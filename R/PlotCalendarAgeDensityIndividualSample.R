@@ -55,15 +55,15 @@ PlotCalendarAgeDensityIndividualSample <- function(
     calibration_curve = .AddC14ageColumns(calibration_curve)
     if (F14C_inputs == TRUE) {
       converted <- .ConvertF14cTo14Cage(rc_determinations, rc_sigmas)
-      rc_determinations <- converted$f14c
-      rc_sigmas <- converted$f14c_sig
+      rc_determinations <- converted$c14_age
+      rc_sigmas <- converted$c14_sig
     }
   } else {
     calibration_curve = .AddF14cColumns(calibration_curve)
     if (F14C_inputs == FALSE) {
       converted <- .Convert14CageToF14c(rc_determinations, rc_sigmas)
-      rc_determinations <- converted$c14_age
-      rc_sigmas <- converted$c14_sig
+      rc_determinations <- converted$f14c
+      rc_sigmas <- converted$f14c_sig
     }
   }
 
