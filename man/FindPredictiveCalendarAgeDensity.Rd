@@ -29,8 +29,8 @@ posterior to estimate the calendar age density (possibly repeats). If not
 given 5000 is used.}
 
 \item{interval_width}{The confidence intervals to show for both the
-calibration curve and the predictive density. Choose from one of \code{"1sigma"},
-\code{"2sigma"} and \code{"bespoke"}. Default is \code{"2sigma"}.}
+calibration curve and the predictive density. Choose from one of \code{"1sigma"} (68.3\%),
+\code{"2sigma"} (95.4\%) and \code{"bespoke"}. Default is \code{"2sigma"}.}
 
 \item{bespoke_probability}{The probability to use for the confidence interval
 if \code{"bespoke"} is chosen above. E.g. if 0.95 is chosen, then the 95\% confidence

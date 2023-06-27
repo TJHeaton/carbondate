@@ -27,8 +27,8 @@
 #' @param show_confidence_intervals Whether to show the confidence intervals
 #' for the chosen probability on the plot. Default is `TRUE`.
 #' @param interval_width The confidence intervals to show for both the
-#' calibration curve and the predictive density. Choose from one of `"1sigma"`,
-#' `"2sigma"` and `"bespoke"`. Default is `"2sigma"`.
+#' calibration curve and the predictive density. Choose from one of `"1sigma"` (68.3%),
+#' `"2sigma"` (95.4%) and `"bespoke"`. Default is `"2sigma"`.
 #' @param bespoke_probability The probability to use for the confidence interval
 #' if `"bespoke"` is chosen above. E.g. if 0.95 is chosen, then the 95% confidence
 #' interval is calculated. Ignored if `"bespoke"` is not chosen.

@@ -119,7 +119,7 @@ walker_output <- WalkerBivarDirichlet(
   n_thin = 5)
 ```
 
-Note this example only runs for 10,000 iterations - this is to keep the run time short, but is not enough to lead to a converged results. We suggest running for at least 100,000 iterations to arrive at the converged results, which are shown in [@heaton2021]. 
+Note this example only runs for 10,000 iterations - this is to keep the run time short, but is not enough to lead to a converged results. We suggest running for at least 100,000 iterations to arrive at the converged results, which are shown in [@heaton2021].
 
 Both of these methods will output a list containing the sampler outputs at every $n_{\textrm{thin}}$ iteration, with the values of the model parameters and the calendar ages.
 
@@ -131,12 +131,18 @@ Our sampler provides three outputs of particular interest.
 
 As described above, the output data includes the calendar age estimate for each ^14^C sample. We can use this to determine the posterior distribution of the calendar age for each sample. Note that the calendar age estimates use the joint information provided by all the ^14^C determinations (as opposed to solely the ^14^C determination of the single object that would be found using `CalibrateSingleDetermination`) on the understanding the calendar ages of the objects are related.
 
-You can calculate and plot this using `PlotCalendarAgeDensityIndividualSample` - for example to calculate the posterior calendar age distribution for the 10th ^14^C determination:
+You can calculate and plot this using `PlotCalendarAgeDensityIndividualSample` - for example to calculate the posterior calendar age distribution for the 21st ^14^C determination:
 
 ```{r plot_individual, out.width="100%", fig.width=10, fig.height=8}
 PlotCalendarAgeDensityIndividualSample(21, polya_urn_output)
 ```
-It also shows the highest posterior density ranges for the $2\sigma$ interval, and other intervals can be chosen by specifying this in the arguments.
+
+The highest posterior density range for a given probability and the unmodelled density (i.e. the result of `CalibrateSingleDetermination`) can also be shown on the plot by specifying this in the arguments, as shown below.
+
+```{r plot_individual_with_hpd, out.width="100%", fig.width=10, fig.height=8}
+PlotCalendarAgeDensityIndividualSample(
+  21, polya_urn_output, show_hpd_ranges = TRUE, show_unmodelled_density = TRUE)
+```
 
 #### Density Estimate to Summarise Objects {#plot_density}
 

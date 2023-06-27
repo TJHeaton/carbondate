@@ -12,20 +12,29 @@
 #' Must be an integer greater than one.
 #' @param interval_width The confidence intervals to show for the
 #' calibration curve and for the highest posterior density ranges.
-#' Choose from one of "1sigma", "2sigma" and "bespoke". Default is "2sigma".
+#' Choose from one of "1sigma" (68.3%), "2sigma" (95.4%) and "bespoke". Default is "2sigma".
 #' @param bespoke_probability The probability to use for the confidence interval
 #' if "bespoke" is chosen above. E.g. if 0.95 is chosen, then the 95% confidence
 #' interval is calculated. Ignored if "bespoke" is not chosen.
+#' @param show_hpd_ranges Set to `TRUE` to also show the highest posterior range on the plot.
+#' These are calculated using [HDInterval::hdi]. Default is `FALSE`.
+#' @param show_unmodelled_density Set to `TRUE` to also show the unmodelled density (i.e. the
+#' result of [carbondate::CalibrateSingleDetermination]) on the plot. Default is `FALSE`.
 #'
-#' @return No return value
 #' @export
 #'
 #' @examples
 #' # Plot results for the 10th determination
 #' PlotCalendarAgeDensityIndividualSample(10, polya_urn_example_output)
 #'
-#' # Plot results for the 10th determinations but change to a 1 sigma interval for HDD range
-#' PlotCalendarAgeDensityIndividualSample(10, polya_urn_example_output, interval_width = "1sigma")
+#' # Plot results for the 10th determination and show the unmodelled density and HPD ranges
+#' PlotCalendarAgeDensityIndividualSample(
+#'     10, polya_urn_example_output, show_hpd_ranges = TRUE, show_unmodelled_density = TRUE)
+#'
+#' # Now change to showing 1 sigma interval for HPD range and calibration curve
+#' PlotCalendarAgeDensityIndividualSample(
+#'     10, polya_urn_example_output, interval_width = "1sigma",
+#'     show_hpd_ranges = TRUE, show_unmodelled_density = TRUE)
 PlotCalendarAgeDensityIndividualSample <- function(
     ident,
     output_data,
@@ -36,8 +45,8 @@ PlotCalendarAgeDensityIndividualSample <- function(
     bespoke_probability = NA,
     n_burn = NA,
     n_end = NA,
-    show_hpd_ranges = TRUE,
-    show_unmodelled_density = TRUE) {
+    show_hpd_ranges = FALSE,
+    show_unmodelled_density = FALSE) {
 
   arg_check <- checkmate::makeAssertCollection()
   checkmate::assertInt(ident, add = arg_check)
@@ -182,17 +191,96 @@ PlotCalendarAgeDensityIndividualSample <- function(
     ylim = c(0, 3 * max(temphist$density)),
     col = "lavender",
     border = "purple")
-  graphics::lines(dens, lwd=2, col='purple')
-  graphics::lines(CalibrateSingleDetermination(rc_age, rc_sig, calibration_curve), lwd = 2, col='grey')
-  credMass <- switch(
+  if (show_unmodelled_density) {
+    unmodelled = CalibrateSingleDetermination(rc_age, rc_sig, calibration_curve)
+    graphics::polygon(
+      c(unmodelled$calendar_age_BP, rev(unmodelled$calendar_age_BP)),
+      c(unmodelled$probability, rep(0, length(unmodelled$probability))),
+      border = NA,
+      col = grDevices::grey(0.1, alpha = 0.25))
+  }
+  if (show_hpd_ranges){
+    graphics::lines(dens, lwd=1, col='black', lty=2)
+    credMass <- switch(
+      interval_width,
+      "1sigma" = 0.682,
+      "2sigma" = 0.954,
+      "bespoke" = bespoke_probability)
+
+    hpd_ranges <- HDInterval::hdi(dens, credMass = credMass, allowSplit=TRUE)
+    ht <- attr(hpd_ranges, "height")
+    graphics::segments(hpd_ranges[, 1], ht, hpd_ranges[, 2], ht, lwd=4, col='black', lend='butt')
+
+  }
+
+  .AddLegendToDensitySamplePlot(
     interval_width,
-    "1sigma" = 0.682,
-    "2sigma" = 0.954,
-    "bespoke" = bespoke_probability)
+    bespoke_probability,
+    output_data$input_data$calibration_curve_name,
+    show_hpd_ranges,
+    show_unmodelled_density,
+    hpd_ranges)
+}
 
-  hdiD <- HDInterval::hdi(dens, credMass = credMass, allowSplit=TRUE)
-  ht <- attr(hdiD, "height")
-  graphics::segments(hdiD[, 1], ht, hdiD[, 2], ht, lwd=4, col='purple', lend='butt')
+.AddLegendToDensitySamplePlot <- function(
+    interval_width,
+    bespoke_probability,
+    calcurve_name,
+    show_hpd_ranges,
+    show_unmodelled_density,
+    hpd_ranges){
+  ci_label = switch(
+    interval_width,
+    "1sigma" = expression(paste(sigma, " interval", sep="")),
+    "2sigma"  = expression(paste("2", sigma, " interval", sep="")),
+    "bespoke" = paste(round(100*bespoke_probability), "% interval", sep = ""))
 
-  invisible(finalhist)
+  legend_labels = c(
+    substitute(paste(""^14, "C determination ")),
+    stringr::str_replace(calcurve_name, "intcal", "IntCal"),
+    ci_label)
+  lty = c(-1, 1, 2)
+  lwd = c(-1, 1, 1)
+  pch = c(15, NA, NA)
+  col = c(grDevices::rgb(1, 0, 0, .5), "blue", "blue")
+
+  if (show_unmodelled_density) {
+    legend_labels <- c(legend_labels, "Unmodelled density")
+    lty <- c(lty, -1)
+    lwd = c(lwd, -1)
+    pch <- c(pch, 15)
+    col <- c(col, grDevices::grey(0.1, alpha = 0.25))
+  }
+
+  legend_labels <- c(legend_labels, "Posterior density")
+  lty <- c(lty, 1)
+  lwd = c(lwd, 1)
+  pch <- c(pch, NA)
+  col <- c(col, "purple")
+
+  if (show_hpd_ranges) {
+    hpd_label = switch(
+      interval_width,
+      "1sigma" = "68.3% HPD",
+      "2sigma"  = "95.4% HPD",
+      "bespoke" = paste(round(100*bespoke_probability, 3), "% HPD", sep = ""))
+    legend_labels <- c(legend_labels, hpd_label)
+    lty <- c(lty, 1)
+    lwd = c(lwd, 2)
+    pch <- c(pch, NA)
+    col <- c(col, "black")
+
+    hpd_ranges = round(hpd_ranges)
+    for (i in 1:dim(hpd_ranges)[1]) {
+      legend_labels <- c(legend_labels, paste("   ", hpd_ranges[i, 1], "-", hpd_ranges[i, 2]))
+      lty <- c(lty, NA)
+      lwd = c(lwd, NA)
+      pch <- c(pch, NA)
+      col <- c(col, NA)
+    }
+  }
+
+  graphics::legend(
+    "topright", legend = legend_labels, lty = lty, lwd=lwd, pch = pch, col = col)
+
 }

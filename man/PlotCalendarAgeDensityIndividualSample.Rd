@@ -14,8 +14,8 @@ PlotCalendarAgeDensityIndividualSample(
   bespoke_probability = NA,
   n_burn = NA,
   n_end = NA,
-  show_hpd_ranges = TRUE,
-  show_unmodelled_density = TRUE
+  show_hpd_ranges = FALSE,
+  show_unmodelled_density = FALSE
 )
 }
 \arguments{
@@ -43,7 +43,7 @@ Must be an integer greater than one.}
 
 \item{interval_width}{The confidence intervals to show for the
 calibration curve and for the highest posterior density ranges.
-Choose from one of "1sigma", "2sigma" and "bespoke". Default is "2sigma".}
+Choose from one of "1sigma" (68.3\%), "2sigma" (95.4\%) and "bespoke". Default is "2sigma".}
 
 \item{bespoke_probability}{The probability to use for the confidence interval
 if "bespoke" is chosen above. E.g. if 0.95 is chosen, then the 95\% confidence
@@ -58,9 +58,12 @@ arguments given to \link{PolyaUrnBivarDirichlet} or \link{WalkerBivarDirichlet})
 
 \item{n_end}{The iteration number of the last sample to use. Assumed to be the number of iterations
 if not given.}
-}
-\value{
-No return value
+
+\item{show_hpd_ranges}{Set to \code{TRUE} to also show the highest posterior range on the plot.
+These are calculated using \link[HDInterval:hdi]{HDInterval::hdi}. Default is \code{FALSE}.}
+
+\item{show_unmodelled_density}{Set to \code{TRUE} to also show the unmodelled density (i.e. the
+result of \link{CalibrateSingleDetermination}) on the plot. Default is \code{FALSE}.}
 }
 \description{
 Once a function has been run to calibrate a set of radiocarbon
@@ -72,6 +75,12 @@ and shows the highest posterior density range for the interval width specified (
 # Plot results for the 10th determination
 PlotCalendarAgeDensityIndividualSample(10, polya_urn_example_output)
 
-# Plot results for the 10th determinations but change to a 1 sigma interval for HDD range
-PlotCalendarAgeDensityIndividualSample(10, polya_urn_example_output, interval_width = "1sigma")
+# Plot results for the 10th determination and show the unmodelled density and HPD ranges
+PlotCalendarAgeDensityIndividualSample(
+    10, polya_urn_example_output, show_hpd_ranges = TRUE, show_unmodelled_density = TRUE)
+
+# Now change to showing 1 sigma interval for HPD range and calibration curve
+PlotCalendarAgeDensityIndividualSample(
+    10, polya_urn_example_output, interval_width = "1sigma",
+    show_hpd_ranges = TRUE, show_unmodelled_density = TRUE)
 }
