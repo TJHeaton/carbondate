@@ -193,35 +193,3 @@ double PolyaUrnUpdateAlpha(
   }
   return current_alpha;
 }
-
-
-[[cpp11::register]] double PolyaUrnUpdateAlpha_test(
-    int n,
-    integers nci,
-    double current_alpha,
-    double alpha_shape,
-    double alpha_rate){
-
-  double alpha = -1.;         // Updated value of alpha
-  double prop_sd = 1.;        // Standard deviation for sampling proposed value of alpha
-  double log_prior_rate, log_likelihood_rate, log_proposal_rate, hr;
-  std::vector<int> observations_per_cluster(nci.begin(), nci.end());
-
-  // Sample alpha from truncated normal distribution
-  while (alpha <= 0.) {
-    alpha = Rf_rnorm(current_alpha, prop_sd);
-  }
-
-  log_prior_rate = Rf_dgamma(alpha, alpha_shape, 1./alpha_rate, 1);
-  log_prior_rate -= Rf_dgamma(current_alpha, alpha_shape, 1./alpha_rate, 1);
-  log_likelihood_rate = PolyaUrnAlphaLogLikelihood(observations_per_cluster, alpha, n);
-  log_likelihood_rate -= PolyaUrnAlphaLogLikelihood(observations_per_cluster, current_alpha, n);
-  // Adjust for non-symmetric truncated normal proposal
-  log_proposal_rate = Rf_pnorm5(current_alpha, 0., 1., 1, 1) - Rf_pnorm5(alpha, 0., 1., 1, 1);
-  hr = exp(log_prior_rate + log_likelihood_rate + log_proposal_rate);
-  // Accept or reject new alpha
-  if (Rf_runif(0., 1.) < hr) {
-    return alpha;
-  }
-  return current_alpha;
-}

@@ -189,12 +189,12 @@ WalkerBivarDirichlet <- function(
     rc_sigmas <- as.double(rc_sigmas)
   } else if (F14C_inputs == FALSE) {
     converted <- .Convert14CageToF14c(rc_determinations, rc_sigmas)
-    rc_determinations <- converted$c14_age
-    rc_sigmas <- converted$c14_sig
-  } else {
-    converted <- .ConvertF14cTo14Cage(rc_determinations, rc_sigmas)
     rc_determinations <- converted$f14c
     rc_sigmas <- converted$f14c_sig
+  } else {
+    converted <- .ConvertF14cTo14Cage(rc_determinations, rc_sigmas)
+    rc_determinations <- converted$c14_age
+    rc_sigmas <- converted$c14_sig
   }
 
   ##############################################################################
@@ -208,14 +208,14 @@ WalkerBivarDirichlet <- function(
   spd = apply(initial_probabilities, 1, sum)
   cumulative_spd = cumsum(spd) / sum(spd)
   spd_range_1_sigma = c(
-    integer_cal_year_curve$calendar_age_BP[min(which(cumulative_spd > 0.16))],
-    integer_cal_year_curve$calendar_age_BP[max(which(cumulative_spd < 0.84))])
+    integer_cal_year_curve$calendar_age_BP[min(which(cumulative_spd > (1 - 0.683)/2))],
+    integer_cal_year_curve$calendar_age_BP[max(which(cumulative_spd < (1 + 0.683)/2))])
   spd_range_2_sigma = c(
-    integer_cal_year_curve$calendar_age_BP[min(which(cumulative_spd > 0.025))],
-    integer_cal_year_curve$calendar_age_BP[max(which(cumulative_spd < 0.975))])
+    integer_cal_year_curve$calendar_age_BP[min(which(cumulative_spd > (1 - 0.954)/2))],
+    integer_cal_year_curve$calendar_age_BP[max(which(cumulative_spd < (1 + 0.954)/2))])
   spd_range_3_sigma = c(
-    integer_cal_year_curve$calendar_age_BP[min(which(cumulative_spd > 0.001))],
-    integer_cal_year_curve$calendar_age_BP[max(which(cumulative_spd < 0.999))])
+    integer_cal_year_curve$calendar_age_BP[min(which(cumulative_spd > (1 - 0.997)/2))],
+    integer_cal_year_curve$calendar_age_BP[max(which(cumulative_spd < (1 + 0.997)/2))])
 
   plot_range = spd_range_3_sigma + c(-1, 1) * diff(spd_range_3_sigma) * 0.1
   plot_range = c(

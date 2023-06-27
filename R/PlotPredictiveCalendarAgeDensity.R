@@ -27,8 +27,8 @@
 #' @param show_confidence_intervals Whether to show the confidence intervals
 #' for the chosen probability on the plot. Default is `TRUE`.
 #' @param interval_width The confidence intervals to show for both the
-#' calibration curve and the predictive density. Choose from one of `"1sigma"`,
-#' `"2sigma"` and `"bespoke"`. Default is `"2sigma"`.
+#' calibration curve and the predictive density. Choose from one of `"1sigma"` (68.3%),
+#' `"2sigma"` (95.4%) and `"bespoke"`. Default is `"2sigma"`.
 #' @param bespoke_probability The probability to use for the confidence interval
 #' if `"bespoke"` is chosen above. E.g. if 0.95 is chosen, then the 95% confidence
 #' interval is calculated. Ignored if `"bespoke"` is not chosen.
@@ -122,15 +122,15 @@ PlotPredictiveCalendarAgeDensity <- function(
     calibration_curve = .AddC14ageColumns(calibration_curve)
     if (F14C_inputs == TRUE) {
       converted <- .ConvertF14cTo14Cage(rc_determinations, rc_sigmas)
-      rc_determinations <- converted$f14c
-      rc_sigmas <- converted$f14c_sig
+      rc_determinations <- converted$c14_age
+      rc_sigmas <- converted$c14_sig
     }
   } else {
     calibration_curve = .AddF14cColumns(calibration_curve)
     if (F14C_inputs == FALSE) {
       converted <- .Convert14CageToF14c(rc_determinations, rc_sigmas)
-      rc_determinations <- converted$c14_age
-      rc_sigmas <- converted$c14_sig
+      rc_determinations <- converted$f14c
+      rc_sigmas <- converted$f14c_sig
     }
   }
 

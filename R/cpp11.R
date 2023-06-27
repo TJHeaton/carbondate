@@ -12,16 +12,12 @@ FindInstantPredictiveDensityWalker <- function(calendar_ages, weight, phi, tau, 
   .Call(`_carbondate_FindInstantPredictiveDensityWalker`, calendar_ages, weight, phi, tau, mu_phi, lambda, nu1, nu2)
 }
 
-FindInstantPredictiveDensityPolyaUrn <- function(calendar_ages, observations_per_cluster, phi, tau, alpha, mu_phi, lambda, nu1, nu2) {
-  .Call(`_carbondate_FindInstantPredictiveDensityPolyaUrn`, calendar_ages, observations_per_cluster, phi, tau, alpha, mu_phi, lambda, nu1, nu2)
+FindInstantPredictiveDensityPolyaUrn <- function(calendar_ages, observations_per_cluster, phi, tau, alpha, mu_phi, n_obs, lambda, nu1, nu2) {
+  .Call(`_carbondate_FindInstantPredictiveDensityPolyaUrn`, calendar_ages, observations_per_cluster, phi, tau, alpha, mu_phi, n_obs, lambda, nu1, nu2)
 }
 
 FindPredictiveDensityWalker <- function(calendar_ages, weights, phis, taus, mu_phis, lambda, nu1, nu2) {
   .Call(`_carbondate_FindPredictiveDensityWalker`, calendar_ages, weights, phis, taus, mu_phis, lambda, nu1, nu2)
-}
-
-PolyaUrnUpdateAlpha_test <- function(n, nci, current_alpha, alpha_shape, alpha_rate) {
-  .Call(`_carbondate_PolyaUrnUpdateAlpha_test`, n, nci, current_alpha, alpha_shape, alpha_rate)
 }
 
 PolyaUrnUpdateStep <- function(current_calendar_ages, current_cluster_ids, current_phi, current_tau, current_alpha, current_mu_phi, alpha_shape, alpha_rate, lambda, nu1, nu2, A, B, w, m, c14_determinations, c14_sigmas, calcurve_yr_index_offset, mucalallyr, sigcalallyr) {
