@@ -20,8 +20,8 @@ double UpdateMuPhi(
     const std::vector<double>&, const std::vector<double>&, double, double, double);
 
 std::vector<double> UpdateCalendarAges(
-    int, doubles, double, double, std::vector<int>, std::vector<double>, std::vector<double>,
-    doubles, doubles, doubles, doubles);
+    int, const doubles&, double, double, const std::vector<int>&, const std::vector<double>&,
+    const std::vector<double>&, const doubles&, const doubles&, int, const doubles&, const doubles&);
 
 void UpdatePhiTau(
     const std::vector<double>&, double, double, double, double, double&, double&);
@@ -61,6 +61,7 @@ double PolyaUrnUpdateAlpha(int, const std::vector<int>&, double, double, double)
     double m,
     doubles c14_determinations,
     doubles c14_sigmas,
+    int calcurve_yr_index_offset,
     doubles mucalallyr,
     doubles sigcalallyr) {
 
@@ -89,7 +90,8 @@ double PolyaUrnUpdateAlpha(int, const std::vector<int>&, double, double, double)
     tau,
     observations_per_cluster);
 
-  PolyaUrnUpdateClusterPhiTau(current_calendar_ages, cluster_ids, current_mu_phi, lambda, nu1, nu2, phi, tau);
+  PolyaUrnUpdateClusterPhiTau(
+          current_calendar_ages, cluster_ids, current_mu_phi, lambda, nu1, nu2, phi, tau);
   mu_phi = UpdateMuPhi(phi, tau, lambda, A, B);
 
   calendar_ages = UpdateCalendarAges(
@@ -102,6 +104,7 @@ double PolyaUrnUpdateAlpha(int, const std::vector<int>&, double, double, double)
     tau,
     c14_determinations,
     c14_sigmas,
+    calcurve_yr_index_offset,
     mucalallyr,
     sigcalallyr);
 
@@ -116,4 +119,4 @@ double PolyaUrnUpdateAlpha(int, const std::vector<int>&, double, double, double)
   retlist.push_back({"calendar_ages"_nm = calendar_ages});
   retlist.push_back({"observations_per_cluster"_nm = observations_per_cluster});
   return retlist;
-  }
+}

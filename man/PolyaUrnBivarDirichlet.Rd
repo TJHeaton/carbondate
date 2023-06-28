@@ -6,14 +6,16 @@
 Gibbs sampler using a DPMM}
 \usage{
 PolyaUrnBivarDirichlet(
-  c14_determinations,
-  c14_sigmas,
+  rc_determinations,
+  rc_sigmas,
   calibration_curve,
-  n_iter = 100,
+  F14C_inputs = FALSE,
+  n_iter = 1e+05,
   n_thin = 10,
-  slice_width = max(1000, diff(range(c14_determinations))/2),
+  use_F14C_space = TRUE,
+  slice_width = NA,
   slice_multiplier = 10,
-  n_clust = min(10, length(c14_determinations)),
+  n_clust = min(10, length(rc_determinations)),
   show_progress = TRUE,
   sensible_initialisation = TRUE,
   lambda = NA,
@@ -28,32 +30,39 @@ PolyaUrnBivarDirichlet(
 )
 }
 \arguments{
-\item{c14_determinations}{A vector of observed radiocarbon determinations}
+\item{rc_determinations}{A vector of observed radiocarbon determinations}
 
-\item{c14_sigmas}{A vector of the radiocarbon determinations
-uncertainties (1-sigma). Must be the same length as \code{c14_determinations}.}
+\item{rc_sigmas}{A vector of the radiocarbon determinations
+uncertainties (1-sigma). Must be the same length as \code{rc_determinations}.}
 
-\item{calibration_curve}{A dataframe which should contain at least 3 columns
-entitled \code{calendar_age}, \code{c14_age} and \code{c14_sig}.
-This format matches \link{intcal20}.}
+\item{calibration_curve}{A dataframe which must contain one column \code{calendar_age_BP}, and also
+columns \code{c14_age} and \code{c14_sig} or \code{f14c} and \code{f14c_sig} (or both sets).
+This format matches the curves supplied with this package e.g. \link{intcal20}, \link{intcal13},
+which contain all 5 columns.}
 
-\item{n_iter}{The number of MCMC iterations (optional). Default is 100.}
+\item{F14C_inputs}{\code{TRUE} if the provided rc_determinations are F14C concentrations and \code{FALSE}
+if they are radiocarbon age BP. Defaults to \code{FALSE}.}
+
+\item{n_iter}{The number of MCMC iterations (optional). Default is 100,000.}
 
 \item{n_thin}{How much to thin the output (optional). 1 is no thinning,
 a larger number is more thinning. Default is 10. Must choose an integer more
-than 1 and not too close to \code{n_iter}, since after burn-in there are
-\eqn{(n_{\textrm{iter}}/n_{\textrm{thin}})/2} samples from posterior to
-potentially use.}
+than 1 and not too close to \code{n_iter}, to ensure there are enought samples from
+posterior to potentially use.}
 
-\item{slice_width}{Parameter for slice sampling (optional). Default is
-either 1000 or half the width of the c14 determinations, whichever is larger.}
+\item{use_F14C_space}{Whether the calculations are carried out in F14C space (default is TRUE).
+If FALSE, calculations are carried out in 14C yr BP space.}
+
+\item{slice_width}{Parameter for slice sampling (optional). If not given a value
+is chosen intelligently based on the spread of the initial calendar ages.
+Must be given if \code{sensible_initialisation} is \code{FALSE}.}
 
 \item{slice_multiplier}{Integer parameter for slice sampling (optional).
 Default is 10. Limits the slice size to \code{slice_multiplier * slice_width}.}
 
 \item{n_clust}{The initial number of clusters (optional). Must
-be less than the length of \code{c14_determinations}. Default is 10 or the length
-of \code{c14_determinations} if it is less than 10.}
+be less than the length of \code{rc_determinations}. Default is 10 or the length
+of \code{rc_determinations} if it is less than 10.}
 
 \item{show_progress}{Whether to show a progress bar in the console during
 execution. Default is \code{TRUE}.}
@@ -88,7 +97,7 @@ Required if \code{sensible_initialisation} is \code{FALSE}.}
 
 \item{calendar_ages}{The initial estimate for the underlying calendar ages
 (optional). If supplied it must be a vector with the same length as
-\code{c14_determinations}.  Required if \code{sensible_initialisation} is \code{FALSE}.}
+\code{rc_determinations}.  Required if \code{sensible_initialisation} is \code{FALSE}.}
 }
 \value{
 A list with 10 items. The first 7 items contain output data, each of
@@ -116,7 +125,7 @@ integer matrix. Gives the calendar age for each observation.}
 centering \eqn{\mu_{\phi}} of the clusters.}
 }
 where \eqn{n_{\textrm{obs}}} is the number of radiocarbon observations i.e.
-the length of \code{c14_determinations}.
+the length of \code{rc_determinations}.
 
 The remaining items give information about input data, input parameters (or
 those calculated using \code{sensible_initialisation}) and update_type
@@ -140,7 +149,17 @@ considers both the mean and the variance of the clusters to be unknown.
 }
 \examples{
 # Basic usage making use of sensible initialisation to set most values and
-# using a saved example data set. Note iterations are kept very small here
-# for a faster run time.
-PolyaUrnBivarDirichlet(kerr$c14_ages, kerr$c14_sig, intcal20, n_iter=100, n_thin=10)
+# using a saved example data set and the IntCal20 curve. See the result by plotting the predictive
+# density
+output = PolyaUrnBivarDirichlet(two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4)
+PlotPredictiveCalendarAgeDensity(output)
+
+# The radiocarbon determinations can be given as F14C concentrations
+output = PolyaUrnBivarDirichlet(
+    two_normals$f14c,
+    two_normals$f14c_sig,
+    intcal20,
+    F14C_inputs = TRUE,
+    n_iter = 1e4)
+PlotPredictiveCalendarAgeDensity(output)
 }

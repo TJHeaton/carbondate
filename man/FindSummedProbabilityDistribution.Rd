@@ -5,27 +5,32 @@
 \title{Find the summed probability distribution (SPD) for a set of observations}
 \usage{
 FindSummedProbabilityDistribution(
-  calendar_age_range,
-  c14_determinations,
-  c14_sigmas,
-  calibration_curve
+  calendar_age_range_BP,
+  rc_determinations,
+  rc_sigmas,
+  calibration_curve,
+  F14C_inputs = FALSE
 )
 }
 \arguments{
-\item{calendar_age_range}{A vector of length 2 with the start and end
-calendar age to calculate the SPD over}
+\item{calendar_age_range_BP}{A vector of length 2 with the start and end
+calendar age BP to calculate the SPD over}
 
-\item{c14_determinations}{A vector of observed radiocarbon determinations}
+\item{rc_determinations}{A vector of observed radiocarbon determinations}
 
-\item{c14_sigmas}{A vector of the radiocarbon determinations
-uncertainties (1-sigma). Must be the same length as \code{c14_determinations}.}
+\item{rc_sigmas}{A vector of the radiocarbon determinations
+uncertainties (1-sigma). Must be the same length as \code{rc_determinations}.}
 
-\item{calibration_curve}{A dataframe which should contain at least 3 columns
-entitled \code{calendar_age}, \code{c14_age} and \code{c14_sig}.
-This format matches \link{intcal20}.}
+\item{calibration_curve}{A dataframe which must contain one column \code{calendar_age_BP}, and also
+columns \code{c14_age} and \code{c14_sig} or \code{f14c} and \code{f14c_sig} (or both sets).
+This format matches the curves supplied with this package e.g. \link{intcal20}, \link{intcal13},
+which contain all 5 columns.}
+
+\item{F14C_inputs}{\code{TRUE} if the provided rc_determinations are F14C concentrations and \code{FALSE}
+if they are radiocarbon age BP. Defaults to \code{FALSE}.}
 }
 \value{
-A data frame with one column \code{calendar_age} containing the calendar
+A data frame with one column \code{calendar_age_BP} containing the calendar
 ages, and the other column \code{probability} containing the probability at that
 calendar age
 }
@@ -34,9 +39,20 @@ Takes a set of radiocarbon determinations and uncertainties and independently
 calibrates each one, and then averages them to give the SPD estimate.
 }
 \examples{
-FindSummedProbabilityDistribution(
-   calendar_age_range=c(600, 1600),
-   c14_determinations=c(602, 805, 1554),
-   c14_sigmas=c(35, 34, 45),
+# An example using 14C age BP and the IntCal 20 curve
+SPD = FindSummedProbabilityDistribution(
+   calendar_age_range_BP=c(600, 1600),
+   rc_determinations=c(602, 805, 1554),
+   rc_sigmas=c(35, 34, 45),
    calibration_curve=intcal20)
+plot(SPD, type = "l")
+
+# An example using F14C concentrations and the IntCal 13 curve
+SPD = FindSummedProbabilityDistribution(
+   calendar_age_range_BP=c(600, 1600),
+   rc_determinations=c(0.8, 0.85, 0.9),
+   rc_sigmas=c(0.01, 0.015, 0.012),
+   F14C_inputs=TRUE,
+   calibration_curve=intcal13)
+plot(SPD, type = "l")
 }

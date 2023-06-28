@@ -14,7 +14,6 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 Suggests: 
-    covr,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)
@@ -27,7 +26,9 @@ Imports:
     cli,
     graphics,
     grDevices,
+    HDInterval,
     stats,
+    stringr,
     utils
 URL: https://github.com/TJHeaton/carbondate
 BugReports: https://github.com/TJHeaton/carbondate/issues
@@ -35,3 +36,4 @@ VignetteBuilder: knitr
 LinkingTo: 
     cpp11
 SystemRequirements: C++11
+RoxygenNote: 7.2.3

@@ -8,9 +8,14 @@ PlotCalendarAgeDensityIndividualSample(
   ident,
   output_data,
   calibration_curve = NULL,
-  n_breaks = NA,
+  plot_14C_age = TRUE,
+  resolution = 5,
   interval_width = "2sigma",
-  bespoke_probability = NA
+  bespoke_probability = NA,
+  n_burn = NA,
+  n_end = NA,
+  show_hpd_ranges = FALSE,
+  show_unmodelled_density = FALSE
 )
 }
 \arguments{
@@ -18,8 +23,8 @@ PlotCalendarAgeDensityIndividualSample(
 calendar age for.}
 
 \item{output_data}{The return value from one of the updating functions e.g.
-\link{WalkerBivarDirichlet} or
-\link{PolyaUrnBivarDirichlet} or a list, each item containing
+\link{PolyaUrnBivarDirichlet} or
+\link{WalkerBivarDirichlet} or a list, each item containing
 one of these values. Optionally, the output data can have an extra list item
 named \code{label} which is used to set the label on the plot legend.}
 
@@ -30,26 +35,52 @@ the calibration curve here. If provided this should be a dataframe which
 should contain at least 3 columns entitled calendar_age, c14_age and c14_sig.
 This format matches \link{intcal20}.}
 
-\item{n_breaks}{The number of breaks in the histogram (optional). If not
-given then it is set to the max of 100 and 1/tenth of post burn-in chain.}
+\item{plot_14C_age}{Whether to use the 14C yr BP as the units of the y-axis.
+Defaults to TRUE. If FALSE uses F14C concentration instead.}
+
+\item{resolution}{The distance between histogram breaks for the calendar age density.
+Must be an integer greater than one.}
 
 \item{interval_width}{The confidence intervals to show for the
-calibration curve. Choose from one of "1sigma", "2sigma" and "bespoke".
-Default is "2sigma".}
+calibration curve and for the highest posterior density ranges.
+Choose from one of "1sigma" (68.3\%), "2sigma" (95.4\%) and "bespoke". Default is "2sigma".}
 
 \item{bespoke_probability}{The probability to use for the confidence interval
 if "bespoke" is chosen above. E.g. if 0.95 is chosen, then the 95\% confidence
 interval is calculated. Ignored if "bespoke" is not chosen.}
-}
-\value{
-No return value
+
+\item{n_burn}{The number of samples required for burn-in - any samples before this
+are not used in the calculation. If not given, the first half of the
+MCMC chain is discarded. Looking at the output of \link{PlotConvergenceData} can
+help determine what an appropriate value is for a given output. Note that the maximum
+value that can be chosen is \code{n_iter - 100 * n_thin} (where \code{n_iter} and \code{n_thin} are the
+arguments given to \link{PolyaUrnBivarDirichlet} or \link{WalkerBivarDirichlet}).}
+
+\item{n_end}{The iteration number of the last sample to use. Assumed to be the number of iterations
+if not given.}
+
+\item{show_hpd_ranges}{Set to \code{TRUE} to also show the highest posterior range on the plot.
+These are calculated using \link[HDInterval:hdi]{HDInterval::hdi}. Default is \code{FALSE}.}
+
+\item{show_unmodelled_density}{Set to \code{TRUE} to also show the unmodelled density (i.e. the
+result of \link{CalibrateSingleDetermination}) on the plot. Default is \code{FALSE}.}
 }
 \description{
 Once a function has been run to calibrate a set of radiocarbon
-determinations, the posterior density for a single determination can be
-plotted using this function.
+determinations, the posterior density histogram for a single determination can be
+plotted using this function. This also plots a kernel density estimation from the histogram data
+and shows the highest posterior density range for the interval width specified (default 2\eqn{\sigma}).
 }
 \examples{
-# Plot results for the 10th determinations
-PlotCalendarAgeDensityIndividualSample(10, walker_example_output)
+# Plot results for the 10th determination
+PlotCalendarAgeDensityIndividualSample(10, polya_urn_example_output)
+
+# Plot results for the 10th determination and show the unmodelled density and HPD ranges
+PlotCalendarAgeDensityIndividualSample(
+    10, polya_urn_example_output, show_hpd_ranges = TRUE, show_unmodelled_density = TRUE)
+
+# Now change to showing 1 sigma interval for HPD range and calibration curve
+PlotCalendarAgeDensityIndividualSample(
+    10, polya_urn_example_output, interval_width = "1sigma",
+    show_hpd_ranges = TRUE, show_unmodelled_density = TRUE)
 }

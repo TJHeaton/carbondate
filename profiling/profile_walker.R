@@ -1,21 +1,24 @@
+library(devtools)
 library(proftools)
+load_all()
 
 set.seed(14)
 
 n_iter = 1e5
 n_thin = 10
 
-profile_walker <- function(n_iter, n_thin, use_cpp) {
-  file_pref = paste("Walker", n_iter, n_thin, "cpp", use_cpp, sep="_")
+profile_walker <- function(n_iter, n_thin, calculate_density_for_convergence) {
+  file_pref = paste("Walker", n_iter, n_thin, "conv", calculate_density_for_convergence, sep="_")
 
   Rprof(paste("profiling/", file_pref, ".out", sep = ""))
   walker_output = WalkerBivarDirichlet(
-    kerr$c14_ages,
+    kerr$c14_age,
     kerr$c14_sig,
+    FALSE,
     intcal20,
     n_iter,
     n_thin,
-    use_cpp = use_cpp)
+    calculate_density_for_convergence = calculate_density_for_convergence)
   Rprof(NULL)
 
   pd = readProfileData(paste("profiling/", file_pref, ".out", sep = ""))

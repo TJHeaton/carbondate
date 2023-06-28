@@ -18,12 +18,116 @@
 #'   \item{calendar_age}{The calendar age (yr BP)}
 #'   \item{c14_age}{The 14C age (yr BP)}
 #'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
-#'   \item{Delta14C}{TODO: What does this describe? Do we need it in the package?}
-#'   \item{DeltaSigma}{TODO: What does this describe? Do we need it in the package?}
+#'   \item{f14c}{The radiocarbon age expressed as F14C conctration}
+#'   \item{f14c_sig}{The uncertainty in F14C}
 #' }
 #' @source <http://doi.org/10.1017/RDC.2020.41>
 "intcal20"
 
+#' IntCal13 calibration curve
+#'
+#' Atmospheric data from Reimer et al (2013)
+#' Reimer et al. 2013
+#' Reimer PJ, Bard E, Bayliss A, Beck JW, Blackwell PG, Bronk Ramsey C, Buck CE,
+#' Cheng H, Edwards RL, Friedrich M, Grootes PM, Guilderson TP, Haflidason H,
+#' Hajdas I, Hatt? C, Heaton TJ, Hogg AG, Hughen KA, Kaiser KF, Kromer B,
+#' Manning SW, Niu M, Reimer RW, Richards DA, Scott EM, Southon JR, Turney CSM,
+#' van der Plicht J.
+#' IntCal13 and MARINE13 radiocarbon age calibration curves 0-50000 years calBP
+#' Radiocarbon 55(4). DOI: 10.2458/azu_js_rc.55.16947
+#'
+#' @format ## `intcal13`
+#' A data frame with 5,141 rows and 5 columns:
+#' \describe{
+#'   \item{calendar_age}{The calendar age (yr BP)}
+#'   \item{c14_age}{The 14C age (yr BP)}
+#'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+#'   \item{f14c}{The radiocarbon age expressed as F14C conctration}
+#'   \item{f14c_sig}{The uncertainty in F14C}
+#' }
+#' @source <http://doi.org/10.2458/azu_js_rc.55.16947>
+"intcal13"
+
+#' IntCal09 calibration curve
+#'
+#' Atmospheric data from Reimer et al (2009)
+#' Reimer et al. 2009
+#' PJ Reimer, MGL Baillie, E Bard, A Bayliss, JW Beck, PG Blackwell,
+#' C Bronk Ramsey, CE Buck, GS Burr, RL Edwards, M Friedrich, PM Grootes,
+#' TP Guilderson, I Hajdas, TJ Heaton, AG Hogg, KA Hughen, KF Kaiser, B Kromer,
+#' FG McCormac, SW Manning, RW Reimer, DA Richards, JR Southon, S Talamo,
+#' CSM Turney, J van der Plicht, CE Weyhenmeyer (2009) Radiocarbon 51:1111-1150
+#'
+#' @format ## `intcal09`
+#' A data frame with 3,521 rows and 5 columns:
+#' \describe{
+#'   \item{calendar_age}{The calendar age (yr BP)}
+#'   \item{c14_age}{The 14C age (yr BP)}
+#'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+#'   \item{f14c}{The radiocarbon age expressed as F14C conctration}
+#'   \item{f14c_sig}{The uncertainty in F14C}
+#' }
+#' @source <http://doi.org/10.1017/S0033822200034202>
+"intcal09"
+
+#' IntCal04 calibration curve
+#'
+#' Atmospheric data from Reimer et al (2004)
+#' Reimer et al. 2004
+#' PJ Reimer, MGL Baillie, E Bard, A Bayliss, JW Beck, C Bertrand, PG Blackwell,
+#' CE Buck, G Burr, KB Cutler, PE Damon, RL Edwards, RG Fairbanks, M Friedrich,
+#' TP Guilderson, KA Hughen, B Kromer, FG McCormac, S Manning, C Bronk Ramsey,
+#' RW Reimer, S Remmele, JR Southon, M Stuiver, S Talamo, FW Taylor,
+#' J van der Plicht, and CE Weyhenmeyer (2004), Radiocarbon 46:1029-1058.
+#'
+#' @format ## `intcal04`
+#' A data frame with 3,301 rows and 5 columns:
+#' \describe{
+#'   \item{calendar_age}{The calendar age (yr BP)}
+#'   \item{c14_age}{The 14C age (yr BP)}
+#'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+#'   \item{f14c}{The radiocarbon age expressed as F14C conctration}
+#'   \item{f14c_sig}{The uncertainty in F14C}
+#' }
+#' @source <https://doi.org/10.1017/S0033822200032999>
+"intcal04"
+
+#' IntCal98 calibration curve
+#'
+#' Atmospheric data from Stuiver et al 1998
+#' Stuiver et al 1998
+#' M. Stuiver, P. J. Reimer, E. Bard, J. W. Beck, G. S. Burr, K. A. Hughen,
+#' B. Kromer, F. G. McCormac, J. v. d. Plicht and M. Spurk.
+#' INTCAL98 Radiocarbon Age Calibration, 24,000-0 cal BP.
+#' Radiocarbon 40, 1041-1083 (1998).
+#'
+#' @format ## `intcal98`
+#' A data frame with 1,538 rows and 5 columns:
+#' \describe{
+#'   \item{calendar_age}{The calendar age (yr BP)}
+#'   \item{c14_age}{The 14C age (yr BP)}
+#'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+#'   \item{f14c}{The radiocarbon age expressed as F14C conctration}
+#'   \item{f14c_sig}{The uncertainty in F14C}
+#' }
+#' @source <https://doi.org/10.1017/S0033822200019123>
+"intcal98"
+
+#' Example artificial data - Mixture of Normal Phases
+#'
+#' 50 radiocarbon determinations for which the underlying calendar ages are
+#' drawn from a mixture of two normals. This dataset is included simply to give
+#' some quick-to-run examples.
+#'
+#' @format ## `two_normals`
+#' A data frame with 50 rows and 4 columns:
+#' \describe{
+#'   \item{c14_age}{The 14C age (yr BP)}
+#'   \item{c14_sig}{The uncertainty in the 14C age}
+#'   \item{f14c}{The F14C concentration}
+#'   \item{f14c_sig}{The uncertainty in the F14C concentration}
+#' }
+"two_normals"
 
 #' Example real-life data - Irish Rath
 #'
@@ -34,10 +138,12 @@
 #' Journal of Archaeological Science 41, 493 – 501.
 #'
 #' @format ## `kerr`
-#' A data frame with 255 rows and 2 columns:
+#' A data frame with 255 rows and 4 columns:
 #' \describe{
 #'   \item{c14_age}{The 14C age (yr BP)}
 #'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+#'   \item{f14c}{The F14C concentration}
+#'   \item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
 #' }
 #' @source <http://doi.org/10.1016/j.jas.2013.09.002>
 "kerr"
@@ -53,10 +159,12 @@
 #' of Sciences 105, 11651–11654.
 #'
 #' @format ## `buchanan`
-#' A data frame with 628 rows and 2 columns:
+#' A data frame with 628 rows and 4 columns:
 #' \describe{
 #'   \item{c14_age}{The 14C age (yr BP)}
 #'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+#'   \item{f14c}{The F14C concentration}
+#'   \item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
 #' }
 #' @source <http://doi.org/10.1073/pnas.0803762105>
 "buchanan"
@@ -72,10 +180,12 @@
 #' Bronze Age. Proceedings of the National Academy of Sciences 111, 17045–17049.
 #'
 #' @format ## `armit`
-#' A data frame with 2021 rows and 2 columns:
+#' A data frame with 2021 rows and 4 columns:
 #' \describe{
 #'   \item{c14_age}{The 14C age (yr BP)}
 #'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+#'   \item{f14c}{The F14C concentration}
+#'   \item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
 #' }
 #' @source <http://doi.org/10.1073/pnas.1408028111>
 "armit"
@@ -85,14 +195,14 @@
 #'
 #' This output has been provided for trying out the plotting and summarisation
 #' functions without having to first run a calibration. It shows the output from
-#' running [carbondate::WalkerBivarDirichlet] with the [carbondate::kerr]
+#' running [carbondate::WalkerBivarDirichlet] with the [carbondate::two_normals]
 #' radiocarbon input data and the [carbondate::intcal20] calibration curve for
 #' 100,000 iterations. To reduce file size a large \eqn{n_{\textrm{thin}} = 100}
-#' was used and the first half of the observations where discarded.
+#' was used.
 #'
 #' @format ## `walker_example_output`
 #' A list with 11 items, as described in [carbondate::WalkerBivarDirichlet]. In
-#' this case \eqn{n_{\textrm{out}}} is 501 and \eqn{n_{\textrm{obs}}} is 255.
+#' this case \eqn{n_{\textrm{out}}} is 1001 and \eqn{n_{\textrm{obs}}} is 50.
 "walker_example_output"
 
 
@@ -100,13 +210,13 @@
 #'
 #' This output has been provided for trying out the plotting and summarisation
 #' functions without having to first run a calibration. It shows the output from
-#' running [carbondate::PolyaUrnBivarDirichlet] with the [carbondate::kerr]
+#' running [carbondate::PolyaUrnBivarDirichlet] with the [carbondate::two_normals]
 #' radiocarbon input data and the [carbondate::intcal20] calibration curve for
 #' 100,000 iterations. To reduce file size a large \eqn{n_{\textrm{thin}} = 100}
-#' was used and the first half of the observations where discarded.
+#' was used.
 #'
 #' @format ## `polya_urn_example_output`
 #' A list with 10 items, as described in [carbondate::PolyaUrnBivarDirichlet]. In
-#' this case \eqn{n_{\textrm{out}}} is 501 and \eqn{n_{\textrm{obs}}} is 255.
+#' this case \eqn{n_{\textrm{out}}} is 1001 and \eqn{n_{\textrm{obs}}} is 50.
 "polya_urn_example_output"
 

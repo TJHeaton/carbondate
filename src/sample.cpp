@@ -38,7 +38,7 @@ int SampleInt(int n, std::vector<double> prob, bool one_based) {
   return perm[j] - adj;
 }
 
-// Adapted from do_sample in in R/src/main/sample.c and from EmpiricalSample in Rcpp package
+// Adapted from do_sample in R/src/main/sample.c and from EmpiricalSample in Rcpp package
 std::vector<int> GetSampleIds(int start_index, int finish_index, int size) {
 
   int n = finish_index - start_index + 1;

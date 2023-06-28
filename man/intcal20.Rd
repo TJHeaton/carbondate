@@ -12,8 +12,8 @@ A data frame with 9,501 rows and 5 columns:
 \item{calendar_age}{The calendar age (yr BP)}
 \item{c14_age}{The 14C age (yr BP)}
 \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
-\item{Delta14C}{TODO: What does this describe? Do we need it in the package?}
-\item{DeltaSigma}{TODO: What does this describe? Do we need it in the package?}
+\item{f14c}{The radiocarbon age expressed as F14C conctration}
+\item{f14c_sig}{The uncertainty in F14C}
 }
 }
 }

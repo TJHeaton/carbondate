@@ -38,34 +38,35 @@ devtools::install_github("TJHeaton/carbondate", build_vignettes = TRUE)
 
 ## Example
 
-There are 3 example datasets (`kerr`, `buchanan`, `armit`) provided, which can 
-be used to try out the calibration functions. The calibration curve IntCal20 is
-also included in the package. E.g. see below (but note it is run with a very 
-small number of iterations, this is just for illustrative purposes.)
+There are 4 example datasets (`two_normals`, `kerr`, `buchanan`, `armit`) provided, which can 
+be used to try out the calibration functions. `two_normals` is a small artificial data set of 50
+radiocarbon determinations for which the underlying calendar ages were drawn from a mixture
+of two normals. It is included simply to give some quick-to-run examples. The remaining datasets
+are from real-life data. The calibration curves IntCal98 through to IntCal20 are
+also included in the package. E.g. see below.
 
 ```{r, results=FALSE}
 library(carbondate)
 
 walker_output <- WalkerBivarDirichlet(
-  c14_determinations = kerr$c14_ages,
-  c14_sigmas = kerr$c14_sig,
-  calibration_curve=intcal20,
-  n_iter = 100,
-  n_thin = 5)
+  rc_determinations = two_normals$c14_age,
+  rc_sigmas = two_normals$c14_sig,
+  calibration_curve=intcal20)
+
+polya_urn_output <- PolyaUrnBivarDirichlet(
+  rc_determinations = two_normals$c14_age,
+  rc_sigmas = two_normals$c14_sig,
+  calibration_curve=intcal20)
 ```
 
 Once the calibration has been run, the calendar age density can be plotted. 
 
 ```{r plot_density}
 densities = PlotPredictiveCalendarAgeDensity(
-  output_data = list(walker_example_output, polya_urn_example_output),
-  n_posterior_samples = 500,
-  denscale = 2.5,
+  output_data = list(walker_output, polya_urn_output),
+  n_posterior_samples = 5000,
   show_SPD = TRUE)
 ```
-
-Here, instead of plotting the output from the example above, we plot output 
-which has been run with the `kerr` data and 100,000 iterations. 
 
 For a full example run-through, load the vignette:
 

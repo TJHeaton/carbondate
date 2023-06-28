@@ -8,7 +8,7 @@
 \subsection{\code{polya_urn_example_output}}{
 
 A list with 10 items, as described in \link{PolyaUrnBivarDirichlet}. In
-this case \eqn{n_{\textrm{out}}} is 501 and \eqn{n_{\textrm{obs}}} is 255.
+this case \eqn{n_{\textrm{out}}} is 1001 and \eqn{n_{\textrm{obs}}} is 50.
 }
 }
 \usage{
@@ -17,9 +17,9 @@ polya_urn_example_output
 \description{
 This output has been provided for trying out the plotting and summarisation
 functions without having to first run a calibration. It shows the output from
-running \link{PolyaUrnBivarDirichlet} with the \link{kerr}
+running \link{PolyaUrnBivarDirichlet} with the \link{two_normals}
 radiocarbon input data and the \link{intcal20} calibration curve for
 100,000 iterations. To reduce file size a large \eqn{n_{\textrm{thin}} = 100}
-was used and the first half of the observations where discarded.
+was used.
 }
 \keyword{datasets}
