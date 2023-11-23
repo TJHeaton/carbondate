@@ -191,8 +191,8 @@ PlotPredictiveCalendarAgeDensity <- function(
 
   .SetUpDensityPlot(plot_AD, xlim, ylim_density)
 
-  if (show_SPD){
-    .PlotSPDEstimateOnCurrentPlot(plot_AD, SPD, SPD_colour, xlim, ylim_density)
+  if (show_SPD) {
+    .PlotSPDEstimateOnCurrentPlot(plot_AD, SPD, SPD_colour)
   }
 
   for (i in 1:num_data) {
@@ -332,7 +332,7 @@ PlotPredictiveCalendarAgeDensity <- function(
 }
 
 
-.PlotSPDEstimateOnCurrentPlot <- function(plot_AD, SPD, SPD_colour, xlim, ylim) {
+.PlotSPDEstimateOnCurrentPlot <- function(plot_AD, SPD, SPD_colour) {
   if (plot_AD) {
     cal_age <- 1950 - SPD$calendar_age
   } else {
