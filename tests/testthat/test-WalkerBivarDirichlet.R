@@ -7,7 +7,7 @@ test_that("WalkerBivarDirichlet gives expected result - C14 space and same param
 
   load(test_path("fixtures", "walker_input.rda"))
   set.seed(seednum)
-  walker_output = WalkerBivarDirichlet(
+  walker_output <- WalkerBivarDirichlet(
     rc_determinations=x,
     rc_sigmas=xsig,
     F14C_inputs = FALSE,
@@ -32,7 +32,7 @@ test_that("WalkerBivarDirichlet gives expected result - C14 space and same param
   load(test_path("fixtures", "walker_output.rda"))
 
   # Here tempx is the calendar age sequence used to find the predictive density in the legacy code.
-  pred_dens = FindPredictiveCalendarAgeDensity(walker_output, tempx, 5000)
+  pred_dens <- FindPredictiveCalendarAgeDensity(walker_output, tempx, 5000)
 
   print(.KLD(postden, pred_dens$density_mean))
   expect_lt(.KLD(postden, pred_dens$density_mean), 1e-3)
@@ -49,7 +49,7 @@ test_that("WalkerBivarDirichlet gives expected result - sensible init, F14C spac
 
   set.seed(seednum)
 
-  walker_output = WalkerBivarDirichlet(
+  walker_output <- WalkerBivarDirichlet(
     rc_determinations=x,
     rc_sigmas=xsig,
     F14C_inputs = FALSE,
@@ -61,7 +61,7 @@ test_that("WalkerBivarDirichlet gives expected result - sensible init, F14C spac
   load(test_path("fixtures", "walker_output.rda"))
 
   # Here tempx is the calendar age sequence used to find the predictive density in the legacy code.
-  pred_dens = FindPredictiveCalendarAgeDensity(walker_output, tempx, 5000)
+  pred_dens <- FindPredictiveCalendarAgeDensity(walker_output, tempx, 5000)
 
   print(.KLD(postden, pred_dens$density_mean))
   expect_lt(.KLD(postden, pred_dens$density_mean), 1e-3)
@@ -77,10 +77,10 @@ test_that("WalkerBivarDirichlet gives expected result - sensible init, F14C spac
 
   set.seed(seednum)
 
-  f14c_determinations = exp(-x / 8033)
-  f14c_sig = xsig * f14c_determinations / 8033
+  f14c_determinations <- exp(-x / 8033)
+  f14c_sig <- xsig * f14c_determinations / 8033
 
-  walker_output = WalkerBivarDirichlet(
+  walker_output <- WalkerBivarDirichlet(
     rc_determinations=f14c_determinations,
     rc_sigmas=f14c_sig,
     F14C_inputs = TRUE,
@@ -92,7 +92,7 @@ test_that("WalkerBivarDirichlet gives expected result - sensible init, F14C spac
   load(test_path("fixtures", "walker_output.rda"))
 
   # Here tempx is the calendar age sequence used to find the predictive density in the legacy code.
-  pred_dens = FindPredictiveCalendarAgeDensity(walker_output, tempx, 5000)
+  pred_dens <- FindPredictiveCalendarAgeDensity(walker_output, tempx, 5000)
 
   print(.KLD(postden, pred_dens$density_mean))
   expect_lt(.KLD(postden, pred_dens$density_mean), 1e-3)

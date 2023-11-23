@@ -49,7 +49,7 @@ There are some example data sets provided in the package, each of which contain 
 Although this package is concerned with the calibration of multiple related ^14^C determinations it can be useful to calibrate a single calibration independently, for example for estimating initial values for the sampler, or for comparison. To calibrate a single independent determination (using the provided IntCal20 calibration curve), run the following:
 
 ```{r single_calibration, out.width="100%", fig.width=10, fig.height=8}
-calibration_result = CalibrateSingleDetermination(
+calibration_result <- CalibrateSingleDetermination(
   rc_determination = 1413, 
   rc_sigma = 25, 
   F14C_inputs = FALSE, 
@@ -70,7 +70,7 @@ The most common approach to summarise calendar age information of multiple ^14^C
 To calculate the SPD for a set of radiocarbon determinations (here we use the example dataset `armit`) see the example below, where we also plot the results.
 
 ```{r find_spd, out.width="100%", fig.width=10, fig.height=8}
-spd = FindSummedProbabilityDistribution(
+spd <- FindSummedProbabilityDistribution(
   calendar_age_range_BP = c(1000, 4500), 
   rc_determinations = armit$c14_age, 
   rc_sigmas = armit$c14_sig, 
@@ -153,7 +153,7 @@ The output data contains information to allow calculation of the predictive dist
 The function allows calculation using multiple outputs so that their results can be compared. For example below we compare the results from the two sampler methods above.
 
 ```{r plot_density, out.width="100%", fig.width=10, fig.height=8}
-densities = PlotPredictiveCalendarAgeDensity(
+densities <- PlotPredictiveCalendarAgeDensity(
   output_data = list(walker_output, polya_urn_output),
   n_posterior_samples = 500,
   denscale = 2.5)
@@ -162,7 +162,7 @@ densities = PlotPredictiveCalendarAgeDensity(
 We also have the option to plot the SPD, plot in the F^14^C scale and change the confidence intervals on the plot.
 
 ```{r plot_density_2, out.width="100%", fig.width=10, fig.height=8}
-densities = PlotPredictiveCalendarAgeDensity(
+densities <- PlotPredictiveCalendarAgeDensity(
   output_data = polya_urn_output,
   n_posterior_samples = 500,
   denscale = 2.5,

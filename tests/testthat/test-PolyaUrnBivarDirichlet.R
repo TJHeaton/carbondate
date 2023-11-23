@@ -7,7 +7,7 @@ test_that("PolyaUrnBivarDirichlet gives expected result - C14 space and same par
 
   load(test_path("fixtures", "polya_urn_input.rda"))
   set.seed(seednum)
-  polya_urn_output = PolyaUrnBivarDirichlet(
+  polya_urn_output <- PolyaUrnBivarDirichlet(
     rc_determinations = x,
     rc_sigmas = xsig,
     F14C_inputs = FALSE,
@@ -32,7 +32,7 @@ test_that("PolyaUrnBivarDirichlet gives expected result - C14 space and same par
   load(test_path("fixtures", "polya_urn_output.rda"))
 
   # Here tempx is the calendar age sequence used to find the predictive density in the legacy code.
-  pred_dens = FindPredictiveCalendarAgeDensity(polya_urn_output, tempx, 5000)
+  pred_dens <- FindPredictiveCalendarAgeDensity(polya_urn_output, tempx, 5000)
 
   print(.KLD(postden, pred_dens$density_mean))
   expect_lt(.KLD(postden, pred_dens$density_mean), 1e-3)
@@ -49,7 +49,7 @@ test_that("PolyaUrnBivarDirichlet gives expected result - sensible init, F14C sp
 
   set.seed(seednum)
 
-  polya_urn_output = PolyaUrnBivarDirichlet(
+  polya_urn_output <- PolyaUrnBivarDirichlet(
     rc_determinations = x,
     rc_sigmas = xsig,
     F14C_inputs = FALSE,
@@ -61,7 +61,7 @@ test_that("PolyaUrnBivarDirichlet gives expected result - sensible init, F14C sp
   load(test_path("fixtures", "polya_urn_output.rda"))
 
   # Here tempx is the calendar age sequence used to find the predictive density in the legacy code.
-  pred_dens = FindPredictiveCalendarAgeDensity(polya_urn_output, tempx, 5000)
+  pred_dens <- FindPredictiveCalendarAgeDensity(polya_urn_output, tempx, 5000)
 
   print(.KLD(postden, pred_dens$density_mean))
   expect_lt(.KLD(postden, pred_dens$density_mean), 1e-3)
@@ -78,10 +78,10 @@ test_that("PolyaUrnBivarDirichlet gives expected result - sensible init, F14C sp
 
   set.seed(seednum)
 
-  f14c_determinations = exp(-x / 8033)
-  f14c_sig = xsig * f14c_determinations / 8033
+  f14c_determinations <- exp(-x / 8033)
+  f14c_sig <- xsig * f14c_determinations / 8033
 
-  polya_urn_output = PolyaUrnBivarDirichlet(
+  polya_urn_output <- PolyaUrnBivarDirichlet(
     rc_determinations = f14c_determinations,
     rc_sigmas = f14c_sig,
     F14C_inputs = TRUE,
@@ -93,7 +93,7 @@ test_that("PolyaUrnBivarDirichlet gives expected result - sensible init, F14C sp
   load(test_path("fixtures", "polya_urn_output.rda"))
 
   # Here tempx is the calendar age sequence used to find the predictive density in the legacy code.
-  pred_dens = FindPredictiveCalendarAgeDensity(polya_urn_output, tempx, 5000)
+  pred_dens <- FindPredictiveCalendarAgeDensity(polya_urn_output, tempx, 5000)
 
   print(.KLD(postden, pred_dens$density_mean))
   expect_lt(.KLD(postden, pred_dens$density_mean), 1e-3)

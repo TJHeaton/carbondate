@@ -39,9 +39,9 @@ FindPredictiveCalendarAgeDensity <- function(
   arg_check <- checkmate::makeAssertCollection()
 
   .CheckOutputData(arg_check, output_data)
-  n_iter = output_data$input_parameters$n_iter
-  n_thin = output_data$input_parameters$n_thin
-  n_out = length(output_data$mu_phi)
+  n_iter <- output_data$input_parameters$n_iter
+  n_thin <- output_data$input_parameters$n_thin
+  n_out <- length(output_data$mu_phi)
 
   .CheckCalendarAgeSequence(arg_check, calendar_age_sequence)
   .CheckIntervalWidth(arg_check, interval_width, bespoke_probability)
@@ -49,21 +49,21 @@ FindPredictiveCalendarAgeDensity <- function(
   checkmate::assertInt(n_posterior_samples, lower = 10, add = arg_check)
   checkmate::reportAssertions(arg_check)
 
-  edge_width = switch(
+  edge_width <- switch(
     interval_width,
     "1sigma" = 1 - stats::pnorm(1),
     "2sigma"  = 1 - stats::pnorm(2),
     "bespoke" = (1 - bespoke_probability)/2)
 
   if (is.na(n_burn)) {
-    n_burn = floor(n_out / 2)
+    n_burn <- floor(n_out / 2)
   } else {
-    n_burn = floor(n_burn / n_thin)
+    n_burn <- floor(n_burn / n_thin)
   }
   if (is.na(n_end)) {
-    n_end = n_out
+    n_end <- n_out
   } else {
-    n_end = floor(n_end / n_thin)
+    n_end <- floor(n_end / n_thin)
   }
 
   if (output_data$update_type == "Walker") {
