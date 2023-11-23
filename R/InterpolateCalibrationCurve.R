@@ -44,14 +44,14 @@ InterpolateCalibrationCurve <- function(new_calendar_ages_BP, calibration_curve,
   calendar_ages <- calibration_curve$calendar_age_BP
 
   if (is.na(F14C_outputs) || F14C_outputs == FALSE) {
-    calibration_curve = .AddC14ageColumns(calibration_curve)
+    calibration_curve <- .AddC14ageColumns(calibration_curve)
     new_calibration_curve$c14_age <- stats::approx(
       calendar_ages, calibration_curve$c14_age, new_calendar_ages_BP, rule=2)$y
     new_calibration_curve$c14_sig <- stats::approx(
       calendar_ages, calibration_curve$c14_sig, new_calendar_ages_BP, rule=2)$y
   }
   if (is.na(F14C_outputs) || F14C_outputs == TRUE) {
-    calibration_curve = .AddF14cColumns(calibration_curve)
+    calibration_curve <- .AddF14cColumns(calibration_curve)
     new_calibration_curve$f14c <- stats::approx(
       calendar_ages, calibration_curve$f14c, new_calendar_ages_BP, rule=2)$y
     new_calibration_curve$f14c_sig <- stats::approx(

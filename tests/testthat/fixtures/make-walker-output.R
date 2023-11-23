@@ -2,7 +2,7 @@
 # Code to implement NP Bayesian Calibration and Summaristion of Related 14C Determinations
 # Original code written by TJHeaton and available at https://github.com/TJHeaton/NonparametricCalibration
 # This code is adaped from NPCalibrationWalker to test that the R Package is giving the correct result
-seednum = 8
+seednum <- 8
 set.seed(seednum)
 
 # Read in IntCal20 curve
@@ -64,9 +64,9 @@ niter <- 1e5
 nthin <- 10 # Don't choose too high, after burn-in we have (niter/nthin)/2 samples from posterior to potentially use
 npostsum <- 5000 # Current number of samples it will draw from this posterior to estimate fhat (possibly repeats)
 
-slicew = max(1000, diff(range(x))/2)
-m = 10
-kstar = 10
+slicew <- max(1000, diff(range(x))/2)
+m <- 10
+kstar <- 10
 
 save(x, xsig, lambda, nu1, nu2, A, B, cprshape, cprrate, niter, nthin, inittheta, slicew, m, kstar, seednum, file="tests/testthat/fixtures/walker_input.rda")
 
@@ -98,7 +98,7 @@ SPD <- data.frame(calage = yfromto,
 ####### End of new function
 
 # To plot the predictive distribution then you run
-seednum = 14
+seednum <- 14
 set.seed(seednum)
 source("tests/testthat/fixtures/helpers/WalkerPostProcessingFinal.R")
 
@@ -109,7 +109,7 @@ save(x, xsig, postdenCI, postden, tempx, file = "tests/testthat/fixtures/walker_
 
 # If we want to plot e.g. the posterior calendar age density against the curve then we can run the below
 # ident is the determination you want to calibrate
-ident = 10
-resolution = 10
-indpost = plotindpost(WalkerTemp, ident = ident, y = x, er = xsig, calcurve = calcurve, resolution = resolution)
+ident <- 10
+resolution <- 10
+indpost <- plotindpost(WalkerTemp, ident = ident, y = x, er = xsig, calcurve = calcurve, resolution = resolution)
 

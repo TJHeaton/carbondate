@@ -556,7 +556,7 @@ sampnewphi <- function(mu, sigma, range = c(0,50000)) {
 # NOTE: Edited from origianl by S A Al-assam to allow resolution to be set rather than nbreaks
 plotindpost <- function(MCMCoutput, ident, y, er, calcurve, nburn = NA, resolution = 5) {
 
-  resolution = ceiling(max(resolution, 1))
+  resolution <- ceiling(max(resolution, 1))
   par(mfrow = c(1,1))
   theta <- MCMCoutput$theta[, ident]
   c14age <- y[ident]
@@ -571,11 +571,11 @@ plotindpost <- function(MCMCoutput, ident, y, er, calcurve, nburn = NA, resoluti
 
   # Find the calendar age range to plot
   xrange <- range(theta)
-  xrange[1] = floor(xrange[1])
-  while (xrange[1] %% resolution != 0) xrange[1] = xrange[1] - 1
+  xrange[1] <- floor(xrange[1])
+  while (xrange[1] %% resolution != 0) xrange[1] <- xrange[1] - 1
 
-  xrange[2] = ceiling(xrange[2])
-  while (xrange[2] %% resolution != 0) xrange[2] = xrange[2] + 1
+  xrange[2] <- ceiling(xrange[2])
+  while (xrange[2] %% resolution != 0) xrange[2] <- xrange[2] + 1
 
   temp <- c(which.min(abs(calcurve$calage - xrange[1])),which.min(abs(calcurve$calage - xrange[2])))
   idrange <- temp[1]:temp[2]

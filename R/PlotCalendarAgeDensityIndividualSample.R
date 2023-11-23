@@ -51,8 +51,8 @@ PlotCalendarAgeDensityIndividualSample <- function(
   arg_check <- checkmate::makeAssertCollection()
   checkmate::assertInt(ident, add = arg_check)
   .CheckOutputData(arg_check, output_data)
-  n_iter = output_data$input_parameters$n_iter
-  n_thin = output_data$input_parameters$n_thin
+  n_iter <- output_data$input_parameters$n_iter
+  n_thin <- output_data$input_parameters$n_thin
 
   .CheckCalibrationCurveFromOutput(arg_check, output_data, calibration_curve)
   checkmate::assertInt(resolution, na.ok = FALSE, add = arg_check, lower = 1)
@@ -60,21 +60,21 @@ PlotCalendarAgeDensityIndividualSample <- function(
   checkmate::reportAssertions(arg_check)
 
   if (is.null(calibration_curve)) {
-    calibration_curve = get(output_data$input_data$calibration_curve_name)
+    calibration_curve <- get(output_data$input_data$calibration_curve_name)
   }
   rc_determinations <- output_data$input_data$rc_determinations
   rc_sigmas <- output_data$input_data$rc_sigmas
   F14C_inputs <-output_data$input_data$F14C_inputs
 
   if (plot_14C_age == TRUE) {
-    calibration_curve = .AddC14ageColumns(calibration_curve)
+    calibration_curve <- .AddC14ageColumns(calibration_curve)
     if (F14C_inputs == TRUE) {
       converted <- .ConvertF14cTo14Cage(rc_determinations, rc_sigmas)
       rc_determinations <- converted$c14_age
       rc_sigmas <- converted$c14_sig
     }
   } else {
-    calibration_curve = .AddF14cColumns(calibration_curve)
+    calibration_curve <- .AddF14cColumns(calibration_curve)
     if (F14C_inputs == FALSE) {
       converted <- .Convert14CageToF14c(rc_determinations, rc_sigmas)
       rc_determinations <- converted$f14c
@@ -90,24 +90,24 @@ PlotCalendarAgeDensityIndividualSample <- function(
 
   n_out <- length(calendar_age)
   if (is.na(n_burn)) {
-    n_burn = floor(n_out / 2)
+    n_burn <- floor(n_out / 2)
   } else {
-    n_burn = floor(n_burn / n_thin)
+    n_burn <- floor(n_burn / n_thin)
   }
   if (is.na(n_end)) {
-    n_end = n_out
+    n_end <- n_out
   } else {
-    n_end = floor(n_end / n_thin)
+    n_end <- floor(n_end / n_thin)
   }
   calendar_age <- calendar_age[(n_burn+1):n_end]
 
   # Find the calendar age range to plot
   xrange <- range(calendar_age)
-  xrange[1] = floor(xrange[1])
-  if (resolution > 1) while (xrange[1] %% resolution != 0) xrange[1] = xrange[1] - 1
+  xrange[1] <- floor(xrange[1])
+  if (resolution > 1) while (xrange[1] %% resolution != 0) xrange[1] <- xrange[1] - 1
 
-  xrange[2] = ceiling(xrange[2])
-  if (resolution > 1) while (xrange[2] %% resolution != 0) xrange[2] = xrange[2] + 1
+  xrange[2] <- ceiling(xrange[2])
+  if (resolution > 1) while (xrange[2] %% resolution != 0) xrange[2] <- xrange[2] + 1
 
   if (plot_14C_age == FALSE) {
     title <- substitute(
@@ -136,7 +136,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
       list(i = ident, c14_age = rc_age, c14_sig = rc_sig))
   }
 
-  plot_AD = any(calendar_age < 0)
+  plot_AD <- any(calendar_age < 0)
   graphics::par(xaxs = "i", yaxs = "i")
   .PlotCalibrationCurve(
     plot_AD,
@@ -160,7 +160,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
     c(0, stats::dnorm(yfromto, mean =rc_age, sd = rc_sig), 0),
     c(min(yfromto), yfromto, max(yfromto))
   )
-  relative_height = 0.1
+  relative_height <- 0.1
   radpol[, 1] <- radpol[, 1] * (xrange[2] - xrange[1]) / max(radpol[, 1])
   radpol[, 1] <- radpol[, 1] * relative_height
   radpol[, 1] <- xrange[2] - radpol[, 1]
@@ -176,8 +176,8 @@ PlotCalendarAgeDensityIndividualSample <- function(
   }
   temphist <- graphics::hist(calendar_age, breaks = breaks, plot = FALSE)
 
-  diff = diff(xrange)
-  xrange = xrange + c(-1,1) * diff * 0.4
+  diff <- diff(xrange)
+  xrange <- xrange + c(-1, 1) * diff * 0.4
   finalhist <- graphics::hist(
     calendar_age,
     prob = TRUE,
@@ -192,7 +192,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
     col = "lavender",
     border = "purple")
   if (show_unmodelled_density) {
-    unmodelled = CalibrateSingleDetermination(rc_age, rc_sig, calibration_curve)
+    unmodelled <- CalibrateSingleDetermination(rc_age, rc_sig, calibration_curve)
     graphics::polygon(
       c(unmodelled$calendar_age_BP, rev(unmodelled$calendar_age_BP)),
       c(unmodelled$probability, rep(0, length(unmodelled$probability))),
@@ -229,52 +229,52 @@ PlotCalendarAgeDensityIndividualSample <- function(
     show_hpd_ranges,
     show_unmodelled_density,
     hpd_ranges){
-  ci_label = switch(
+  ci_label <- switch(
     interval_width,
     "1sigma" = expression(paste(sigma, " interval", sep="")),
     "2sigma"  = expression(paste("2", sigma, " interval", sep="")),
     "bespoke" = paste(round(100*bespoke_probability), "% interval", sep = ""))
 
-  legend_labels = c(
+  legend_labels <- c(
     substitute(paste(""^14, "C determination ")),
     stringr::str_replace(calcurve_name, "intcal", "IntCal"),
     ci_label)
-  lty = c(-1, 1, 2)
-  lwd = c(-1, 1, 1)
-  pch = c(15, NA, NA)
-  col = c(grDevices::rgb(1, 0, 0, .5), "blue", "blue")
+  lty <- c(-1, 1, 2)
+  lwd <- c(-1, 1, 1)
+  pch <- c(15, NA, NA)
+  col <- c(grDevices::rgb(1, 0, 0, .5), "blue", "blue")
 
   if (show_unmodelled_density) {
     legend_labels <- c(legend_labels, "Unmodelled density")
     lty <- c(lty, -1)
-    lwd = c(lwd, -1)
+    lwd <- c(lwd, -1)
     pch <- c(pch, 15)
     col <- c(col, grDevices::grey(0.1, alpha = 0.25))
   }
 
   legend_labels <- c(legend_labels, "Posterior density")
   lty <- c(lty, 1)
-  lwd = c(lwd, 1)
+  lwd <- c(lwd, 1)
   pch <- c(pch, NA)
   col <- c(col, "purple")
 
   if (show_hpd_ranges) {
-    hpd_label = switch(
+    hpd_label <- switch(
       interval_width,
       "1sigma" = "68.3% HPD",
       "2sigma"  = "95.4% HPD",
       "bespoke" = paste(round(100*bespoke_probability, 3), "% HPD", sep = ""))
     legend_labels <- c(legend_labels, hpd_label)
     lty <- c(lty, 1)
-    lwd = c(lwd, 2)
+    lwd <- c(lwd, 2)
     pch <- c(pch, NA)
     col <- c(col, "black")
 
-    hpd_ranges = round(hpd_ranges)
+    hpd_ranges <- round(hpd_ranges)
     for (i in 1:dim(hpd_ranges)[1]) {
       legend_labels <- c(legend_labels, paste("   ", hpd_ranges[i, 1], "-", hpd_ranges[i, 2]))
       lty <- c(lty, NA)
-      lwd = c(lwd, NA)
+      lwd <- c(lwd, NA)
       pch <- c(pch, NA)
       col <- c(col, NA)
     }

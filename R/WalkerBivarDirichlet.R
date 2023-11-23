@@ -174,7 +174,7 @@ WalkerBivarDirichlet <- function(
 
   ##############################################################################
   # Save input data
-  input_data = list(
+  input_data <- list(
     rc_determinations = rc_determinations,
     rc_sigmas = rc_sigmas,
     F14C_inputs = F14C_inputs,
@@ -205,27 +205,27 @@ WalkerBivarDirichlet <- function(
     rc_sigmas,
     MoreArgs = list(F14C_inputs=use_F14C_space, calibration_curve=integer_cal_year_curve))
 
-  spd = apply(initial_probabilities, 1, sum)
-  cumulative_spd = cumsum(spd) / sum(spd)
-  spd_range_1_sigma = c(
+  spd <- apply(initial_probabilities, 1, sum)
+  cumulative_spd <- cumsum(spd) / sum(spd)
+  spd_range_1_sigma <- c(
     integer_cal_year_curve$calendar_age_BP[min(which(cumulative_spd > (1 - 0.683)/2))],
     integer_cal_year_curve$calendar_age_BP[max(which(cumulative_spd < (1 + 0.683)/2))])
-  spd_range_2_sigma = c(
+  spd_range_2_sigma <- c(
     integer_cal_year_curve$calendar_age_BP[min(which(cumulative_spd > (1 - 0.954)/2))],
     integer_cal_year_curve$calendar_age_BP[max(which(cumulative_spd < (1 + 0.954)/2))])
-  spd_range_3_sigma = c(
+  spd_range_3_sigma <- c(
     integer_cal_year_curve$calendar_age_BP[min(which(cumulative_spd > (1 - 0.997)/2))],
     integer_cal_year_curve$calendar_age_BP[max(which(cumulative_spd < (1 + 0.997)/2))])
 
-  plot_range = spd_range_3_sigma + c(-1, 1) * diff(spd_range_3_sigma) * 0.1
-  plot_range = c(
+  plot_range <- spd_range_3_sigma + c(-1, 1) * diff(spd_range_3_sigma) * 0.1
+  plot_range <- c(
     max(plot_range[1], min(calibration_curve$calendar_age_BP)),
     min(plot_range[2], max(calibration_curve$calendar_age_BP)))
 
-  densities_cal_age_sequence = seq(plot_range[1], plot_range[2], length.out=100)
+  densities_cal_age_sequence <- seq(plot_range[1], plot_range[2], length.out=100)
 
   if (sensible_initialisation) {
-    indices_of_max_probability = apply(initial_probabilities, 2, which.max)
+    indices_of_max_probability <- apply(initial_probabilities, 2, which.max)
     calendar_ages <- integer_cal_year_curve$calendar_age_BP[indices_of_max_probability]
 
     mu_phi <- mean(spd_range_2_sigma)
@@ -242,7 +242,7 @@ WalkerBivarDirichlet <- function(
     alpha_shape <- 1
     alpha_rate <- 1
 
-    if (is.na(slice_width)) slice_width = diff(spd_range_3_sigma)
+    if (is.na(slice_width)) slice_width <- diff(spd_range_3_sigma)
   }
 
   # do not allow very small values of alpha as this causes crashes
@@ -254,11 +254,11 @@ WalkerBivarDirichlet <- function(
   v <- stats::rbeta(n_clust, 1, alpha)
   weight <- v * c(1, cumprod(1 - v)[-n_clust])
   cluster_identifiers <- as.integer(sample(1:n_clust, num_observations, replace = TRUE))
-  calendar_ages = as.double(calendar_ages)
+  calendar_ages <- as.double(calendar_ages)
 
   ##############################################################################
   # Save input parameters
-  input_parameters = list(
+  input_parameters <- list(
     lambda = lambda,
     nu1 = nu1,
     nu2 = nu2,
@@ -273,7 +273,7 @@ WalkerBivarDirichlet <- function(
 
   ##############################################################################
   # Create storage for output
-  n_out = floor(n_iter / n_thin) + 1
+  n_out <- floor(n_iter / n_thin) + 1
 
   phi_out <- list(phi)
   tau_out <- list(tau)
@@ -332,7 +332,7 @@ WalkerBivarDirichlet <- function(
     v <- DPMM_update$v
     alpha <- DPMM_update$alpha
     mu_phi <- DPMM_update$mu_phi
-    calendar_ages = DPMM_update$calendar_ages
+    calendar_ages <- DPMM_update$calendar_ages
 
 
     if (iter %% n_thin == 0) {
@@ -350,7 +350,7 @@ WalkerBivarDirichlet <- function(
     }
   }
 
-  density_data = list(densities = densities_out, calendar_ages = densities_cal_age_sequence)
+  density_data <- list(densities = densities_out, calendar_ages = densities_cal_age_sequence)
 
   return_list <- list(
     cluster_identifiers = cluster_identifiers_out,

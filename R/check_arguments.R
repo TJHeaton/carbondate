@@ -7,12 +7,12 @@
     col.names = "named",
     add = arg_check)
   if (is.na(F14C_inputs)) {
-    required_column_names = c("calendar_age_BP")
+    required_column_names <- c("calendar_age_BP")
     # TODO: need to check they have one type or the other
   } else if (F14C_inputs == TRUE) {
-    required_column_names = c("calendar_age_BP", "f14c", "f14c_sig")
+    required_column_names <- c("calendar_age_BP", "f14c", "f14c_sig")
   } else if (F14C_inputs == FALSE) {
-    required_column_names = c("calendar_age_BP", "c14_age", "c14_sig")
+    required_column_names <- c("calendar_age_BP", "c14_age", "c14_sig")
   }
   checkmate::assertSubset(
     required_column_names,
@@ -84,7 +84,7 @@
       any.missing = FALSE,
       add = arg_check)
   } else {
-    reason = "sensible_initialisation is TRUE"
+    reason <- "sensible_initialisation is TRUE"
     .WarnIfValueOverwritten(lambda, reason)
     .WarnIfValueOverwritten(nu1, reason)
     .WarnIfValueOverwritten(nu2, reason)
@@ -101,11 +101,11 @@
 
 
 .WarnIfValueOverwritten <- function(var, reason = NULL) {
-  varname = deparse(substitute(var))
+  varname <- deparse(substitute(var))
   if (!is.na(var)) {
-    warning_msg = paste("Provided value of", varname, "was overwritten")
+    warning_msg <- paste("Provided value of", varname, "was overwritten")
     if (!is.null(reason)) {
-      warning_msg = paste(warning_msg, "since", reason)
+      warning_msg <- paste(warning_msg, "since", reason)
     }
     warning(warning_msg)
   }
@@ -164,7 +164,7 @@
 
 .CheckCalibrationCurveFromOutput <- function(
     arg_check, output_data, calibration_curve) {
-  calibration_curve_name = output_data$input_data$calibration_curve_name
+  calibration_curve_name <- output_data$input_data$calibration_curve_name
   if (!exists(calibration_curve_name) && is.null(calibration_curve)){
     checkmate::reportAssertions(arg_check)
     cli::cli_abort(
@@ -187,8 +187,8 @@
     return()
   }
   for (i in 2:length(output_data_list)) {
-    first = output_data_list[[1]]$input_data
-    other = output_data_list[[i]]$input_data
+    first <- output_data_list[[1]]$input_data
+    other <- output_data_list[[i]]$input_data
     if (
       !identical(first$rc_determinations, other$rc_determinations)
       || !identical(first$rc_sigmas, other$rc_sigmas)
@@ -206,7 +206,7 @@
 }
 
 
-.CheckIntervalWidth = function(arg_check, interval_width, bespoke_probability) {
+.CheckIntervalWidth <- function(arg_check, interval_width, bespoke_probability) {
   checkmate::assertChoice(
     interval_width, c("1sigma", "2sigma", "bespoke"), add = arg_check)
   if (interval_width == "bespoke") {
@@ -224,7 +224,7 @@
 }
 
 
-.CheckCalendarAgeSequence = function(arg_check, calendar_age_sequence) {
+.CheckCalendarAgeSequence <- function(arg_check, calendar_age_sequence) {
   checkmate::assertNumeric(
     calendar_age_sequence,
     unique = TRUE,
