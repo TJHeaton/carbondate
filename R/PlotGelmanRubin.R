@@ -45,7 +45,7 @@ PlotGelmanRubinDiagnosticSingleChain <- function(output_data, n_burn = NA, n_seg
 
   R <- rep(0, n_obs)
   for (i in 1:n_obs) {
-    R[i] <- .SingleChainPsrf(output_data$calendar_ages[, i], n_burn, n_thin, n_segments)
+    R[i] <- .SingleChainPsrf(output_data$calendar_ages[, i], n_burn, n_segments)
   }
 
   graphics::hist(R, xlab = "", main = "Histogram of PSRF for posterior calendar ages")
@@ -105,14 +105,14 @@ PlotGelmanRubinDiagnosticMultiChain <- function(output_data_list, n_burn = NA) {
   get_calendar_ages <- function(output_data, i) return(output_data$calendar_ages[, i])
   for (i in 1:n_obs) {
     theta_list <- lapply(output_data_list, get_calendar_ages, i)
-    R[i] <- .MultiChainPsrf(theta_list, n_burn, n_thin)
+    R[i] <- .MultiChainPsrf(theta_list, n_burn)
   }
 
   graphics::hist(R, xlab = "", main = "Histogram of PSRF for posterior calendar ages")
 }
 
 
-.SingleChainPsrf <- function(theta, n_burn, n_thin, n_segments) {
+.SingleChainPsrf <- function(theta, n_burn, n_segments) {
   n_out <- length(theta)
   n_chain <- floor((n_out - n_burn) / n_segments)
 
@@ -125,7 +125,7 @@ PlotGelmanRubinDiagnosticMultiChain <- function(output_data_list, n_burn = NA) {
 }
 
 
-.MultiChainPsrf <- function(theta_list, n_burn, n_thin) {
+.MultiChainPsrf <- function(theta_list, n_burn) {
   M <- length(theta_list)
   n_out <- length(theta_list[[1]])
   n_chain <- n_out - n_burn
