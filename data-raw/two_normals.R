@@ -14,7 +14,7 @@ n_clust_true <- length(weights_true)
 
 true_density <- data.frame(x = intcal20$calendar_age_BP, y = 0)
 true_density$y <- 0
-for(i in 1:length(weights_true)) {
+for(i in seq_along(weights_true)) {
   true_density$y <- true_density$y +
     weights_true[i] * dnorm(
       true_density$x, mean = cluster_means_true_calBP[i], sd = 1/sqrt(cluster_precisions_true[i]))

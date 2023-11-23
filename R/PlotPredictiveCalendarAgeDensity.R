@@ -387,7 +387,7 @@ PlotPredictiveCalendarAgeDensity <- function(
   pch <- c(NA, NA)
   col <- c(calibration_curve_colour, calibration_curve_colour)
 
-  for (i in 1:length(output_data)) {
+  for (i in seq_along(output_data)) {
     legend_labels <- c(legend_labels, output_data[[i]]$label)
     lty <- c(lty, 1)
     pch <- c(pch, NA)
