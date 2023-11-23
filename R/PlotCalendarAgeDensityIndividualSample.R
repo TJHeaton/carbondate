@@ -233,9 +233,9 @@ PlotCalendarAgeDensityIndividualSample <- function(
     smoothed_density){
   ci_label <- switch(
     interval_width,
-    "1sigma" = expression(paste(sigma, " interval", sep="")),
-    "2sigma"  = expression(paste("2", sigma, " interval", sep="")),
-    "bespoke" = paste(round(100*bespoke_probability), "% interval", sep = ""))
+    "1sigma" = expression(paste0(sigma, " interval")),
+    "2sigma"  = expression(paste0("2", sigma, " interval")),
+    "bespoke" = paste0(round(100 * bespoke_probability), "% interval"))
 
   legend_labels <- c(
     substitute(paste(""^14, "C determination ")),
@@ -265,7 +265,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
       interval_width,
       "1sigma" = "68.3% HPD",
       "2sigma"  = "95.4% HPD",
-      "bespoke" = paste(round(100*bespoke_probability, 3), "% HPD", sep = ""))
+      "bespoke" = paste0(round(100 * bespoke_probability, 3), "% HPD"))
     legend_labels <- c(legend_labels, hpd_label)
     lty <- c(lty, 1)
     lwd <- c(lwd, 2)
