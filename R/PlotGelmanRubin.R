@@ -147,7 +147,7 @@ PlotGelmanRubinDiagnosticMultiChain <- function(output_data_list, n_burn = NA) {
   between_chain_variance <- N * sum(unlist(lapply(chains, diff_from_mean, overall_mean))) / (M - 1)
 
   pooled_variance <- (N - 1) / N * within_chain_variance
-  pooled_variance <- pooled_variance + (M + 1) / (M * N) * between_chain_variance;
+  pooled_variance <- pooled_variance + (M + 1) / (M * N) * between_chain_variance
 
   return(pooled_variance / within_chain_variance)
 }

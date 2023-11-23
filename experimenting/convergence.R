@@ -216,7 +216,7 @@ single_chain_psrf <- function(theta, n_burn, n_thin) {
   )
 
   pooled_variance <- (n_chain - 1) / n_chain * within_chain_variance
-  pooled_variance <- pooled_variance + 4 / (3 * n_chain) * between_chain_variance;
+  pooled_variance <- pooled_variance + 4 / (3 * n_chain) * between_chain_variance
 
   return(pooled_variance / within_chain_variance)
 }
