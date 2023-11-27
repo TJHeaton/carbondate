@@ -3,13 +3,13 @@ library(carbondate)
 
 plot_convergence_walker_kerr <- function(seeds, n_iter, n_thin, n_burn) {
   pdf(
-    file = paste("experimenting/convergence_2/kerr_walker_B_", n_iter/1000, ".pdf", sep=""),
+    file = paste0("experimenting/convergence_2/kerr_walker_B_", n_iter / 1000, ".pdf"),
     width = 10, height = 5, pointsize = 10)
   for (seed in seeds) {
     print(paste("seed =", seed))
     set.seed(seed)
 
-    filename <- paste("experimenting/convergence_2/kerr_walker_B_seed_", seed, ".rda", sep="")
+    filename <- paste0("experimenting/convergence_2/kerr_walker_B_seed_", seed, ".rda")
 
     if (file.exists(filename)) {
       load(filename)
@@ -33,13 +33,13 @@ plot_convergence_walker_kerr <- function(seeds, n_iter, n_thin, n_burn) {
 
 plot_convergence_kerr_shifted <- function(seeds, n_iter, n_thin, n_burn) {
   pdf(
-    file = paste("experimenting/convergence_2/kerr_walker_shifted_", n_iter/1000, ".pdf", sep=""),
+    file = paste0("experimenting/convergence_2/kerr_walker_shifted_", n_iter / 1000, ".pdf"),
     width = 10, height = 5, pointsize = 10)
   for (seed in seeds) {
     print(paste("seed =", seed))
     set.seed(seed)
 
-    filename <- paste("experimenting/convergence_2/kerr_walker_shifted_", n_iter/1000, "_seed_", seed, ".rda", sep="")
+    filename <- paste0("experimenting/convergence_2/kerr_walker_shifted_", n_iter / 1000, "_seed_", seed, ".rda")
 
     if (file.exists(filename)) {
       load(filename)
@@ -63,13 +63,13 @@ plot_convergence_kerr_shifted <- function(seeds, n_iter, n_thin, n_burn) {
 
 plot_convergence_walker_pu_kerr <- function(seeds, n_iter, n_thin, n_burn) {
   pdf(
-    file = paste("experimenting/convergence_2/kerr_with_clusters_", n_iter/1000, ".pdf", sep=""),
+    file = paste0("experimenting/convergence_2/kerr_with_clusters_", n_iter / 1000, ".pdf"),
     width = 12, height = 5, pointsize = 10)
   for (seed in seeds) {
     print(paste("seed =", seed))
     set.seed(seed)
 
-    filename <- paste("experimenting/convergence_2/data/kerr_walker_A_", n_iter/1000, "_seed_", seed, ".rda", sep="")
+    filename <- paste0("experimenting/convergence_2/data/kerr_walker_A_", n_iter / 1000, "_seed_", seed, ".rda")
 
     if (file.exists(filename)) {
       load(filename)
@@ -79,7 +79,7 @@ plot_convergence_walker_pu_kerr <- function(seeds, n_iter, n_thin, n_burn) {
     }
 
     set.seed(seed)
-    filename <- paste("experimenting/convergence_2/data/kerr_polya_A_", n_iter/1000, "_seed_", seed, ".rda", sep="")
+    filename <- paste0("experimenting/convergence_2/data/kerr_polya_A_", n_iter / 1000, "_seed_", seed, ".rda")
     if (file.exists(filename)) {
       load(filename)
     } else {
@@ -107,7 +107,7 @@ plot_convergence_walker_pu_kerr <- function(seeds, n_iter, n_thin, n_burn) {
 
 plot_all_kerr <- function(seeds, n_iter, n_thin) {
   pdf(
-    file = paste("experimenting/convergence_2/kerr_all_", n_iter/1000, "_2_sigma.pdf", sep=""),
+    file = paste0("experimenting/convergence_2/kerr_all_", n_iter / 1000, "_2_sigma.pdf"),
     width = 12, height = 5, pointsize = 10)
   walker <- list()
   pu <- list()
@@ -115,7 +115,7 @@ plot_all_kerr <- function(seeds, n_iter, n_thin) {
     print(paste("seed =", seed))
     set.seed(seed)
 
-    filename <- paste("experimenting/convergence_2/data/kerr_walker_A_", n_iter/1000, "_seed_", seed, ".rda", sep="")
+    filename <- paste0("experimenting/convergence_2/data/kerr_walker_A_", n_iter / 1000, "_seed_", seed, ".rda")
 
     if (file.exists(filename)) {
       load(filename)
@@ -127,7 +127,7 @@ plot_all_kerr <- function(seeds, n_iter, n_thin) {
     walker[[seed]] <- wo
 
     set.seed(seed)
-    filename <- paste("experimenting/convergence_2/data/kerr_polya_A_", n_iter/1000, "_seed_", seed, ".rda", sep="")
+    filename <- paste0("experimenting/convergence_2/data/kerr_polya_A_", n_iter / 1000, "_seed_", seed, ".rda")
     if (file.exists(filename)) {
       load(filename)
     } else {
@@ -165,7 +165,7 @@ get_data_postbomb <- function(seeds) {
 
     wo <- WalkerBivarDirichlet(measurements$F14C, measurements$F14C_sd, TRUE, HOBS2022, n_iter = 1e5)
 
-    save(wo, file=paste("experimenting/convergence/postbomb_seed_", seed, ".rda", sep=""))
+    save(wo, file= paste0("experimenting/convergence/postbomb_seed_", seed, ".rda"))
   }
 }
 
@@ -175,7 +175,7 @@ gellman_rubin <- function(seeds, prefix) {
   theta <- list()
 
   for (m in 1:M) {
-    load(paste("experimenting/convergence_2/data/", prefix ,"_seed_", seeds[m], ".rda", sep=""))
+    load(paste0("experimenting/convergence_2/data/", prefix, "_seed_", seeds[m], ".rda"))
 
     theta[[m]] <- wo$calendar_ages[, 10]
   }

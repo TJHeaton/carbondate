@@ -24,16 +24,16 @@ profile_walker <- function(n_iter, n_thin, use_cpp) {
     n_thin,
     use_cpp = use_cpp)
 
-  Rprof(paste("profiling/", file_pref, ".out", sep = ""))
+  Rprof(paste0("profiling/", file_pref, ".out"))
   PlotPredictiveCalendarAgeDensity(list(walker_output, polya_urn_output), 5000)
   Rprof(NULL)
 
-  pd <- readProfileData(paste("profiling/", file_pref, ".out", sep = ""))
+  pd <- readProfileData(paste0("profiling/", file_pref, ".out"))
   flat_profile <- flatProfile(pd)
   print(flat_profile)
-  save(flat_profile, file=paste("profiling/", file_pref, ".rda", sep = ""))
+  save(flat_profile, file= paste0("profiling/", file_pref, ".rda"))
 
-  profileCallGraph2Dot(pd, score = "total", filename = paste("profiling/", file_pref, ".dot", sep = ""))
+  profileCallGraph2Dot(pd, score = "total", filename = paste0("profiling/", file_pref, ".dot"))
 }
 
 profile_walker(n_iter, n_thin, TRUE)
