@@ -178,7 +178,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
 
   diff <- diff(xrange)
   xrange <- xrange + c(-1, 1) * diff * 0.4
-  finalhist <- graphics::hist(
+  graphics::hist(
     calendar_age,
     prob = TRUE,
     breaks = breaks,
@@ -210,7 +210,6 @@ PlotCalendarAgeDensityIndividualSample <- function(
     hpd_ranges <- HDInterval::hdi(smoothed_density, credMass = credMass, allowSplit=TRUE)
     ht <- attr(hpd_ranges, "height")
     graphics::segments(hpd_ranges[, 1], ht, hpd_ranges[, 2], ht, lwd=4, col='black', lend='butt')
-
   }
 
   .AddLegendToDensitySamplePlot(
