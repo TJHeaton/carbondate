@@ -6,7 +6,6 @@
 
 # The as.row function which we will use to count number of diferent clusters
 as.row <- function(x) {
-  y <- NULL
   x <- as.matrix(x)
   if (nrow(x) > ncol(x)) {
     y <- t(x)

@@ -36,7 +36,6 @@ PlotConvergenceData <- function(output_data, n_initial = NA) {
   checkmate::assertNumeric(n_initial, lower = 10, upper = n_out / 10, add = arg_check)
   checkmate::reportAssertions(arg_check)
 
-  calendar_ages <- output_data$density_data$calendar_ages
   densities <- output_data$density_data$densities
   iters <- c(1, seq(n_thin, n_iter, by = n_thin))
 
