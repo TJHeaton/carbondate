@@ -232,8 +232,8 @@ PlotCalendarAgeDensityIndividualSample <- function(
     smoothed_density){
   ci_label <- switch(
     interval_width,
-    "1sigma" = expression(paste0(sigma, " interval")),
-    "2sigma"  = expression(paste0("2", sigma, " interval")),
+    "1sigma" = expression(paste(sigma, "interval")),
+    "2sigma"  = expression(paste("2", sigma, " interval")),
     "bespoke" = paste0(round(100 * bespoke_probability), "% interval"))
 
   legend_labels <- c(
@@ -273,8 +273,8 @@ PlotCalendarAgeDensityIndividualSample <- function(
 
     hpd_ranges <- round(hpd_ranges)
     for (i in rev(1:dim(hpd_ranges)[1])) {
-      auc = .AreaUnderCurve(smoothed_density$x, smoothed_density$y, hpd_ranges[i, 1], hpd_ranges[i, 2])
-      auc_string = paste("(", round(auc * 100, digits = 1), "%)", sep="")
+      auc <- .AreaUnderCurve(smoothed_density$x, smoothed_density$y, hpd_ranges[i, 1], hpd_ranges[i, 2])
+      auc_string <- paste0("(", round(auc * 100, digits = 1), "%)")
       legend_labels <- c(
         legend_labels,
         paste("   ", hpd_ranges[i, 2], "-", hpd_ranges[i, 1], auc_string))
@@ -292,16 +292,16 @@ PlotCalendarAgeDensityIndividualSample <- function(
 
 
 .AreaUnderCurve <- function(x, y, x_1, x_2) {
-  dx = x[2] - x[1]
+  dx <- x[2] - x[1]
 
-  total_area = sum(y) * dx
-  auc_indices = which(x > x_1 & x < x_2)
-  first_index = auc_indices[1]
-  last_index = max(auc_indices)
+  total_area <- sum(y) * dx
+  auc_indices <- which(x > x_1 & x < x_2)
+  first_index <- auc_indices[1]
+  last_index <- max(auc_indices)
 
-  partial_area = sum(y[auc_indices]) * dx
-  partial_area = partial_area + (x[first_index] - x_1) * y[first_index]
-  partial_area = partial_area + (x_2 - x[last_index]) * y[last_index]
+  partial_area <- sum(y[auc_indices]) * dx
+  partial_area <- partial_area + (x[first_index] - x_1) * y[first_index]
+  partial_area <- partial_area + (x_2 - x[last_index]) * y[last_index]
 
   return (partial_area/total_area)
 
