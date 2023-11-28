@@ -7,7 +7,7 @@
     col.names = "named",
     add = arg_check)
   if (is.na(F14C_inputs)) {
-    required_column_names <- c("calendar_age_BP")
+    required_column_names <- "calendar_age_BP"
     # TODO: need to check they have one type or the other
   } else if (F14C_inputs == TRUE) {
     required_column_names <- c("calendar_age_BP", "f14c", "f14c_sig")
@@ -215,10 +215,9 @@
   } else {
     if (!is.na(bespoke_probability)) {
       cli::cli_warn(
-        c(paste("You have chosed an interval width of", interval_width)),
-        c(
-          paste("The value you have chosen for `bespoke_probability` will
-                therefore be ignored")))
+        paste("You have chosed an interval width of", interval_width),
+        paste("The value you have chosen for `bespoke_probability` will
+              therefore be ignored"))
     }
   }
 }

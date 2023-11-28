@@ -16,7 +16,7 @@ n_clust_true <- length(weights_true)
 
 true_density <- data.frame(x = intcal20$calendar_age, y = 0)
 true_density$y <- 0
-for(i in 1:length(weights_true)) {
+for(i in seq_along(weights_true)) {
   true_density$y <- true_density$y +
     weights_true[i] * dnorm(
       true_density$x, mean = phi_true[i], sd = 1/sqrt(tau_true[i]))

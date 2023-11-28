@@ -62,6 +62,7 @@ densities = PlotPredictiveCalendarAgeDensity(
   show_SPD = TRUE)
 ```
 
+<!--suppress ALL, CheckImageSize -->
 <img src="man/figures/README-plot_density-1.png" width="100%" />
 
 For a full example run-through, load the vignette:
