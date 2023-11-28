@@ -86,7 +86,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
   rc_age <- rc_determinations[ident]
   rc_sig <- rc_sigmas[ident]
 
-  dens <- stats::density(calendar_age, bw="SJ")
+  smoothed_density <- stats::density(calendar_age, bw="SJ")
 
   n_out <- length(calendar_age)
   if (is.na(n_burn)) {
@@ -200,14 +200,14 @@ PlotCalendarAgeDensityIndividualSample <- function(
       col = grDevices::grey(0.1, alpha = 0.25))
   }
   if (show_hpd_ranges){
-    graphics::lines(dens, lwd=1, col='black', lty=2)
+    graphics::lines(smoothed_density, lwd=1, col='black', lty=2)
     credMass <- switch(
       interval_width,
       "1sigma" = 0.682,
       "2sigma" = 0.954,
       "bespoke" = bespoke_probability)
 
-    hpd_ranges <- HDInterval::hdi(dens, credMass = credMass, allowSplit=TRUE)
+    hpd_ranges <- HDInterval::hdi(smoothed_density, credMass = credMass, allowSplit=TRUE)
     ht <- attr(hpd_ranges, "height")
     graphics::segments(hpd_ranges[, 1], ht, hpd_ranges[, 2], ht, lwd=4, col='black', lend='butt')
 
@@ -219,7 +219,8 @@ PlotCalendarAgeDensityIndividualSample <- function(
     output_data$input_data$calibration_curve_name,
     show_hpd_ranges,
     show_unmodelled_density,
-    hpd_ranges)
+    hpd_ranges,
+    smoothed_density)
 }
 
 .AddLegendToDensitySamplePlot <- function(
@@ -228,7 +229,8 @@ PlotCalendarAgeDensityIndividualSample <- function(
     calcurve_name,
     show_hpd_ranges,
     show_unmodelled_density,
-    hpd_ranges){
+    hpd_ranges,
+    smoothed_density){
   ci_label = switch(
     interval_width,
     "1sigma" = expression(paste(sigma, " interval", sep="")),
@@ -271,8 +273,12 @@ PlotCalendarAgeDensityIndividualSample <- function(
     col <- c(col, "black")
 
     hpd_ranges = round(hpd_ranges)
-    for (i in 1:dim(hpd_ranges)[1]) {
-      legend_labels <- c(legend_labels, paste("   ", hpd_ranges[i, 1], "-", hpd_ranges[i, 2]))
+    for (i in rev(1:dim(hpd_ranges)[1])) {
+      auc = .AreaUnderCurve(smoothed_density$x, smoothed_density$y, hpd_ranges[i, 1], hpd_ranges[i, 2])
+      auc_string = paste("(", round(auc * 100, digits = 1), "%)", sep="")
+      legend_labels <- c(
+        legend_labels,
+        paste("   ", hpd_ranges[i, 2], "-", hpd_ranges[i, 1], auc_string))
       lty <- c(lty, NA)
       lwd = c(lwd, NA)
       pch <- c(pch, NA)
@@ -284,3 +290,21 @@ PlotCalendarAgeDensityIndividualSample <- function(
     "topright", legend = legend_labels, lty = lty, lwd=lwd, pch = pch, col = col)
 
 }
+
+
+.AreaUnderCurve <- function(x, y, x_1, x_2) {
+  dx = x[2] - x[1]
+
+  total_area = sum(y) * dx
+  auc_indices = which(x > x_1 & x < x_2)
+  first_index = auc_indices[1]
+  last_index = max(auc_indices)
+
+  partial_area = sum(y[auc_indices]) * dx
+  partial_area = partial_area + (x[first_index] - x_1) * y[first_index]
+  partial_area = partial_area + (x_2 - x[last_index]) * y[last_index]
+
+  return (partial_area/total_area)
+
+}
+
