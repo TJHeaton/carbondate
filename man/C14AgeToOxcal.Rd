@@ -4,34 +4,31 @@
 \alias{C14AgeToOxcal}
 \title{Outputs text suitable for running in OxCal}
 \usage{
-C14AgeToOxcal(model_name, c14_age, c14_sig, c14_name = NULL)
+C14AgeToOxcal(
+  model_name,
+  c14_age,
+  c14_sig,
+  c14_name = NULL,
+  outfile_path = NULL
+)
 }
 \arguments{
-\item{ident}{the determination you want to show the individual posterior
-calendar age for.}
+\item{model_name}{The name given to the model in the OxCal code.}
 
-\item{resolution}{The distance between histogram breaks for the calendar age density.
-Must be an integer greater than one.}
+\item{c14_age}{An array of 14C determinations in yr BP.}
 
-\item{interval_width}{The confidence intervals to show for the
-calibration curve and for the highest posterior density ranges.
-Choose from one of "1sigma" (68.3\%), "2sigma" (95.4\%) and "bespoke". Default is "2sigma".}
+\item{c14_sig}{An array of the errors for the 14C determinations, must be the same length as c14_age.}
 
-\item{bespoke_probability}{The probability to use for the confidence interval
-if "bespoke" is chosen above. E.g. if 0.95 is chosen, then the 95\% confidence
-interval is calculated. Ignored if "bespoke" is not chosen.}
+\item{c14_name}{Optional. The name of each data point - if given it must be the same length of c14_age.}
 
-\item{show_hpd_ranges}{Set to \code{TRUE} to also show the highest posterior range on the plot.
-These are calculated using \link[HDInterval:hdi]{HDInterval::hdi}. Default is \code{FALSE}.}
-
-\item{show_unmodelled_density}{Set to \code{TRUE} to also show the unmodelled density (i.e. the
-result of \link{CalibrateSingleDetermination}) on the plot. Default is \code{FALSE}.}
+\item{outfile_path}{Optional. If given the OxCal code will be output to the file at the path given, otherwise it
+will be output to the terminal.}
 }
 \description{
 Outputs text suitable for running in OxCal
 }
 \examples{
-# Generate names automatically
+# Generate names automatically and outputs to the screen
 C14AgeToOxcal("My_data", c(1123, 1128, 1135), c(32, 24, 25))
 
 }

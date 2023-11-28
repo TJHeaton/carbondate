@@ -1,38 +1,37 @@
-#' Outputs text suitable for running in OxCal
+#' Outputs code suitable for running in OxCal from a series of radiocarbon determinations given as 14C age.
 #'
-#' @param ident the determination you want to show the individual posterior
-#' calendar age for.
-#' @param resolution The distance between histogram breaks for the calendar age density.
-#' Must be an integer greater than one.
-#' @param interval_width The confidence intervals to show for the
-#' calibration curve and for the highest posterior density ranges.
-#' Choose from one of "1sigma" (68.3%), "2sigma" (95.4%) and "bespoke". Default is "2sigma".
-#' @param bespoke_probability The probability to use for the confidence interval
-#' if "bespoke" is chosen above. E.g. if 0.95 is chosen, then the 95% confidence
-#' interval is calculated. Ignored if "bespoke" is not chosen.
-#' @param show_hpd_ranges Set to `TRUE` to also show the highest posterior range on the plot.
-#' These are calculated using [HDInterval::hdi]. Default is `FALSE`.
-#' @param show_unmodelled_density Set to `TRUE` to also show the unmodelled density (i.e. the
-#' result of [carbondate::CalibrateSingleDetermination]) on the plot. Default is `FALSE`.
-#'
+#' @param model_name The name given to the model in the OxCal code.
+#' @param c14_age An array of 14C determinations in yr BP.
+#' @param c14_sig An array of the errors for the 14C determinations, must be the same length as c14_age.
+#' @param c14_name Optional. The name of each data point - if given it must be the same length of c14_age.
+#' @param outfile_path Optional. If given the OxCal code will be output to the file at the path given, otherwise it
+#' will be output to the terminal.
 #' @export
 #'
 #' @examples
-#' # Generate names automatically
+#' # Generate names automatically and outputs to the screen
 #' C14AgeToOxcal("My_data", c(1123, 1128, 1135), c(32, 24, 25))
 #'
-C14AgeToOxcal <- function(model_name, c14_age, c14_sig, c14_name = NULL) {
+C14AgeToOxcal <- function(model_name, c14_age, c14_sig, c14_name = NULL, outfile_path = NULL) {
 
   if (length(c14_age) != length(c14_sig)) cat("error")
-  if (is.null(c14_name)) c14_name = seq_len(length(c14_age))
+  if (is.null(c14_name)) c14_name <- seq_len(length(c14_age))
+
+  if (!is.null(outfile_path)) {
+    sink(outfile_path)
+  }
 
   cat(" Plot()\n")
   cat(" {\n")
-  cat(paste('  NP_Model(\"', model_name ,'")\n', sep=""))
+  cat(paste0('  NP_Model(\"', model_name, '")\n'))
   cat("  {\n")
-  for (i in 1:length(c14_age)) {
-    cat(paste('  R_Date(\"', c14_name[i] ,'",', c14_age[i],',', c14_sig[i],');\n', sep=""))
+  for (i in seq_along(c14_age)) {
+    cat(paste0('  R_Date(\"', c14_name[i], '",', c14_age[i], ',', c14_sig[i], ');\n'))
   }
   cat("  };\n")
   cat(" };\n")
+
+  if (!is.null(outfile_path)) {
+    sink()
+  }
 }
