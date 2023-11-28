@@ -85,7 +85,7 @@ plot(
   yaxt="n")
 ```
 
-Note that the summary functions for plotting the predictive joint calendar age density [described below](#plot_density) can also optionally plot the SPD without having to calculate it separately first.
+Note that the summary functions for plotting the predictive joint calendar age density [described below](#density-estimate-to-summarise-objects) can also optionally plot the SPD without having to calculate it separately first.
 
 # Non-parametric calibration of multiple related samples
 
@@ -146,7 +146,7 @@ PlotCalendarAgeDensityIndividualSample(
   21, polya_urn_output, show_hpd_ranges = TRUE, show_unmodelled_density = TRUE)
 ```
 
-#### Density Estimate to Summarise Objects {#plot_density}
+#### Density Estimate to Summarise Objects
 
 The output data contains information to allow calculation of the predictive distribution for the calendar age of a new, as yet undiscovered, object. This density estimate summarises the calendar ages of all objects. It is generated using the posterior sampled values of the DPMM component of our MCMC sampler. This calendar age density can be calculated and plotted using `PlotPredictiveCalendarAgeDensity`.
 

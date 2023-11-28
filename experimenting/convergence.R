@@ -143,7 +143,7 @@ plot_all_kerr <- function(seeds, n_iter, n_thin) {
     n_posterior_samples <- 1000
     n_burn <- n_end / 2
     layout.matrix <- matrix(c(1, 2), nrow = 1, ncol = 2)
-    layout(mat = layout.matrix, heights = c(3), widths = c(1, 1))
+    layout(mat = layout.matrix, heights = 3, widths = c(1, 1))
 
     PlotPredictiveCalendarAgeDensity(walker, n_posterior_samples, n_burn = n_burn, n_end = n_end, interval_width = "2sigma")
     title(sub = paste("Walker: n_burn =", n_burn, "n_end = ", n_end))

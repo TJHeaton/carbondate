@@ -321,8 +321,8 @@ PlotPredictiveCalendarAgeDensity <- function(
 
   if (plot_AD) xlim <- 1950 - xlim
   graphics::plot.default(
-    c(),
-    c(),
+    NULL,
+    NULL,
     type = "n",
     ylim = ylim,
     xlim = xlim,

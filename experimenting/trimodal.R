@@ -14,7 +14,7 @@ phi_true <- c(14400, 13800, 12900)
 tau_true <- 1 / c(200, 150, 150)^2
 n_clust_true <- length(weights_true)
 
-true_density = data.frame(x = intcal20$calendar_age, y = 0)
+true_density <- data.frame(x = intcal20$calendar_age, y = 0)
 true_density$y <- 0
 for(i in 1:length(weights_true)) {
   true_density$y <- true_density$y +
@@ -32,7 +32,7 @@ hist(calendar_ages_true, breaks = 20, freq = FALSE)
 lines(true_density, col="red")
 
 # Create some radiocarbon determinations
-interpolated_calibration_curve = InterpolateCalibrationCurve(
+interpolated_calibration_curve <- InterpolateCalibrationCurve(
   new_calendar_ages = calendar_ages_true, calibration_curve = intcal20)
 interpolated_c14_age <- interpolated_calibration_curve$c14_age
 interpolated_c14_sig <- interpolated_calibration_curve$c14_sig
