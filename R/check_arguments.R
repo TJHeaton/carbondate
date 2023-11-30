@@ -1,24 +1,56 @@
-.CheckCalibrationCurve <- function(arg_check, calibration_curve, F14C_inputs){
-  checkmate::assertDataFrame(
-    calibration_curve,
-    types = "numeric",
-    any.missing = FALSE,
-    min.cols = 3,
-    col.names = "named",
-    add = arg_check)
-  if (is.na(F14C_inputs)) {
-    required_column_names <- "calendar_age_BP"
-    # TODO: need to check they have one type or the other
-  } else if (F14C_inputs == TRUE) {
-    required_column_names <- c("calendar_age_BP", "f14c", "f14c_sig")
-  } else if (F14C_inputs == FALSE) {
-    required_column_names <- c("calendar_age_BP", "c14_age", "c14_sig")
+.makeAssertCollection <- function() {
+  msgs <- character(0L)
+  x <- list(
+    push = function(msg) {msgs <<- c(msgs, msg)},
+    getMessages = function() msgs,
+    isEmpty = function() length(msgs) == 0L)
+  return(x)
+}
+
+.reportAssertions <- function(collection) {
+  if (!collection$isEmpty()) {
+    msgs <- collection$getMessages()
+    context <- "%i assertions failed:"
+    err <- c(sprintf(context, length(msgs)), strwrap(msgs, prefix = " * "))
+    stop(simpleError(paste0(err, collapse = "\n"), call = sys.call(1L)))
   }
-  checkmate::assertSubset(
-    required_column_names,
-    names(calibration_curve),
-    .var.name ="calibration_curve required column names",
-    add = arg_check)
+}
+
+.CheckCalibrationCurve <- function(arg_check, calibration_curve, F14C_inputs){
+  if (!is.data.frame(calibration_curve)) {
+    arg_check$push("The calibration curve must be a data frame")
+  }
+  header_names <- names(calibration_curve)
+  if (!("calendar_age_BP" %in% header_names)) {
+    arg_check$push("The calibration curve must have the column 'calendar_age_BP'")
+  }
+
+  has_f14c <- ("f14c" %in% header_names)
+  has_f14c_sig <- ("f14c_sig" %in% header_names)
+  has_c14_age <- ("c14_age" %in% header_names)
+  has_c14_sig <- ("c14_sig" %in% header_names)
+
+  if (is.na(F14C_inputs)) {
+    if (!((has_f14c && has_f14c_sig) || (has_c14_age && has_c14_sig))) {
+      arg_check$push(
+        "The calibration curve must have the columns ('f14c', 'f14c_sig') and/or the columns ('c14_age', 'c14_sig')")
+    }
+  } else if (F14C_inputs == TRUE) {
+    if (!(has_f14c && has_f14c_sig)) {
+      arg_check$push("The calibration curve must have the columns ('f14c', 'f14c_sig')")
+    }
+  } else if (F14C_inputs == FALSE) {
+    if (!(has_c14_age && has_c14_sig)) {
+      arg_check$push("The calibration curve must have the columns ('c14_age', 'c14_sig')")
+    }
+  }
+
+  for (i in ncol(calibration_curve)) {
+    if (!is.numeric(calibration_curve[[i]])) {
+      arg_check$push("The calibration curve entries must all be numbers")
+      break
+    }
+  }
 }
 
 
