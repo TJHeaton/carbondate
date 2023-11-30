@@ -31,15 +31,14 @@
 CalibrateSingleDetermination <- function(
     rc_determination, rc_sigma, calibration_curve, F14C_inputs = FALSE) {
 
-  arg_check <- checkmate::makeAssertCollection()
-  checkmate::assertNumber(rc_determination, add = arg_check)
-  checkmate::assertNumber(rc_sigma, add = arg_check)
-  checkmate::assert_flag(F14C_inputs, add=arg_check)
+  arg_check <- .makeAssertCollection()
+  .CheckNumber(arg_check, rc_determination)
+  .CheckNumber(arg_check, rc_sigma)
+  .CheckFlag(arg_check, F14C_inputs)
   .CheckCalibrationCurve(arg_check, calibration_curve, F14C_inputs)
-  checkmate::reportAssertions(arg_check)
+  .reportAssertions(arg_check)
 
-  probabilities <- .ProbabilitiesForSingleDetermination(
-    rc_determination, rc_sigma, F14C_inputs, calibration_curve)
+  probabilities <- .ProbabilitiesForSingleDetermination(rc_determination, rc_sigma, F14C_inputs, calibration_curve)
 
   return(
     data.frame(
@@ -60,8 +59,7 @@ CalibrateSingleDetermination <- function(
     calcurve_rc_sigs <- calibration_curve$c14_sig
   }
 
-  probabilities <- stats::dnorm(
-    rc_determination, mean=calcurve_rc_ages, sd=sqrt(calcurve_rc_sigs^2 + rc_sigma^2))
+  probabilities <- stats::dnorm(rc_determination, mean=calcurve_rc_ages, sd=sqrt(calcurve_rc_sigs^2 + rc_sigma^2))
   probabilities <- probabilities / sum(probabilities)
   return(probabilities)
 }

@@ -54,6 +54,19 @@
 }
 
 
+.CheckNumber <- function(arg_check, x) {
+  if (!is.numeric(x) || length(x) > 1) {
+    arg_check$push(paste(substitute(x), "must be a number"))
+  }
+}
+
+.CheckFlag <- function(arg_check, x) {
+  if (!is.logical(x) || length(x) > 1) {
+    arg_check$push(paste(substitute(x), "must be a single logical value (TRUE, FALSE OR NA)"))
+  }
+}
+
+
 .CheckInputData <- function(arg_check, rc_determinations, rc_sigmas, F14C_inputs){
 
   checkmate::assertNumeric(
