@@ -36,7 +36,7 @@ FindPredictiveCalendarAgeDensity <- function(
     n_burn = NA,
     n_end = NA) {
 
-  arg_check <- checkmate::makeAssertCollection()
+  arg_check <- .makeAssertCollection()
 
   .CheckOutputData(arg_check, output_data)
   n_iter <- output_data$input_parameters$n_iter
@@ -46,8 +46,8 @@ FindPredictiveCalendarAgeDensity <- function(
   .CheckCalendarAgeSequence(arg_check, calendar_age_sequence)
   .CheckIntervalWidth(arg_check, interval_width, bespoke_probability)
   .CheckNBurn(arg_check, n_burn, n_iter, n_thin)
-  checkmate::assertInt(n_posterior_samples, lower = 10, add = arg_check)
-  checkmate::reportAssertions(arg_check)
+  .CheckInteger(arg_check, n_posterior_samples, lower = 10)
+  .reportAssertions(arg_check)
 
   edge_width <- switch(
     interval_width,
