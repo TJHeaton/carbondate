@@ -45,7 +45,7 @@ FindPredictiveCalendarAgeDensity <- function(
 
   .CheckCalendarAgeSequence(arg_check, calendar_age_sequence)
   .CheckIntervalWidth(arg_check, interval_width, bespoke_probability)
-  .CheckNBurn(arg_check, n_burn, n_iter, n_thin)
+  .CheckNBurnAndNEnd(arg_check, n_burn, n_end, n_iter, n_thin)
   .CheckInteger(arg_check, n_posterior_samples, lower = 10)
   .reportAssertions(arg_check)
 
@@ -55,16 +55,9 @@ FindPredictiveCalendarAgeDensity <- function(
     "2sigma"  = 1 - stats::pnorm(2),
     "bespoke" = (1 - bespoke_probability)/2)
 
-  if (is.na(n_burn)) {
-    n_burn <- floor(n_out / 2)
-  } else {
-    n_burn <- floor(n_burn / n_thin)
-  }
-  if (is.na(n_end)) {
-    n_end <- n_out
-  } else {
-    n_end <- floor(n_end / n_thin)
-  }
+
+  n_burn <- .SetNBurn(n_burn, n_iter, n_thin)
+  n_end <- .SetNEnd(n_end, n_iter, n_thin)
 
   if (output_data$update_type == "Walker") {
     return(

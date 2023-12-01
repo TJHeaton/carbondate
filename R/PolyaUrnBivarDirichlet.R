@@ -235,7 +235,7 @@ PolyaUrnBivarDirichlet <- function(
 
   ##############################################################################
   # Create storage for output
-  n_out <- floor(n_iter / n_thin) + 1
+  n_out <- .SetNOut(n_iter, n_thin)
 
   phi_out <- list(phi)
   tau_out <- list(tau)

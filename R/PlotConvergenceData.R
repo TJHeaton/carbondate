@@ -20,7 +20,7 @@
 #' PlotConvergenceData(polya_urn_example_output)
 PlotConvergenceData <- function(output_data, n_initial = NA) {
 
-  arg_check <- checkmate::makeAssertCollection()
+  arg_check <- .makeAssertCollection()
   .CheckOutputData(arg_check, output_data)
 
   n_iter <- output_data$input_parameters$n_iter
@@ -30,11 +30,11 @@ PlotConvergenceData <- function(output_data, n_initial = NA) {
   if (is.na(n_initial)) {
     n_initial <- min(floor(n_out / 10), floor(1000 / n_thin))
   } else {
+    .CheckInteger(arg_check, n_initial, lower = 10 * n_thin, upper = floor(n_out / 2))
     n_initial <- floor(n_initial / n_thin)
   }
 
-  checkmate::assertNumeric(n_initial, lower = 10, upper = n_out / 10, add = arg_check)
-  checkmate::reportAssertions(arg_check)
+  .reportAssertions(arg_check)
 
   densities <- output_data$density_data$densities
   iters <- c(1, seq(n_thin, n_iter, by = n_thin))

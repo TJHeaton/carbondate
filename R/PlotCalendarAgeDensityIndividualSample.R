@@ -48,16 +48,16 @@ PlotCalendarAgeDensityIndividualSample <- function(
     show_hpd_ranges = FALSE,
     show_unmodelled_density = FALSE) {
 
-  arg_check <- checkmate::makeAssertCollection()
-  checkmate::assertInt(ident, add = arg_check)
+  arg_check <- .makeAssertCollection()
+  .CheckInteger(arg_check, ident)
   .CheckOutputData(arg_check, output_data)
   n_iter <- output_data$input_parameters$n_iter
   n_thin <- output_data$input_parameters$n_thin
 
   .CheckCalibrationCurveFromOutput(arg_check, output_data, calibration_curve)
-  checkmate::assertInt(resolution, na.ok = FALSE, add = arg_check, lower = 1)
-  .CheckNBurn(arg_check, n_burn, n_iter, n_thin)
-  checkmate::reportAssertions(arg_check)
+  .CheckInteger(arg_check, resolution, lower = 1)
+  .CheckNBurnAndNEnd(arg_check, n_burn, n_end, n_iter, n_thin)
+  .reportAssertions(arg_check)
 
   if (is.null(calibration_curve)) {
     calibration_curve <- get(output_data$input_data$calibration_curve_name)
@@ -88,17 +88,8 @@ PlotCalendarAgeDensityIndividualSample <- function(
 
   smoothed_density <- stats::density(calendar_age, bw="SJ")
 
-  n_out <- length(calendar_age)
-  if (is.na(n_burn)) {
-    n_burn <- floor(n_out / 2)
-  } else {
-    n_burn <- floor(n_burn / n_thin)
-  }
-  if (is.na(n_end)) {
-    n_end <- n_out
-  } else {
-    n_end <- floor(n_end / n_thin)
-  }
+  n_burn <- .SetNBurn(n_burn, n_iter, n_thin)
+  n_end <- .SetNEnd(n_end, n_iter, n_thin)
   calendar_age <- calendar_age[(n_burn+1):n_end]
 
   # Find the calendar age range to plot

@@ -25,7 +25,7 @@
 #' PlotGelmanRubinDiagnosticSingleChain(polya_urn_example_output)
 PlotGelmanRubinDiagnosticSingleChain <- function(output_data, n_burn = NA, n_segments = 3) {
 
-  arg_check <- checkmate::makeAssertCollection()
+  arg_check <- .makeAssertCollection()
 
   .CheckOutputData(arg_check, output_data)
   n_iter <- output_data$input_parameters$n_iter
@@ -33,15 +33,11 @@ PlotGelmanRubinDiagnosticSingleChain <- function(output_data, n_burn = NA, n_seg
   n_out <- length(output_data$mu_phi)
   n_obs <- length(output_data$input_data$rc_determinations)
 
-  .CheckNBurn(arg_check, n_burn, n_iter, n_thin)
-  checkmate::assertIntegerish(n_segments, lower = 2, upper = 10, add = arg_check)
-  checkmate::reportAssertions(arg_check)
+  .CheckNBurnAndNEnd(arg_check, n_burn, NA, n_iter, n_thin)
+  .CheckInteger(arg_check, n_segments, lower = 2, upper = 10)
+  .reportAssertions(arg_check)
 
-  if (is.na(n_burn)) {
-    n_burn <- floor(n_out / 2)
-  } else {
-    n_burn <- floor(n_burn / n_thin)
-  }
+  n_burn <- .SetNBurn(n_burn, n_iter, n_thin)
 
   R <- rep(0, n_obs)
   for (i in 1:n_obs) {
@@ -81,11 +77,11 @@ PlotGelmanRubinDiagnosticSingleChain <- function(output_data, n_burn = NA, n_seg
 #' PlotGelmanRubinDiagnosticMultiChain(po)
 PlotGelmanRubinDiagnosticMultiChain <- function(output_data_list, n_burn = NA) {
 
-  arg_check <- checkmate::makeAssertCollection()
-  num_data <- length(output_data_list)
-  checkmate::assert_integer(length(output_data_list), lower = 2)
+  arg_check <- .makeAssertCollection()
+  number_of_output_data <- length(output_data_list)
+  .CheckInteger(number_of_output_data, lower = 2)
   .CheckMultipleOutputDataConsistent(output_data_list)
-  for (i in 1:num_data) {
+  for (i in 1:number_of_output_data) {
     .CheckOutputData(arg_check, output_data_list[[i]])
   }
   n_iter <- output_data_list[[1]]$input_parameters$n_iter
@@ -93,14 +89,10 @@ PlotGelmanRubinDiagnosticMultiChain <- function(output_data_list, n_burn = NA) {
   n_out <- length(output_data_list[[1]]$mu_phi)
   n_obs <- length(output_data_list[[1]]$input_data$rc_determinations)
 
-  .CheckNBurn(arg_check, n_burn, n_iter, n_thin)
-  if (is.na(n_burn)) {
-    n_burn <- floor(n_out / 2)
-  } else {
-    n_burn <- floor(n_burn / n_thin)
-  }
-  checkmate::reportAssertions(arg_check)
+  .CheckNBurnAndNEnd(arg_check, n_burn, NA, n_iter, n_thin)
+  .reportAssertions(arg_check)
 
+  n_burn <- .SetNBurn(n_burn, n_iter, n_thin)
   R <- rep(0, n_obs)
   get_calendar_ages <- function(output_data, i) return(output_data$calendar_ages[, i])
   for (i in 1:n_obs) {

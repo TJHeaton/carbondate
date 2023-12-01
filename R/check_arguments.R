@@ -128,9 +128,15 @@
 }
 
 
-.CheckNBurn <- function(arg_check, n_burn, n_iter, n_thin) {
-  if (is.na(n_burn)) return()
-  .CheckInteger(arg_check, n_burn, lower = 0, upper = n_iter - 100 * n_thin)
+.CheckNBurnAndNEnd <- function(arg_check, n_burn, n_end, n_iter, n_thin) {
+  if (!is.na(n_burn)) {
+    .CheckInteger(arg_check, n_burn, lower = 0, upper = n_iter - 100 * n_thin)
+  } else {
+    n_burn <- .SetNBurn(n_burn, n_iter, n_thin) * n_thin
+  }
+  if (!is.na(n_end)) {
+    .CheckInteger(arg_check, n_end, lower = n_burn + 10 * n_thin, upper = n_iter)
+  }
 }
 
 
