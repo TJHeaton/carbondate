@@ -17,15 +17,16 @@
 }
 
 .CheckInteger <- function(arg_check, x, lower = NA, upper = NA) {
+  varname <- substitute(x)
   if (!is.numeric(x) || length(x) > 1 || (as.integer(x) - x != 0)) {
-    arg_check$push(paste(substitute(x), "must be an integer"))
+    arg_check$push(paste(varname, "must be an integer"))
     return()
   }
   if (!is.na(lower) && x < lower) {
-    arg_check$push(paste(substitute(x), "must be more than or equal to", lower))
+    arg_check$push(paste(varname, "must be more than or equal to", lower))
   }
   if (!is.na(upper) && x > upper) {
-    arg_check$push(paste(substitute(x), "must be less than or equal to", upper))
+    arg_check$push(paste(varname, "must be less than or equal to", upper))
   }
 }
 
@@ -38,6 +39,22 @@
 .CheckFlag <- function(arg_check, x) {
   if (!is.logical(x) || length(x) > 1) {
     arg_check$push(paste(substitute(x), "must be a single logical value (TRUE, FALSE OR NA)"))
+  }
+}
+
+.CheckNumberVector <- function(arg_check, x, min_length = NA, len = NA) {
+  varname <- substitute(x)
+  if (!is.vector(x)) {
+    arg_check$push(paste(varname, "must be a vector"))
+  }
+  if (!is.numeric(x) || any(is.na(x))) {
+    arg_check$push(paste(varname, "must have numeric entries (and not be NA)"))
+  }
+  if (!is.na(min_length) && length(x) < min_length) {
+    arg_check$push(paste(varname, "must have at least", min_length, "elements"))
+  }
+  if (!is.na(len) && length(x) != len) {
+    arg_check$push(paste(varname, "must have exactly", len, "elements"))
   }
 }
 

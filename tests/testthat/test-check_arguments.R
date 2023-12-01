@@ -148,7 +148,8 @@ test_that("test check flag - fails", {
     c(
         "my_char must be a single logical value (TRUE, FALSE OR NA)",
         "my_num must be a single logical value (TRUE, FALSE OR NA)",
-        "my_vec must be a single logical value (TRUE, FALSE OR NA)")
+        "my_vec must be a single logical value (TRUE, FALSE OR NA)"
+    )
   )
 })
 
@@ -159,6 +160,43 @@ test_that("test check flag - passes", {
   .CheckFlag(arg_check, TRUE)
   .CheckFlag(arg_check, FALSE)
   .CheckFlag(arg_check, NA)
+
+  expect_true(arg_check$isEmpty())
+})
+
+
+test_that("test number array - fails", {
+  my_char <- c("a", "b")
+  my_vec <- c(1, 2, 3)
+  my_vec_with_na <- c(my_vec, NA)
+  arg_check <- .makeAssertCollection()
+
+  .CheckNumberVector(arg_check, my_char)
+  .CheckNumberVector(arg_check, my_vec, min_length = 10)
+  .CheckNumberVector(arg_check, my_vec, len = 4)
+  .CheckNumberVector(arg_check, my_vec_with_na)
+
+  expect_equal(
+    arg_check$getMessages(),
+    c(
+        "my_char must have numeric entries (and not be NA)",
+        "my_vec must have at least 10 elements",
+        "my_vec must have exactly 4 elements",
+        "my_vec_with_na must have numeric entries (and not be NA)"
+    )
+  )
+})
+
+
+test_that("test number array - passes", {
+  my_vec <- c(1, 2.5, 3)
+  arg_check <- .makeAssertCollection()
+
+  .CheckNumberVector(arg_check, 3)
+  .CheckNumberVector(arg_check, my_vec)
+  .CheckNumberVector(arg_check, my_vec, min_length = 2)
+  .CheckNumberVector(arg_check, my_vec, min_length = 3)
+  .CheckNumberVector(arg_check, my_vec, len = 3)
 
   expect_true(arg_check$isEmpty())
 })
