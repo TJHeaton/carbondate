@@ -10,6 +10,7 @@ test_that("test check calibration curve has correct headings - F14C inputs is NA
   )
 })
 
+
 test_that("test check calibration curve has correct headings - F14C inputs is NA - passes", {
   calibration_curve <- data.frame(calendar_age_BP = 1:3, f14c = 1:3, f14c_sig = 1:3, c14_age = 1:3, c14_sig = 1:3)
   arg_check <- .makeAssertCollection()
@@ -18,6 +19,7 @@ test_that("test check calibration curve has correct headings - F14C inputs is NA
 
   expect_true(arg_check$isEmpty())
 })
+
 
 test_that("test check calibration curve has correct headings - F14C inputs is TRUE - fails", {
   calibration_curve <- data.frame(calendar_age_BP = 1:3, f14c = 1:3)
@@ -31,6 +33,7 @@ test_that("test check calibration curve has correct headings - F14C inputs is TR
   )
 })
 
+
 test_that("test check calibration curve has correct headings - F14C inputs is TRUE - passes", {
   calibration_curve <- data.frame(calendar_age_BP = 1:3, f14c = 1:3, f14c_sig = 1:3)
   arg_check <- .makeAssertCollection()
@@ -39,6 +42,7 @@ test_that("test check calibration curve has correct headings - F14C inputs is TR
 
   expect_true(arg_check$isEmpty())
 })
+
 
 test_that("test check calibration curve has correct headings - F14C inputs is FALSE - fails", {
   calibration_curve <- data.frame(calendar_age_BP = 1:3, c14_age = 1:3)
@@ -52,6 +56,7 @@ test_that("test check calibration curve has correct headings - F14C inputs is FA
   )
 })
 
+
 test_that("test check calibration curve has correct headings - F14C inputs is FALSE - passes", {
   calibration_curve <- data.frame(calendar_age_BP = 1:3, c14_age = 1:3, c14_sig = 1:3)
   arg_check <- .makeAssertCollection()
@@ -60,6 +65,7 @@ test_that("test check calibration curve has correct headings - F14C inputs is FA
 
   expect_true(arg_check$isEmpty())
 })
+
 
 test_that("test check integer - fails", {
   my_char <- "a"
@@ -72,6 +78,7 @@ test_that("test check integer - fails", {
   .CheckInteger(arg_check, my_vec)
   .CheckInteger(arg_check, my_double)
   .CheckInteger(arg_check, my_int, lower = 10)
+  .CheckInteger(arg_check, my_int, upper = 5)
 
   expect_equal(
     arg_check$getMessages(),
@@ -79,9 +86,12 @@ test_that("test check integer - fails", {
       "my_char must be an integer",
       "my_vec must be an integer",
       "my_double must be an integer",
-      "my_int must be more than 10")
+      "my_int must be more than or equal to 10",
+      "my_int must be less than or equal to 5"
+    )
   )
 })
+
 
 test_that("test check integer - passes", {
   my_integerish <- 10
@@ -90,9 +100,14 @@ test_that("test check integer - passes", {
 
   .CheckInteger(arg_check, my_integerish)
   .CheckInteger(arg_check, my_integer)
+  .CheckInteger(arg_check, my_integer, upper = 5)
+  .CheckInteger(arg_check, my_integer, upper = 10)
+  .CheckInteger(arg_check, my_integer, lower = 5)
+  .CheckInteger(arg_check, my_integer, lower = 2)
 
   expect_true(arg_check$isEmpty())
 })
+
 
 test_that("test check number - fails", {
   my_char <- "a"
@@ -107,6 +122,7 @@ test_that("test check number - fails", {
   )
 })
 
+
 test_that("test check number - passes", {
   my_num <- 3
   arg_check <- .makeAssertCollection()
@@ -115,6 +131,7 @@ test_that("test check number - passes", {
 
   expect_true(arg_check$isEmpty())
 })
+
 
 test_that("test check flag - fails", {
   my_char <- "a"
@@ -135,12 +152,43 @@ test_that("test check flag - fails", {
   )
 })
 
+
 test_that("test check flag - passes", {
   arg_check <- .makeAssertCollection()
 
   .CheckFlag(arg_check, TRUE)
   .CheckFlag(arg_check, FALSE)
   .CheckFlag(arg_check, NA)
+
+  expect_true(arg_check$isEmpty())
+})
+
+
+test_that("test check n_burn - fails", {
+  arg_check <- .makeAssertCollection()
+
+  n_burn <- "a"
+  .CheckNBurn(arg_check, n_burn, n_iter = 1200, n_thin = 10)
+  n_burn <- 500
+  .CheckNBurn(arg_check, n_burn, n_iter = 1200, n_thin = 10)
+  n_burn <- -1
+  .CheckNBurn(arg_check, n_burn, n_iter = 1200, n_thin = 10)
+
+  expect_equal(
+    arg_check$getMessages(),
+    c(
+        "n_burn must be an integer",
+        "n_burn must be less than or equal to 200",
+        "n_burn must be more than or equal to 0")
+  )
+})
+
+
+test_that("test check n_burn - passes", {
+  arg_check <- .makeAssertCollection()
+
+  .CheckNBurn(arg_check, NA, n_iter = 1200, n_thin = 10)
+  .CheckNBurn(arg_check, 5000, n_iter = 10000, n_thin = 10)
 
   expect_true(arg_check$isEmpty())
 })

@@ -16,12 +16,16 @@
   }
 }
 
-.CheckInteger <- function(arg_check, x, lower = NA) {
+.CheckInteger <- function(arg_check, x, lower = NA, upper = NA) {
   if (!is.numeric(x) || length(x) > 1 || (as.integer(x) - x != 0)) {
     arg_check$push(paste(substitute(x), "must be an integer"))
+    return()
   }
   if (!is.na(lower) && x < lower) {
-    arg_check$push(paste(substitute(x), "must be more than", lower))
+    arg_check$push(paste(substitute(x), "must be more than or equal to", lower))
+  }
+  if (!is.na(upper) && x > upper) {
+    arg_check$push(paste(substitute(x), "must be less than or equal to", upper))
   }
 }
 
@@ -74,6 +78,7 @@
   }
 }
 
+
 .CheckInputData <- function(arg_check, rc_determinations, rc_sigmas, F14C_inputs){
 
   checkmate::assertNumeric(
@@ -103,6 +108,12 @@
         immediate. = TRUE, call. = FALSE)
     }
   }
+}
+
+
+.CheckNBurn <- function(arg_check, n_burn, n_iter, n_thin) {
+  if (is.na(n_burn)) return()
+  .CheckInteger(arg_check, n_burn, lower = 0, upper = n_iter - 100 * n_thin)
 }
 
 
@@ -205,12 +216,6 @@
       names(output_data),
       .var.name ="output_data required list item names")
   }
-}
-
-
-.CheckNBurn <- function(arg_check, n_burn, n_iter, n_thin) {
-  checkmate::assertInt(
-    n_burn, lower = 0, upper = n_iter - 100 * n_thin, na.ok = TRUE, add=arg_check)
 }
 
 
