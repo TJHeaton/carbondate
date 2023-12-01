@@ -61,6 +61,39 @@ test_that("test check calibration curve has correct headings - F14C inputs is FA
   expect_true(arg_check$isEmpty())
 })
 
+test_that("test check integer - fails", {
+  my_char <- "a"
+  my_vec <- 1:10L
+  my_double <- 2.4
+  my_int <- 9L
+  arg_check <- .makeAssertCollection()
+
+  .CheckInteger(arg_check, my_char)
+  .CheckInteger(arg_check, my_vec)
+  .CheckInteger(arg_check, my_double)
+  .CheckInteger(arg_check, my_int, lower = 10)
+
+  expect_equal(
+    arg_check$getMessages(),
+    c(
+      "my_char must be an integer",
+      "my_vec must be an integer",
+      "my_double must be an integer",
+      "my_int must be more than 10")
+  )
+})
+
+test_that("test check integer - passes", {
+  my_integerish <- 10
+  my_integer <- 5L
+  arg_check <- .makeAssertCollection()
+
+  .CheckInteger(arg_check, my_integerish)
+  .CheckInteger(arg_check, my_integer)
+
+  expect_true(arg_check$isEmpty())
+})
+
 test_that("test check number - fails", {
   my_char <- "a"
   my_vec <- 1:10
@@ -83,7 +116,7 @@ test_that("test check number - passes", {
   expect_true(arg_check$isEmpty())
 })
 
-test_that("test check number - fails", {
+test_that("test check flag - fails", {
   my_char <- "a"
   my_num <- 3
   my_vec <- c(TRUE, FALSE)

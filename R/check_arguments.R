@@ -16,6 +16,27 @@
   }
 }
 
+.CheckInteger <- function(arg_check, x, lower = NA) {
+  if (!is.numeric(x) || length(x) > 1 || (as.integer(x) - x != 0)) {
+    arg_check$push(paste(substitute(x), "must be an integer"))
+  }
+  if (!is.na(lower) && x < lower) {
+    arg_check$push(paste(substitute(x), "must be more than", lower))
+  }
+}
+
+.CheckNumber <- function(arg_check, x) {
+  if (!is.numeric(x) || length(x) > 1) {
+    arg_check$push(paste(substitute(x), "must be a number"))
+  }
+}
+
+.CheckFlag <- function(arg_check, x) {
+  if (!is.logical(x) || length(x) > 1) {
+    arg_check$push(paste(substitute(x), "must be a single logical value (TRUE, FALSE OR NA)"))
+  }
+}
+
 .CheckCalibrationCurve <- function(arg_check, calibration_curve, F14C_inputs){
   if (!is.data.frame(calibration_curve)) {
     arg_check$push("The calibration curve must be a data frame")
@@ -52,20 +73,6 @@
     }
   }
 }
-
-
-.CheckNumber <- function(arg_check, x) {
-  if (!is.numeric(x) || length(x) > 1) {
-    arg_check$push(paste(substitute(x), "must be a number"))
-  }
-}
-
-.CheckFlag <- function(arg_check, x) {
-  if (!is.logical(x) || length(x) > 1) {
-    arg_check$push(paste(substitute(x), "must be a single logical value (TRUE, FALSE OR NA)"))
-  }
-}
-
 
 .CheckInputData <- function(arg_check, rc_determinations, rc_sigmas, F14C_inputs){
 
