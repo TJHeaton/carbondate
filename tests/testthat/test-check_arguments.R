@@ -206,18 +206,25 @@ test_that("test check n_burn - fails", {
   arg_check <- .makeAssertCollection()
 
   n_burn <- "a"
-  .CheckNBurn(arg_check, n_burn, n_iter = 1200, n_thin = 10)
+  .CheckNBurnAndNEnd(arg_check, n_burn, NA, n_iter = 1200, n_thin = 10)
   n_burn <- 500
-  .CheckNBurn(arg_check, n_burn, n_iter = 1200, n_thin = 10)
+  .CheckNBurnAndNEnd(arg_check, n_burn, NA, n_iter = 1200, n_thin = 10)
   n_burn <- -1
-  .CheckNBurn(arg_check, n_burn, n_iter = 1200, n_thin = 10)
+  .CheckNBurnAndNEnd(arg_check, n_burn, NA, n_iter = 1200, n_thin = 10)
+  n_end <- 1300
+  .CheckNBurnAndNEnd(arg_check, NA, n_end, n_iter = 1200, n_thin = 10)
+  n_end <- 700
+  .CheckNBurnAndNEnd(arg_check, NA, n_end, n_iter = 1200, n_thin = 15)
 
   expect_equal(
     arg_check$getMessages(),
     c(
         "n_burn must be an integer",
         "n_burn must be less than or equal to 200",
-        "n_burn must be more than or equal to 0")
+        "n_burn must be more than or equal to 0",
+        "n_end must be less than or equal to 1200",
+        "n_end must be more than or equal to 750"
+    )
   )
 })
 
@@ -225,8 +232,10 @@ test_that("test check n_burn - fails", {
 test_that("test check n_burn - passes", {
   arg_check <- .makeAssertCollection()
 
-  .CheckNBurn(arg_check, NA, n_iter = 1200, n_thin = 10)
-  .CheckNBurn(arg_check, 5000, n_iter = 10000, n_thin = 10)
+  .CheckNBurnAndNEnd(arg_check, NA, NA, n_iter = 1200, n_thin = 10)
+  .CheckNBurnAndNEnd(arg_check, 5000, NA, n_iter = 10000, n_thin = 10)
+  .CheckNBurnAndNEnd(arg_check, NA, 9000, n_iter = 10000, n_thin = 10)
+  .CheckNBurnAndNEnd(arg_check, 4000, 8000, n_iter = 10000, n_thin = 10)
 
   expect_true(arg_check$isEmpty())
 })

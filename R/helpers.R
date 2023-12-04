@@ -5,7 +5,7 @@
 
 .SetNBurn <- function(n_burn, n_iter, n_thin) {
   if (is.na(n_burn)) {
-    n_burn <- ceiling(n_iter / (2 * n_thin))
+    n_burn <- floor(n_iter / (2 * n_thin))
   } else {
     n_burn <- floor(n_burn / n_thin)
   }
