@@ -94,8 +94,7 @@ PolyaUrnBivarDirichlet <- function(
   # Check input parameters
   num_observations <- length(rc_determinations)
 
-  arg_check <- checkmate::makeAssertCollection()
-
+  arg_check <- .makeAssertCollection()
   .CheckInputData(arg_check, rc_determinations, rc_sigmas, F14C_inputs)
   .CheckCalibrationCurve(arg_check, calibration_curve, NA)
   .CheckDpmmParameters(
@@ -114,9 +113,9 @@ PolyaUrnBivarDirichlet <- function(
     n_clust)
   .CheckIterationParameters(arg_check, n_iter, n_thin)
   .CheckSliceParameters(arg_check, slice_width, slice_multiplier, sensible_initialisation)
-  checkmate::assert_flag(F14C_inputs, arg_check)
-  checkmate::assert_flag(use_F14C_space, arg_check)
-  checkmate::reportAssertions(arg_check)
+  .CheckFlag(arg_check, F14C_inputs)
+  .CheckFlag(arg_check, use_F14C_space)
+  .reportAssertions(arg_check)
 
   ##############################################################################
   ## Interpolate cal curve onto single year grid to speed up updating thetas

@@ -30,9 +30,14 @@
   }
 }
 
-.CheckNumber <- function(arg_check, x) {
+.CheckNumber <- function(arg_check, x, lower = NA) {
+  varname <- substitute(x)
   if (!is.numeric(x) || length(x) > 1) {
-    arg_check$push(paste(substitute(x), "must be a number"))
+    arg_check$push(paste(varname, "must be a number"))
+    return()
+  }
+  if (!is.na(lower) && x < lower) {
+    arg_check$push(paste(varname, "must be more than or equal to", lower))
   }
 }
 
@@ -42,7 +47,7 @@
   }
 }
 
-.CheckNumberVector <- function(arg_check, x, min_length = NA, len = NA) {
+.CheckNumberVector <- function(arg_check, x, min_length = NA, len = NA, lower = NA) {
   varname <- substitute(x)
   if (!is.vector(x)) {
     arg_check$push(paste(varname, "must be a vector"))
@@ -55,6 +60,9 @@
   }
   if (!is.na(len) && length(x) != len) {
     arg_check$push(paste(varname, "must have exactly", len, "elements"))
+  }
+  if (!is.na(lower) && any(x < lower)) {
+    arg_check$push(paste("all entries of", varname, "must be more than or equal to", lower))
   }
 }
 
@@ -98,20 +106,8 @@
 
 .CheckInputData <- function(arg_check, rc_determinations, rc_sigmas, F14C_inputs){
 
-  checkmate::assertNumeric(
-    rc_determinations,
-    any.missing = FALSE,
-    null.ok = FALSE,
-    typed.missing = FALSE,
-    add = arg_check)
-  checkmate::assertNumeric(
-    rc_sigmas,
-    any.missing = FALSE,
-    lower = 0,
-    len = length(rc_determinations),
-    null.ok = FALSE,
-    typed.missing = FALSE,
-    add = arg_check)
+  .CheckNumberVector(arg_check, rc_determinations)
+  .CheckNumberVector(arg_check, rc_sigmas, lower = 0, len = length(rc_determinations))
   if (F14C_inputs == TRUE) {
     if (any(rc_determinations > 2) || any(rc_determinations < 0)) {
       warning(
@@ -156,19 +152,15 @@
     n_clust){
 
   if (!sensible_initialisation) {
-    checkmate::assertNumber(lambda, add = arg_check)
-    checkmate::assertNumber(nu1, add = arg_check)
-    checkmate::assertNumber(nu2, add = arg_check)
-    checkmate::assertNumber(A, add = arg_check)
-    checkmate::assertNumber(B, add = arg_check)
-    checkmate::assertNumber(alpha_shape, add = arg_check)
-    checkmate::assertNumber(alpha_rate, add = arg_check)
-    checkmate::assertNumber(mu_phi, add = arg_check)
-    checkmate::assertNumeric(
-      calendar_ages,
-      len = num_observations,
-      any.missing = FALSE,
-      add = arg_check)
+    .CheckNumber(arg_check, lambda)
+    .CheckNumber(arg_check, nu1)
+    .CheckNumber(arg_check, nu2)
+    .CheckNumber(arg_check, A)
+    .CheckNumber(arg_check, B)
+    .CheckNumber(arg_check, alpha_shape)
+    .CheckNumber(arg_check, alpha_rate)
+    .CheckNumber(arg_check, mu_phi)
+    .CheckNumberVector(arg_check, calendar_ages, len = num_observations)
   } else {
     reason <- "sensible_initialisation is TRUE"
     .WarnIfValueOverwritten(lambda, reason)
@@ -198,20 +190,17 @@
 }
 
 
-.CheckSliceParameters <- function(
-    arg_check, slice_width, slice_multiplier, sensible_initialisation) {
-  checkmate::assertNumber(slice_multiplier, lower = 1, add = arg_check)
-  if (sensible_initialisation) {
-    checkmate::assertNumber(slice_width, lower = 1, na.ok = TRUE, add = arg_check)
-  } else {
-    checkmate::assertNumber(slice_width, lower = 1, na.ok = FALSE, add = arg_check)
+.CheckSliceParameters <- function(arg_check, slice_width, slice_multiplier, sensible_initialisation) {
+  .CheckNumber(arg_check, slice_multiplier, lower = 1)
+  if (!sensible_initialisation || !is.na(slice_width)) {
+    .CheckNumber(arg_check, slice_width, lower = 1)
   }
 }
 
 
 .CheckIterationParameters <- function(arg_check, n_iter, n_thin){
-  checkmate::assertInt(n_iter, lower = 10, add = arg_check)
-  checkmate::assertInt(n_thin, lower = 1, upper = n_iter/10, add = arg_check)
+  .CheckInteger(arg_check, n_iter, lower = 10)
+  .CheckInteger(arg_check, n_thin, lower = 1, upper = n_iter/10)
 }
 
 

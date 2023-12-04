@@ -90,7 +90,7 @@ PlotPredictiveCalendarAgeDensity <- function(
   ##############################################################################
   # Check input parameters
 
-  arg_check <- checkmate::makeAssertCollection()
+  arg_check <- .makeAssertCollection()
 
   # Treat single output data as a list of length 1
   if (!is.null(output_data$update_type)) output_data <- list(output_data)
@@ -106,10 +106,10 @@ PlotPredictiveCalendarAgeDensity <- function(
     }
   }
 
-  #checkmate::assertInt(n_posterior_samples, lower = 10, add = arg_check)
+  .CheckInteger(arg_check, n_posterior_samples, lower = 10)
   .CheckIntervalWidth(arg_check, interval_width, bespoke_probability)
-  checkmate::assertNumber(denscale, lower = 0, add = arg_check)
-  checkmate::reportAssertions(arg_check)
+  .CheckNumber(arg_check, denscale, lower = 0)
+  .reportAssertions(arg_check)
 
   if (is.null(calibration_curve)) {
     calibration_curve <- get(output_data[[1]]$input_data$calibration_curve_name)

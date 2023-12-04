@@ -112,13 +112,16 @@ test_that("test check integer - passes", {
 test_that("test check number - fails", {
   my_char <- "a"
   my_vec <- 1:10
+  my_num <- 2.5
   arg_check <- .makeAssertCollection()
 
   .CheckNumber(arg_check, my_char)
   .CheckNumber(arg_check, my_vec)
+  .CheckNumber(arg_check, my_num, lower = 3.1)
 
   expect_equal(
-    arg_check$getMessages(), c("my_char must be a number", "my_vec must be a number")
+    arg_check$getMessages(),
+    c("my_char must be a number", "my_vec must be a number", "my_num must be more than or equal to 3.1")
   )
 })
 
@@ -128,6 +131,7 @@ test_that("test check number - passes", {
   arg_check <- .makeAssertCollection()
 
   .CheckNumber(arg_check, my_num)
+  .CheckNumber(arg_check, my_num, lower = 2.9)
 
   expect_true(arg_check$isEmpty())
 })
@@ -174,6 +178,7 @@ test_that("test number array - fails", {
   .CheckNumberVector(arg_check, my_char)
   .CheckNumberVector(arg_check, my_vec, min_length = 10)
   .CheckNumberVector(arg_check, my_vec, len = 4)
+  .CheckNumberVector(arg_check, my_vec, lower = 2)
   .CheckNumberVector(arg_check, my_vec_with_na)
 
   expect_equal(
@@ -182,6 +187,7 @@ test_that("test number array - fails", {
         "my_char must have numeric entries (and not be NA)",
         "my_vec must have at least 10 elements",
         "my_vec must have exactly 4 elements",
+        "all entries of my_vec must be more than or equal to 2",
         "my_vec_with_na must have numeric entries (and not be NA)"
     )
   )
@@ -197,6 +203,7 @@ test_that("test number array - passes", {
   .CheckNumberVector(arg_check, my_vec, min_length = 2)
   .CheckNumberVector(arg_check, my_vec, min_length = 3)
   .CheckNumberVector(arg_check, my_vec, len = 3)
+  .CheckNumberVector(arg_check, my_vec, lower = 0)
 
   expect_true(arg_check$isEmpty())
 })
@@ -238,4 +245,34 @@ test_that("test check n_burn - passes", {
   .CheckNBurnAndNEnd(arg_check, 4000, 8000, n_iter = 10000, n_thin = 10)
 
   expect_true(arg_check$isEmpty())
+})
+
+
+test_that("test check slice parameters", {
+  arg_check <- .makeAssertCollection()
+
+  .CheckSliceParameters(arg_check, slice_width = 10, slice_multiplier = NA, sensible_initialisation = FALSE)
+  .CheckSliceParameters(arg_check, slice_width = 10, slice_multiplier = 0.1, sensible_initialisation = TRUE)
+
+  .CheckSliceParameters(arg_check, slice_width = NA, slice_multiplier = 10, sensible_initialisation = FALSE)
+  .CheckSliceParameters(arg_check, slice_width = 0.1, slice_multiplier = 10, sensible_initialisation = FALSE)
+  .CheckSliceParameters(arg_check, slice_width = 0.1, slice_multiplier = 10, sensible_initialisation = TRUE)
+
+  expect_equal(
+    arg_check$getMessages(),
+    c(
+        "slice_multiplier must be a number",
+        "slice_multiplier must be more than or equal to 1",
+        "slice_width must be a number",
+        "slice_width must be more than or equal to 1",
+        "slice_width must be more than or equal to 1"
+    )
+  )
+
+  arg_check <- .makeAssertCollection()
+  .CheckSliceParameters(arg_check, slice_width = 100, slice_multiplier = 10, sensible_initialisation = FALSE)
+  .CheckSliceParameters(arg_check, slice_width = 100, slice_multiplier = 10, sensible_initialisation = TRUE)
+  .CheckSliceParameters(arg_check, slice_width = NA, slice_multiplier = 10, sensible_initialisation = TRUE)
+  expect_true(arg_check$isEmpty())
+
 })

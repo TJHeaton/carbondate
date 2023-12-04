@@ -79,7 +79,7 @@ PlotGelmanRubinDiagnosticMultiChain <- function(output_data_list, n_burn = NA) {
 
   arg_check <- .makeAssertCollection()
   number_of_output_data <- length(output_data_list)
-  .CheckInteger(number_of_output_data, lower = 2)
+  .CheckInteger(arg_check, number_of_output_data, lower = 2)
   .CheckMultipleOutputDataConsistent(output_data_list)
   for (i in 1:number_of_output_data) {
     .CheckOutputData(arg_check, output_data_list[[i]])

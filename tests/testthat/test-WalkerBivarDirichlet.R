@@ -108,7 +108,7 @@ test_that("WalkerBivarDirichlet gives error if no sensible init and not all para
       F14C_inputs = FALSE,
       calibration_curve=intcal20,
       sensible_initialisation = FALSE),
-    regexp = "Variable 'lambda': May not be NA."
+    regexp = "lambda must be a number"
   )
 })
 

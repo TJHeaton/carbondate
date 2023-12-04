@@ -29,15 +29,18 @@
 #' InterpolateCalibrationCurve(NA, intcal20)
 InterpolateCalibrationCurve <- function(new_calendar_ages_BP, calibration_curve, F14C_outputs = NA) {
 
-  .CheckCalibrationCurve(NULL, calibration_curve, NA)
+  arg_check <- .makeAssertCollection()
+  .CheckCalibrationCurve(arg_check, calibration_curve, NA)
+  .CheckFlag(arg_check, F14C_outputs)
   if (!any(is.na(new_calendar_ages_BP))) {
-    checkmate::assertNumeric(new_calendar_ages_BP)
+    .CheckNumberVector(arg_check, new_calendar_ages_BP)
   } else {
     start_age <- floor(min(calibration_curve$calendar_age_BP))
     end_age <- ceiling(max(calibration_curve$calendar_age_BP))
     diff <- 1
     new_calendar_ages_BP <- seq(start_age, end_age, by=diff)
   }
+  .reportAssertions(arg_check)
 
   new_calibration_curve <- data.frame(calendar_age_BP=new_calendar_ages_BP)
 
