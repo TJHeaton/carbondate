@@ -51,6 +51,21 @@
   }
 }
 
+
+.CheckVector <- function(arg_check, x, min_length = NA, len = NA) {
+  varname <- deparse(substitute(x))
+  if (!is.vector(x)) {
+    arg_check$push(paste(varname, "must be a vector"))
+  }
+  if (!is.na(min_length) && length(x) < min_length) {
+    arg_check$push(paste(varname, "must have at least", min_length, "elements"))
+  }
+  if (!is.na(len) && length(x) != len) {
+    arg_check$push(paste(varname, "must have exactly", len, "elements"))
+  }
+}
+
+
 .CheckNumberVector <- function(arg_check, x, min_length = NA, len = NA, lower = NA) {
   varname <- deparse(substitute(x))
   if (!is.vector(x)) {
@@ -70,12 +85,14 @@
   }
 }
 
+
 .CheckChoice <- function(arg_check, x, allowed_choices) {
   varname <- deparse(substitute(x))
   if (!(x %in% allowed_choices)) {
     arg_check$push(paste(varname, "must be one of:", paste(allowed_choices, collapse=", ")))
   }
 }
+
 
 .CheckCalibrationCurve <- function(arg_check, calibration_curve, F14C_inputs){
   if (!is.data.frame(calibration_curve)) {

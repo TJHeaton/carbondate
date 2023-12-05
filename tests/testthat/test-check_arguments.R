@@ -175,7 +175,36 @@ test_that("test check flag - passes", {
 })
 
 
-test_that("test number array - fails", {
+test_that("test vector - fails", {
+  my_vec <- c(1, 2, 3)
+  arg_check <- .makeAssertCollection()
+
+  .CheckVector(arg_check, my_vec, min_length = 10)
+  .CheckVector(arg_check, my_vec, len = 4)
+
+  expect_equal(
+    arg_check$getMessages(),
+    c("my_vec must have at least 10 elements", "my_vec must have exactly 4 elements")
+  )
+})
+
+
+test_that("test vector - passes", {
+  my_vec <- c(1, 2.5, 3)
+  my_char <- c("a", "b", "c", "d")
+  arg_check <- .makeAssertCollection()
+
+  .CheckVector(arg_check, 3)
+  .CheckVector(arg_check, "a")
+  .CheckVector(arg_check, my_vec, min_length = 3)
+  .CheckVector(arg_check, my_char, min_length = 3)
+  .CheckVector(arg_check, my_char, len = 4)
+
+  expect_true(arg_check$isEmpty())
+})
+
+
+test_that("test number vector - fails", {
   my_char <- c("a", "b")
   my_vec <- c(1, 2, 3)
   my_vec_with_na <- c(my_vec, NA)
@@ -200,7 +229,7 @@ test_that("test number array - fails", {
 })
 
 
-test_that("test number array - passes", {
+test_that("test number vector - passes", {
   my_vec <- c(1, 2.5, 3)
   arg_check <- .makeAssertCollection()
 
