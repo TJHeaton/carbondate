@@ -376,12 +376,12 @@ PlotPredictiveCalendarAgeDensity <- function(
 
   ci_label <- switch(
     interval_width,
-    "1sigma" = expression(paste0(sigma, " interval")),
-    "2sigma"  = expression(paste0("2", sigma, " interval")),
+    "1sigma" = expression(paste(sigma, " interval")),
+    "2sigma"  = expression(paste("2", sigma, " interval")),
     "bespoke" = paste0(round(100 * bespoke_probability), "% interval"))
 
   legend_labels <- c(
-    stringr::str_replace(output_data[[1]]$input_data$calibration_curve_name, "intcal", "IntCal"),
+    gsub("intcal", "IntCal", output_data[[1]]$input_data$calibration_curve_name),
     ci_label)
   lty <- c(1, 2)
   pch <- c(NA, NA)
