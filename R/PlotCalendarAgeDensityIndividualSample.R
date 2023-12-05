@@ -48,7 +48,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
     show_hpd_ranges = FALSE,
     show_unmodelled_density = FALSE) {
 
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
   .CheckInteger(arg_check, ident)
   .CheckOutputData(arg_check, output_data)
   n_iter <- output_data$input_parameters$n_iter
@@ -57,7 +57,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
   .CheckCalibrationCurveFromOutput(arg_check, output_data, calibration_curve)
   .CheckInteger(arg_check, resolution, lower = 1)
   .CheckNBurnAndNEnd(arg_check, n_burn, n_end, n_iter, n_thin)
-  .reportAssertions(arg_check)
+  .ReportErrors(arg_check)
 
   if (is.null(calibration_curve)) {
     calibration_curve <- get(output_data$input_data$calibration_curve_name)

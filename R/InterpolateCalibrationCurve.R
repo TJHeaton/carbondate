@@ -29,7 +29,7 @@
 #' InterpolateCalibrationCurve(NA, intcal20)
 InterpolateCalibrationCurve <- function(new_calendar_ages_BP, calibration_curve, F14C_outputs = NA) {
 
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
   .CheckCalibrationCurve(arg_check, calibration_curve, NA)
   .CheckFlag(arg_check, F14C_outputs)
   if (!any(is.na(new_calendar_ages_BP))) {
@@ -40,7 +40,7 @@ InterpolateCalibrationCurve <- function(new_calendar_ages_BP, calibration_curve,
     diff <- 1
     new_calendar_ages_BP <- seq(start_age, end_age, by=diff)
   }
-  .reportAssertions(arg_check)
+  .ReportErrors(arg_check)
 
   new_calibration_curve <- data.frame(calendar_age_BP=new_calendar_ages_BP)
 

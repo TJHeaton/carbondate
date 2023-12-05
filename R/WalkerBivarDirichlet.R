@@ -135,7 +135,7 @@ WalkerBivarDirichlet <- function(
   # Check input parameters
   num_observations <- length(rc_determinations)
 
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
 
   .CheckInputData(arg_check, rc_determinations, rc_sigmas, F14C_inputs)
   .CheckCalibrationCurve(arg_check, calibration_curve, NA)
@@ -158,7 +158,7 @@ WalkerBivarDirichlet <- function(
   .CheckFlag(arg_check, F14C_inputs)
   .CheckFlag(arg_check, use_F14C_space)
 
-  .reportAssertions(arg_check)
+  .ReportErrors(arg_check)
 
   ##############################################################################
   ## Interpolate cal curve onto single year grid to speed up updating thetas

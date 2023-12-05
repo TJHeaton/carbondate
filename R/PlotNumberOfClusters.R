@@ -14,12 +14,12 @@
 #' PlotNumberOfClusters(polya_urn_example_output)
 PlotNumberOfClusters <- function(output_data, n_burn = NA, n_end = NA) {
 
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
   .CheckOutputData(arg_check, output_data)
   n_iter <- output_data$input_parameters$n_iter
   n_thin <- output_data$input_parameters$n_thin
   .CheckNBurnAndNEnd(arg_check, n_burn, n_end, n_iter, n_thin)
-  .reportAssertions(arg_check)
+  .ReportErrors(arg_check)
 
   n_burn <- .SetNBurn(n_burn, n_iter, n_thin)
   n_end <- .SetNEnd(n_end, n_iter, n_thin)

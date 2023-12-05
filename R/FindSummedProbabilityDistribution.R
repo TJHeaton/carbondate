@@ -43,12 +43,12 @@ FindSummedProbabilityDistribution <- function(
     calibration_curve,
     F14C_inputs = FALSE) {
 
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
   .CheckNumberVector(arg_check, calendar_age_range_BP, len = 2)
   .CheckFlag(arg_check, F14C_inputs)
   .CheckInputData(arg_check, rc_determinations, rc_sigmas, F14C_inputs)
   .CheckCalibrationCurve(arg_check, calibration_curve, NA)
-  .reportAssertions(arg_check)
+  .ReportErrors(arg_check)
 
   calibration_data_range <- range(calibration_curve$calendar_age)
   range_margin <- 400

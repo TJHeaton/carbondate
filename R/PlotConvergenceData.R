@@ -20,7 +20,7 @@
 #' PlotConvergenceData(polya_urn_example_output)
 PlotConvergenceData <- function(output_data, n_initial = NA) {
 
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
   .CheckOutputData(arg_check, output_data)
 
   n_iter <- output_data$input_parameters$n_iter
@@ -34,7 +34,7 @@ PlotConvergenceData <- function(output_data, n_initial = NA) {
     n_initial <- floor(n_initial / n_thin)
   }
 
-  .reportAssertions(arg_check)
+  .ReportErrors(arg_check)
 
   densities <- output_data$density_data$densities
   iters <- c(1, seq(n_thin, n_iter, by = n_thin))

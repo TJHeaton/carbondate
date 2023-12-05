@@ -25,7 +25,7 @@
 #' PlotGelmanRubinDiagnosticSingleChain(polya_urn_example_output)
 PlotGelmanRubinDiagnosticSingleChain <- function(output_data, n_burn = NA, n_segments = 3) {
 
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
 
   .CheckOutputData(arg_check, output_data)
   n_iter <- output_data$input_parameters$n_iter
@@ -34,7 +34,7 @@ PlotGelmanRubinDiagnosticSingleChain <- function(output_data, n_burn = NA, n_seg
 
   .CheckNBurnAndNEnd(arg_check, n_burn, NA, n_iter, n_thin)
   .CheckInteger(arg_check, n_segments, lower = 2, upper = 10)
-  .reportAssertions(arg_check)
+  .ReportErrors(arg_check)
 
   n_burn <- .SetNBurn(n_burn, n_iter, n_thin)
 
@@ -76,7 +76,7 @@ PlotGelmanRubinDiagnosticSingleChain <- function(output_data, n_burn = NA, n_seg
 #' PlotGelmanRubinDiagnosticMultiChain(po)
 PlotGelmanRubinDiagnosticMultiChain <- function(output_data_list, n_burn = NA) {
 
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
   number_of_output_data <- length(output_data_list)
   .CheckInteger(arg_check, number_of_output_data, lower = 2)
   .CheckMultipleOutputDataConsistent(arg_check, output_data_list)
@@ -88,7 +88,7 @@ PlotGelmanRubinDiagnosticMultiChain <- function(output_data_list, n_burn = NA) {
   n_obs <- length(output_data_list[[1]]$input_data$rc_determinations)
 
   .CheckNBurnAndNEnd(arg_check, n_burn, NA, n_iter, n_thin)
-  .reportAssertions(arg_check)
+  .ReportErrors(arg_check)
 
   n_burn <- .SetNBurn(n_burn, n_iter, n_thin)
   R <- rep(0, n_obs)

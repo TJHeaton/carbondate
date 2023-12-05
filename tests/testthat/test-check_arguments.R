@@ -1,6 +1,6 @@
 test_that("test check calibration curve has correct headings - F14C inputs is NA - fails", {
   calibration_curve <- data.frame(calendar_age_BP = 1:3, f14c = 1:3)
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
 
   .CheckCalibrationCurve(arg_check, calibration_curve, NA)
 
@@ -13,7 +13,7 @@ test_that("test check calibration curve has correct headings - F14C inputs is NA
 
 test_that("test check calibration curve has correct headings - F14C inputs is NA - passes", {
   calibration_curve <- data.frame(calendar_age_BP = 1:3, f14c = 1:3, f14c_sig = 1:3, c14_age = 1:3, c14_sig = 1:3)
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
 
   .CheckCalibrationCurve(arg_check, calibration_curve, NA)
 
@@ -23,7 +23,7 @@ test_that("test check calibration curve has correct headings - F14C inputs is NA
 
 test_that("test check calibration curve has correct headings - F14C inputs is TRUE - fails", {
   calibration_curve <- data.frame(calendar_age_BP = 1:3, f14c = 1:3)
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
 
   .CheckCalibrationCurve(arg_check, calibration_curve, TRUE)
 
@@ -36,7 +36,7 @@ test_that("test check calibration curve has correct headings - F14C inputs is TR
 
 test_that("test check calibration curve has correct headings - F14C inputs is TRUE - passes", {
   calibration_curve <- data.frame(calendar_age_BP = 1:3, f14c = 1:3, f14c_sig = 1:3)
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
 
   .CheckCalibrationCurve(arg_check, calibration_curve, NA)
 
@@ -46,7 +46,7 @@ test_that("test check calibration curve has correct headings - F14C inputs is TR
 
 test_that("test check calibration curve has correct headings - F14C inputs is FALSE - fails", {
   calibration_curve <- data.frame(calendar_age_BP = 1:3, c14_age = 1:3)
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
 
   .CheckCalibrationCurve(arg_check, calibration_curve, FALSE)
 
@@ -59,7 +59,7 @@ test_that("test check calibration curve has correct headings - F14C inputs is FA
 
 test_that("test check calibration curve has correct headings - F14C inputs is FALSE - passes", {
   calibration_curve <- data.frame(calendar_age_BP = 1:3, c14_age = 1:3, c14_sig = 1:3)
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
 
   .CheckCalibrationCurve(arg_check, calibration_curve, FALSE)
 
@@ -72,7 +72,7 @@ test_that("test check integer - fails", {
   my_vec <- 1:10L
   my_double <- 2.4
   my_int <- 9L
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
 
   .CheckInteger(arg_check, my_char)
   .CheckInteger(arg_check, my_vec)
@@ -96,7 +96,7 @@ test_that("test check integer - fails", {
 test_that("test check integer - passes", {
   my_integerish <- 10
   my_integer <- 5L
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
 
   .CheckInteger(arg_check, my_integerish)
   .CheckInteger(arg_check, my_integer)
@@ -113,7 +113,7 @@ test_that("test check number - fails", {
   my_char <- "a"
   my_vec <- 1:10
   my_num <- 2.5
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
 
   .CheckNumber(arg_check, my_char)
   .CheckNumber(arg_check, my_vec)
@@ -134,7 +134,7 @@ test_that("test check number - fails", {
 
 test_that("test check number - passes", {
   my_num <- 3
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
 
   .CheckNumber(arg_check, my_num)
   .CheckNumber(arg_check, my_num, lower = 2.9, upper = 3.1)
@@ -147,7 +147,7 @@ test_that("test check flag - fails", {
   my_char <- "a"
   my_num <- 3
   my_vec <- c(TRUE, FALSE)
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
 
   .CheckFlag(arg_check, my_char)
   .CheckFlag(arg_check, my_num)
@@ -165,7 +165,7 @@ test_that("test check flag - fails", {
 
 
 test_that("test check flag - passes", {
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
 
   .CheckFlag(arg_check, TRUE)
   .CheckFlag(arg_check, FALSE)
@@ -177,7 +177,7 @@ test_that("test check flag - passes", {
 
 test_that("test vector - fails", {
   my_vec <- c(1, 2, 3)
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
 
   .CheckVector(arg_check, my_vec, min_length = 10)
   .CheckVector(arg_check, my_vec, len = 4)
@@ -192,7 +192,7 @@ test_that("test vector - fails", {
 test_that("test vector - passes", {
   my_vec <- c(1, 2.5, 3)
   my_char <- c("a", "b", "c", "d")
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
 
   .CheckVector(arg_check, 3)
   .CheckVector(arg_check, "a")
@@ -208,7 +208,7 @@ test_that("test number vector - fails", {
   my_char <- c("a", "b")
   my_vec <- c(1, 2, 3)
   my_vec_with_na <- c(my_vec, NA)
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
 
   .CheckNumberVector(arg_check, my_char)
   .CheckNumberVector(arg_check, my_vec, min_length = 10)
@@ -231,7 +231,7 @@ test_that("test number vector - fails", {
 
 test_that("test number vector - passes", {
   my_vec <- c(1, 2.5, 3)
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
 
   .CheckNumberVector(arg_check, 3)
   .CheckNumberVector(arg_check, my_vec)
@@ -248,18 +248,18 @@ test_that("test check choice", {
   allowed_choices <- c("apple", "banana", "kiwi")
   output_data <- list(fruit = "melon")
 
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
   .CheckChoice(arg_check, output_data$fruit, allowed_choices)
   expect_equal(arg_check$getMessages(), "output_data$fruit must be one of: apple, banana, kiwi")
 
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
   .CheckChoice(arg_check, "banana", allowed_choices)
   expect_true(arg_check$isEmpty())
 })
 
 
 test_that("test check n_burn - fails", {
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
 
   n_burn <- "a"
   .CheckNBurnAndNEnd(arg_check, n_burn, NA, n_iter = 1200, n_thin = 10)
@@ -286,7 +286,7 @@ test_that("test check n_burn - fails", {
 
 
 test_that("test check n_burn - passes", {
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
 
   .CheckNBurnAndNEnd(arg_check, NA, NA, n_iter = 1200, n_thin = 10)
   .CheckNBurnAndNEnd(arg_check, 5000, NA, n_iter = 10000, n_thin = 10)
@@ -298,7 +298,7 @@ test_that("test check n_burn - passes", {
 
 
 test_that("test check slice parameters", {
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
 
   .CheckSliceParameters(arg_check, slice_width = 10, slice_multiplier = NA, sensible_initialisation = FALSE)
   .CheckSliceParameters(arg_check, slice_width = 10, slice_multiplier = 0.1, sensible_initialisation = TRUE)
@@ -318,7 +318,7 @@ test_that("test check slice parameters", {
     )
   )
 
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
   .CheckSliceParameters(arg_check, slice_width = 100, slice_multiplier = 10, sensible_initialisation = FALSE)
   .CheckSliceParameters(arg_check, slice_width = 100, slice_multiplier = 10, sensible_initialisation = TRUE)
   .CheckSliceParameters(arg_check, slice_width = NA, slice_multiplier = 10, sensible_initialisation = TRUE)

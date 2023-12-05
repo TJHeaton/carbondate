@@ -13,19 +13,23 @@
 #'
 #' # Provide name automatically and outputs to the screen for F14C concentrations
 #' GenerateOxcalCode(
-#'   "My_data", c(0.8321, 0.8507, 0.8463), c(0.004, 0.003, 0.009), c("P-1", "P-2", "P-3"), F14C_inputs=TRUE)
+#'   "My_data",
+#'   c(0.832, 0.850, 0.846),
+#'   c(0.004, 0.003, 0.009),
+#'   c("P-1", "P-2", "P-3"),
+#'   F14C_inputs=TRUE)
 #'
 GenerateOxcalCode <- function(
   model_name, rc_determinations, rc_sigmas, rc_names = NULL, F14C_inputs = FALSE, outfile_path = NULL) {
 
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
   .CheckInputData(arg_check, rc_determinations, rc_sigmas, F14C_inputs)
   if (is.null(rc_names)) {
     rc_names <- seq_along(rc_determinations)
   } else {
     .CheckVector(arg_check, rc_names, len = length(rc_determinations))
   }
-  .reportAssertions(arg_check)
+  .ReportErrors(arg_check)
 
   if (!is.null(outfile_path)) sink(outfile_path)
   if (F14C_inputs) {

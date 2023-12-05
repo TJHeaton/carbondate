@@ -31,12 +31,12 @@
 CalibrateSingleDetermination <- function(
     rc_determination, rc_sigma, calibration_curve, F14C_inputs = FALSE) {
 
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
   .CheckNumber(arg_check, rc_determination)
   .CheckNumber(arg_check, rc_sigma)
   .CheckFlag(arg_check, F14C_inputs)
   .CheckCalibrationCurve(arg_check, calibration_curve, F14C_inputs)
-  .reportAssertions(arg_check)
+  .ReportErrors(arg_check)
 
   probabilities <- .ProbabilitiesForSingleDetermination(rc_determination, rc_sigma, F14C_inputs, calibration_curve)
 

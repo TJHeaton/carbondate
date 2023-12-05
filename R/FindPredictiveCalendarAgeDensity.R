@@ -36,7 +36,7 @@ FindPredictiveCalendarAgeDensity <- function(
     n_burn = NA,
     n_end = NA) {
 
-  arg_check <- .makeAssertCollection()
+  arg_check <- .InitializeErrorList()
 
   .CheckOutputData(arg_check, output_data)
   n_iter <- output_data$input_parameters$n_iter
@@ -46,7 +46,7 @@ FindPredictiveCalendarAgeDensity <- function(
   .CheckIntervalWidth(arg_check, interval_width, bespoke_probability)
   .CheckNBurnAndNEnd(arg_check, n_burn, n_end, n_iter, n_thin)
   .CheckInteger(arg_check, n_posterior_samples, lower = 10)
-  .reportAssertions(arg_check)
+  .ReportErrors(arg_check)
 
   edge_width <- switch(
     interval_width,

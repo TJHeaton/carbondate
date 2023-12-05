@@ -1,4 +1,4 @@
-.makeAssertCollection <- function() {
+.InitializeErrorList <- function() {
   msgs <- character(0L)
   x <- list(
     push = function(msg) {msgs <<- c(msgs, msg)},
@@ -7,10 +7,10 @@
   return(x)
 }
 
-.reportAssertions <- function(collection) {
-  if (!collection$isEmpty()) {
-    msgs <- collection$getMessages()
-    context <- "%i assertions failed:"
+.ReportErrors <- function(error_list) {
+  if (!error_list$isEmpty()) {
+    msgs <- error_list$getMessages()
+    context <- "%i checks failed:"
     err <- c(sprintf(context, length(msgs)), strwrap(msgs, prefix = " * "))
     stop(simpleError(paste0(err, collapse = "\n"), call = sys.call(1L)))
   }
