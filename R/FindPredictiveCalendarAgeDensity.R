@@ -54,7 +54,6 @@ FindPredictiveCalendarAgeDensity <- function(
     "2sigma"  = 1 - stats::pnorm(2),
     "bespoke" = (1 - bespoke_probability)/2)
 
-
   n_burn <- .SetNBurn(n_burn, n_iter, n_thin)
   n_end <- .SetNEnd(n_end, n_iter, n_thin)
 
