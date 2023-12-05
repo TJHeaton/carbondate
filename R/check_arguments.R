@@ -17,7 +17,7 @@
 }
 
 .CheckInteger <- function(arg_check, x, lower = NA, upper = NA) {
-  varname <- substitute(x)
+  varname <- deparse(substitute(x))
   if (!is.numeric(x) || length(x) > 1 || (as.integer(x) - x != 0)) {
     arg_check$push(paste(varname, "must be an integer"))
     return()
@@ -30,8 +30,8 @@
   }
 }
 
-.CheckNumber <- function(arg_check, x, lower = NA) {
-  varname <- substitute(x)
+.CheckNumber <- function(arg_check, x, lower = NA, upper = NA) {
+  varname <- deparse(substitute(x))
   if (!is.numeric(x) || length(x) > 1) {
     arg_check$push(paste(varname, "must be a number"))
     return()
@@ -39,16 +39,20 @@
   if (!is.na(lower) && x < lower) {
     arg_check$push(paste(varname, "must be more than or equal to", lower))
   }
+  if (!is.na(upper) && x > upper) {
+    arg_check$push(paste(varname, "must be less than or equal to", upper))
+  }
 }
 
 .CheckFlag <- function(arg_check, x) {
+  varname <- deparse(substitute(x))
   if (!is.logical(x) || length(x) > 1) {
-    arg_check$push(paste(substitute(x), "must be a single logical value (TRUE, FALSE OR NA)"))
+    arg_check$push(paste(varname, "must be a single logical value (TRUE, FALSE OR NA)"))
   }
 }
 
 .CheckNumberVector <- function(arg_check, x, min_length = NA, len = NA, lower = NA) {
-  varname <- substitute(x)
+  varname <- deparse(substitute(x))
   if (!is.vector(x)) {
     arg_check$push(paste(varname, "must be a vector"))
   }
@@ -63,6 +67,13 @@
   }
   if (!is.na(lower) && any(x < lower)) {
     arg_check$push(paste("all entries of", varname, "must be more than or equal to", lower))
+  }
+}
+
+.CheckChoice <- function(arg_check, x, allowed_choices) {
+  varname <- deparse(substitute(x))
+  if (!(x %in% allowed_choices)) {
+    arg_check$push(paste(varname, "must be one of:", paste(allowed_choices, collapse=", ")))
   }
 }
 
@@ -105,7 +116,6 @@
 
 
 .CheckInputData <- function(arg_check, rc_determinations, rc_sigmas, F14C_inputs){
-
   .CheckNumberVector(arg_check, rc_determinations)
   .CheckNumberVector(arg_check, rc_sigmas, lower = 0, len = length(rc_determinations))
   if (F14C_inputs == TRUE) {
@@ -173,8 +183,7 @@
     .WarnIfValueOverwritten(mu_phi, reason)
     .WarnIfValueOverwritten(calendar_ages, reason)
   }
-  checkmate::assertInt(
-    n_clust, upper = num_observations, add = arg_check)
+  .CheckInteger(arg_check, n_clust, upper = num_observations)
 }
 
 
@@ -185,7 +194,7 @@
     if (!is.null(reason)) {
       warning_msg <- paste(warning_msg, "since", reason)
     }
-    warning(warning_msg)
+    warning(warning_msg, immediate. = TRUE)
   }
 }
 
@@ -205,53 +214,51 @@
 
 
 .CheckOutputData <- function(arg_check, output_data) {
-  checkmate::assertList(
-    output_data, names = "named", min.len = 10, add=arg_check)
-  checkmate::assertSubset(
-    c(
-      "cluster_identifiers",
-      "alpha",
-      "n_clust",
-      "phi",
-      "tau",
-      "calendar_ages",
-      "mu_phi",
-      "update_type",
-      "input_data",
-      "input_parameters"),
-    names(output_data),
-    .var.name ="output_data required list item names")
-  checkmate::assertChoice(output_data$update_type, c("Polya Urn", "Walker"))
-  if (output_data$update_type == "walker") {
-    checkmate::assertChoice(
-      "weight",
-      names(output_data),
-      .var.name ="output_data required list item names")
+  if (!is.list(output_data) || is.null(names(output_data))) {
+    arg_check$push("output data must be a named list")
+    return()
+  }
+
+  .CheckChoice(arg_check, output_data$update_type, c("Polya Urn", "Walker"))
+  required_list_items <- c(
+    "cluster_identifiers",
+    "alpha",
+    "n_clust",
+    "phi",
+    "tau",
+    "calendar_ages",
+    "mu_phi",
+    "update_type",
+    "input_data",
+    "input_parameters"
+  )
+  if (output_data$update_type == "walker") { required_list_items <- c(required_list_items, "weight") }
+  list_names <- names(output_data)
+  for (list_item in required_list_items) {
+    if (!(list_item %in% list_names)) {
+      arg_check$push(paste("output data must contain the item", list_item))
+    }
   }
 }
 
 
-.CheckCalibrationCurveFromOutput <- function(
-    arg_check, output_data, calibration_curve) {
+.CheckCalibrationCurveFromOutput <- function(arg_check, output_data, calibration_curve) {
   calibration_curve_name <- output_data$input_data$calibration_curve_name
   if (!exists(calibration_curve_name) && is.null(calibration_curve)){
-    checkmate::reportAssertions(arg_check)
-    cli::cli_abort(
-      c(
-        paste("Calibration curve", calibration_curve_name, "does not exist\n"),
-        "Either ensure a variable with this name exists, or pass the variable
-        in the arguments"
+    arg_check$push(
+      paste(
+        "Calibration curve", calibration_curve_name, "does not exist.",
+        "Either ensure a variable with this name exists, or pass the variable in the arguments"
       )
     )
   }
   if (!is.null(calibration_curve)) {
     .CheckCalibrationCurve(arg_check, calibration_curve, NA)
   }
-
 }
 
 
-.CheckMultipleOutputDataConsistent <- function(output_data_list) {
+.CheckMultipleOutputDataConsistent <- function(arg_check, output_data_list) {
   if (length(output_data_list) == 1) {
     return()
   }
@@ -263,11 +270,11 @@
       || !identical(first$rc_sigmas, other$rc_sigmas)
       || first$F14C_inputs != other$F14C_inputs
       || first$calibration_curve_name != other$calibration_curve_name) {
-      cli::cli_abort(
-        c(
-          "Output data is not consistent.",
-          "Ensure all output data given in the list comes from the same
-          calibration curve and radiocarbon values, in the same scale."
+      arg_check$push(
+        paste0(
+          "Output data item [[1]] and item [[", i, "]] are not consistent. ",
+          "Ensure all output data given in the list comes from the same ",
+          "calibration curve and radiocarbon values, in the same scale."
         )
       )
     }
@@ -276,27 +283,28 @@
 
 
 .CheckIntervalWidth <- function(arg_check, interval_width, bespoke_probability) {
-  checkmate::assertChoice(
-    interval_width, c("1sigma", "2sigma", "bespoke"), add = arg_check)
+  .CheckChoice(arg_check, interval_width, c("1sigma", "2sigma", "bespoke"))
   if (interval_width == "bespoke") {
-    checkmate::assertNumber(
-      bespoke_probability, lower = 0, upper = 1, add = arg_check)
+    .CheckNumber(arg_check, bespoke_probability, lower = 0, upper = 1)
   } else {
     if (!is.na(bespoke_probability)) {
-      cli::cli_warn(
-        paste("You have chosed an interval width of", interval_width),
-        paste("The value you have chosen for `bespoke_probability` will
-              therefore be ignored"))
+      warning(
+        paste0(
+          "You have chosed an interval width of ", interval_width, ". The value you have chosen ",
+          "for `bespoke_probability` will therefore be ignored"),
+        immediate. = TRUE
+      )
     }
   }
 }
 
 
 .CheckCalendarAgeSequence <- function(arg_check, calendar_age_sequence) {
-  checkmate::assertNumeric(
-    calendar_age_sequence,
-    unique = TRUE,
-    sorted = TRUE,
-    any.missing = FALSE,
-    add = arg_check)
+  .CheckNumberVector(arg_check, calendar_age_sequence)
+  if (length(unique(calendar_age_sequence)) != length(calendar_age_sequence)) {
+    arg_check$push("All values in the calendar age sequence must be unique")
+  }
+  if (is.unsorted(calendar_age_sequence)) {
+    arg_check$push("The calendar age sequence must be sorted")
+  }
 }

@@ -95,7 +95,7 @@ PlotPredictiveCalendarAgeDensity <- function(
   # Treat single output data as a list of length 1
   if (!is.null(output_data$update_type)) output_data <- list(output_data)
 
-  .CheckMultipleOutputDataConsistent(output_data)
+  .CheckMultipleOutputDataConsistent(arg_check, output_data)
   num_data <- length(output_data)
   for (i in 1:num_data) {
     .CheckOutputData(arg_check, output_data[[i]])

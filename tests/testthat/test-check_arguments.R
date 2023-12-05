@@ -118,10 +118,16 @@ test_that("test check number - fails", {
   .CheckNumber(arg_check, my_char)
   .CheckNumber(arg_check, my_vec)
   .CheckNumber(arg_check, my_num, lower = 3.1)
+  .CheckNumber(arg_check, my_num, upper = 2.1)
 
   expect_equal(
     arg_check$getMessages(),
-    c("my_char must be a number", "my_vec must be a number", "my_num must be more than or equal to 3.1")
+    c(
+      "my_char must be a number",
+      "my_vec must be a number",
+      "my_num must be more than or equal to 3.1",
+      "my_num must be less than or equal to 2.1"
+    )
   )
 })
 
@@ -131,7 +137,7 @@ test_that("test check number - passes", {
   arg_check <- .makeAssertCollection()
 
   .CheckNumber(arg_check, my_num)
-  .CheckNumber(arg_check, my_num, lower = 2.9)
+  .CheckNumber(arg_check, my_num, lower = 2.9, upper = 3.1)
 
   expect_true(arg_check$isEmpty())
 })
@@ -205,6 +211,20 @@ test_that("test number array - passes", {
   .CheckNumberVector(arg_check, my_vec, len = 3)
   .CheckNumberVector(arg_check, my_vec, lower = 0)
 
+  expect_true(arg_check$isEmpty())
+})
+
+
+test_that("test check choice", {
+  allowed_choices <- c("apple", "banana", "kiwi")
+  output_data <- list(fruit = "melon")
+
+  arg_check <- .makeAssertCollection()
+  .CheckChoice(arg_check, output_data$fruit, allowed_choices)
+  expect_equal(arg_check$getMessages(), "output_data$fruit must be one of: apple, banana, kiwi")
+
+  arg_check <- .makeAssertCollection()
+  .CheckChoice(arg_check, "banana", allowed_choices)
   expect_true(arg_check$isEmpty())
 })
 
