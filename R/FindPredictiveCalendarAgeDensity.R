@@ -41,7 +41,6 @@ FindPredictiveCalendarAgeDensity <- function(
   .CheckOutputData(arg_check, output_data)
   n_iter <- output_data$input_parameters$n_iter
   n_thin <- output_data$input_parameters$n_thin
-  n_out <- length(output_data$mu_phi)
 
   .CheckCalendarAgeSequence(arg_check, calendar_age_sequence)
   .CheckIntervalWidth(arg_check, interval_width, bespoke_probability)

@@ -30,7 +30,6 @@ PlotGelmanRubinDiagnosticSingleChain <- function(output_data, n_burn = NA, n_seg
   .CheckOutputData(arg_check, output_data)
   n_iter <- output_data$input_parameters$n_iter
   n_thin <- output_data$input_parameters$n_thin
-  n_out <- length(output_data$mu_phi)
   n_obs <- length(output_data$input_data$rc_determinations)
 
   .CheckNBurnAndNEnd(arg_check, n_burn, NA, n_iter, n_thin)
@@ -86,7 +85,6 @@ PlotGelmanRubinDiagnosticMultiChain <- function(output_data_list, n_burn = NA) {
   }
   n_iter <- output_data_list[[1]]$input_parameters$n_iter
   n_thin <- output_data_list[[1]]$input_parameters$n_thin
-  n_out <- length(output_data_list[[1]]$mu_phi)
   n_obs <- length(output_data_list[[1]]$input_data$rc_determinations)
 
   .CheckNBurnAndNEnd(arg_check, n_burn, NA, n_iter, n_thin)
