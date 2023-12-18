@@ -7,7 +7,7 @@
 # This version uses the Polya Urn method of sampling form the DP
 # It is slower so I suggest using the Walker version
 
-seednum = 8
+seednum <- 8
 set.seed(seednum)
 
 # Read in IntCal20 curve
@@ -70,11 +70,11 @@ niter <- 1e5
 nthin <- 5 # Don't choose too high, after burn-in we have (niter/nthin)/2 samples from posterior to potentially use
 npostsum <- 500 # Current number of samples it will draw from this posterior to estimate fhat (possibly repeats)
 
-mualpha = NA
-sigalpha = NA
-w = max(1000, diff(range(x))/2)
-m = 10
-nclusinit = 10
+mualpha <- NA
+sigalpha <- NA
+w <- max(1000, diff(range(x))/2)
+m <- 10
+nclusinit <- 10
 
 save(x, xsig, lambda, nu1, nu2, A, B, mualpha, sigalpha, alphaprshape, alphaprrate, niter, nthin,
      inittheta, w, m, nclusinit, seednum, file="tests/testthat/fixtures/polya_urn_input.rda")
@@ -106,7 +106,7 @@ indprobs <- mapply(calibind, x, xsig, MoreArgs = list(calmu = CurveR$curvemean, 
 SPD <- data.frame(calage = yfromto, prob = apply(indprobs, 1, sum)/dim(indprobs)[2])
 
 # To plot the predictive distribution then you run
-seednum = 14
+seednum <- 14
 set.seed(seednum)
 source("tests/testthat/fixtures/helpers/NealPostProcessingFinal.R")
 
@@ -117,6 +117,6 @@ save(x, xsig, postdenCI, postden, tempx, file = "tests/testthat/fixtures/polya_u
 
 # If we want to plot e.g. the posterior calendar age density against the curve then we can run the below
 # ident is the determination you want to calibrate
-ident = 15
-resolution = 10
-indpost = plotindpost(NealTemp, ident = ident, y = x, er = xsig, calcurve = calcurve, resolution = resolution)
+ident <- 15
+resolution <- 10
+indpost <- plotindpost(NealTemp, ident = ident, y = x, er = xsig, calcurve = calcurve, resolution = resolution)

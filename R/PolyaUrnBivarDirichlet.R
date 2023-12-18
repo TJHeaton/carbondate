@@ -94,8 +94,7 @@ PolyaUrnBivarDirichlet <- function(
   # Check input parameters
   num_observations <- length(rc_determinations)
 
-  arg_check <- checkmate::makeAssertCollection()
-
+  arg_check <- .InitializeErrorList()
   .CheckInputData(arg_check, rc_determinations, rc_sigmas, F14C_inputs)
   .CheckCalibrationCurve(arg_check, calibration_curve, NA)
   .CheckDpmmParameters(
@@ -114,9 +113,9 @@ PolyaUrnBivarDirichlet <- function(
     n_clust)
   .CheckIterationParameters(arg_check, n_iter, n_thin)
   .CheckSliceParameters(arg_check, slice_width, slice_multiplier, sensible_initialisation)
-  checkmate::assert_flag(F14C_inputs, arg_check)
-  checkmate::assert_flag(use_F14C_space, arg_check)
-  checkmate::reportAssertions(arg_check)
+  .CheckFlag(arg_check, F14C_inputs)
+  .CheckFlag(arg_check, use_F14C_space)
+  .ReportErrors(arg_check)
 
   ##############################################################################
   ## Interpolate cal curve onto single year grid to speed up updating thetas
@@ -132,7 +131,7 @@ PolyaUrnBivarDirichlet <- function(
 
   ##############################################################################
   # Save input data
-  input_data = list(
+  input_data <- list(
     rc_determinations = rc_determinations,
     rc_sigmas = rc_sigmas,
     F14C_inputs = F14C_inputs,
@@ -173,27 +172,27 @@ PolyaUrnBivarDirichlet <- function(
     rc_sigmas,
     MoreArgs = list(F14C_inputs=use_F14C_space, calibration_curve=integer_cal_year_curve))
 
-  spd = apply(initial_probabilities, 1, sum)
-  cumulative_spd = cumsum(spd) / sum(spd)
-  spd_range_1_sigma = c(
+  spd <- apply(initial_probabilities, 1, sum)
+  cumulative_spd <- cumsum(spd) / sum(spd)
+  spd_range_1_sigma <- c(
     integer_cal_year_curve$calendar_age_BP[min(which(cumulative_spd > 0.16))],
     integer_cal_year_curve$calendar_age_BP[max(which(cumulative_spd < 0.84))])
-  spd_range_2_sigma = c(
+  spd_range_2_sigma <- c(
     integer_cal_year_curve$calendar_age_BP[min(which(cumulative_spd > 0.025))],
     integer_cal_year_curve$calendar_age_BP[max(which(cumulative_spd < 0.975))])
-  spd_range_3_sigma = c(
+  spd_range_3_sigma <- c(
     integer_cal_year_curve$calendar_age_BP[min(which(cumulative_spd > 0.001))],
     integer_cal_year_curve$calendar_age_BP[max(which(cumulative_spd < 0.999))])
 
-  plot_range = spd_range_3_sigma + c(-1, 1) * diff(spd_range_3_sigma) * 0.1
-  plot_range = c(
+  plot_range <- spd_range_3_sigma + c(-1, 1) * diff(spd_range_3_sigma) * 0.1
+  plot_range <- c(
     max(plot_range[1], min(calibration_curve$calendar_age_BP)),
     min(plot_range[2], max(calibration_curve$calendar_age_BP)))
 
-  densities_cal_age_sequence = seq(plot_range[1], plot_range[2], length.out=100)
+  densities_cal_age_sequence <- seq(plot_range[1], plot_range[2], length.out=100)
 
   if (sensible_initialisation) {
-    indices_of_max_probability = apply(initial_probabilities, 2, which.max)
+    indices_of_max_probability <- apply(initial_probabilities, 2, which.max)
     calendar_ages <- integer_cal_year_curve$calendar_age_BP[indices_of_max_probability]
 
     mu_phi <- mean(spd_range_2_sigma)
@@ -210,7 +209,7 @@ PolyaUrnBivarDirichlet <- function(
     alpha_shape <- 1
     alpha_rate <- 1
 
-    if (is.na(slice_width)) slice_width = diff(spd_range_3_sigma)
+    if (is.na(slice_width)) slice_width <- diff(spd_range_3_sigma)
   }
 
   alpha <- 0.0001
@@ -220,7 +219,7 @@ PolyaUrnBivarDirichlet <- function(
 
   ##############################################################################
   # Save input parameters
-  input_parameters = list(
+  input_parameters <- list(
     lambda = lambda,
     nu1 = nu1,
     nu2 = nu2,
@@ -235,7 +234,7 @@ PolyaUrnBivarDirichlet <- function(
 
   ##############################################################################
   # Create storage for output
-  n_out = floor(n_iter / n_thin) + 1
+  n_out <- .SetNOut(n_iter, n_thin)
 
   phi_out <- list(phi)
   tau_out <- list(tau)
@@ -327,7 +326,7 @@ PolyaUrnBivarDirichlet <- function(
     }
   }
 
-  density_data = list(densities = densities_out, calendar_ages = densities_cal_age_sequence)
+  density_data <- list(densities = densities_out, calendar_ages = densities_cal_age_sequence)
 
   return_list <- list(
     cluster_identifiers = cluster_identifiers_out,

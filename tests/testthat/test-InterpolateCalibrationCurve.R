@@ -1,12 +1,12 @@
 test_that("interpolating calibration curve works, c14 ages", {
   # Choose ages not in calibration curve
-  new_calendar_ages = c(54770, 54290)
+  new_calendar_ages <- c(54770, 54290)
 
-  new_curve = InterpolateCalibrationCurve(new_calendar_ages, intcal20, F14C_outputs = FALSE)
+  new_curve <- InterpolateCalibrationCurve(new_calendar_ages, intcal20, F14C_outputs = FALSE)
 
   # Manually checked these results
-  expected_c14_ages = c(49905, 49660.5)
-  expected_c14_sigs = c(963, 823.5)
+  expected_c14_ages <- c(49905, 49660.5)
+  expected_c14_sigs <- c(963, 823.5)
 
   expect_equal(new_curve, data.frame(
     calendar_age_BP=new_calendar_ages,
@@ -16,15 +16,15 @@ test_that("interpolating calibration curve works, c14 ages", {
 
 test_that("interpolating calibration curve works, f14c ages", {
   # Choose ages not in calibration curve
-  new_calendar_ages = c(54770, 54290)
+  new_calendar_ages <- c(54770, 54290)
 
-  new_curve = InterpolateCalibrationCurve(new_calendar_ages, intcal20, F14C_outputs = TRUE)
+  new_curve <- InterpolateCalibrationCurve(new_calendar_ages, intcal20, F14C_outputs = TRUE)
 
   # Manually checked these results
-  expected_f14c_ages = c(
+  expected_f14c_ages <- c(
     (intcal20$f14c[12] + intcal20$f14c[13])/2,
     (intcal20$f14c[36] + intcal20$f14c[37])/2)
-  expected_f14c_sigs = c(
+  expected_f14c_sigs <- c(
     (intcal20$f14c_sig[12] + intcal20$f14c_sig[13])/2,
     (intcal20$f14c_sig[36] + intcal20$f14c_sig[37])/2)
 
@@ -36,17 +36,17 @@ test_that("interpolating calibration curve works, f14c ages", {
 
 test_that("interpolating calibration curve works, c14 ages, column initially not there", {
   # Choose ages not in calibration curve
-  new_calendar_ages = c(54770, 54290)
+  new_calendar_ages <- c(54770, 54290)
 
   # create a calibration curve that does not have c14 ages
-  calcurve = data.frame(
+  calcurve <- data.frame(
     calendar_age_BP=intcal20$calendar_age_BP, f14c=intcal20$f14c, f14c_sig=intcal20$f14c_sig)
 
-  new_curve = InterpolateCalibrationCurve(new_calendar_ages, intcal20, F14C_outputs = FALSE)
+  new_curve <- InterpolateCalibrationCurve(new_calendar_ages, intcal20, F14C_outputs = FALSE)
 
   # Manually checked these results
-  expected_c14_ages = c(49905, 49660.5)
-  expected_c14_sigs = c(963, 823.5)
+  expected_c14_ages <- c(49905, 49660.5)
+  expected_c14_sigs <- c(963, 823.5)
 
   expect_equal(new_curve, data.frame(
     calendar_age_BP=new_calendar_ages,
@@ -56,19 +56,19 @@ test_that("interpolating calibration curve works, c14 ages, column initially not
 
 test_that("interpolating calibration curve works, f14c ages, column initially not there", {
   # Choose ages not in calibration curve
-  new_calendar_ages = c(54770, 54290)
+  new_calendar_ages <- c(54770, 54290)
 
   # create a calibration curve that does not have f14c ages
-  calcurve = data.frame(
+  calcurve <- data.frame(
     calendar_age_BP=intcal20$calendar_age_BP, c14_age=intcal20$c14_age, c14_sig=intcal20$c14_sig)
 
-  new_curve = InterpolateCalibrationCurve(new_calendar_ages, calcurve, F14C_outputs = TRUE)
+  new_curve <- InterpolateCalibrationCurve(new_calendar_ages, calcurve, F14C_outputs = TRUE)
 
   # Manually checked these results
-  expected_f14c_ages = c(
+  expected_f14c_ages <- c(
     (intcal20$f14c[12] + intcal20$f14c[13])/2,
     (intcal20$f14c[36] + intcal20$f14c[37])/2)
-  expected_f14c_sigs = c(
+  expected_f14c_sigs <- c(
     (intcal20$f14c_sig[12] + intcal20$f14c_sig[13])/2,
     (intcal20$f14c_sig[36] + intcal20$f14c_sig[37])/2)
 
@@ -80,17 +80,17 @@ test_that("interpolating calibration curve works, f14c ages, column initially no
 
 test_that("interpolating calibration curve works, both age scales", {
   # Choose ages not in calibration curve
-  new_calendar_ages = c(54770, 54290)
+  new_calendar_ages <- c(54770, 54290)
 
-  new_curve = InterpolateCalibrationCurve(new_calendar_ages, intcal20, F14C_outputs = NA)
+  new_curve <- InterpolateCalibrationCurve(new_calendar_ages, intcal20, F14C_outputs = NA)
 
   # Manually checked these results
-  expected_c14_ages = c(49905, 49660.5)
-  expected_c14_sigs = c(963, 823.5)
-  expected_f14c_ages = c(
+  expected_c14_ages <- c(49905, 49660.5)
+  expected_c14_sigs <- c(963, 823.5)
+  expected_f14c_ages <- c(
     (intcal20$f14c[12] + intcal20$f14c[13])/2,
     (intcal20$f14c[36] + intcal20$f14c[37])/2)
-  expected_f14c_sigs = c(
+  expected_f14c_sigs <- c(
     (intcal20$f14c_sig[12] + intcal20$f14c_sig[13])/2,
     (intcal20$f14c_sig[36] + intcal20$f14c_sig[37])/2)
 

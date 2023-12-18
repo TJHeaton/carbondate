@@ -25,27 +25,22 @@
 #' PlotGelmanRubinDiagnosticSingleChain(polya_urn_example_output)
 PlotGelmanRubinDiagnosticSingleChain <- function(output_data, n_burn = NA, n_segments = 3) {
 
-  arg_check <- checkmate::makeAssertCollection()
+  arg_check <- .InitializeErrorList()
 
   .CheckOutputData(arg_check, output_data)
-  n_iter = output_data$input_parameters$n_iter
-  n_thin = output_data$input_parameters$n_thin
-  n_out = length(output_data$mu_phi)
-  n_obs = length(output_data$input_data$rc_determinations)
+  n_iter <- output_data$input_parameters$n_iter
+  n_thin <- output_data$input_parameters$n_thin
+  n_obs <- length(output_data$input_data$rc_determinations)
 
-  .CheckNBurn(arg_check, n_burn, n_iter, n_thin)
-  checkmate::assertIntegerish(n_segments, lower = 2, upper = 10, add = arg_check)
-  checkmate::reportAssertions(arg_check)
+  .CheckNBurnAndNEnd(arg_check, n_burn, NA, n_iter, n_thin)
+  .CheckInteger(arg_check, n_segments, lower = 2, upper = 10)
+  .ReportErrors(arg_check)
 
-  if (is.na(n_burn)) {
-    n_burn = floor(n_out / 2)
-  } else {
-    n_burn = floor(n_burn / n_thin)
-  }
+  n_burn <- .SetNBurn(n_burn, n_iter, n_thin)
 
-  R = rep(0, n_obs)
+  R <- rep(0, n_obs)
   for (i in 1:n_obs) {
-    R[i] = .SingleChainPsrf(output_data$calendar_ages[, i], n_burn, n_thin, n_segments)
+    R[i] <- .SingleChainPsrf(output_data$calendar_ages[, i], n_burn, n_segments)
   }
 
   graphics::hist(R, xlab = "", main = "Histogram of PSRF for posterior calendar ages")
@@ -81,58 +76,53 @@ PlotGelmanRubinDiagnosticSingleChain <- function(output_data, n_burn = NA, n_seg
 #' PlotGelmanRubinDiagnosticMultiChain(po)
 PlotGelmanRubinDiagnosticMultiChain <- function(output_data_list, n_burn = NA) {
 
-  arg_check <- checkmate::makeAssertCollection()
-  num_data = length(output_data_list)
-  checkmate::assert_integer(length(output_data_list), lower = 2)
-  .CheckMultipleOutputDataConsistent(output_data_list)
-  for (i in 1:num_data) {
+  arg_check <- .InitializeErrorList()
+  number_of_output_data <- length(output_data_list)
+  .CheckInteger(arg_check, number_of_output_data, lower = 2)
+  .CheckMultipleOutputDataConsistent(arg_check, output_data_list)
+  for (i in 1:number_of_output_data) {
     .CheckOutputData(arg_check, output_data_list[[i]])
   }
-  n_iter = output_data_list[[1]]$input_parameters$n_iter
-  n_thin = output_data_list[[1]]$input_parameters$n_thin
-  n_out = length(output_data_list[[1]]$mu_phi)
-  n_obs = length(output_data_list[[1]]$input_data$rc_determinations)
+  n_iter <- output_data_list[[1]]$input_parameters$n_iter
+  n_thin <- output_data_list[[1]]$input_parameters$n_thin
+  n_obs <- length(output_data_list[[1]]$input_data$rc_determinations)
 
-  .CheckNBurn(arg_check, n_burn, n_iter, n_thin)
-  if (is.na(n_burn)) {
-    n_burn = floor(n_out / 2)
-  } else {
-    n_burn = floor(n_burn / n_thin)
-  }
-  checkmate::reportAssertions(arg_check)
+  .CheckNBurnAndNEnd(arg_check, n_burn, NA, n_iter, n_thin)
+  .ReportErrors(arg_check)
 
-  R = rep(0, n_obs)
+  n_burn <- .SetNBurn(n_burn, n_iter, n_thin)
+  R <- rep(0, n_obs)
   get_calendar_ages <- function(output_data, i) return(output_data$calendar_ages[, i])
   for (i in 1:n_obs) {
-    theta_list = lapply(output_data_list, get_calendar_ages, i)
-    R[i] = .MultiChainPsrf(theta_list, n_burn, n_thin)
+    theta_list <- lapply(output_data_list, get_calendar_ages, i)
+    R[i] <- .MultiChainPsrf(theta_list, n_burn)
   }
 
   graphics::hist(R, xlab = "", main = "Histogram of PSRF for posterior calendar ages")
 }
 
 
-.SingleChainPsrf <- function(theta, n_burn, n_thin, n_segments) {
-  n_out = length(theta)
-  n_chain = floor((n_out - n_burn) / n_segments)
+.SingleChainPsrf <- function(theta, n_burn, n_segments) {
+  n_out <- length(theta)
+  n_chain <- floor((n_out - n_burn) / n_segments)
 
-  chains = list()
+  chains <- list()
   for (i in 1:n_segments) {
-    chains[[i]] = theta[(n_burn + (i - 1) * n_chain + 1):(n_burn + i * n_chain)]
+    chains[[i]] <- theta[(n_burn + (i - 1) * n_chain + 1):(n_burn + i * n_chain)]
   }
 
   return(.FindPsrf(chains, n_segments, n_chain))
 }
 
 
-.MultiChainPsrf <- function(theta_list, n_burn, n_thin) {
-  M = length(theta_list)
-  n_out = length(theta_list[[1]])
-  n_chain = n_out - n_burn
+.MultiChainPsrf <- function(theta_list, n_burn) {
+  M <- length(theta_list)
+  n_out <- length(theta_list[[1]])
+  n_chain <- n_out - n_burn
 
-  chains = list()
+  chains <- list()
   for (i in 1:M) {
-    chains[[i]] = theta_list[[i]][(n_burn + 1):n_out]
+    chains[[i]] <- theta_list[[i]][(n_burn + 1):n_out]
   }
 
   return(.FindPsrf(chains, M, n_chain))
@@ -140,14 +130,14 @@ PlotGelmanRubinDiagnosticMultiChain <- function(output_data_list, n_burn = NA) {
 
 
 .FindPsrf <- function(chains, M, N) {
-  overall_mean = mean(unlist(chains))
+  overall_mean <- mean(unlist(chains))
   diff_from_mean <- function(chain, overall_mean) return((mean(chain) - overall_mean)^2)
 
-  within_chain_variance = sum(unlist(lapply(chains, stats::var))) / M
-  between_chain_variance = N * sum(unlist(lapply(chains, diff_from_mean, overall_mean))) / (M - 1)
+  within_chain_variance <- sum(unlist(lapply(chains, stats::var))) / M
+  between_chain_variance <- N * sum(unlist(lapply(chains, diff_from_mean, overall_mean))) / (M - 1)
 
-  pooled_variance = (N - 1) / N * within_chain_variance
-  pooled_variance = pooled_variance + (M + 1) / (M * N) * between_chain_variance;
+  pooled_variance <- (N - 1) / N * within_chain_variance
+  pooled_variance <- pooled_variance + (M + 1) / (M * N) * between_chain_variance
 
   return(pooled_variance / within_chain_variance)
 }

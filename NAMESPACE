@@ -3,6 +3,7 @@
 export(CalibrateSingleDetermination)
 export(FindPredictiveCalendarAgeDensity)
 export(FindSummedProbabilityDistribution)
+export(GenerateOxcalCode)
 export(InterpolateCalibrationCurve)
 export(PlotCalendarAgeDensityIndividualSample)
 export(PlotConvergenceData)

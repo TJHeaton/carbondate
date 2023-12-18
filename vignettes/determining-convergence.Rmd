@@ -29,7 +29,7 @@ This is often used to evaluate MCMC convergence. It compares the between-chains 
 In the first case, the calculation can be run multiple times to generate different chains.
 
 ```{r calculate_gr_multiple, fig.width=10, fig.height=8, results=FALSE}
-all_outputs = list()
+all_outputs <- list()
 for (i in 1:3) {
   set.seed(i + 1)
   all_outputs[[i]] <- PolyaUrnBivarDirichlet(kerr$c14_age, kerr$c14_sig, intcal20, n_iter = 1e4)
@@ -56,7 +56,7 @@ compared using this diagnostic as the number and identity of clusters can change
 Running a few time with different random number seeds can give an idea of how many iterations are needed for convergence. If the result is converged each run should lead to a similar result for the predictive density. E.g.
 
 ```{r calculate_polya_kerr, fig.width=10, fig.height=8, results=FALSE}
-all_outputs = list()
+all_outputs <- list()
 for (i in 1:3) {
   set.seed(i+1)
   all_outputs[[i]] <- PolyaUrnBivarDirichlet(
@@ -64,7 +64,7 @@ for (i in 1:3) {
   rc_sigmas = kerr$c14_sig,
   calibration_curve=intcal20,
   n_iter = 1e4)
-  all_outputs[[i]]$label = paste("Seed =", i)
+  all_outputs[[i]]$label <- paste("Seed =", i)
 }
 PlotPredictiveCalendarAgeDensity(
   output_data = all_outputs, n_posterior_samples = 500, denscale = 2.5, interval_width = "1sigma")
@@ -75,7 +75,7 @@ As you can see, in this case (255 determinations collated by Kerr and McCormick 
 In contrast if we run a much simpler example (that of artificial data comprised of two normals), we can see that convergence appears to be achieved in a small number of iterations.
 
 ```{r calculate_polya_normals, fig.width=10, fig.height=8, results=FALSE}
-all_outputs = list()
+all_outputs <- list()
 for (i in 1:3) {
   set.seed(i + 1)
   all_outputs[[i]] <- PolyaUrnBivarDirichlet(
@@ -83,7 +83,7 @@ for (i in 1:3) {
   rc_sigmas = two_normals$c14_sig,
   calibration_curve=intcal20,
   n_iter = 1e4)
-  all_outputs[[i]]$label = paste("Seed =", i)
+  all_outputs[[i]]$label <- paste("Seed =", i)
 }
 PlotPredictiveCalendarAgeDensity(
   output_data = all_outputs, n_posterior_samples = 500, denscale = 2.5, interval_width = "1sigma")

@@ -62,7 +62,7 @@ polya_urn_output <- PolyaUrnBivarDirichlet(
 Once the calibration has been run, the calendar age density can be plotted. 
 
 ```{r plot_density}
-densities = PlotPredictiveCalendarAgeDensity(
+densities <- PlotPredictiveCalendarAgeDensity(
   output_data = list(walker_output, polya_urn_output),
   n_posterior_samples = 5000,
   show_SPD = TRUE)

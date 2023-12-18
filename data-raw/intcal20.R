@@ -7,7 +7,7 @@ names(intcal20) <- c(
   "c14_sig")
 
 # add columns for F14C
-intcal20$f14c = exp(-intcal20$c14_age / 8033)
-intcal20$f14c_sig = intcal20$f14c * intcal20$c14_sig / 8033
+intcal20$f14c <- exp(-intcal20$c14_age / 8033)
+intcal20$f14c_sig <- intcal20$f14c * intcal20$c14_sig / 8033
 
 usethis::use_data(intcal20, overwrite = TRUE)

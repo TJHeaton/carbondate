@@ -20,7 +20,7 @@
 #' PlotConvergenceData(polya_urn_example_output)
 PlotConvergenceData <- function(output_data, n_initial = NA) {
 
-  arg_check <- checkmate::makeAssertCollection()
+  arg_check <- .InitializeErrorList()
   .CheckOutputData(arg_check, output_data)
 
   n_iter <- output_data$input_parameters$n_iter
@@ -28,34 +28,33 @@ PlotConvergenceData <- function(output_data, n_initial = NA) {
   n_out <- length(output_data$mu_phi)
 
   if (is.na(n_initial)) {
-    n_initial = min(floor(n_out / 10), floor(1000 / n_thin))
+    n_initial <- min(floor(n_out / 10), floor(1000 / n_thin))
   } else {
-    n_initial = floor(n_initial / n_thin)
+    .CheckInteger(arg_check, n_initial, lower = 10 * n_thin, upper = floor(n_out / 2))
+    n_initial <- floor(n_initial / n_thin)
   }
 
-  checkmate::assertNumeric(n_initial, lower = 10, upper = n_out / 10, add = arg_check)
-  checkmate::reportAssertions(arg_check)
+  .ReportErrors(arg_check)
 
-  calendar_ages <- output_data$density_data$calendar_ages
   densities <- output_data$density_data$densities
   iters <- c(1, seq(n_thin, n_iter, by = n_thin))
 
-  final_initial_index = min(which(iters > n_initial))
-  mean_initial_density = apply(densities[1:final_initial_index, ], 2, sum) / final_initial_index
+  final_initial_index <- min(which(iters > n_initial))
+  mean_initial_density <- apply(densities[1:final_initial_index, ], 2, sum) / final_initial_index
 
-  kld_instant = rep(NA, n_out - final_initial_index)
-  kld_instant_avg = rep(0, ceiling((n_out - final_initial_index) / 100))
-  iters_avg = rep(NA, ceiling((n_out - final_initial_index) / 100))
-  avg_index = 1
+  kld_instant <- rep(NA, n_out - final_initial_index)
+  kld_instant_avg <- rep(0, ceiling((n_out - final_initial_index) / 100))
+  iters_avg <- rep(NA, ceiling((n_out - final_initial_index) / 100))
+  avg_index <- 1
   for (i in (final_initial_index + 1):n_out) {
-    kld_instant[i - final_initial_index] = .KLD(mean_initial_density, densities[i, ])
+    kld_instant[i - final_initial_index] <- .KLD(mean_initial_density, densities[i, ])
     if (avg_index <= length(iters_avg)) {
-      kld_instant_avg[avg_index] = kld_instant_avg[avg_index] + kld_instant[i - final_initial_index]
+      kld_instant_avg[avg_index] <- kld_instant_avg[avg_index] + kld_instant[i - final_initial_index]
     }
     if (i %% 100 == 0) {
-      kld_instant_avg[avg_index] = kld_instant_avg[avg_index] / 100
-      iters_avg[avg_index] = iters[i]
-      avg_index = avg_index + 1
+      kld_instant_avg[avg_index] <- kld_instant_avg[avg_index] / 100
+      iters_avg[avg_index] <- iters[i]
+      avg_index <- avg_index + 1
     }
   }
 
@@ -74,7 +73,7 @@ PlotConvergenceData <- function(output_data, n_initial = NA) {
 }
 
 .KLD <- function(P, Q) {
-  P = P/sum(P)
-  Q = Q/sum(Q)
+  P <- P/sum(P)
+  Q <- Q/sum(Q)
   return (sum(P * log(P / Q)))
 }

@@ -73,7 +73,7 @@ UniGibbsDirichlet <- function(x, xsig, sigma = 1,
       if(max(c) != length(phi)) stop("Lengths do not match")
     }
     # Update phi values
-    for(j in 1:length(phi)) {
+    for(j in seq_along(phi)) {
       phi[j] <- Updatephi(theta[c == j], sigma = sigma, prmean = prmean, prsd = prsd)
     }
     # Update y values (the calendar ages of the objects) by MH
@@ -219,7 +219,7 @@ BivarGibbsDirichletwithSlice <- function(x, xsig,
       if(max(c) != length(phi)) stop("Lengths do not match")
     }
     # Update phi and tau values
-    for(j in 1:length(phi)) {
+    for(j in seq_along(phi)) {
       GibbsParams <- BivarUpdatephitau(theta[c == j], muphi = muphi, lambda = lambda, nu1 = nu1, nu2 = nu2)
       phi[j] <- GibbsParams$phi
       tau[j] <- GibbsParams$tau

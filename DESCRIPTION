@@ -19,16 +19,12 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Depends: 
-    R (>= 2.10)
+    R (>= 3.5.0)
 LazyData: true
-Imports: 
-    checkmate,
-    cli,
+Imports:
     graphics,
     grDevices,
-    HDInterval,
     stats,
-    stringr,
     utils
 URL: https://github.com/TJHeaton/carbondate
 BugReports: https://github.com/TJHeaton/carbondate/issues

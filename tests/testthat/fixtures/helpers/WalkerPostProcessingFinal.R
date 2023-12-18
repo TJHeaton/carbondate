@@ -28,7 +28,7 @@ postden <- apply(postDmat, 1, mean)
 # Create a layout which has 2/3 of the plot showing the predictive density and 1/3 showing the number of clusters
 layout.matrix <- matrix(c(1, 2), nrow = 1, ncol = 2)
 layout(mat = layout.matrix,
-       heights = c(1), # Heights of the two rows
+       heights = 1, # Heights of the two rows
        widths = c(10, 4.5)) # Widths of the two columns
 
 # Plot the predictive joint density

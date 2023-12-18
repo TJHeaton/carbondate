@@ -5,6 +5,13 @@
 #include "cpp11/declarations.hpp"
 #include <R_ext/Visibility.h>
 
+// find_hpd.cpp
+list FindHPD(doubles calendar_ages, doubles density, double probability);
+extern "C" SEXP _carbondate_FindHPD(SEXP calendar_ages, SEXP density, SEXP probability) {
+  BEGIN_CPP11
+    return cpp11::as_sexp(FindHPD(cpp11::as_cpp<cpp11::decay_t<doubles>>(calendar_ages), cpp11::as_cpp<cpp11::decay_t<doubles>>(density), cpp11::as_cpp<cpp11::decay_t<double>>(probability)));
+  END_CPP11
+}
 // find_predictive_density.cpp
 data_frame FindPredictiveDensityAndCIWalker(doubles calendar_ages, list weights, list phis, list taus, doubles mu_phis, double lambda, double nu1, double nu2, int n_posterior_samples, double quantile_edge_width, int n_burn, int n_end);
 extern "C" SEXP _carbondate_FindPredictiveDensityAndCIWalker(SEXP calendar_ages, SEXP weights, SEXP phis, SEXP taus, SEXP mu_phis, SEXP lambda, SEXP nu1, SEXP nu2, SEXP n_posterior_samples, SEXP quantile_edge_width, SEXP n_burn, SEXP n_end) {
@@ -57,6 +64,7 @@ extern "C" SEXP _carbondate_WalkerUpdateStep(SEXP current_calendar_ages, SEXP cu
 
 extern "C" {
 static const R_CallMethodDef CallEntries[] = {
+    {"_carbondate_FindHPD",                              (DL_FUNC) &_carbondate_FindHPD,                               3},
     {"_carbondate_FindInstantPredictiveDensityPolyaUrn", (DL_FUNC) &_carbondate_FindInstantPredictiveDensityPolyaUrn, 10},
     {"_carbondate_FindInstantPredictiveDensityWalker",   (DL_FUNC) &_carbondate_FindInstantPredictiveDensityWalker,    8},
     {"_carbondate_FindPredictiveDensityAndCIWalker",     (DL_FUNC) &_carbondate_FindPredictiveDensityAndCIWalker,     12},

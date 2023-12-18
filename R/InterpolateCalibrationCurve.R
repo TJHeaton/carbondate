@@ -29,29 +29,32 @@
 #' InterpolateCalibrationCurve(NA, intcal20)
 InterpolateCalibrationCurve <- function(new_calendar_ages_BP, calibration_curve, F14C_outputs = NA) {
 
-  .CheckCalibrationCurve(NULL, calibration_curve, NA)
+  arg_check <- .InitializeErrorList()
+  .CheckCalibrationCurve(arg_check, calibration_curve, NA)
+  .CheckFlag(arg_check, F14C_outputs)
   if (!any(is.na(new_calendar_ages_BP))) {
-    checkmate::assertNumeric(new_calendar_ages_BP)
+    .CheckNumberVector(arg_check, new_calendar_ages_BP)
   } else {
     start_age <- floor(min(calibration_curve$calendar_age_BP))
     end_age <- ceiling(max(calibration_curve$calendar_age_BP))
     diff <- 1
     new_calendar_ages_BP <- seq(start_age, end_age, by=diff)
   }
+  .ReportErrors(arg_check)
 
   new_calibration_curve <- data.frame(calendar_age_BP=new_calendar_ages_BP)
 
   calendar_ages <- calibration_curve$calendar_age_BP
 
   if (is.na(F14C_outputs) || F14C_outputs == FALSE) {
-    calibration_curve = .AddC14ageColumns(calibration_curve)
+    calibration_curve <- .AddC14ageColumns(calibration_curve)
     new_calibration_curve$c14_age <- stats::approx(
       calendar_ages, calibration_curve$c14_age, new_calendar_ages_BP, rule=2)$y
     new_calibration_curve$c14_sig <- stats::approx(
       calendar_ages, calibration_curve$c14_sig, new_calendar_ages_BP, rule=2)$y
   }
   if (is.na(F14C_outputs) || F14C_outputs == TRUE) {
-    calibration_curve = .AddF14cColumns(calibration_curve)
+    calibration_curve <- .AddF14cColumns(calibration_curve)
     new_calibration_curve$f14c <- stats::approx(
       calendar_ages, calibration_curve$f14c, new_calendar_ages_BP, rule=2)$y
     new_calibration_curve$f14c_sig <- stats::approx(
