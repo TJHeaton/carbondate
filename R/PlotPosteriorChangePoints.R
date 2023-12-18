@@ -34,7 +34,7 @@ PlotPosteriorChangePoints <- function(
   n_thin <- output_data$input_parameters$n_thin
 
   arg_check <- .InitializeErrorList()
-  .CheckRJPPOutputData(arg_check, output_data)
+  .CheckOutputData(arg_check, output_data, "RJPP")
   .CheckIntegerVector(arg_check, n_changes, lower = 1, upper = 6, max_length = 4)
   .CheckNBurnAndNEnd(arg_check, n_burn, n_end, n_iter, n_thin)
   if (!is.na(kernel_bandwidth)) .CheckNumber(arg_check, kernel_bandwidth, lower = 0)

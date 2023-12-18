@@ -27,7 +27,7 @@ PlotGelmanRubinDiagnosticSingleChain <- function(output_data, n_burn = NA, n_seg
 
   arg_check <- .InitializeErrorList()
 
-  .CheckOutputData(arg_check, output_data)
+  .CheckOutputData(arg_check, output_data, c("Polya Urn", "Walker"))
   n_iter <- output_data$input_parameters$n_iter
   n_thin <- output_data$input_parameters$n_thin
   n_obs <- length(output_data$input_data$rc_determinations)
@@ -81,7 +81,7 @@ PlotGelmanRubinDiagnosticMultiChain <- function(output_data_list, n_burn = NA) {
   .CheckInteger(arg_check, number_of_output_data, lower = 2)
   .CheckMultipleOutputDataConsistent(arg_check, output_data_list)
   for (i in 1:number_of_output_data) {
-    .CheckOutputData(arg_check, output_data_list[[i]])
+    .CheckOutputData(arg_check, output_data_list[[i]], c("Polya Urn", "Walker"))
   }
   n_iter <- output_data_list[[1]]$input_parameters$n_iter
   n_thin <- output_data_list[[1]]$input_parameters$n_thin

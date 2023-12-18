@@ -47,12 +47,6 @@
 #' @param bounding_range_prob_cutoff Probability cut-off for choosing the bounds for the
 #' potential calendar ages for the observations
 #'
-#' @param default_prior_h_rate Default value for rate parameter in Gamma prior for rate
-#' if not specifically passed by user alongside prior_h_shape.
-#' Important to be able to set independently as determines the diffusivity of the prior
-#' Var(rate_h) = (1/default_prior_h_rate) * (n_determinations / calendar_age_interval_length)
-#' Smaller values of default_prior_h_rate will mean more diverse prior
-#'
 #' @param initial_n_internal_changepoints Number of internal changepoints to initialise
 #' the sampler with. The default is 10 (so diffuse).
 #' Will place them randomly within calendar interval
@@ -84,7 +78,6 @@ PPcalibrate <- function(
     k_max_internal_changepoints = 30,
     rescale_factor_rev_jump = 0.9,
     bounding_range_prob_cutoff = 0.005,
-    default_prior_h_rate = 0.1,
     initial_n_internal_changepoints = 10,
     grid_extension_factor = 0.1,
     use_fast = TRUE) {

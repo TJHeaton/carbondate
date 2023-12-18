@@ -86,6 +86,29 @@
 }
 
 
+.CheckIntegerVector <- function(arg_check, x, max_length = NA, len = NA, lower = NA, upper = NA) {
+  varname <- deparse(substitute(x))
+  if (!is.vector(x)) {
+    arg_check$push(paste(varname, "must be a vector"))
+  }
+  if (!is.numeric(x) || any(is.na(x)) || any(as.integer(x) - x != 0)) {
+    arg_check$push(paste(varname, "must contain only integer entries"))
+    return()
+  }
+  if (!is.na(max_length) && length(x) > max_length) {
+    arg_check$push(paste(varname, "must have at most", max_length, "elements"))
+  }
+  if (!is.na(len) && length(x) != len) {
+    arg_check$push(paste(varname, "must have exactly", len, "elements"))
+  }
+  if (!is.na(lower) && any(x < lower)) {
+    arg_check$push(paste("all entries of", varname, "must be more than or equal to", lower))
+  }
+  if (!is.na(upper) && any(x > upper)) {
+    arg_check$push(paste("all entries of", varname, "must be less than or equal to", upper))
+  }
+}
+
 .CheckChoice <- function(arg_check, x, allowed_choices) {
   varname <- deparse(substitute(x))
   if (!(x %in% allowed_choices)) {
@@ -230,27 +253,32 @@
 }
 
 
-.CheckOutputData <- function(arg_check, output_data) {
+.CheckOutputData <- function(arg_check, output_data, allowed_update_types) {
   if (!is.list(output_data) || is.null(names(output_data))) {
     arg_check$push("output data must be a named list")
     return()
   }
 
-  .CheckChoice(arg_check, output_data$update_type, c("Polya Urn", "Walker"))
-  required_list_items <- c(
-    "cluster_identifiers",
-    "alpha",
-    "n_clust",
-    "phi",
-    "tau",
-    "calendar_ages",
-    "mu_phi",
-    "update_type",
-    "input_data",
-    "input_parameters"
-  )
-  if (output_data$update_type == "walker") { required_list_items <- c(required_list_items, "weight") }
   list_names <- names(output_data)
+  if (!("update_type" %in% list_names)) {
+    arg_check$push("output data must contain the item update_type")
+  } else {
+    .CheckChoice(arg_check, output_data$update_type, allowed_update_types)
+  }
+
+  required_list_items <- c("input_data", "input_parameters", "calendar_ages")
+  if (output_data$update_type == "Polya Urn") {
+    required_list_items <- c(
+      required_list_items, "cluster_identifiers", "alpha", "n_clust", "phi", "tau", "mu_phi")
+  } else if (output_data$update_type == "Walker") {
+    required_list_items <- c(
+      required_list_items, "cluster_identifiers", "alpha", "n_clust", "phi", "tau", "mu_phi", "weight")
+  } else if (output_data$update_type == "RJPP") {
+    required_list_items <- c(required_list_items, "rate_s", "rate_h", "n_internal_changes")
+  } else {
+    stop(paste("Internal error: unknown update type:", output_data$update_type))
+  }
+
   for (list_item in required_list_items) {
     if (!(list_item %in% list_names)) {
       arg_check$push(paste("output data must contain the item", list_item))

@@ -68,7 +68,7 @@ PlotPosteriorMeanRate <- function(
   n_thin <- output_data$input_parameters$n_thin
 
   arg_check <- .InitializeErrorList()
-  .CheckRJPPOutputData(arg_check, output_data)
+  .CheckOutputData(arg_check, output_data, "RJPP")
   .CheckInteger(arg_check, n_posterior_samples, lower = 10)
   .CheckCalibrationCurveFromOutput(arg_check, output_data, calibration_curve)
   .CheckFlag(arg_check, plot_14C_age)
