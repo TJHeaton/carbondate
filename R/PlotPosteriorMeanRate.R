@@ -160,7 +160,8 @@ PlotPosteriorMeanRate <- function(
     calibration_curve_colour,
     calibration_curve_bg,
     interval_width,
-    bespoke_probability)
+    bespoke_probability,
+    title = expression(paste("Estimate of Poisson process rate ", lambda, "(t)")))
 
   .SetUpDensityPlot(plot_AD, xlim, ylim_rate)
 

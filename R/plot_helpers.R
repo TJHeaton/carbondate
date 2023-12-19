@@ -8,7 +8,8 @@
     calibration_curve_colour,
     calibration_curve_bg,
     interval_width,
-    bespoke_probability){
+    bespoke_probability,
+    title = "Calendar age density estimate"){
   graphics::par(mar = c(5, 4.5, 4, 2) + 0.1, las = 1)
   .PlotCalibrationCurve(
     plot_AD,
@@ -19,7 +20,7 @@
     calibration_curve_bg,
     interval_width,
     bespoke_probability,
-    title = "Calendar age density estimate")
+    title = title)
   graphics::rug(rc_determinations, side = 2)
 }
 

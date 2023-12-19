@@ -92,5 +92,4 @@ PlotPosteriorChangePoints <- function(
     graphics::lines(line$x, line$y, lty = line$n_change, col = colors[line$n_change], lwd = 2)
   }
   legend("topright", legend = legend, lty = n_changes, col = colors[n_changes])
-  invisible(all_densities)
 }
