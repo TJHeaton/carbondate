@@ -72,7 +72,7 @@
     min(calibration_curve$lb[calendar_age_indices]),
     max(calibration_curve$ub[calendar_age_indices])
     )
-  ylim <- ylim + 0.25 * c(-1, 1) * diff(ylim)
+  ylim <- ylim + 0.05 * c(-3, 1) * diff(ylim)
 
   graphics::plot.default(
     cal_age,

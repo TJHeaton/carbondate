@@ -93,6 +93,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
 
   # Find the calendar age range to plot
   xrange <- range(calendar_age)
+  xrange <- xrange + 0.1 * c(-1, 1) * diff(xrange)
   xrange[1] <- floor(xrange[1])
   if (resolution > 1) while (xrange[1] %% resolution != 0) xrange[1] <- xrange[1] - 1
 
