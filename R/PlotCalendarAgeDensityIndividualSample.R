@@ -50,7 +50,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
 
   arg_check <- .InitializeErrorList()
   .CheckInteger(arg_check, ident)
-  .CheckOutputData(arg_check, output_data,  c("Polya Urn", "Walker"))
+  .CheckOutputData(arg_check, output_data,  c("Polya Urn", "Walker", "RJPP"))
   n_iter <- output_data$input_parameters$n_iter
   n_thin <- output_data$input_parameters$n_thin
 
@@ -58,6 +58,9 @@ PlotCalendarAgeDensityIndividualSample <- function(
   .CheckInteger(arg_check, resolution, lower = 1)
   .CheckNBurnAndNEnd(arg_check, n_burn, n_end, n_iter, n_thin)
   .ReportErrors(arg_check)
+
+  n_burn <- .SetNBurn(n_burn, n_iter, n_thin)
+  n_end <- .SetNEnd(n_end, n_iter, n_thin)
 
   if (is.null(calibration_curve)) {
     calibration_curve <- get(output_data$input_data$calibration_curve_name)
@@ -82,15 +85,11 @@ PlotCalendarAgeDensityIndividualSample <- function(
     }
   }
 
-  calendar_age <- output_data$calendar_ages[, ident]
+  calendar_age <- output_data$calendar_ages[(n_burn+1):n_end, ident]
   rc_age <- rc_determinations[ident]
   rc_sig <- rc_sigmas[ident]
 
   smoothed_density <- stats::density(calendar_age, bw="SJ")
-
-  n_burn <- .SetNBurn(n_burn, n_iter, n_thin)
-  n_end <- .SetNEnd(n_end, n_iter, n_thin)
-  calendar_age <- calendar_age[(n_burn+1):n_end]
 
   # Find the calendar age range to plot
   xrange <- range(calendar_age)
@@ -167,8 +166,6 @@ PlotCalendarAgeDensityIndividualSample <- function(
   }
   temphist <- graphics::hist(calendar_age, breaks = breaks, plot = FALSE)
 
-  diff <- diff(xrange)
-  xrange <- xrange + c(-1, 1) * diff * 0.4
   graphics::hist(
     calendar_age,
     prob = TRUE,
@@ -183,7 +180,9 @@ PlotCalendarAgeDensityIndividualSample <- function(
     col = "lavender",
     border = "purple")
   if (show_unmodelled_density) {
-    unmodelled <- CalibrateSingleDetermination(rc_age, rc_sig, calibration_curve)
+    unmodelled <- CalibrateSingleDetermination(
+      rc_age, rc_sig, InterpolateCalibrationCurve(breaks, calibration_curve))
+    unmodelled$probability <- unmodelled$probability / sum(unmodelled$probability * resolution)
     graphics::polygon(
       c(unmodelled$calendar_age_BP, rev(unmodelled$calendar_age_BP)),
       c(unmodelled$probability, rep(0, length(unmodelled$probability))),
