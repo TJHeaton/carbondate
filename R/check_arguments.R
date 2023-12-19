@@ -186,7 +186,7 @@
 }
 
 
-.CheckDpmmParameters <- function(
+.CheckDPMMParameters <- function(
     arg_check,
     sensible_initialisation,
     num_observations,
