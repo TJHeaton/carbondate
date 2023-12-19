@@ -12,7 +12,8 @@
 #' are not used to calculate the PSRF. If not given, the first half of the
 #' MCMC chain is discarded. Note that the maximum
 #' value that can be chosen is `n_iter - 100 * n_thin` (where `n_iter` and `n_thin` are the
-#' arguments given to [carbondate::PolyaUrnBivarDirichlet] or c[carbondate::WalkerBivarDirichlet]).
+#' arguments given to [carbondate::PolyaUrnBivarDirichlet], c[carbondate::WalkerBivarDirichlet]) or
+#' c[carbondate::PPcalibrate]).
 #' @param n_segments The number of segments to split the chain into. Default is 3, must be a
 #' number between 2 and 10.
 #'
@@ -27,7 +28,7 @@ PlotGelmanRubinDiagnosticSingleChain <- function(output_data, n_burn = NA, n_seg
 
   arg_check <- .InitializeErrorList()
 
-  .CheckOutputData(arg_check, output_data, c("Polya Urn", "Walker"))
+  .CheckOutputData(arg_check, output_data, c("Polya Urn", "Walker", "RJPP"))
   n_iter <- output_data$input_parameters$n_iter
   n_thin <- output_data$input_parameters$n_thin
   n_obs <- length(output_data$input_data$rc_determinations)
@@ -62,7 +63,8 @@ PlotGelmanRubinDiagnosticSingleChain <- function(output_data, n_burn = NA, n_seg
 #' are not used to calculate the PSRF. If not given, the first half of the
 #' MCMC chain is discarded. Note that the maximum
 #' value that can be chosen is `n_iter - 100 * n_thin` (where `n_iter` and `n_thin` are the
-#' arguments given to [carbondate::PolyaUrnBivarDirichlet] or c[carbondate::WalkerBivarDirichlet]).
+#' arguments given to [carbondate::PolyaUrnBivarDirichlet], c[carbondate::WalkerBivarDirichlet]) or
+#' c[carbondate::PPcalibrate]).
 #' @param n_burn The number of samples required for burn-in.
 #'
 #' @return No value
@@ -81,7 +83,7 @@ PlotGelmanRubinDiagnosticMultiChain <- function(output_data_list, n_burn = NA) {
   .CheckInteger(arg_check, number_of_output_data, lower = 2)
   .CheckMultipleOutputDataConsistent(arg_check, output_data_list)
   for (i in 1:number_of_output_data) {
-    .CheckOutputData(arg_check, output_data_list[[i]], c("Polya Urn", "Walker"))
+    .CheckOutputData(arg_check, output_data_list[[i]], c("Polya Urn", "Walker", "RJPP"))
   }
   n_iter <- output_data_list[[1]]$input_parameters$n_iter
   n_thin <- output_data_list[[1]]$input_parameters$n_thin
