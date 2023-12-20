@@ -57,7 +57,7 @@ UpdateCalendarAgesGibbs <- function(
   trimmed_posterior_calendar_ages <- lapply(
     trimmed_likelihood_calendar_ages_from_calibration_curve,
     FUN = function(trimmed_likelihood, prior_calendar_ages) {
-      trimmed_prior_calendar_ages = prior_calendar_ages[
+      trimmed_prior_calendar_ages <- prior_calendar_ages[
         trimmed_likelihood$start_index:trimmed_likelihood$end_index]
       list(
         values = trimmed_likelihood$values * trimmed_prior_calendar_ages,

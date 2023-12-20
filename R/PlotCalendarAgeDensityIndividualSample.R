@@ -17,7 +17,6 @@
 #' if "bespoke" is chosen above. E.g. if 0.95 is chosen, then the 95% confidence
 #' interval is calculated. Ignored if "bespoke" is not chosen.
 #' @param show_hpd_ranges Set to `TRUE` to also show the highest posterior range on the plot.
-#' These are calculated using [HDInterval::hdi]. Default is `FALSE`.
 #' @param show_unmodelled_density Set to `TRUE` to also show the unmodelled density (i.e. the
 #' result of [carbondate::CalibrateSingleDetermination]) on the plot. Default is `FALSE`.
 #'
