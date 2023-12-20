@@ -10,8 +10,15 @@
 status](https://www.r-pkg.org/badges/version/carbondate)](https://CRAN.R-project.org/package=carbondate)
 <!-- badges: end -->
 
-An R package to analyse multiple radiocarbon determinations. It is based
-on the original functions available
+An R package to analyse, and summarise, multiple radiocarbon ($^{14}$C)
+determinations. The package provides two linked (but distinct)
+approaches:
+
+- Non-Parametric Density Estimation (a rigorous and robust alternative
+  to summed probability distributions)
+- Variable Rate Poisson Process Estimation (a linked approach)
+
+. It is based on the original functions available
 [here](https://github.com/TJHeaton/NonparametricCalibration) which were
 used for “Non-parametric calibration of multiple related radiocarbon
 determinations and their calendar age summarisation”
@@ -56,13 +63,12 @@ Once the calibration has been run, the calendar age density can be
 plotted.
 
 ``` r
-densities = PlotPredictiveCalendarAgeDensity(
+densities <- PlotPredictiveCalendarAgeDensity(
   output_data = list(walker_output, polya_urn_output),
   n_posterior_samples = 5000,
   show_SPD = TRUE)
 ```
 
-<!--suppress ALL, CheckImageSize -->
 <img src="man/figures/README-plot_density-1.png" width="100%" />
 
 For a full example run-through, load the vignette:
