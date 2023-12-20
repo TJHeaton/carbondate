@@ -78,9 +78,14 @@ PPcalibrate <- function(
     k_max_internal_changepoints = 30,
     rescale_factor_rev_jump = 0.9,
     bounding_range_prob_cutoff = 0.005,
-    initial_n_internal_changepoints = 10,
+    initial_n_internal_changepoints = 3,
     grid_extension_factor = 0.1,
     use_fast = TRUE) {
+
+
+  # TODO - Axis labels for posterior mean rate 14C yr BP
+  # TODO - Axis labels for posterior locations - cal yr BP
+  # TODO - Axis labels for posterior height - events per cal yr
 
   # TODO - Check both prior_h_shape and prior_h_rate specified (or both NA)
   # TODO - Check initial_n_internal_changepoints < k_max
