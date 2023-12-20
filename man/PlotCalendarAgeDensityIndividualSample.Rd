@@ -59,8 +59,7 @@ arguments given to \link{PolyaUrnBivarDirichlet} or \link{WalkerBivarDirichlet})
 \item{n_end}{The iteration number of the last sample to use. Assumed to be the number of iterations
 if not given.}
 
-\item{show_hpd_ranges}{Set to \code{TRUE} to also show the highest posterior range on the plot.
-These are calculated using \link[HDInterval:hdi]{HDInterval::hdi}. Default is \code{FALSE}.}
+\item{show_hpd_ranges}{Set to \code{TRUE} to also show the highest posterior range on the plot.}
 
 \item{show_unmodelled_density}{Set to \code{TRUE} to also show the unmodelled density (i.e. the
 result of \link{CalibrateSingleDetermination}) on the plot. Default is \code{FALSE}.}

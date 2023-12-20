@@ -15,7 +15,7 @@
 PlotNumberOfClusters <- function(output_data, n_burn = NA, n_end = NA) {
 
   arg_check <- .InitializeErrorList()
-  .CheckOutputData(arg_check, output_data)
+  .CheckOutputData(arg_check, output_data, c("Polya Urn", "Walker"))
   n_iter <- output_data$input_parameters$n_iter
   n_thin <- output_data$input_parameters$n_thin
   .CheckNBurnAndNEnd(arg_check, n_burn, n_end, n_iter, n_thin)
@@ -25,8 +25,10 @@ PlotNumberOfClusters <- function(output_data, n_burn = NA, n_end = NA) {
   n_end <- .SetNEnd(n_end, n_iter, n_thin)
 
   n_clusters <- output_data$n_clust[(n_burn + 1):n_end]
-  graphics::hist(n_clusters,
-       xlab = "Number of Clusters",
-       probability = TRUE,
-       breaks = seq(0.5, max(n_clusters) + 1, by = 1))
+  graphics::hist(
+    n_clusters,
+    xlab = "Number of Clusters",
+    probability = TRUE,
+    breaks = seq(0.5, max(n_clusters) + 1, by = 1),
+    main = NA)
 }

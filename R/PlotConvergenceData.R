@@ -21,7 +21,7 @@
 PlotConvergenceData <- function(output_data, n_initial = NA) {
 
   arg_check <- .InitializeErrorList()
-  .CheckOutputData(arg_check, output_data)
+  .CheckOutputData(arg_check, output_data, c("Polya Urn", "Walker"))
 
   n_iter <- output_data$input_parameters$n_iter
   n_thin <- output_data$input_parameters$n_thin

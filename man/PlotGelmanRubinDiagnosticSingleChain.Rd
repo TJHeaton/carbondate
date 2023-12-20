@@ -15,7 +15,8 @@ PlotGelmanRubinDiagnosticSingleChain(output_data, n_burn = NA, n_segments = 3)
 are not used to calculate the PSRF. If not given, the first half of the
 MCMC chain is discarded. Note that the maximum
 value that can be chosen is \code{n_iter - 100 * n_thin} (where \code{n_iter} and \code{n_thin} are the
-arguments given to \link{PolyaUrnBivarDirichlet} or c\link{WalkerBivarDirichlet}).}
+arguments given to \link{PolyaUrnBivarDirichlet}, c\link{WalkerBivarDirichlet}) or
+c\link{PPcalibrate}).}
 
 \item{n_segments}{The number of segments to split the chain into. Default is 3, must be a
 number between 2 and 10.}

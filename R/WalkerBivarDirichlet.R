@@ -139,7 +139,7 @@ WalkerBivarDirichlet <- function(
 
   .CheckInputData(arg_check, rc_determinations, rc_sigmas, F14C_inputs)
   .CheckCalibrationCurve(arg_check, calibration_curve, NA)
-  .CheckDpmmParameters(
+  .CheckDPMMParameters(
     arg_check,
     sensible_initialisation,
     num_observations,
