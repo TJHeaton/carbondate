@@ -6,16 +6,16 @@ all_data <- list(
 ppo_fast <- list()
 ppo_normal <- list()
 
-for (species in names(all_data)) {
+for (species in c("alces", "bison")) {
   print (species)
 
   set.seed(14)
   ppo_fast[[species]] <- PPcalibrate(
-    all_data[[species]]$c14_age, all_data[[species]]$c14_sig, intcal20, n_iter = 1e5, calendar_grid_resolution = 10, use_fast = TRUE)
+    all_data[[species]]$c14_age, all_data[[species]]$c14_sig, intcal20, n_iter = 1e5, calendar_grid_resolution = 10, use_cpp = TRUE)
 
   set.seed(14)
   ppo_normal[[species]] <- PPcalibrate(
-    all_data[[species]]$c14_age, all_data[[species]]$c14_sig, intcal20, n_iter = 1e5, calendar_grid_resolution = 10, use_fast = FALSE)
+    all_data[[species]]$c14_age, all_data[[species]]$c14_sig, intcal20, n_iter = 1e5, calendar_grid_resolution = 10, use_cpp = FALSE)
 
   layout.matrix <- matrix(c(1, 2, 3, 4, 5, 6, 7, 8), nrow = 4, ncol = 2)
   layout(mat = layout.matrix, heights = c(1, 1), widths = c(1, 1))

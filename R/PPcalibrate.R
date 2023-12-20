@@ -80,7 +80,8 @@ PPcalibrate <- function(
     bounding_range_prob_cutoff = 0.005,
     initial_n_internal_changepoints = 10,
     grid_extension_factor = 0.1,
-    use_fast = TRUE) {
+    use_fast = TRUE,
+    use_cpp = TRUE) {
 
   # TODO - Check both prior_h_shape and prior_h_rate specified (or both NA)
   # TODO - Check initial_n_internal_changepoints < k_max
@@ -258,6 +259,18 @@ PPcalibrate <- function(
       FUN = .FindTrimmedVectorAndIndices,
       prob_cutoff = bounding_range_prob_cutoff,
       simplify = FALSE)
+
+    if (use_cpp) {
+      likelihood_values <- list()
+      likelihood_offsets <- c()
+
+      for (i in seq_along(trimmed_likelihood_calendar_ages_from_calibration_curve)) {
+        likelihood_values[[i]] <- trimmed_likelihood_calendar_ages_from_calibration_curve[[i]]$values
+        likelihood_offsets[i] <- trimmed_likelihood_calendar_ages_from_calibration_curve[[i]]$start_index - 1
+      }
+      likelihood_offsets <- as.integer(likelihood_offsets)
+    }
+
   }
 
   num_observations <- length(rc_determinations)
@@ -287,12 +300,20 @@ PPcalibrate <- function(
   ## Store calendar_ages given initial_rate_s and initial_rate_h
   ## (sample from exactly using Gibbs)
   if (use_fast) {
-    calendar_ages <- .TrimmedUpdateCalendarAgesGibbs(
-      trimmed_likelihood_calendar_ages_from_calibration_curve = trimmed_likelihood_calendar_ages_from_calibration_curve,
+    if (use_cpp) {
+      calendar_ages <- .TrimmedUpdateCalendarAgesGibbsCPP(
       calendar_age_grid = calendar_age_grid,
       rate_s = rate_s,
-      rate_h = rate_h
-    )
+      rate_h = rate_h,
+      likelihood_values = likelihood_values,
+      likelihood_offsets = likelihood_offsets)
+    } else {
+      calendar_ages <- .TrimmedUpdateCalendarAgesGibbs(
+        trimmed_likelihood_calendar_ages_from_calibration_curve = trimmed_likelihood_calendar_ages_from_calibration_curve,
+        calendar_age_grid = calendar_age_grid,
+        rate_s = rate_s,
+        rate_h = rate_h)
+    }
   } else {
     calendar_ages <- UpdateCalendarAgesGibbs(
       likelihood_calendar_ages_from_calibration_curve = likelihood_calendar_ages_from_calibration_curve,
@@ -321,12 +342,20 @@ PPcalibrate <- function(
 
     ## Step 1: Update calendar_ages given rate_s and rate_h (sample from exactly using Gibbs)
     if (use_fast) {
-      calendar_ages <- .TrimmedUpdateCalendarAgesGibbs(
-        trimmed_likelihood_calendar_ages_from_calibration_curve = trimmed_likelihood_calendar_ages_from_calibration_curve,
+      if (use_cpp) {
+        calendar_ages <- .TrimmedUpdateCalendarAgesGibbsCPP(
         calendar_age_grid = calendar_age_grid,
         rate_s = rate_s,
-        rate_h = rate_h
-      )
+        rate_h = rate_h,
+        likelihood_values = likelihood_values,
+        likelihood_offsets = likelihood_offsets)
+      } else {
+        calendar_ages <- .TrimmedUpdateCalendarAgesGibbs(
+          trimmed_likelihood_calendar_ages_from_calibration_curve = trimmed_likelihood_calendar_ages_from_calibration_curve,
+          calendar_age_grid = calendar_age_grid,
+          rate_s = rate_s,
+          rate_h = rate_h)
+      }
     } else {
       calendar_ages <- UpdateCalendarAgesGibbs(
         likelihood_calendar_ages_from_calibration_curve = likelihood_calendar_ages_from_calibration_curve,

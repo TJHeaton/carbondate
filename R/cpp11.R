@@ -28,6 +28,10 @@ PolyaUrnUpdateStep <- function(current_calendar_ages, current_cluster_ids, curre
   .Call(`_carbondate_PolyaUrnUpdateStep`, current_calendar_ages, current_cluster_ids, current_phi, current_tau, current_alpha, current_mu_phi, alpha_shape, alpha_rate, lambda, nu1, nu2, A, B, w, m, c14_determinations, c14_sigmas, calcurve_yr_index_offset, mucalallyr, sigcalallyr)
 }
 
+UpdateCalendarAgesGibbs <- function(prior_calendar_ages, calendar_age_grid, likelihood_calendar_ages_from_calibration_curve, likelihood_offsets) {
+  .Call(`_carbondate_UpdateCalendarAgesGibbs`, prior_calendar_ages, calendar_age_grid, likelihood_calendar_ages_from_calibration_curve, likelihood_offsets)
+}
+
 WalkerUpdateStep <- function(current_calendar_ages, current_weight, current_v, current_cluster_ids, current_alpha, current_mu_phi, alpha_shape, alpha_rate, lambda, nu1, nu2, A, B, w, m, c14_determinations, c14_sigmas, calcurve_yr_index_offset, mucalallyr, sigcalallyr) {
   .Call(`_carbondate_WalkerUpdateStep`, current_calendar_ages, current_weight, current_v, current_cluster_ids, current_alpha, current_mu_phi, alpha_shape, alpha_rate, lambda, nu1, nu2, A, B, w, m, c14_determinations, c14_sigmas, calcurve_yr_index_offset, mucalallyr, sigcalallyr)
 }
