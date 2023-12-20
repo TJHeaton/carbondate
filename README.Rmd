@@ -20,7 +20,12 @@ knitr::opts_chunk$set(
 [![CRAN status](https://www.r-pkg.org/badges/version/carbondate)](https://CRAN.R-project.org/package=carbondate)
 <!-- badges: end -->
 
-An R package to analyse multiple radiocarbon determinations. It is based on the 
+An R package to analyse, and summarise, multiple radiocarbon ($^{14}$C) determinations. The package provides two linked (but distinct) approaches:
+
+- Non-Parametric Density Estimation (a rigorous and robust alternative to summed probability distributions)
+- Variable Rate Poisson Process Estimation (a linked approach)
+
+. It is based on the 
 original functions available 
 [here](https://github.com/TJHeaton/NonparametricCalibration) which were used for 
 "Non-parametric calibration of multiple related radiocarbon determinations and 
