@@ -55,7 +55,7 @@ UpdateCalendarAgesGibbs <- function(
     rate_h = rate_h,
     theta = calendar_age_grid)
 
-  updated_calendar_ages <- UpdateCalendarAgesGibbs(
+  updated_calendar_ages <- UpdateCalendarAgesGibbsCpp(
     prior_calendar_ages, calendar_age_grid, likelihood_values, likelihood_offsets)
 
   return(updated_calendar_ages)
@@ -75,25 +75,15 @@ UpdateCalendarAgesGibbs <- function(
     rate_h = rate_h,
     theta = calendar_age_grid)
 
-  trimmed_posterior_calendar_ages <- lapply(
-    trimmed_likelihood_calendar_ages_from_calibration_curve,
-    FUN = function(trimmed_likelihood, prior_calendar_ages) {
-      trimmed_prior_calendar_ages <- prior_calendar_ages[
-        trimmed_likelihood$start_index:trimmed_likelihood$end_index]
-      list(
-        values = trimmed_likelihood$values * trimmed_prior_calendar_ages,
-        start_index = trimmed_likelihood$start_index,
-        end_index = trimmed_likelihood$end_index)
-    },
-    prior_calendar_ages = prior_calendar_ages)
-
   updated_calendar_ages <- sapply(
-    trimmed_posterior_calendar_ages,
-    FUN = function(trimmed_probs, theta) {
-      sample(theta[trimmed_probs$start_index:trimmed_probs$end_index], 1, prob=trimmed_probs$values)
+    trimmed_likelihood_calendar_ages_from_calibration_curve,
+    FUN = function(likelihood, prior_calendar_ages, calendar_age_grid) {
+      posterior_calendar_ages <- prior_calendar_ages[likelihood$start:likelihood$end] * likelihood$values
+      theta <- calendar_age_grid[likelihood$start:likelihood$end]
+      sample(theta, 1, prob=posterior_calendar_ages)
     },
-    theta = calendar_age_grid,
-    simplify = TRUE)
+    prior_calendar_ages = prior_calendar_ages,
+    calendar_age_grid = calendar_age_grid)
 
   return(updated_calendar_ages)
 }

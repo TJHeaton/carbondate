@@ -55,10 +55,10 @@ extern "C" SEXP _carbondate_PolyaUrnUpdateStep(SEXP current_calendar_ages, SEXP 
   END_CPP11
 }
 // update_calendar_ages_rjpp.cpp
-doubles UpdateCalendarAgesGibbs(doubles prior_calendar_ages, doubles calendar_age_grid, list likelihood_calendar_ages_from_calibration_curve, integers likelihood_offsets);
-extern "C" SEXP _carbondate_UpdateCalendarAgesGibbs(SEXP prior_calendar_ages, SEXP calendar_age_grid, SEXP likelihood_calendar_ages_from_calibration_curve, SEXP likelihood_offsets) {
+doubles UpdateCalendarAgesGibbsCpp(doubles prior_calendar_ages, doubles calendar_age_grid, list likelihood_calendar_ages_from_calibration_curve, integers likelihood_offset);
+extern "C" SEXP _carbondate_UpdateCalendarAgesGibbsCpp(SEXP prior_calendar_ages, SEXP calendar_age_grid, SEXP likelihood_calendar_ages_from_calibration_curve, SEXP likelihood_offset) {
   BEGIN_CPP11
-    return cpp11::as_sexp(UpdateCalendarAgesGibbs(cpp11::as_cpp<cpp11::decay_t<doubles>>(prior_calendar_ages), cpp11::as_cpp<cpp11::decay_t<doubles>>(calendar_age_grid), cpp11::as_cpp<cpp11::decay_t<list>>(likelihood_calendar_ages_from_calibration_curve), cpp11::as_cpp<cpp11::decay_t<integers>>(likelihood_offsets)));
+    return cpp11::as_sexp(UpdateCalendarAgesGibbsCpp(cpp11::as_cpp<cpp11::decay_t<doubles>>(prior_calendar_ages), cpp11::as_cpp<cpp11::decay_t<doubles>>(calendar_age_grid), cpp11::as_cpp<cpp11::decay_t<list>>(likelihood_calendar_ages_from_calibration_curve), cpp11::as_cpp<cpp11::decay_t<integers>>(likelihood_offset)));
   END_CPP11
 }
 // walker_update_step.cpp
@@ -78,7 +78,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_carbondate_FindPredictiveDensityWalker",          (DL_FUNC) &_carbondate_FindPredictiveDensityWalker,           8},
     {"_carbondate_FindPredictiveDensityandCIPolyaUrn",   (DL_FUNC) &_carbondate_FindPredictiveDensityandCIPolyaUrn,   14},
     {"_carbondate_PolyaUrnUpdateStep",                   (DL_FUNC) &_carbondate_PolyaUrnUpdateStep,                   20},
-    {"_carbondate_UpdateCalendarAgesGibbs",              (DL_FUNC) &_carbondate_UpdateCalendarAgesGibbs,               4},
+    {"_carbondate_UpdateCalendarAgesGibbsCpp",           (DL_FUNC) &_carbondate_UpdateCalendarAgesGibbsCpp,            4},
     {"_carbondate_WalkerUpdateStep",                     (DL_FUNC) &_carbondate_WalkerUpdateStep,                     20},
     {NULL, NULL, 0}
 };

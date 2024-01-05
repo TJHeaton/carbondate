@@ -23,7 +23,8 @@ PPcalibrate(
   bounding_range_prob_cutoff = 0.005,
   initial_n_internal_changepoints = 10,
   grid_extension_factor = 0.1,
-  use_fast = TRUE
+  use_fast = TRUE,
+  use_cpp = FALSE
 )
 }
 \arguments{
@@ -83,6 +84,8 @@ rc_determinations, how far you wish to extend the grid beyond this adaptive mini
 The final range will be extended (eqaully on both sides) to cover (1 + grid_extension_factor) * (calendar_age_range)}
 
 \item{use_fast}{Adding a flag to allow trimming the likelihoods based on prob cutoff}
+
+\item{use_cpp}{Use cpp version}
 }
 \value{
 TODO

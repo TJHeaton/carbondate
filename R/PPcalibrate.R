@@ -57,6 +57,8 @@
 #'
 #' @param use_fast Adding a flag to allow trimming the likelihoods based on prob cutoff
 #'
+#' @param use_cpp Use cpp version
+#'
 #' @return TODO
 #' @export
 #'
@@ -81,7 +83,7 @@ PPcalibrate <- function(
     initial_n_internal_changepoints = 10,
     grid_extension_factor = 0.1,
     use_fast = TRUE,
-    use_cpp = TRUE) {
+    use_cpp = FALSE) {
 
   # TODO - Check both prior_h_shape and prior_h_rate specified (or both NA)
   # TODO - Check initial_n_internal_changepoints < k_max
@@ -179,8 +181,7 @@ PPcalibrate <- function(
     max_potential_calendar_age <- (
       calendar_age_grid[length(calendar_age_grid)] + calendar_grid_resolution
     )
-    cc <- c(calendar_age_grid,
-                           max_potential_calendar_age)
+    cc <- c(calendar_age_grid, max_potential_calendar_age)
   }
 
   calendar_age_interval_length <- max_potential_calendar_age - min_potential_calendar_age
@@ -260,17 +261,18 @@ PPcalibrate <- function(
       prob_cutoff = bounding_range_prob_cutoff,
       simplify = FALSE)
 
-    if (use_cpp) {
-      likelihood_values <- list()
-      likelihood_offsets <- c()
+    likelihood_values <- list()
+    likelihood_offsets <- c()
 
-      for (i in seq_along(trimmed_likelihood_calendar_ages_from_calibration_curve)) {
-        likelihood_values[[i]] <- trimmed_likelihood_calendar_ages_from_calibration_curve[[i]]$values
-        likelihood_offsets[i] <- trimmed_likelihood_calendar_ages_from_calibration_curve[[i]]$start_index - 1
-      }
-      likelihood_offsets <- as.integer(likelihood_offsets)
+    for (i in seq_along(trimmed_likelihood_calendar_ages_from_calibration_curve)) {
+      likelihood_values[[i]] <- trimmed_likelihood_calendar_ages_from_calibration_curve[[i]]$values
+      likelihood_offsets[i] <- as.integer(trimmed_likelihood_calendar_ages_from_calibration_curve[[i]]$start - 1)
     }
 
+  } else  {
+    trimmed_likelihood_calendar_ages_from_calibration_curve <- NA
+    likelihood_values <- NA
+    likelihood_offsets <- NA
   }
 
   num_observations <- length(rc_determinations)
@@ -299,32 +301,17 @@ PPcalibrate <- function(
 
   ## Store calendar_ages given initial_rate_s and initial_rate_h
   ## (sample from exactly using Gibbs)
-  if (use_fast) {
-    if (use_cpp) {
-      calendar_ages <- .TrimmedUpdateCalendarAgesGibbsCPP(
-      calendar_age_grid = calendar_age_grid,
-      rate_s = rate_s,
-      rate_h = rate_h,
-      likelihood_values = likelihood_values,
-      likelihood_offsets = likelihood_offsets)
-    } else {
-      calendar_ages <- .TrimmedUpdateCalendarAgesGibbs(
-        trimmed_likelihood_calendar_ages_from_calibration_curve = trimmed_likelihood_calendar_ages_from_calibration_curve,
-        calendar_age_grid = calendar_age_grid,
-        rate_s = rate_s,
-        rate_h = rate_h)
-    }
-  } else {
-    calendar_ages <- UpdateCalendarAgesGibbs(
-      likelihood_calendar_ages_from_calibration_curve = likelihood_calendar_ages_from_calibration_curve,
-      calendar_age_grid = calendar_age_grid,
-      rate_s = rate_s,
-      rate_h = rate_h
-    )
-  }
-
+  calendar_ages <- .UpdateCalendarAges(
+    likelihood_calendar_ages_from_calibration_curve,
+    trimmed_likelihood_calendar_ages_from_calibration_curve,
+    likelihood_values,
+    likelihood_offsets,
+    calendar_age_grid,
+    rate_s,
+    rate_h,
+    use_fast,
+    use_cpp)
   theta_out[output_index, ] <- calendar_ages
-
 
 
   #####################################
@@ -341,29 +328,16 @@ PPcalibrate <- function(
   for(iter in 1:n_iter) {
 
     ## Step 1: Update calendar_ages given rate_s and rate_h (sample from exactly using Gibbs)
-    if (use_fast) {
-      if (use_cpp) {
-        calendar_ages <- .TrimmedUpdateCalendarAgesGibbsCPP(
-        calendar_age_grid = calendar_age_grid,
-        rate_s = rate_s,
-        rate_h = rate_h,
-        likelihood_values = likelihood_values,
-        likelihood_offsets = likelihood_offsets)
-      } else {
-        calendar_ages <- .TrimmedUpdateCalendarAgesGibbs(
-          trimmed_likelihood_calendar_ages_from_calibration_curve = trimmed_likelihood_calendar_ages_from_calibration_curve,
-          calendar_age_grid = calendar_age_grid,
-          rate_s = rate_s,
-          rate_h = rate_h)
-      }
-    } else {
-      calendar_ages <- UpdateCalendarAgesGibbs(
-        likelihood_calendar_ages_from_calibration_curve = likelihood_calendar_ages_from_calibration_curve,
-        calendar_age_grid = calendar_age_grid,
-        rate_s = rate_s,
-        rate_h = rate_h
-      )
-    }
+    calendar_ages <- .UpdateCalendarAges(
+      likelihood_calendar_ages_from_calibration_curve,
+      trimmed_likelihood_calendar_ages_from_calibration_curve,
+      likelihood_values,
+      likelihood_offsets,
+      calendar_age_grid,
+      rate_s,
+      rate_h,
+      use_fast,
+      use_cpp)
 
     ## Step 2: Update rate_s and rate_h given current calendar_ages (using RJMCMC)
     updated_poisson_process <- UpdatePoissonProcessRateRevJump(
@@ -408,6 +382,45 @@ PPcalibrate <- function(
 
   if (show_progress) close(progress_bar)
   return(return_list)
+}
+
+
+.UpdateCalendarAges <- function(
+  likelihood_calendar_ages_from_calibration_curve,
+  trimmed_likelihood_calendar_ages_from_calibration_curve,
+  likelihood_values,
+  likelihood_offsets,
+  calendar_age_grid,
+  rate_s,
+  rate_h,
+  use_fast,
+  use_cpp) {
+  if (use_fast) {
+    if (use_cpp) {
+      calendar_ages <- .TrimmedUpdateCalendarAgesGibbsCPP(
+        calendar_age_grid = calendar_age_grid,
+        rate_s = rate_s,
+        rate_h = rate_h,
+        likelihood_values = likelihood_values,
+        likelihood_offsets = likelihood_offsets)
+    } else {
+      calendar_ages <- .TrimmedUpdateCalendarAgesGibbs(
+        trimmed_likelihood_calendar_ages_from_calibration_curve = trimmed_likelihood_calendar_ages_from_calibration_curve,
+        calendar_age_grid = calendar_age_grid,
+        rate_s = rate_s,
+        rate_h = rate_h,
+        likelihood_values,
+        likelihood_offsets)
+    }
+  } else {
+    calendar_ages <- UpdateCalendarAgesGibbs(
+      likelihood_calendar_ages_from_calibration_curve = likelihood_calendar_ages_from_calibration_curve,
+      calendar_age_grid = calendar_age_grid,
+      rate_s = rate_s,
+      rate_h = rate_h
+    )
+  }
+  return(calendar_ages)
 }
 
 ## TODO - Think about how to choose min and max cut-off currently ends where there is an observation so will have higher rate

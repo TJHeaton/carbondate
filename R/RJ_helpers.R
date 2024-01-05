@@ -115,7 +115,7 @@
   min_index <- min(which(cumulative_sum > prob_cutoff * total_sum))
   max_index <- min(which(cumulative_sum > total_sum * (1 - prob_cutoff)))
 
-  return (list(values = vector[min_index:max_index], start_index = min_index, end_index = max_index))
+  return (list(values = vector[min_index:max_index], start = min_index, end = max_index))
 }
 
 
