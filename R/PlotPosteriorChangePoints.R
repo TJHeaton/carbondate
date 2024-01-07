@@ -84,7 +84,7 @@ PlotPosteriorChangePoints <- function(
     y = NA,
     xlim = rev(cal_age_range),
     ylim = c(0, max_density * 1.2),
-    xlab = "Calendar Age BP",
+    xlab = "Calendar Age (cal yr BP)",
     ylab = "Density",
     type = "n",
   )

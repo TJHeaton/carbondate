@@ -82,11 +82,6 @@ PPcalibrate <- function(
     grid_extension_factor = 0.1,
     use_fast = TRUE) {
 
-
-  # TODO - Axis labels for posterior mean rate 14C yr BP
-  # TODO - Axis labels for posterior locations - cal yr BP
-  # TODO - Axis labels for posterior height - events per cal yr
-
   # TODO - Check both prior_h_shape and prior_h_rate specified (or both NA)
   # TODO - Check initial_n_internal_changepoints < k_max
   # TODO - Check parameters are within required bounds e.g. +ve/-ve

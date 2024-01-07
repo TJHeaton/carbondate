@@ -52,7 +52,7 @@
   if (plot_14C_age) {
     rc_age <- calibration_curve$c14_age
     rc_sig <- calibration_curve$c14_sig
-    y_label <- expression(paste(""^14, "C", " age (yr BP)"))
+    y_label <- expression(paste("Radiocarbon age (", ""^14, "C ", "yr BP)"))
   } else {
     rc_age <- calibration_curve$f14c
     rc_sig <- calibration_curve$f14c_sig

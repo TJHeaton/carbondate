@@ -79,7 +79,7 @@ PlotPosteriorHeights <- function(
     y = NA,
     xlim = c(0, max_height),
     ylim = c(0, max_density * 1.2),
-    xlab = "Rate of process (events per year)",
+    xlab = "Rate of process (events per cal yr)",
     ylab = "Density",
     type = "n"
   )
