@@ -20,20 +20,49 @@ library(carbondate)
 set.seed(15)
 ```
 
-# Introduction
+# Introduction  
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-Radiocarbon Calibration Of Multiple $^{14}$C Samples Using Reversible Jump MCMC and a Poisson process
+This component  of the library allows you to model (and estimate) the occurrence of radiocarbon samples as a variable-rate (inhomogeneous) Poisson process. This is done using function `PPcalibrate`. The aim of this function is primarily to allow a user to estimate the variable (calendar year) rate at which a set of radiocarbon samples are observed, and identify changepoints in that rate. 
 
-The goal of RJradiocarbon is to model the occurrence of radiocarbon samples as a (variable rate) Poisson process. Given a set of multiple $^{14}$C samples, 
+Dependent upon the representativeness of the underlying sampling, this can then be used via a _"dates-as-data"_ approach [@rick1987] to provide a proxy for changes in population or activity.    
+
+<!--- Radiocarbon Calibration Of Multiple $^{14}$C Samples Using Reversible Jump MCMC and a Poisson process -->
+
+## Modelling Ideas
+
+Suppose we have a series of $n$ events, which occur at calendar times $\{\theta_i, i= 1,\ldots,n \}$ cal yr BP. Each event is assumed to result in the generation of a radiocarbon sample, $\{ X_i, i= 1,\ldots,n \}$. Examples of events might be:
+
+- the death of an animal (which leaves a bone)
+- the creation of a cave painting (which leaves a painting)
+- construction of a settlement (which leaves a farmstead)
+
+We model the occurrence of these events as random and aim to investigate whether, and how, the rate at which they occur varies over calendar time.
+
+Specifically, we assume that the events occur according to a Poisson Process with a variable rate $\lambda(t)$. This rate $\lambda(t)$ is considered piecewise-constant, but changes an unknown number of times and at unknown calendar ages. Time periods where the rate $\lambda(t)$ is high will typically be expected to generate a greater number of events (perhaps since there is more activity, or a greater population, at the site/sites); while periods when the rate $\lambda(t)$ is lower (perhaps due to lower activity at the site/sites) will be expected to have fewer events. 
+
+When the calendar ages of the events $\{\theta_i , i=1,\ldots,n\}$ are known exactly, estimation of the variable rate $\lambda(t)$ can be tackled directly via reversible jump Markov Chain Monte Carlo (RJ-MCMC) [@green1995]). However, when we only observe the radiocarbon ages of the samples ($\{ X_i, i= 1,\ldots,n \}$) the underlying calendar ages $\theta_i$ are uncertain and must be estimated via radiocarbon calibration. This complicates the process of estimating $\lambda(t)$ especially as the calibration must be done simultaneously to its estimation (as the modelling will influence the set of $\theta_i$ and vice versa). In this library, we provide a rigorous approach to the estimation of $\lambda(t)$.    
+    
+## A Inhomogeneous Poisson process
+A Poisson process is a common statistical process used to model the occurrence of random events. It is described by specifying the random variables $N(s,t)$ for $0 \leq s \leq t$, where $N(s,t)$ represents the number of events that have occurred in the time interval $(s,t]$. Any Poisson process has a parameter $\lambda(t)$, known as the rate of the process. This controls the expected number of events in a particular time interval. 
+
+In the case of an inhomogeneous Poisson process, the rate $\lambda(t)$ varies over time so that some time periods are expected to have a greater number of event than others. An (inhomogeneous) Poisson process is then defined by the following two properties:
+
+- For any $0 \leq s \leq t$, the distribution of $N(s,t)$ is Poisson with parameter $\int_{\theta = s}^t \lambda(\theta) d\theta$. 
+- If $(s_1,t_1] , (s_2,t_2 ], \ldots ,(s_n,t_n]$ are disjoint intervals (i.e., non-overlapping) then $N(s_1,t_1),N(s_2,t_2 ),\ldots ,N(s_n,t_n)$ are independent random variables. 
+	
+In particular, the first of these properties implies that the expected number of events in a specific time interval $(s,t]$ is $\int_{\theta = s}^t \lambda(\theta) d\theta$. Hence time periods with higher rates $\lambda(t)$ will be expected to have greater number of events. The second implies that, conditional on the rate $\lambda(t)$, the number of events that have occurred in one time period is not affected by the number of events in a different, and non-overlapping time period. It also implies that events are not clustered beyond the effect of the variable rate, e.g., the occurrence of one event does not increase/decrease the probability that another event occurs shortly afterwards. Note that this last assumption is quite strong as clustering might occur in many instances, for example if the animal bones you date all result from the hunting of a single (short-lived) group of individuals, or you date multiple buildings in a settlement. 
+
+     
+## Final Radiocarbon Model
+Given a set of multiple $^{14}$C samples, 
 $$X_1, \ldots, X_n$$
 the function `PPcalibrate` will simultaneously:
 
 - calibrate them to provide posterior calendar ages estimates $\theta_1, \ldots, \theta_n$ 
 - estimate the rate $\lambda(t)$ of the underlying process. This estimate $\hat{\lambda}(t)$ may provide a useful proxy to make archaeological and/or environmental inference, e.g., to model changes in culture, or useage, or population size over time. 
-
 
 The (calendar) rate at which the samples occur is modelled as a Poisson process with a variable rate $\lambda(t)$. Specifically, $\lambda(t)$ is modelled as a piecewise constant function with an unknown number of changepoints:
 $$
@@ -47,7 +76,8 @@ where $T_A < s_1 < s_2 < \ldots < s_k < T_B$ are the calendar ages at which ther
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem. In this simulated example, we will create 40 artificial samples with $^{14}$C determinations corresponding to the calendar period from [550, 500] cal yr BP. Effectively, the underlying model is a Poisson process with a rate 
+This is a basic example which shows you how to solve a common problem. In this simulated example, we will assume that the events (samples) can must lie within the calendar period from [700,400] cal yr BP. Within this period, we will 
+create 40 artificial samples with $^{14}$C determinations corresponding to the (narrower) calendar period from [550, 500] cal yr BP. Effectively, the underlying model is a Poisson process with a rate 
 $$
 \lambda(t)  \left\{ \begin{array}{ll}
   h_1 = 0 & \textrm{if } 400 \leq t < 500 \textrm{ cal yr BP} \\
@@ -103,7 +133,7 @@ PlotPosteriorMeanRate(PP_fit_output)
 
 This plots the posterior mean rate of sample occurrence (shown in purple). The $^{14}$C determinations ($X_1, \ldots, X_n$) are shown on the y-axis as a rug. The rug on the x-axis plots the posterior mean of the corresponding calendar ages (i.e., $\theta_1, \ldots, \theta_n$) after calibration for illustration purposes. **Note**: In some cases (in particular when an individual calibrated age estimates $\theta_i$ is bimodal) the posterior calendar mean will not be a good summary.  
 
-As you can see, the posterior estimate of $\lambda(t)$ identifies the calendar period from which the hypothetical samples have been created [550, 500] cal yr BP. Here, $\hat{\lambda}(t)$ is non-zero, while for the other time periods.
+As you can see, the posterior estimate of $\lambda(t)$ identifies the calendar period from which the hypothetical samples have been created [550, 500] cal yr BP. Here, $\hat{\lambda}(t)$ is non-zero, while for the other time periods the rate (correctly) drops to near zero.
 
 ### Plotting the estimated number of changepoint
 You can plot the posterior estimate for the number of internal changes in the rate $\lambda(t)$ using the command:  
@@ -111,9 +141,7 @@ You can plot the posterior estimate for the number of internal changes in the ra
 PlotNumberOfInternalChanges(PP_fit_output)
 ```
 
-Here, we can see that the method estimates that there are most likely to be two changes. This is clearly an overestimate of the number of changes --- in our underlying data there are only two changes, a step up from a occurrence rate of zero samples/cal yr to a rate of *ca.* 0.8 samples/cal yr at 550 cal yr BP, and then a step back down to return to a sample occurrence rate of zero at 500 cal yr BP. 
-
-This overestimation is largely a consequence of the prior we have chosen for the number of internal changes in the rate $\lambda(t)$. This has a default of 10 in `PPcalibrate()` to enable more flexibility in rate estimation when the true rate is not piecewise constant. The number of estimated changes will be pulled towards this value. 
+Here, we can see that the method estimates that there are most likely to be two changes. Again, this corresponds to the underlying (simulated) data, where there is a step up from a occurrence rate of zero samples/cal yr to a rate of *ca.* 0.8 samples/cal yr at 550 cal yr BP, and then a step back down to return to a sample occurrence rate of zero at 500 cal yr BP. 
 
 ### Plotting the estimates of changepoint locations
 You can plot the locations of the changepoints, conditional on the number of changes currently estimated in the model. The default shows the locations when the model estimates $n_{\textrm{internal changes}} = 1, 2,$ and 3.    
@@ -121,7 +149,9 @@ You can plot the locations of the changepoints, conditional on the number of cha
 PlotPosteriorChangePoints(PP_fit_output)
 ```
 
-This figure can be interpreted as follows. For example, if the model thinks there are only two changepoints in the underlying occurrence rate of the samples, then these changepoints should be located around 500 cal yr BP and 550 cal yr BP (the two distinct dashed density estimates shown in dark green). If the model thinks there are three changepoints in the rate, then these should be located according to the location shown by the dotted red densities (note that here these three locations overlay one another, effectively adding a double changepoint at either 500 or 550 cal yr BP). Here, the model never thinks there should be only one changepoint (as indicated by the absence of a solid blue density, and the warning message).      
+This figure can be interpreted as follows. For example, if the model thinks there are only two changepoints in the underlying occurrence rate of the samples, then these changepoints should be located around 500 cal yr BP and 550 cal yr BP (the two distinct dashed density estimates shown in dark green). If the model thinks there are three changepoints in the rate, then these should be located according to the location shown by the dotted red densities (note that here these three locations overlay one another, effectively adding a double changepoint at either 500 or 550 cal yr BP). 
+
+**Note the R warning here:** For this simulated data, the posterior model (correctly) never thinks there should be only one changepoint. This is indicated by the warning message returned by R and the absence of a solid blue density in the plot.      
 
 ### Plotting the rate estimates conditional on the number of changes
 Finally, you can plot the estimates of the rate of sample occurrence conditional on the number of changes estimate 
@@ -130,3 +160,9 @@ PlotPosteriorHeights(PP_fit_output)
 ```
 
 Here, conditional on there being two changes in $\lambda(t)$ between 700--400 cal yr BP (so three different values for the rates) we have two rates of *ca.*  0 events per cal yr (these correspond to the periods 700--550 and 500--400 cal yr BP), and a period with rate *ca.* 0.6-0.8 events per cal yr (corresponding to the period from 550--500 cal yr BP)   
+
+## References
+
+
+
+
