@@ -28,6 +28,6 @@ ages of distinct archaeological  sites found across Canada and North America
 during the time of the palaeoindians. Ref:
 Buchanan, B., Collard, M., Edinborough, K., 2008. Paleoindian demography and
 the extraterrestrial impact hypothesis. Proceedings of the National Academy
-of Sciences 105, 11651–11654.
+of Sciences 105, 11651--11654.
 }
 \keyword{datasets}

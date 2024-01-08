@@ -19,7 +19,7 @@ iterations, or 1 / 10 of the the total number of data points, will be used.}
 No value
 }
 \description{
-This plots the Kullback–Leibler divergence between the initial predictive density
+This plots the Kullback-Leibler divergence between the initial predictive density
 and the density calculated during a run of a calibration function. This can be used to
 estimate whether the calibration function has converged.
 }

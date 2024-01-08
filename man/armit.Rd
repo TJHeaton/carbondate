@@ -28,6 +28,6 @@ groups operating in Ireland, to investigate whether a wetter environment
 around 2700 cal yr BP led to a population collapse. Ref:
 Armit, I., Swindles, G.T., Becker, K., Plunkett, G., Blaauw, M., 2014. Rapid
 climate change did not cause population collapse at the end of the European
-Bronze Age. Proceedings of the National Academy of Sciences 111, 17045–17049.
+Bronze Age. Proceedings of the National Academy of Sciences 111, 17045--17049.
 }
 \keyword{datasets}

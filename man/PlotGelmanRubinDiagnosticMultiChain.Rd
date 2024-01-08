@@ -2,7 +2,7 @@
 % Please edit documentation in R/PlotGelmanRubin.R
 \name{PlotGelmanRubinDiagnosticMultiChain}
 \alias{PlotGelmanRubinDiagnosticMultiChain}
-\title{Plots a histogram of the Gelman–Rubin convergence diagnostic for a multiple chains}
+\title{Plots a histogram of the Gelman-Rubin convergence diagnostic for a multiple chains}
 \usage{
 PlotGelmanRubinDiagnosticMultiChain(output_data_list, n_burn = NA)
 }

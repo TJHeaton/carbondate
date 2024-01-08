@@ -17,11 +17,11 @@ PPcalibrate(
   calendar_grid_resolution = 1,
   prior_h_shape = NA,
   prior_h_rate = NA,
-  prior_n_internal_changepoints_lambda = 10,
+  prior_n_internal_changepoints_lambda = 3,
   k_max_internal_changepoints = 30,
   rescale_factor_rev_jump = 0.9,
   bounding_range_prob_cutoff = 0.005,
-  initial_n_internal_changepoints = 3,
+  initial_n_internal_changepoints = 10,
   grid_extension_factor = 0.1,
   use_fast = TRUE
 )

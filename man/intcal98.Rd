@@ -29,6 +29,6 @@ Stuiver et al 1998
 M. Stuiver, P. J. Reimer, E. Bard, J. W. Beck, G. S. Burr, K. A. Hughen,
 B. Kromer, F. G. McCormac, J. v. d. Plicht and M. Spurk.
 INTCAL98 Radiocarbon Age Calibration, 24,000-0 cal BP.
-Radiocarbon 40, 1041-1083 (1998).
+Radiocarbon 40, 1041--1083 (1998).
 }
 \keyword{datasets}

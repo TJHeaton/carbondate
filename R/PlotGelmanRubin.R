@@ -1,4 +1,4 @@
-#' Plots a histogram of the Gelman–Rubin convergence diagnostic for a single chain
+#' Plots a histogram of the Gelman-Rubin convergence diagnostic for a single chain
 #'
 #' This plots a histogram of the potential scale reduction factor (PSRF) for each of
 #' the calendar age observations for a single MCMC chain, by splitting the chain into segments after
@@ -48,7 +48,7 @@ PlotGelmanRubinDiagnosticSingleChain <- function(output_data, n_burn = NA, n_seg
 }
 
 
-#' Plots a histogram of the Gelman–Rubin convergence diagnostic for a multiple chains
+#' Plots a histogram of the Gelman-Rubin convergence diagnostic for a multiple chains
 #'
 #' This plots a histogram of the potential scale reduction factor (PSRF) for each of
 #' the calendar age observations for a multiple chains by comparing the within-chain variance with

@@ -1,6 +1,6 @@
 #' Plots data that can be used to estimate convergence of the MCMC sampler
 #'
-#' This plots the Kullback–Leibler divergence between the initial predictive density
+#' This plots the Kullback-Leibler divergence between the initial predictive density
 #' and the density calculated during a run of a calibration function. This can be used to
 #' estimate whether the calibration function has converged.
 #'

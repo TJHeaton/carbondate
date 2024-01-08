@@ -99,7 +99,7 @@
 #' M. Stuiver, P. J. Reimer, E. Bard, J. W. Beck, G. S. Burr, K. A. Hughen,
 #' B. Kromer, F. G. McCormac, J. v. d. Plicht and M. Spurk.
 #' INTCAL98 Radiocarbon Age Calibration, 24,000-0 cal BP.
-#' Radiocarbon 40, 1041-1083 (1998).
+#' Radiocarbon 40, 1041--1083 (1998).
 #'
 #' @format ## `intcal98`
 #' A data frame with 1,538 rows and 5 columns:
@@ -135,7 +135,7 @@
 #' building and use of raths in Ireland in the early-medieval period. Ref:
 #' Kerr, T., McCormick, F., 2014. Statistics, sunspots and settlement:
 #' influences on sum of probability curves.
-#' Journal of Archaeological Science 41, 493 – 501.
+#' Journal of Archaeological Science 41, 493--501.
 #'
 #' @format ## `kerr`
 #' A data frame with 255 rows and 4 columns:
@@ -156,7 +156,7 @@
 #' during the time of the palaeoindians. Ref:
 #' Buchanan, B., Collard, M., Edinborough, K., 2008. Paleoindian demography and
 #' the extraterrestrial impact hypothesis. Proceedings of the National Academy
-#' of Sciences 105, 11651–11654.
+#' of Sciences 105, 11651--11654.
 #'
 #' @format ## `buchanan`
 #' A data frame with 628 rows and 4 columns:
@@ -177,7 +177,7 @@
 #' around 2700 cal yr BP led to a population collapse. Ref:
 #' Armit, I., Swindles, G.T., Becker, K., Plunkett, G., Blaauw, M., 2014. Rapid
 #' climate change did not cause population collapse at the end of the European
-#' Bronze Age. Proceedings of the National Academy of Sciences 111, 17045–17049.
+#' Bronze Age. Proceedings of the National Academy of Sciences 111, 17045--17049.
 #'
 #' @format ## `armit`
 #' A data frame with 2021 rows and 4 columns:

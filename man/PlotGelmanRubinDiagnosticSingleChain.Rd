@@ -2,7 +2,7 @@
 % Please edit documentation in R/PlotGelmanRubin.R
 \name{PlotGelmanRubinDiagnosticSingleChain}
 \alias{PlotGelmanRubinDiagnosticSingleChain}
-\title{Plots a histogram of the Gelman–Rubin convergence diagnostic for a single chain}
+\title{Plots a histogram of the Gelman-Rubin convergence diagnostic for a single chain}
 \usage{
 PlotGelmanRubinDiagnosticSingleChain(output_data, n_burn = NA, n_segments = 3)
 }

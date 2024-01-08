@@ -27,6 +27,6 @@ kerr
 building and use of raths in Ireland in the early-medieval period. Ref:
 Kerr, T., McCormick, F., 2014. Statistics, sunspots and settlement:
 influences on sum of probability curves.
-Journal of Archaeological Science 41, 493 – 501.
+Journal of Archaeological Science 41, 493--501.
 }
 \keyword{datasets}
