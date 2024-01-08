@@ -88,7 +88,36 @@ The final range will be extended (equally on both sides) to cover (1 + grid_exte
 calendar_age_grid) based on probability cutoff. If true, then the likelihood is cut-off at \code{fast_approx_prob_cutoff}.}
 }
 \value{
-TODO
+A list with 7 items. The first 4 items contain output data, each of
+which have one dimension of size \eqn{n_{\textrm{out}} =
+\textrm{floor}( n_{\textrm{iter}}/n_{\textrm{thin}}) + 1}, each row storing
+the result from every \eqn{n_{\textrm{thin}}}th iteration:
+
+\describe{
+\item{\code{rate_s}}{A list of length \eqn{n_{\textrm{out}}} each entry giving the current set of
+(calendar age) changepoints in rate of piecewise constant Poisson process.}
+\item{\code{rate_h}}{A list of length \eqn{n_{\textrm{out}}} each entry giving the current set of
+heights/rates in each section of piecewise constant Poisson process}
+\item{\code{calendar_ages}}{An \eqn{n_{\textrm{out}}} by \eqn{n_{\textrm{obs}}}
+matrix. Gives the calendar age for each observation.}
+\item{\code{n_internal_changes}}{A vector of length \eqn{n_{\textrm{out}}} giving the number of
+internal chanhes.}
+}
+where \eqn{n_{\textrm{obs}}} is the number of radiocarbon observations i.e.
+the length of \code{rc_determinations}.
+
+The remaining items give information about input data, input parameters (or
+those calculated) and update_type
+
+\describe{
+\item{\code{update_type}}{A string that always has the value "RJPP".}
+\item{\code{input_data}}{a list containing the C14 data used and the name of
+the calibration curve used.}
+\item{\code{input_parameters}}{A list containing the values of the fixed
+parameters \code{pp_cal_age_range}, \code{prior_n_internal_changepoints_lambda},
+\code{k_max_internal_changepoints}, \code{prior_h_shape}, \code{prior_h_rate}, \code{rescale_factor_rev_jump},
+\code{calendar_age_grid}, \code{calendar_grid_resolution}, \code{n_iter} and \code{n_thin}.}
+}
 }
 \description{
 Title

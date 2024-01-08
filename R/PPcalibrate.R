@@ -35,7 +35,36 @@
 #' @param use_fast,fast_approx_prob_cutoff A flag to allow trimming the likelihood of theta (for each value in
 #' calendar_age_grid) based on probability cutoff. If true, then the likelihood is cut-off at `fast_approx_prob_cutoff`.
 #'
-#' @return TODO
+#' @return A list with 7 items. The first 4 items contain output data, each of
+#' which have one dimension of size \eqn{n_{\textrm{out}} =
+#' \textrm{floor}( n_{\textrm{iter}}/n_{\textrm{thin}}) + 1}, each row storing
+#' the result from every \eqn{n_{\textrm{thin}}}th iteration:
+#'
+#' \describe{
+#'  \item{`rate_s`}{A list of length \eqn{n_{\textrm{out}}} each entry giving the current set of
+#'  (calendar age) changepoints in rate of piecewise constant Poisson process.}
+#'  \item{`rate_h`}{A list of length \eqn{n_{\textrm{out}}} each entry giving the current set of
+#'  heights/rates in each section of piecewise constant Poisson process}
+#'  \item{`calendar_ages`}{An \eqn{n_{\textrm{out}}} by \eqn{n_{\textrm{obs}}}
+#'     matrix. Gives the calendar age for each observation.}
+#'  \item{`n_internal_changes`}{A vector of length \eqn{n_{\textrm{out}}} giving the number of
+#'  internal chanhes.}
+#' }
+#' where \eqn{n_{\textrm{obs}}} is the number of radiocarbon observations i.e.
+#' the length of `rc_determinations`.
+#'
+#' The remaining items give information about input data, input parameters (or
+#' those calculated) and update_type
+#'
+#' \describe{
+#'  \item{`update_type`}{A string that always has the value "RJPP".}
+#'  \item{`input_data`}{a list containing the C14 data used and the name of
+#'  the calibration curve used.}
+#'  \item{`input_parameters`}{A list containing the values of the fixed
+#'  parameters `pp_cal_age_range`, `prior_n_internal_changepoints_lambda`,
+#'  `k_max_internal_changepoints`, `prior_h_shape`, `prior_h_rate`, `rescale_factor_rev_jump`,
+#'   `calendar_age_grid`, `calendar_grid_resolution`, `n_iter` and `n_thin`.}
+#' }
 #' @export
 #'
 #' @examples # TODO
