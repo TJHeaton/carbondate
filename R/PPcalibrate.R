@@ -91,7 +91,7 @@ PPcalibrate <- function(
   .CheckFlag(arg_check, F14C_inputs)
   .CheckFlag(arg_check, use_F14C_space)
   .CheckFlag(arg_check, show_progress)
-  .CheckNumberVector(arg_check, calendar_age_range, len = 2)
+  if (!is.na(calendar_age_range)) { .CheckNumberVector(arg_check, calendar_age_range, len = 2) }
   .CheckNumber(arg_check, calendar_grid_resolution, lower = 0)
   .CheckPriorHShapeAndPriorHRate(arg_check, prior_h_shape, prior_h_rate)
   .CheckInteger(arg_check, k_max_internal_changepoints, lower = 1)
