@@ -20,11 +20,11 @@ PPcalibrate(
   prior_n_internal_changepoints_lambda = 10,
   k_max_internal_changepoints = 30,
   rescale_factor_rev_jump = 0.9,
-  bounding_range_prob_cutoff = 0.005,
+  bounding_range_prob_cutoff = 0.001,
   initial_n_internal_changepoints = 10,
   grid_extension_factor = 0.1,
   use_fast = TRUE,
-  use_cpp = FALSE
+  fast_approx_prob_cutoff = 0.001
 )
 }
 \arguments{
@@ -83,9 +83,8 @@ Will place them randomly within calendar interval}
 rc_determinations, how far you wish to extend the grid beyond this adaptive minimum and maximum
 The final range will be extended (eqaully on both sides) to cover (1 + grid_extension_factor) * (calendar_age_range)}
 
-\item{use_fast}{Adding a flag to allow trimming the likelihoods based on prob cutoff}
-
-\item{use_cpp}{Use cpp version}
+\item{use_fast, fast_approx_prob_cutoff}{A flag to allow trimming the likelihood of theta (for each value in
+calendar_age_grid) based on probability cutoff. If true, then the likelihood is cut-off at \code{fast_approx_prob_cutoff}.}
 }
 \value{
 TODO

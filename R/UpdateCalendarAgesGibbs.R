@@ -43,7 +43,7 @@ UpdateCalendarAgesGibbs <- function(
 }
 
 
-.TrimmedUpdateCalendarAgesGibbsCPP <- function(
+.TrimmedUpdateCalendarAgesGibbs <- function(
     calendar_age_grid,
     rate_s,
     rate_h,
@@ -57,33 +57,6 @@ UpdateCalendarAgesGibbs <- function(
 
   updated_calendar_ages <- UpdateCalendarAgesGibbsCpp(
     prior_calendar_ages, calendar_age_grid, likelihood_values, likelihood_offsets)
-
-  return(updated_calendar_ages)
-}
-
-
-.TrimmedUpdateCalendarAgesGibbs <- function(
-    trimmed_likelihood_calendar_ages_from_calibration_curve,
-    calendar_age_grid,
-    rate_s,
-    rate_h,
-    likelihood_values,
-    likelihood_offsets)
-{
-  prior_calendar_ages <- .FindCalendarAgePriorGivenPoissonProcess(
-    rate_s = rate_s,
-    rate_h = rate_h,
-    theta = calendar_age_grid)
-
-  updated_calendar_ages <- sapply(
-    trimmed_likelihood_calendar_ages_from_calibration_curve,
-    FUN = function(likelihood, prior_calendar_ages, calendar_age_grid) {
-      posterior_calendar_ages <- prior_calendar_ages[likelihood$start:likelihood$end] * likelihood$values
-      theta <- calendar_age_grid[likelihood$start:likelihood$end]
-      sample(theta, 1, prob=posterior_calendar_ages)
-    },
-    prior_calendar_ages = prior_calendar_ages,
-    calendar_age_grid = calendar_age_grid)
 
   return(updated_calendar_ages)
 }

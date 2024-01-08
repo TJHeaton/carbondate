@@ -353,3 +353,17 @@
     arg_check$push("The calendar age sequence must be sorted")
   }
 }
+
+
+.CheckPriorHRateAndPriorHShape <- function(arg_check, prior_h_rate, prior_h_rate) {
+  if (is.na(prior_h_shape) && is.na(prior_h_rate)) {
+    return()
+  }
+  if (!is.na(prior_h_shape) && !is.na(prior_h_rate)) {
+    .CheckNumber(arg_check, prior_h_rate, lower = 0)
+    .CheckNumber(arg_check, prior_h_shape, lower = 0)
+  } else {
+    arg_check$push(
+      "prior_h_shape and prior_h_rate must either both be positive numbers or must both be NA")
+  }
+}

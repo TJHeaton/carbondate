@@ -27,8 +27,6 @@ int SampleInt(std::vector<double> &prob) {
   }
   Rf_revsort(&p[0], &perm[0], n);
 
-  //rT = Rf_runif(0., sum_p);
-
   rT = unif_rand() * sum_p;
   mass = 0.0;
   for (j = 0; j < n-1; j++) {

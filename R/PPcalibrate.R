@@ -33,7 +33,7 @@
 #'
 #' @param prior_h_shape,prior_h_rate Prior for Poisson Process rate height in any interval
 #' rate_h ~ Gamma(shape = prior_h_shape, rate = prior_h_rate)
-#' If choose sensible_initialisation then prior_h_shape is selected adaptively (internally)
+#' If they are both `NA` then prior_h_shape is selected adaptively (internally)
 #' to match n_observations (and selecting prior_h_rate = 0.1 to provide diffuse prior)
 #'
 #' @param prior_n_internal_changepoints_lambda Prior on Poisson parameter specifying
@@ -53,11 +53,10 @@
 #'
 #' @param grid_extension_factor If you adaptively select the calendar_age_range from
 #' rc_determinations, how far you wish to extend the grid beyond this adaptive minimum and maximum
-#' The final range will be extended (eqaully on both sides) to cover (1 + grid_extension_factor) * (calendar_age_range)
+#' The final range will be extended (equally on both sides) to cover (1 + grid_extension_factor) * (calendar_age_range)
 #'
-#' @param use_fast Adding a flag to allow trimming the likelihoods based on prob cutoff
-#'
-#' @param use_cpp Use cpp version
+#' @param use_fast,fast_approx_prob_cutoff A flag to allow trimming the likelihood of theta (for each value in
+#' calendar_age_grid) based on probability cutoff. If true, then the likelihood is cut-off at `fast_approx_prob_cutoff`.
 #'
 #' @return TODO
 #' @export
@@ -79,15 +78,30 @@ PPcalibrate <- function(
     prior_n_internal_changepoints_lambda = 10,
     k_max_internal_changepoints = 30,
     rescale_factor_rev_jump = 0.9,
-    bounding_range_prob_cutoff = 0.005,
+    bounding_range_prob_cutoff = 0.001,
     initial_n_internal_changepoints = 10,
     grid_extension_factor = 0.1,
     use_fast = TRUE,
-    use_cpp = FALSE) {
+    fast_approx_prob_cutoff = 0.001) {
 
-  # TODO - Check both prior_h_shape and prior_h_rate specified (or both NA)
-  # TODO - Check initial_n_internal_changepoints < k_max
-  # TODO - Check parameters are within required bounds e.g. +ve/-ve
+  arg_check <- .InitializeErrorList()
+  .CheckInputData(arg_check, rc_determinations, rc_sigmas, F14C_inputs)
+  .CheckCalibrationCurve(arg_check, calibration_curve, NA)
+  .CheckIterationParameters(arg_check, n_iter, n_thin)
+  .CheckFlag(arg_check, F14C_inputs)
+  .CheckFlag(arg_check, use_F14C_space)
+  .CheckFlag(arg_check, show_progress)
+  .CheckNumberVector(arg_check, calendar_age_range, len = 2)
+  .CheckNumber(arg_check, calendar_grid_resolution, lower = 0)
+  .CheckPriorHRateAndPriorHShape(arg_check, prior_h_shape, prior_h_rate)
+  .CheckInteger(arg_check, k_max_internal_changepoints, lower = 1)
+  .CheckNumber(arg_check, bounding_range_prob_cutoff, lower = 0, upper = 0.01)
+  .CheckInteger(
+    arg_check, initial_n_internal_changepoints, upper = k_max_internal_changepoints - 1)
+  .CheckNumber(arg_check, grid_extension_factor, lower = 0)
+  .CheckFlag(arg_check, use_fast)
+  .CheckNumber(arg_check, fast_approx_prob_cutoff, lower = 0, upper = 0.01)
+  .ReportErrors(arg_check)
 
   ##############################################################################
   # Save input data
@@ -192,7 +206,7 @@ PPcalibrate <- function(
   if(is.na(prior_h_shape)) {
     # Choose exponential distribution
     # and match mean with initial_estimate_mean_rate above
-    prior_h_shape <- 1
+    prior_h_shape <- 1 # This is equivalent to an exponential distribution
     prior_h_rate <- 1 / initial_estimate_mean_rate
   }
 
@@ -250,27 +264,18 @@ PPcalibrate <- function(
     MoreArgs = list(
       theta = calendar_age_grid,
       F14C_inputs = use_F14C_space,
-      calibration_curve = calibration_curve)
-  )
+      calibration_curve = calibration_curve))
 
   if (use_fast) {
-    trimmed_likelihood_calendar_ages_from_calibration_curve <- apply(
-      likelihood_calendar_ages_from_calibration_curve,
-      MARGIN = 2,
-      FUN = .FindTrimmedVectorAndIndices,
-      prob_cutoff = bounding_range_prob_cutoff,
-      simplify = FALSE)
-
     likelihood_values <- list()
     likelihood_offsets <- c()
-
-    for (i in seq_along(trimmed_likelihood_calendar_ages_from_calibration_curve)) {
-      likelihood_values[[i]] <- trimmed_likelihood_calendar_ages_from_calibration_curve[[i]]$values
-      likelihood_offsets[i] <- as.integer(trimmed_likelihood_calendar_ages_from_calibration_curve[[i]]$start - 1)
+    for (i in 1:dim(likelihood_calendar_ages_from_calibration_curve)[2]) {
+      ret <- .FindTrimmedVectorAndIndices(
+        likelihood_calendar_ages_from_calibration_curve[, i], fast_approx_prob_cutoff)
+      likelihood_values[[i]] <- ret$values
+      likelihood_offsets[i] <- as.integer(ret$offset - 1)
     }
-
   } else  {
-    trimmed_likelihood_calendar_ages_from_calibration_curve <- NA
     likelihood_values <- NA
     likelihood_offsets <- NA
   }
@@ -303,14 +308,12 @@ PPcalibrate <- function(
   ## (sample from exactly using Gibbs)
   calendar_ages <- .UpdateCalendarAges(
     likelihood_calendar_ages_from_calibration_curve,
-    trimmed_likelihood_calendar_ages_from_calibration_curve,
     likelihood_values,
     likelihood_offsets,
     calendar_age_grid,
     rate_s,
     rate_h,
-    use_fast,
-    use_cpp)
+    use_fast)
   theta_out[output_index, ] <- calendar_ages
 
 
@@ -330,14 +333,12 @@ PPcalibrate <- function(
     ## Step 1: Update calendar_ages given rate_s and rate_h (sample from exactly using Gibbs)
     calendar_ages <- .UpdateCalendarAges(
       likelihood_calendar_ages_from_calibration_curve,
-      trimmed_likelihood_calendar_ages_from_calibration_curve,
       likelihood_values,
       likelihood_offsets,
       calendar_age_grid,
       rate_s,
       rate_h,
-      use_fast,
-      use_cpp)
+      use_fast)
 
     ## Step 2: Update rate_s and rate_h given current calendar_ages (using RJMCMC)
     updated_poisson_process <- UpdatePoissonProcessRateRevJump(
@@ -387,31 +388,19 @@ PPcalibrate <- function(
 
 .UpdateCalendarAges <- function(
   likelihood_calendar_ages_from_calibration_curve,
-  trimmed_likelihood_calendar_ages_from_calibration_curve,
   likelihood_values,
   likelihood_offsets,
   calendar_age_grid,
   rate_s,
   rate_h,
-  use_fast,
-  use_cpp) {
+  use_fast) {
   if (use_fast) {
-    if (use_cpp) {
-      calendar_ages <- .TrimmedUpdateCalendarAgesGibbsCPP(
-        calendar_age_grid = calendar_age_grid,
-        rate_s = rate_s,
-        rate_h = rate_h,
-        likelihood_values = likelihood_values,
-        likelihood_offsets = likelihood_offsets)
-    } else {
-      calendar_ages <- .TrimmedUpdateCalendarAgesGibbs(
-        trimmed_likelihood_calendar_ages_from_calibration_curve = trimmed_likelihood_calendar_ages_from_calibration_curve,
-        calendar_age_grid = calendar_age_grid,
-        rate_s = rate_s,
-        rate_h = rate_h,
-        likelihood_values,
-        likelihood_offsets)
-    }
+    calendar_ages <- .TrimmedUpdateCalendarAgesGibbs(
+      calendar_age_grid = calendar_age_grid,
+      rate_s = rate_s,
+      rate_h = rate_h,
+      likelihood_values = likelihood_values,
+      likelihood_offsets = likelihood_offsets)
   } else {
     calendar_ages <- UpdateCalendarAgesGibbs(
       likelihood_calendar_ages_from_calibration_curve = likelihood_calendar_ages_from_calibration_curve,
@@ -422,5 +411,3 @@ PPcalibrate <- function(
   }
   return(calendar_ages)
 }
-
-## TODO - Think about how to choose min and max cut-off currently ends where there is an observation so will have higher rate
