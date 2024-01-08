@@ -22,7 +22,7 @@ library(carbondate)
 
 A few tools to determine how well the result has converged.
 
-## Examining the Gelman–Rubin convergence diagnostic
+## Examining the Gelman-Rubin convergence diagnostic
 
 This is often used to evaluate MCMC convergence. It compares the between-chains variance with the within-chains variance of the model parameters for multiple chains. If the chain have converged to the target posterior distribution, then the potential scale reduction factor (PSRF) should be close to 1 for every calendar age observation.
 
@@ -90,7 +90,7 @@ PlotPredictiveCalendarAgeDensity(
 ```
 
 
-## Examining the Kullback–Leibler divergence
+## Examining the Kullback--Leibler divergence
 
 This gives a measure of the difference between the initial predictive density and the predictive
 density as the simulation progresses.

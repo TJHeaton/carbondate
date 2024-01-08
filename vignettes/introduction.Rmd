@@ -22,27 +22,64 @@ set.seed(5)
 
 # Introduction
 
-The **carbondate** package contains functions for analysing multiple related radiocarbon determinations. Due to fluctuations in past radiocarbon (^14^C) levels, calibration is required to convert ^14^C determinations into calendar ages. In many cases, we wish to calibrate a set of samples which are known to be related to one another (for example, arising from a particular site, or set of sites, populated by a particular culture). Each sample has an unknown calendar age but, since they are related, these calendar ages are assumed to arise from the same unknown shared calendar age density. Calibration of these determinations can be improved significantly by incorporating the knowledge that the samples are related.
+The **carbondate** package contains functions for analysing sets of related radiocarbon (^14^C) determinations. Due to fluctuations in past radiocarbon levels, all ^14^C determinations need to be calibrated (converted) in order to be understood on the calendar age scale. In many cases, we wish to calibrate a set of samples which are known to be related to one another (for example, arising from a particular site, or set of sites, populated by a particular culture). Each sample has an unknown calendar age but, since they are related, these calendar ages are assumed to arise from the same unknown shared calendar age density.
 
-Temporary Text
+This library serves two purposes:
 
-This package contains functions for both independent calibration of the ^14^C determinations, and two different functions for jointly calibrating related samples.
+- calibration of the set of ^14^C determinations can be improved significantly by incorporating the knowledge that the samples are related;
+- summarisation of the underlying calendar age distribution from which the samples arise provides a potentially useful proxy for activity, population size, the frequency of past events. This approach uses the principle of _dates-as-data_ [@rick1987]
+
+We provide two different, albeit ideologically linked, approaches to achieve this:
+
+- A non-parametric Bayesian density estimation approach using a Dirichlet process mixture model. This is a statistically-rigorous alternative to summed probability distributions (SPDs) and kernel density estimates (KDE model).
+- A inhomogeneous Poisson process/Changepoint approach using Reversible Jump Markov Chain Monte Carlo (RJ-MCMC) to estimate the changing rate at which the ^14^C samples occur over calendar time.    
+Separate vignettes are provided to describe each approach.
+
+## Dates-as-Data -- Considering frequency of samples as a proxy for activity 
+
+A commonly-used approach to estimate changes in the frequency of past events or the size of populations looks at variations in the rate of archaeological and environmental samples (e.g., charcoal from fires, human/animal bones, or other evidence of occupation) found at a site over time. Time periods with large numbers of samples suggest increased activity, while those with few samples indicate a reduced level of activity. This paradigm is known as _dates-as-data_ [@rick1987]. 
+
+The reliability of such a _dates-as-data_ approach is highly dependent upon our ability to estimate the calendar ages of the discoveries. Most archaeological/environmental dates are obtained using radiocarbon . The need for calibration of these ^14^C samples introduces considerable uncertainties in the resultant calendar ages and complicates the identification of changepoints in the calendar year rates at which samples occur.
+
+In this library, we provide two theoretically-underpinned approaches to overcome these challenges, each of which has its own set of vignettes:
+
+- A statistically-rigorous alternative to summed probability distributions (SPDs) that models the samples as arising from a mixture distribution containing an unknown number of distinct clusters. [Non-parametric summed density estimation   vignette](Non-parametric-summed-density.html) ;   
+- A changepoint-based approach that models the occurrence of the ^14^C samples as an inhomogeneous Poisson process. We aim to reconstruct how the rate at which the samples occur varies over calendar time, and to identify if there are statistically significant changepoints (i.e., specific calendar times at which the rate of samples changes abruptly).  [Poisson process modelling vignette](Poisson-process-modelling.html) 
+
+
+## Additional Information
+
+The library also provides some joint data (which can be usd by either method) as described below 
+
 
 ## Calibration Curve
 
-Given a set of reference objects for which we have both ^14^C measurements and independently known (or estimated) calendar ages, we can create what is known as a calibration curve. This calibration curve is a mapping providing, for an object of true calendar age, the corresponding radiocarbon age. Given a undated object for which we obtain a ^14^C determination one can estimate its calendar age by inverting this mapping. A calibration curve is a required input for all the functions in this package.
+Given a set of reference objects for which we have both ^14^C measurements and independently known (or estimated) calendar ages, we can create what is known as a calibration curve. This calibration curve is a mapping providing, for an object of true calendar age $\theta$, the corresponding radiocarbon age $\mu(\theta)$. The radiocarbon determination of any individual sample is assumed to be a noisy observation of this, i.e., 
+$$
+X_i \sim N(\mu(\theta), \sigma_{\textrm{lab}}^2)
+$$
 
-The modern, internationally-ratified, standard for the radiocarbon calibration curve is known as IntCal and IntCal20 [@reimer2020] is the current version agreed for use by the community. The curve data `intcal20` is provided in this package. However it is possible to load and use another calibration curve if you wish.
+Given a undated object for which we obtain a ^14^C determination one can estimate its calendar age by inverting this mapping. A calibration curve is a required input for all the functions in this package.
+
+The internationally-ratified, standard for the radiocarbon calibration curve is  known as IntCal, for which regular updates are provided by the IntCal working group. IntCal20 [@reimer2020] is the current version agreed for use by the community. This provides pointwise estimates of the mean $m(\theta)$ and sd $\rho(\theta)$ of the calibration curve, which can be integrated out during calibration, i.e.,:
+\begin{align*}
+\mu(\theta) | \theta & \sim N(m(\theta), \rho(\theta)^2), \textrm{ and} \\
+\Rightarrow X_i & \sim N(m(\theta), \rho(\theta)^2 + \sigma_{\textrm{lab}}^2)
+\end{align*}
+
+The curve data `intcal20` is provided in this package. However it is possible to load and use another calibration curve if you wish.
 
 ## Example Data
 
-There are some example data sets provided in the package, each of which contain a number of radiocarbon determinations and uncertainties from real-life cases:
+There are some example ^14^C data sets provided in the package, each of which contain a number of radiocarbon determinations and uncertainties from real-life cases:
 
 -   `kerr`: 255 radiocarbon determinations collated by Kerr and McCormick related to the building and use of raths in Ireland [@kerr2014].
 
 -   `armit`: 2021 radiocarbon determinations collated by Armit et al. from archaeological groups operating in Ireland, to investigate whether a wetter environment around 2700 cal yr BP led to a population collapse [@armit2014].
 
 -   `buchanan`: 628 radiocarbon determinations collated by Buchanan et al. representing the ages of distinct archaeological sites found across Canada and North America during the time of the palaeoindians [@buchanan2008].
+
+-   `alces`, `bison`, `cervus`, `equus`, `human`, `mammuthus`: radiocarbon determinations  
 
 # Independent calibration
 
@@ -87,97 +124,6 @@ plot(
 
 Note that the summary functions for plotting the predictive joint calendar age density [described below](#density-estimate-to-summarise-objects) can also optionally plot the SPD without having to calculate it separately first.
 
-# Non-parametric calibration of multiple related samples
 
-## Model details
-
-We model our unknown calendar age density $f(\theta)$ as an infinite mixture of individual clusters. These individual calendar age clusters are normal densities that can have different locations and spreads. In some cases, this mix of normal densities may represent true and distinct underlying normal archaeological phases, in which case additional practical inference may be possible. However this is not required for the method to provide good estimation. Each object is then considered to be drawn from one of the (infinite) clusters which constitute the overall $f(\theta)$. The probability that it is drawn from a particular cluster will depend upon the relative weight given to that specific cluster. It will be more likely than an object will come from some clusters than others. Given an object belongs to a particular cluster, its prior calendar age will be normally distributed with the mean and variance of that cluster. The mean and variance of each individual normal cluster that constitutes the overall $f(\theta)$, together with the weightings associated to each cluster, will be estimated based upon the set of ^14^C determinations we observe.
-
-For full technical details of the models used, and explanation of the model parameters, see [@heaton2021].
-
-## Run the sampler
-
-Updating is performed within an overall Gibbs MCMC scheme by sampling the model parameters. There are two different schemes provided to update the DPMM --- a Polya Urn approach [@neal2000] which integrates out the mixing weights of each cluster; and a slice sampling approach in which they are explicitly retained [@walker2007].
-
-Run using the Poly Urn method:
-
-```{r calculate_walker, results=FALSE}
-polya_urn_output <- PolyaUrnBivarDirichlet(
-  rc_determinations = kerr$c14_age,
-  rc_sigmas = kerr$c14_sig,
-  calibration_curve=intcal20,
-  n_iter = 1e4,
-  n_thin = 5)
-```
-
-or the Walker method as follows:
-
-```{r calculate_neal, results=FALSE}
-walker_output <- WalkerBivarDirichlet(
-  rc_determinations = kerr$c14_age,
-  rc_sigmas = kerr$c14_sig,
-  calibration_curve = intcal20,
-  n_iter = 1e4,
-  n_thin = 5)
-```
-
-Note this example only runs for 10,000 iterations - this is to keep the run time short, but is not enough to lead to a converged results. We suggest running for at least 100,000 iterations to arrive at the converged results, which are shown in [@heaton2021].
-
-Both of these methods will output a list containing the sampler outputs at every $n_{\textrm{thin}}$ iteration, with the values of the model parameters and the calendar ages.
-
-## Post-processing
-
-Our sampler provides three outputs of particular interest.
-
-#### Calendar Ages
-
-As described above, the output data includes the calendar age estimate for each ^14^C sample. We can use this to determine the posterior distribution of the calendar age for each sample. Note that the calendar age estimates use the joint information provided by all the ^14^C determinations (as opposed to solely the ^14^C determination of the single object that would be found using `CalibrateSingleDetermination`) on the understanding the calendar ages of the objects are related.
-
-You can calculate and plot this using `PlotCalendarAgeDensityIndividualSample` - for example to calculate the posterior calendar age distribution for the 21st ^14^C determination:
-
-```{r plot_individual, out.width="100%", fig.width=10, fig.height=8}
-PlotCalendarAgeDensityIndividualSample(21, polya_urn_output)
-```
-
-The highest posterior density range for a given probability and the unmodelled density (i.e. the result of `CalibrateSingleDetermination`) can also be shown on the plot by specifying this in the arguments, as shown below.
-
-```{r plot_individual_with_hpd, out.width="100%", fig.width=10, fig.height=8}
-PlotCalendarAgeDensityIndividualSample(
-  21, polya_urn_output, show_hpd_ranges = TRUE, show_unmodelled_density = TRUE)
-```
-
-#### Density Estimate to Summarise Objects
-
-The output data contains information to allow calculation of the predictive distribution for the calendar age of a new, as yet undiscovered, object. This density estimate summarises the calendar ages of all objects. It is generated using the posterior sampled values of the DPMM component of our MCMC sampler. This calendar age density can be calculated and plotted using `PlotPredictiveCalendarAgeDensity`.
-
-The function allows calculation using multiple outputs so that their results can be compared. For example below we compare the results from the two sampler methods above.
-
-```{r plot_density, out.width="100%", fig.width=10, fig.height=8}
-densities <- PlotPredictiveCalendarAgeDensity(
-  output_data = list(walker_output, polya_urn_output),
-  n_posterior_samples = 500,
-  denscale = 2.5)
-```
-
-We also have the option to plot the SPD, plot in the F^14^C scale and change the confidence intervals on the plot.
-
-```{r plot_density_2, out.width="100%", fig.width=10, fig.height=8}
-densities <- PlotPredictiveCalendarAgeDensity(
-  output_data = polya_urn_output,
-  n_posterior_samples = 500,
-  denscale = 2.5,
-  show_SPD = TRUE,
-  interval_width = "bespoke",
-  bespoke_probability = 0.8,
-  plot_14C_age = FALSE)
-```
-
-#### Number of Clusters
-
-The output data also contains information about the cluster allocation of each sampled object, which we can use to build the probability for there being a given number of total clusters. If we believe the underlying individual clusters in the model have inherent meaning in terms of representing genuine and distinct periods of site usage, as opposed to simply providing a tool to enable a non-parametric density estimate, this information may be archaeologically useful.
-
-```{r plot_clusters, out.width="50%", fig.width=5, fig.height=6}
-PlotNumberOfClusters(output_data = polya_urn_output)
-```
 
 # References

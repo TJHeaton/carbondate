@@ -386,9 +386,10 @@ Each event is assumed to result in the generation of a radiocarbon
 sample, <span class="math inline">\(\{ X_i, i= 1,\ldots,n \}\)</span>.
 Examples of events might be:</p>
 <ul>
-<li>the death of an animal (which leaves a bone)</li>
-<li>the creation of a cave painting (which leaves a painting)</li>
+<li>death of an animal (which leaves a bone)</li>
+<li>creation of a cave painting (which leaves a painting)</li>
 <li>construction of a settlement (which leaves a farmstead)</li>
+<li>a palaeofire (which leaves behind charcoal)</li>
 </ul>
 <p>We model the occurrence of these events as random and aim to
 investigate whether, and how, the rate at which they occur varies over
@@ -396,12 +397,13 @@ calendar time.</p>
 <p>Specifically, we assume that the events occur according to a Poisson
 Process with a variable rate <span class="math inline">\(\lambda(t)\)</span>. This rate <span class="math inline">\(\lambda(t)\)</span> is considered
 piecewise-constant, but changes an unknown number of times and at
-unknown calendar ages. Time periods where the rate <span class="math inline">\(\lambda(t)\)</span> is high will typically be
-expected to generate a greater number of events (perhaps since there is
-more activity, or a greater population, at the site/sites); while
-periods when the rate <span class="math inline">\(\lambda(t)\)</span> is
-lower (perhaps due to lower activity at the site/sites) will be expected
-to have fewer events.</p>
+unknown calendar ages. We aim to estimate <span class="math inline">\(\lambda(t)\)</span> and hence infer how the rate
+at which the events occur changes over calendar time. Time periods where
+the rate <span class="math inline">\(\lambda(t)\)</span> is high will
+typically be expected to generate a greater number of events (perhaps
+since there is more activity, or a greater population, at the
+site/sites); while periods when the rate <span class="math inline">\(\lambda(t)\)</span> is lower (perhaps due to lower
+activity at the site/sites) will be expected to have fewer events.</p>
 <p>When the calendar ages of the events <span class="math inline">\(\{\theta_i , i=1,\ldots,n\}\)</span> are known
 exactly, estimation of the variable rate <span class="math inline">\(\lambda(t)\)</span> can be tackled directly via
 reversible jump Markov Chain Monte Carlo (RJ-MCMC) <span class="citation">(Green 1995)</span>). However, when we only observe the

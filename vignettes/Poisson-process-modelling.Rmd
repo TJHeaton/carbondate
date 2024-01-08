@@ -35,13 +35,14 @@ Dependent upon the representativeness of the underlying sampling, this can then 
 
 Suppose we have a series of $n$ events, which occur at calendar times $\{\theta_i, i= 1,\ldots,n \}$ cal yr BP. Each event is assumed to result in the generation of a radiocarbon sample, $\{ X_i, i= 1,\ldots,n \}$. Examples of events might be:
 
-- the death of an animal (which leaves a bone)
-- the creation of a cave painting (which leaves a painting)
+- death of an animal (which leaves a bone)
+- creation of a cave painting (which leaves a painting)
 - construction of a settlement (which leaves a farmstead)
+- a palaeofire (which leaves behind charcoal) 
 
 We model the occurrence of these events as random and aim to investigate whether, and how, the rate at which they occur varies over calendar time.
 
-Specifically, we assume that the events occur according to a Poisson Process with a variable rate $\lambda(t)$. This rate $\lambda(t)$ is considered piecewise-constant, but changes an unknown number of times and at unknown calendar ages. Time periods where the rate $\lambda(t)$ is high will typically be expected to generate a greater number of events (perhaps since there is more activity, or a greater population, at the site/sites); while periods when the rate $\lambda(t)$ is lower (perhaps due to lower activity at the site/sites) will be expected to have fewer events. 
+Specifically, we assume that the events occur according to a Poisson Process with a variable rate $\lambda(t)$. This rate $\lambda(t)$ is considered piecewise-constant, but changes an unknown number of times and at unknown calendar ages. We aim to estimate $\lambda(t)$ and hence infer how the rate at which the events occur changes over calendar time. Time periods where the rate $\lambda(t)$ is high will typically be expected to generate a greater number of events (perhaps since there is more activity, or a greater population, at the site/sites); while periods when the rate $\lambda(t)$ is lower (perhaps due to lower activity at the site/sites) will be expected to have fewer events. 
 
 When the calendar ages of the events $\{\theta_i , i=1,\ldots,n\}$ are known exactly, estimation of the variable rate $\lambda(t)$ can be tackled directly via reversible jump Markov Chain Monte Carlo (RJ-MCMC) [@green1995]). However, when we only observe the radiocarbon ages of the samples ($\{ X_i, i= 1,\ldots,n \}$) the underlying calendar ages $\theta_i$ are uncertain and must be estimated via radiocarbon calibration. This complicates the process of estimating $\lambda(t)$ especially as the calibration must be done simultaneously to its estimation (as the modelling will influence the set of $\theta_i$ and vice versa). In this library, we provide a rigorous approach to the estimation of $\lambda(t)$.    
     
