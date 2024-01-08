@@ -355,7 +355,7 @@
 }
 
 
-.CheckPriorHRateAndPriorHShape <- function(arg_check, prior_h_rate, prior_h_rate) {
+.CheckPriorHRateAndPriorHShape <- function(arg_check, prior_h_shape, prior_h_rate) {
   if (is.na(prior_h_shape) && is.na(prior_h_rate)) {
     return()
   }
