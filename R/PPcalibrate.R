@@ -1,29 +1,6 @@
 #' Title
 #'
-#' @param rc_determinations A vector of observed radiocarbon determinations
-#'
-#' @param rc_sigmas A vector of the radiocarbon determinations
-#' uncertainties (1-sigma). Must be the same length as `rc_determinations`.
-#'
-#' @param calibration_curve A dataframe which must contain one column `calendar_age_BP`, and also
-#' columns `c14_age` and `c14_sig` or `f14c` and `f14c_sig` (or both sets).
-#' This format matches the curves supplied with this package
-#'
-#' @param F14C_inputs `TRUE` if the provided rc_determinations are F14C concentrations and `FALSE`
-#' if they are radiocarbon age BP. Defaults to `FALSE`.
-#'
-#' @param n_iter  The number of MCMC iterations (optional). Default is 100,000.
-#'
-#' @param n_thin  How much to thin the output (optional). 1 is no thinning,
-#' a larger number is more thinning. Default is 10. Must choose an integer more
-#' than 1 and not too close to `n_iter`, to ensure there are enought samples from
-#' posterior to potentially use.
-#'
-#' @param use_F14C_space Whether the calculations are carried out in F14C space (default is TRUE).
-#' If FALSE, calculations are carried out in 14C yr BP space.
-#'
-#' @param show_progress Whether to show a progress bar in the console during
-#' execution. Default is `TRUE`.
+#' @inheritParams WalkerBivarDirichlet
 #'
 #' @param calendar_age_range Minimum and maximum calendar ages permitted
 #' for the calendar ages of the samples, i.e. range_1 < theta < range_2.
@@ -91,7 +68,7 @@ PPcalibrate <- function(
   .CheckFlag(arg_check, F14C_inputs)
   .CheckFlag(arg_check, use_F14C_space)
   .CheckFlag(arg_check, show_progress)
-  if (!is.na(calendar_age_range)) { .CheckNumberVector(arg_check, calendar_age_range, len = 2) }
+  if (!any(is.na(calendar_age_range))) { .CheckNumberVector(arg_check, calendar_age_range, len = 2) }
   .CheckNumber(arg_check, calendar_grid_resolution, lower = 0)
   .CheckPriorHShapeAndPriorHRate(arg_check, prior_h_shape, prior_h_rate)
   .CheckInteger(arg_check, k_max_internal_changepoints, lower = 1)
@@ -136,7 +113,7 @@ PPcalibrate <- function(
     F14C_inputs = use_F14C_space,
     prob_cutoff = bounding_range_prob_cutoff)
 
-  if(any(is.na(calendar_age_range))) {
+  if (any(is.na(calendar_age_range))) {
     min_potential_calendar_age <- min(bounds_calendar_range)
     max_potential_calendar_age <- max(bounds_calendar_range)
 
