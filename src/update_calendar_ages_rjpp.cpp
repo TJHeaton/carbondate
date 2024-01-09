@@ -52,7 +52,7 @@ int SampleInt(std::vector<double> &prob) {
 
   for (int i = 0; i < n_obs; i++) {
     doubles likelihood = likelihood_calendar_ages_from_calibration_curve[i];
-    std::vector<double> posterior_cal_age(likelihood.begin(), likelihood.end());
+    std::vector<double> posterior_cal_age(likelihood.size());
 
     for (int j = 0; j < likelihood.size(); j++) {
       posterior_cal_age[j] = likelihood[j] * prior_calendar_ages[j + likelihood_offset[i]];
