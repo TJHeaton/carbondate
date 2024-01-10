@@ -79,11 +79,11 @@ There are some example ^14^C data sets provided in the package, each of which co
 
 -   `buchanan`: 628 radiocarbon determinations collated by Buchanan et al. representing the ages of distinct archaeological sites found across Canada and North America during the time of the palaeoindians [@buchanan2008].
 
--   `alces`, `bison`, `cervus`, `equus`, `human`, `mammuthus`: radiocarbon determinations  
+-   `alces`, `bison`, `cervus`, `equus`, `human`, `mammuthus`: radiocarbon determinations related to a variety of megafauna (and humans) from Yukon and Alaska [@guthrie2006]. Samples are restricted to those between 25,000--6000 ^14^C yrs BP. 
 
 # Independent calibration
 
-Although this package is concerned with the calibration of multiple related ^14^C determinations it can be useful to calibrate a single calibration independently, for example for estimating initial values for the sampler, or for comparison. To calibrate a single independent determination (using the provided IntCal20 calibration curve), run the following:
+Although this package is concerned with the calibration of multiple related ^14^C determinations it can also be useful to calibrate a single calibration independently, for example for estimating initial values for the sampler, or for comparison. To calibrate a single independent determination (using the provided IntCal20 calibration curve), run the following:
 
 ```{r single_calibration, out.width="100%", fig.width=10, fig.height=8}
 calibration_result <- CalibrateSingleDetermination(
@@ -100,9 +100,16 @@ plot(
   yaxt="n")
 ```
 
-For all functions the radiocarbon determinations can be entered as F^14^C concentrations or as the ^14^C age BP. The flag `F14C_inputs` used above and in other functions below lets the function know what units have been used for the radiocarbon determinations.
+For all functions the radiocarbon determinations can be entered as F^14^C concentrations or as the ^14^C age BP. The flag `F14C_inputs` used above (and in other functions) lets the function know what units have been used for the radiocarbon determinations.
 
-The most common approach to summarise calendar age information of multiple ^14^C determinations is via summed probability distributions (SPD). Here, the posterior calendar age density of each object is first calculated independently from the others as using the function above. These individual densities are then summed/averaged to give an SPD estimate. SPDs are not statistically valid estimators of the calendar age of a potential future object. The independence assumed in the separate calibration of each sample, followed by subsequent summarisation, generates a contradiction. The function is provided here as a useful comparison with the other routines.
+# Summed Probability Distributions
+
+The most common approach to summarise calendar age information of multiple ^14^C determinations is via summed probability distributions (SPD). These are **not statistically valid** estimators of the calendar age of a potential future sample. They should not be used.  
+
+
+Here, the posterior calendar age density of each object is first calculated independently) from the others as using the function above. These individual densities are then summed/averaged to give an SPD estimate. 
+
+SPDs are not statistically valid estimators of the calendar age of a potential future object. The independence assumed in the separate calibration of each sample, followed by subsequent summarisation, generates a contradiction. The function is provided here as a useful comparison with the other routines.
 
 To calculate the SPD for a set of radiocarbon determinations (here we use the example dataset `armit`) see the example below, where we also plot the results.
 
