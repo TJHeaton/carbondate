@@ -129,6 +129,21 @@
 #' }
 "two_normals"
 
+#' Example artificial data - Uniform Phase
+#'
+#' 40 radiocarbon determinations for which the underlying calendar ages are
+#' drawn .... Tim to complete
+#'
+#' @format ## `pp_uniform_phase`
+#' A data frame with 40 rows and 4 columns:
+#' \describe{
+#'   \item{c14_age}{The 14C age (yr BP)}
+#'   \item{c14_sig}{The uncertainty in the 14C age}
+#'   \item{f14c}{The F14C concentration}
+#'   \item{f14c_sig}{The uncertainty in the F14C concentration}
+#' }
+"pp_uniform_phase"
+
 #' Example real-life data - Irish Rath
 #'
 #' 255 radiocarbon determinations collated by Kerr and McCormick related to the
