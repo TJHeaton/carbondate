@@ -30,8 +30,8 @@ We assume each height in piecewise rate has h ~ Gamma(shape, rate)}
 
 \item{prior_n_internal_changepoints_lambda}{Prior on number of internal changepoints n ~ Po(lambda)}
 
-\item{prob_move}{Dataframe with probability of each type of RJ move
-(change_pos, change_height, birth, death)}
+\item{prob_move}{A list with probability of each type of RJ move
+(pos, height, birth, death), the probability being a numeric vector}
 }
 \value{
 TODO

@@ -1,29 +1,6 @@
 #' Title
 #'
-#' @param rc_determinations A vector of observed radiocarbon determinations
-#'
-#' @param rc_sigmas A vector of the radiocarbon determinations
-#' uncertainties (1-sigma). Must be the same length as `rc_determinations`.
-#'
-#' @param calibration_curve A dataframe which must contain one column `calendar_age_BP`, and also
-#' columns `c14_age` and `c14_sig` or `f14c` and `f14c_sig` (or both sets).
-#' This format matches the curves supplied with this package
-#'
-#' @param F14C_inputs `TRUE` if the provided rc_determinations are F14C concentrations and `FALSE`
-#' if they are radiocarbon age BP. Defaults to `FALSE`.
-#'
-#' @param n_iter  The number of MCMC iterations (optional). Default is 100,000.
-#'
-#' @param n_thin  How much to thin the output (optional). 1 is no thinning,
-#' a larger number is more thinning. Default is 10. Must choose an integer more
-#' than 1 and not too close to `n_iter`, to ensure there are enought samples from
-#' posterior to potentially use.
-#'
-#' @param use_F14C_space Whether the calculations are carried out in F14C space (default is TRUE).
-#' If FALSE, calculations are carried out in 14C yr BP space.
-#'
-#' @param show_progress Whether to show a progress bar in the console during
-#' execution. Default is `TRUE`.
+#' @inheritParams WalkerBivarDirichlet
 #'
 #' @param calendar_age_range Minimum and maximum calendar ages permitted
 #' for the calendar ages of the samples, i.e. range_1 < theta < range_2.
@@ -33,7 +10,7 @@
 #'
 #' @param prior_h_shape,prior_h_rate Prior for Poisson Process rate height in any interval
 #' rate_h ~ Gamma(shape = prior_h_shape, rate = prior_h_rate)
-#' If choose sensible_initialisation then prior_h_shape is selected adaptively (internally)
+#' If they are both `NA` then prior_h_shape is selected adaptively (internally)
 #' to match n_observations (and selecting prior_h_rate = 0.1 to provide diffuse prior)
 #'
 #' @param prior_n_internal_changepoints_lambda Prior on Poisson parameter specifying
@@ -53,11 +30,41 @@
 #'
 #' @param grid_extension_factor If you adaptively select the calendar_age_range from
 #' rc_determinations, how far you wish to extend the grid beyond this adaptive minimum and maximum
-#' The final range will be extended (eqaully on both sides) to cover (1 + grid_extension_factor) * (calendar_age_range)
+#' The final range will be extended (equally on both sides) to cover (1 + grid_extension_factor) * (calendar_age_range)
 #'
-#' @param use_fast Adding a flag to allow trimming the likelihoods based on prob cutoff
+#' @param use_fast,fast_approx_prob_cutoff A flag to allow trimming the likelihood of theta (for each value in
+#' calendar_age_grid) based on probability cutoff. If true, then the likelihood is cut-off at `fast_approx_prob_cutoff`.
 #'
-#' @return TODO
+#' @return A list with 7 items. The first 4 items contain output data, each of
+#' which have one dimension of size \eqn{n_{\textrm{out}} =
+#' \textrm{floor}( n_{\textrm{iter}}/n_{\textrm{thin}}) + 1}, each row storing
+#' the result from every \eqn{n_{\textrm{thin}}}th iteration:
+#'
+#' \describe{
+#'  \item{`rate_s`}{A list of length \eqn{n_{\textrm{out}}} each entry giving the current set of
+#'  (calendar age) changepoints in rate of piecewise constant Poisson process.}
+#'  \item{`rate_h`}{A list of length \eqn{n_{\textrm{out}}} each entry giving the current set of
+#'  heights/rates in each section of piecewise constant Poisson process}
+#'  \item{`calendar_ages`}{An \eqn{n_{\textrm{out}}} by \eqn{n_{\textrm{obs}}}
+#'     matrix. Gives the calendar age for each observation.}
+#'  \item{`n_internal_changes`}{A vector of length \eqn{n_{\textrm{out}}} giving the number of
+#'  internal chanhes.}
+#' }
+#' where \eqn{n_{\textrm{obs}}} is the number of radiocarbon observations i.e.
+#' the length of `rc_determinations`.
+#'
+#' The remaining items give information about input data, input parameters (or
+#' those calculated) and update_type
+#'
+#' \describe{
+#'  \item{`update_type`}{A string that always has the value "RJPP".}
+#'  \item{`input_data`}{a list containing the C14 data used and the name of
+#'  the calibration curve used.}
+#'  \item{`input_parameters`}{A list containing the values of the fixed
+#'  parameters `pp_cal_age_range`, `prior_n_internal_changepoints_lambda`,
+#'  `k_max_internal_changepoints`, `prior_h_shape`, `prior_h_rate`, `rescale_factor_rev_jump`,
+#'   `calendar_age_grid`, `calendar_grid_resolution`, `n_iter` and `n_thin`.}
+#' }
 #' @export
 #'
 #' @examples # TODO
@@ -77,14 +84,30 @@ PPcalibrate <- function(
     prior_n_internal_changepoints_lambda = 10,
     k_max_internal_changepoints = 30,
     rescale_factor_rev_jump = 0.9,
-    bounding_range_prob_cutoff = 0.005,
+    bounding_range_prob_cutoff = 0.001,
     initial_n_internal_changepoints = 10,
     grid_extension_factor = 0.1,
-    use_fast = TRUE) {
+    use_fast = TRUE,
+    fast_approx_prob_cutoff = 0.001) {
 
-  # TODO - Check both prior_h_shape and prior_h_rate specified (or both NA)
-  # TODO - Check initial_n_internal_changepoints < k_max
-  # TODO - Check parameters are within required bounds e.g. +ve/-ve
+  arg_check <- .InitializeErrorList()
+  .CheckInputData(arg_check, rc_determinations, rc_sigmas, F14C_inputs)
+  .CheckCalibrationCurve(arg_check, calibration_curve, NA)
+  .CheckIterationParameters(arg_check, n_iter, n_thin)
+  .CheckFlag(arg_check, F14C_inputs)
+  .CheckFlag(arg_check, use_F14C_space)
+  .CheckFlag(arg_check, show_progress)
+  if (!any(is.na(calendar_age_range))) { .CheckNumberVector(arg_check, calendar_age_range, len = 2) }
+  .CheckNumber(arg_check, calendar_grid_resolution, lower = 0)
+  .CheckPriorHShapeAndPriorHRate(arg_check, prior_h_shape, prior_h_rate)
+  .CheckInteger(arg_check, k_max_internal_changepoints, lower = 1)
+  .CheckNumber(arg_check, bounding_range_prob_cutoff, lower = 0, upper = 0.01)
+  .CheckInteger(
+    arg_check, initial_n_internal_changepoints, upper = k_max_internal_changepoints - 1)
+  .CheckNumber(arg_check, grid_extension_factor, lower = 0)
+  .CheckFlag(arg_check, use_fast)
+  .CheckNumber(arg_check, fast_approx_prob_cutoff, lower = 0, upper = 0.01)
+  .ReportErrors(arg_check)
 
   ##############################################################################
   # Save input data
@@ -119,7 +142,7 @@ PPcalibrate <- function(
     F14C_inputs = use_F14C_space,
     prob_cutoff = bounding_range_prob_cutoff)
 
-  if(any(is.na(calendar_age_range))) {
+  if (any(is.na(calendar_age_range))) {
     min_potential_calendar_age <- min(bounds_calendar_range)
     max_potential_calendar_age <- max(bounds_calendar_range)
 
@@ -178,8 +201,7 @@ PPcalibrate <- function(
     max_potential_calendar_age <- (
       calendar_age_grid[length(calendar_age_grid)] + calendar_grid_resolution
     )
-    cc <- c(calendar_age_grid,
-                           max_potential_calendar_age)
+    cc <- c(calendar_age_grid, max_potential_calendar_age)
   }
 
   calendar_age_interval_length <- max_potential_calendar_age - min_potential_calendar_age
@@ -190,7 +212,7 @@ PPcalibrate <- function(
   if(is.na(prior_h_shape)) {
     # Choose exponential distribution
     # and match mean with initial_estimate_mean_rate above
-    prior_h_shape <- 1
+    prior_h_shape <- 1 # This is equivalent to an exponential distribution
     prior_h_rate <- 1 / initial_estimate_mean_rate
   }
 
@@ -248,16 +270,20 @@ PPcalibrate <- function(
     MoreArgs = list(
       theta = calendar_age_grid,
       F14C_inputs = use_F14C_space,
-      calibration_curve = calibration_curve)
-  )
+      calibration_curve = calibration_curve))
 
   if (use_fast) {
-    trimmed_likelihood_calendar_ages_from_calibration_curve <- apply(
-      likelihood_calendar_ages_from_calibration_curve,
-      MARGIN = 2,
-      FUN = .FindTrimmedVectorAndIndices,
-      prob_cutoff = bounding_range_prob_cutoff,
-      simplify = FALSE)
+    likelihood_values <- list()
+    likelihood_offsets <- c()
+    for (i in 1:dim(likelihood_calendar_ages_from_calibration_curve)[2]) {
+      ret <- .FindTrimmedVectorAndIndices(
+        likelihood_calendar_ages_from_calibration_curve[, i], fast_approx_prob_cutoff)
+      likelihood_values[[i]] <- ret$values
+      likelihood_offsets[i] <- as.integer(ret$offset - 1)
+    }
+  } else  {
+    likelihood_values <- NA
+    likelihood_offsets <- NA
   }
 
   num_observations <- length(rc_determinations)
@@ -286,24 +312,15 @@ PPcalibrate <- function(
 
   ## Store calendar_ages given initial_rate_s and initial_rate_h
   ## (sample from exactly using Gibbs)
-  if (use_fast) {
-    calendar_ages <- .TrimmedUpdateCalendarAgesGibbs(
-      trimmed_likelihood_calendar_ages_from_calibration_curve = trimmed_likelihood_calendar_ages_from_calibration_curve,
-      calendar_age_grid = calendar_age_grid,
-      rate_s = rate_s,
-      rate_h = rate_h
-    )
-  } else {
-    calendar_ages <- UpdateCalendarAgesGibbs(
-      likelihood_calendar_ages_from_calibration_curve = likelihood_calendar_ages_from_calibration_curve,
-      calendar_age_grid = calendar_age_grid,
-      rate_s = rate_s,
-      rate_h = rate_h
-    )
-  }
-
+  calendar_ages <- .UpdateCalendarAges(
+    likelihood_calendar_ages_from_calibration_curve,
+    likelihood_values,
+    likelihood_offsets,
+    calendar_age_grid,
+    rate_s,
+    rate_h,
+    use_fast)
   theta_out[output_index, ] <- calendar_ages
-
 
 
   #####################################
@@ -320,21 +337,14 @@ PPcalibrate <- function(
   for(iter in 1:n_iter) {
 
     ## Step 1: Update calendar_ages given rate_s and rate_h (sample from exactly using Gibbs)
-    if (use_fast) {
-      calendar_ages <- .TrimmedUpdateCalendarAgesGibbs(
-        trimmed_likelihood_calendar_ages_from_calibration_curve = trimmed_likelihood_calendar_ages_from_calibration_curve,
-        calendar_age_grid = calendar_age_grid,
-        rate_s = rate_s,
-        rate_h = rate_h
-      )
-    } else {
-      calendar_ages <- UpdateCalendarAgesGibbs(
-        likelihood_calendar_ages_from_calibration_curve = likelihood_calendar_ages_from_calibration_curve,
-        calendar_age_grid = calendar_age_grid,
-        rate_s = rate_s,
-        rate_h = rate_h
-      )
-    }
+    calendar_ages <- .UpdateCalendarAges(
+      likelihood_calendar_ages_from_calibration_curve,
+      likelihood_values,
+      likelihood_offsets,
+      calendar_age_grid,
+      rate_s,
+      rate_h,
+      use_fast)
 
     ## Step 2: Update rate_s and rate_h given current calendar_ages (using RJMCMC)
     updated_poisson_process <- UpdatePoissonProcessRateRevJump(
@@ -381,4 +391,29 @@ PPcalibrate <- function(
   return(return_list)
 }
 
-## TODO - Think about how to choose min and max cut-off currently ends where there is an observation so will have higher rate
+
+.UpdateCalendarAges <- function(
+  likelihood_calendar_ages_from_calibration_curve,
+  likelihood_values,
+  likelihood_offsets,
+  calendar_age_grid,
+  rate_s,
+  rate_h,
+  use_fast) {
+  if (use_fast) {
+    calendar_ages <- .TrimmedUpdateCalendarAgesGibbs(
+      calendar_age_grid = calendar_age_grid,
+      rate_s = rate_s,
+      rate_h = rate_h,
+      likelihood_values = likelihood_values,
+      likelihood_offsets = likelihood_offsets)
+  } else {
+    calendar_ages <- UpdateCalendarAgesGibbs(
+      likelihood_calendar_ages_from_calibration_curve = likelihood_calendar_ages_from_calibration_curve,
+      calendar_age_grid = calendar_age_grid,
+      rate_s = rate_s,
+      rate_h = rate_h
+    )
+  }
+  return(calendar_ages)
+}

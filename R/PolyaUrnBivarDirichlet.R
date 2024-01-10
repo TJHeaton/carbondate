@@ -113,6 +113,7 @@ PolyaUrnBivarDirichlet <- function(
     n_clust)
   .CheckIterationParameters(arg_check, n_iter, n_thin)
   .CheckSliceParameters(arg_check, slice_width, slice_multiplier, sensible_initialisation)
+  .CheckFlag(arg_check, show_progress)
   .CheckFlag(arg_check, F14C_inputs)
   .CheckFlag(arg_check, use_F14C_space)
   .ReportErrors(arg_check)
