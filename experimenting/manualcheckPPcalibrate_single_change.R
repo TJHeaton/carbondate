@@ -58,5 +58,5 @@ Test_Output <- PP_fit_output <- PPcalibrate(
 PlotPosteriorMeanRate(Test_Output)
 PlotPosteriorChangePoints(Test_Output)
 PlotPosteriorHeights(Test_Output)
-# TODO - Histogram of number of changes
+PlotNumberOfInternalChanges(Test_Output)
 

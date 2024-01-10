@@ -123,5 +123,7 @@ parameters \code{pp_cal_age_range}, \code{prior_n_internal_changepoints_lambda},
 Title
 }
 \examples{
-# TODO
+# Using example data
+pp_output <- PPcalibrate(
+    pp_uniform_phase$c14_age, pp_uniform_phase$c14_sig, intcal20, n_iter = 5000)
 }

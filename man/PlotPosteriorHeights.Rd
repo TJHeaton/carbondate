@@ -36,6 +36,8 @@ maximum height will be used.}
 Description here
 }
 \examples{
-# Plot results for a single calibration
-# TODO
+pp_output <- PPcalibrate(
+    pp_uniform_phase$c14_age, pp_uniform_phase$c14_sig, intcal20, n_iter = 5000)
+# Plot the posterior heights for only 2 or 3 internal changes
+PlotPosteriorHeights(pp_output, n_changes = c(2, 3))
 }

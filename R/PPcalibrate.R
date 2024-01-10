@@ -67,7 +67,10 @@
 #' }
 #' @export
 #'
-#' @examples # TODO
+#' @examples
+#' # Using example data
+#' pp_output <- PPcalibrate(
+#'     pp_uniform_phase$c14_age, pp_uniform_phase$c14_sig, intcal20, n_iter = 5000)
 PPcalibrate <- function(
     rc_determinations,
     rc_sigmas,

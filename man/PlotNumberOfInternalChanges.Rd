@@ -28,5 +28,7 @@ Once a function has been run to calibrate a set of radiocarbon determinations,
 the estimated number of internal changes can be plotted using this function.
 }
 \examples{
-# TODO
+pp_output <- PPcalibrate(
+    pp_uniform_phase$c14_age, pp_uniform_phase$c14_sig, intcal20, n_iter = 5000)
+PlotNumberOfInternalChanges(pp_output)
 }

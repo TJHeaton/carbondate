@@ -9,7 +9,9 @@
 #' @export
 #'
 #' @examples
-#' # TODO
+#' pp_output <- PPcalibrate(
+#'     pp_uniform_phase$c14_age, pp_uniform_phase$c14_sig, intcal20, n_iter = 5000)
+#' PlotNumberOfInternalChanges(pp_output)
 PlotNumberOfInternalChanges <- function(output_data, n_burn = NA, n_end = NA) {
 
   arg_check <- .InitializeErrorList()
