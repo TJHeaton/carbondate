@@ -20,10 +20,11 @@ PPcalibrate(
   prior_n_internal_changepoints_lambda = 3,
   k_max_internal_changepoints = 30,
   rescale_factor_rev_jump = 0.9,
-  bounding_range_prob_cutoff = 0.005,
+  bounding_range_prob_cutoff = 0.001,
   initial_n_internal_changepoints = 10,
   grid_extension_factor = 0.1,
-  use_fast = TRUE
+  use_fast = TRUE,
+  fast_approx_prob_cutoff = 0.001
 )
 }
 \arguments{
@@ -34,7 +35,8 @@ uncertainties (1-sigma). Must be the same length as \code{rc_determinations}.}
 
 \item{calibration_curve}{A dataframe which must contain one column \code{calendar_age_BP}, and also
 columns \code{c14_age} and \code{c14_sig} or \code{f14c} and \code{f14c_sig} (or both sets).
-This format matches the curves supplied with this package}
+This format matches the curves supplied with this package e.g. \link{intcal20}, \link{intcal13},
+which contain all 5 columns.}
 
 \item{F14C_inputs}{\code{TRUE} if the provided rc_determinations are F14C concentrations and \code{FALSE}
 if they are radiocarbon age BP. Defaults to \code{FALSE}.}
@@ -60,7 +62,7 @@ the ages of the samples, e.g. t, t + resolution, t + 2 * resolution, ..}
 
 \item{prior_h_shape, prior_h_rate}{Prior for Poisson Process rate height in any interval
 rate_h ~ Gamma(shape = prior_h_shape, rate = prior_h_rate)
-If choose sensible_initialisation then prior_h_shape is selected adaptively (internally)
+If they are both \code{NA} then prior_h_shape is selected adaptively (internally)
 to match n_observations (and selecting prior_h_rate = 0.1 to provide diffuse prior)}
 
 \item{prior_n_internal_changepoints_lambda}{Prior on Poisson parameter specifying
@@ -80,12 +82,42 @@ Will place them randomly within calendar interval}
 
 \item{grid_extension_factor}{If you adaptively select the calendar_age_range from
 rc_determinations, how far you wish to extend the grid beyond this adaptive minimum and maximum
-The final range will be extended (eqaully on both sides) to cover (1 + grid_extension_factor) * (calendar_age_range)}
+The final range will be extended (equally on both sides) to cover (1 + grid_extension_factor) * (calendar_age_range)}
 
-\item{use_fast}{Adding a flag to allow trimming the likelihoods based on prob cutoff}
+\item{use_fast, fast_approx_prob_cutoff}{A flag to allow trimming the likelihood of theta (for each value in
+calendar_age_grid) based on probability cutoff. If true, then the likelihood is cut-off at \code{fast_approx_prob_cutoff}.}
 }
 \value{
-TODO
+A list with 7 items. The first 4 items contain output data, each of
+which have one dimension of size \eqn{n_{\textrm{out}} =
+\textrm{floor}( n_{\textrm{iter}}/n_{\textrm{thin}}) + 1}, each row storing
+the result from every \eqn{n_{\textrm{thin}}}th iteration:
+
+\describe{
+\item{\code{rate_s}}{A list of length \eqn{n_{\textrm{out}}} each entry giving the current set of
+(calendar age) changepoints in rate of piecewise constant Poisson process.}
+\item{\code{rate_h}}{A list of length \eqn{n_{\textrm{out}}} each entry giving the current set of
+heights/rates in each section of piecewise constant Poisson process}
+\item{\code{calendar_ages}}{An \eqn{n_{\textrm{out}}} by \eqn{n_{\textrm{obs}}}
+matrix. Gives the calendar age for each observation.}
+\item{\code{n_internal_changes}}{A vector of length \eqn{n_{\textrm{out}}} giving the number of
+internal chanhes.}
+}
+where \eqn{n_{\textrm{obs}}} is the number of radiocarbon observations i.e.
+the length of \code{rc_determinations}.
+
+The remaining items give information about input data, input parameters (or
+those calculated) and update_type
+
+\describe{
+\item{\code{update_type}}{A string that always has the value "RJPP".}
+\item{\code{input_data}}{a list containing the C14 data used and the name of
+the calibration curve used.}
+\item{\code{input_parameters}}{A list containing the values of the fixed
+parameters \code{pp_cal_age_range}, \code{prior_n_internal_changepoints_lambda},
+\code{k_max_internal_changepoints}, \code{prior_h_shape}, \code{prior_h_rate}, \code{rescale_factor_rev_jump},
+\code{calendar_age_grid}, \code{calendar_grid_resolution}, \code{n_iter} and \code{n_thin}.}
+}
 }
 \description{
 Title

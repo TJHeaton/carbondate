@@ -54,6 +54,13 @@ extern "C" SEXP _carbondate_PolyaUrnUpdateStep(SEXP current_calendar_ages, SEXP 
     return cpp11::as_sexp(PolyaUrnUpdateStep(cpp11::as_cpp<cpp11::decay_t<doubles>>(current_calendar_ages), cpp11::as_cpp<cpp11::decay_t<integers>>(current_cluster_ids), cpp11::as_cpp<cpp11::decay_t<doubles>>(current_phi), cpp11::as_cpp<cpp11::decay_t<doubles>>(current_tau), cpp11::as_cpp<cpp11::decay_t<double>>(current_alpha), cpp11::as_cpp<cpp11::decay_t<double>>(current_mu_phi), cpp11::as_cpp<cpp11::decay_t<double>>(alpha_shape), cpp11::as_cpp<cpp11::decay_t<double>>(alpha_rate), cpp11::as_cpp<cpp11::decay_t<double>>(lambda), cpp11::as_cpp<cpp11::decay_t<double>>(nu1), cpp11::as_cpp<cpp11::decay_t<double>>(nu2), cpp11::as_cpp<cpp11::decay_t<double>>(A), cpp11::as_cpp<cpp11::decay_t<double>>(B), cpp11::as_cpp<cpp11::decay_t<double>>(w), cpp11::as_cpp<cpp11::decay_t<double>>(m), cpp11::as_cpp<cpp11::decay_t<doubles>>(c14_determinations), cpp11::as_cpp<cpp11::decay_t<doubles>>(c14_sigmas), cpp11::as_cpp<cpp11::decay_t<int>>(calcurve_yr_index_offset), cpp11::as_cpp<cpp11::decay_t<doubles>>(mucalallyr), cpp11::as_cpp<cpp11::decay_t<doubles>>(sigcalallyr)));
   END_CPP11
 }
+// update_calendar_ages_rjpp.cpp
+doubles UpdateCalendarAgesGibbsCpp(doubles prior_calendar_ages, doubles calendar_age_grid, list likelihood_calendar_ages_from_calibration_curve, integers likelihood_offset);
+extern "C" SEXP _carbondate_UpdateCalendarAgesGibbsCpp(SEXP prior_calendar_ages, SEXP calendar_age_grid, SEXP likelihood_calendar_ages_from_calibration_curve, SEXP likelihood_offset) {
+  BEGIN_CPP11
+    return cpp11::as_sexp(UpdateCalendarAgesGibbsCpp(cpp11::as_cpp<cpp11::decay_t<doubles>>(prior_calendar_ages), cpp11::as_cpp<cpp11::decay_t<doubles>>(calendar_age_grid), cpp11::as_cpp<cpp11::decay_t<list>>(likelihood_calendar_ages_from_calibration_curve), cpp11::as_cpp<cpp11::decay_t<integers>>(likelihood_offset)));
+  END_CPP11
+}
 // walker_update_step.cpp
 list WalkerUpdateStep(doubles current_calendar_ages, doubles current_weight, doubles current_v, integers current_cluster_ids, double current_alpha, double current_mu_phi, double alpha_shape, double alpha_rate, double lambda, double nu1, double nu2, double A, double B, double w, double m, doubles c14_determinations, doubles c14_sigmas, int calcurve_yr_index_offset, doubles mucalallyr, doubles sigcalallyr);
 extern "C" SEXP _carbondate_WalkerUpdateStep(SEXP current_calendar_ages, SEXP current_weight, SEXP current_v, SEXP current_cluster_ids, SEXP current_alpha, SEXP current_mu_phi, SEXP alpha_shape, SEXP alpha_rate, SEXP lambda, SEXP nu1, SEXP nu2, SEXP A, SEXP B, SEXP w, SEXP m, SEXP c14_determinations, SEXP c14_sigmas, SEXP calcurve_yr_index_offset, SEXP mucalallyr, SEXP sigcalallyr) {
@@ -71,6 +78,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_carbondate_FindPredictiveDensityWalker",          (DL_FUNC) &_carbondate_FindPredictiveDensityWalker,           8},
     {"_carbondate_FindPredictiveDensityandCIPolyaUrn",   (DL_FUNC) &_carbondate_FindPredictiveDensityandCIPolyaUrn,   14},
     {"_carbondate_PolyaUrnUpdateStep",                   (DL_FUNC) &_carbondate_PolyaUrnUpdateStep,                   20},
+    {"_carbondate_UpdateCalendarAgesGibbsCpp",           (DL_FUNC) &_carbondate_UpdateCalendarAgesGibbsCpp,            4},
     {"_carbondate_WalkerUpdateStep",                     (DL_FUNC) &_carbondate_WalkerUpdateStep,                     20},
     {NULL, NULL, 0}
 };

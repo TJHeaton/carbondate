@@ -353,3 +353,29 @@
     arg_check$push("The calendar age sequence must be sorted")
   }
 }
+
+
+.CheckPriorHShapeAndPriorHRate <- function(arg_check, prior_h_shape, prior_h_rate) {
+  if (is.na(prior_h_shape) && is.na(prior_h_rate)) {
+    return()
+  }
+  if (!is.na(prior_h_shape) && !is.na(prior_h_rate)) {
+    .CheckNumber(arg_check, prior_h_rate, lower = 0)
+    .CheckNumber(arg_check, prior_h_shape, lower = 0)
+  } else {
+    arg_check$push(
+      "prior_h_shape and prior_h_rate must either both be positive numbers or must both be NA")
+  }
+}
+
+
+.CheckProbMove <- function(arg_check, prob_move) {
+  if (!is.list(prob_move) && !all(c("pos", "height", "birth", "death") %in% names(prob_move))) {
+    arg_check$push("prob_move must be a list with entries 'pos', 'height', 'birth', 'death'")
+    return()
+  }
+  .CheckNumberVector(arg_check, prob_move$pos)
+  .CheckNumberVector(arg_check, prob_move$height)
+  .CheckNumberVector(arg_check, prob_move$birth)
+  .CheckNumberVector(arg_check, prob_move$death)
+}

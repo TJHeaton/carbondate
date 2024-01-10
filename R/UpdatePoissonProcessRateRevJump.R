@@ -9,8 +9,8 @@
 #' We assume each height in piecewise rate has h ~ Gamma(shape, rate)
 
 #' @param prior_n_internal_changepoints_lambda Prior on number of internal changepoints n ~ Po(lambda)
-#' @param prob_move Dataframe with probability of each type of RJ move
-#' (change_pos, change_height, birth, death)
+#' @param prob_move A list with probability of each type of RJ move
+#' (pos, height, birth, death), the probability being a numeric vector
 #'
 #' @return TODO
 #' @export
@@ -27,11 +27,13 @@ UpdatePoissonProcessRateRevJump <- function(
     prior_n_internal_changepoints_lambda,
     prob_move) {
 
+  arg_check <- .InitializeErrorList()
+  .CheckProbMove(arg_check, prob_move)
+  .ReportErrors(arg_check)
+
   n_changepoints <- length(rate_s)
   n_heights <- length(rate_h)
   n_internal_changepoints <- n_changepoints - 2
-
-  # TODO - CHECK ARGUMENTS OF prob_move
 
   if(n_heights != n_changepoints - 1) {
     stop("Error in matching dimension of rate_s and rate_h")

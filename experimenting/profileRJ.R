@@ -19,5 +19,3 @@ print(flat_profile)
 save(flat_profile, file= paste0("experimenting/", file_pref, ".rda"))
 
 profileCallGraph2Dot(pd, score = "total", filename = paste0("experimenting/", file_pref, ".dot"))
-
-

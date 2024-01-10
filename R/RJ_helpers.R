@@ -61,7 +61,7 @@
   min_potential_calendar_age <- calibration_curve$calendar_age_BP[
     min(which(cumulativeprobabilities > prob_cutoff))]
   max_potential_calendar_age <- calibration_curve$calendar_age_BP[
-    min(which(cumulativeprobabilities > (1 - prob_cutoff)))]
+    max(which(cumulativeprobabilities <= (1 - prob_cutoff)))]
 
   calendar_range <- c(min_potential_calendar_age, max_potential_calendar_age)
 
@@ -107,15 +107,15 @@
 
 .FindTrimmedVectorAndIndices <- function(
     vector,
-    prob_cutoff = 0.005) {
+    prob_cutoff = 0.0001) {
 
   cumulative_sum <- cumsum(vector)
   total_sum <- cumulative_sum[length(cumulative_sum)]
 
-  min_index <- min(which(cumulative_sum > prob_cutoff * total_sum))
-  max_index <- min(which(cumulative_sum > total_sum * (1 - prob_cutoff)))
+  min_index <- min(which(cumulative_sum >= prob_cutoff * total_sum))
+  max_index <- max(which(cumulative_sum <= total_sum * (1 - prob_cutoff)))
 
-  return (list(values = vector[min_index:max_index], start_index = min_index, end_index = max_index))
+  return (list(values = vector[min_index:max_index], offset = min_index))
 }
 
 
