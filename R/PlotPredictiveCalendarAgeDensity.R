@@ -54,25 +54,27 @@
 #' @export
 #'
 #' @examples
+#' polya_urn_output <- PolyaUrnBivarDirichlet(
+#'     two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4)
+#' walker_output <- WalkerBivarDirichlet(
+#'     two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4)
+#'
 #' # Plot results for a single calibration
-#' PlotPredictiveCalendarAgeDensity(polya_urn_example_output)
+#' PlotPredictiveCalendarAgeDensity(polya_urn_output)
 #'
 #' # Plot results from a calibration, and add a label
-#' op = PolyaUrnBivarDirichlet(two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter=1e4)
-#' op$label = "My plot"
-#' PlotPredictiveCalendarAgeDensity(op)
+#' polya_urn_output$label = "My plot"
+#' PlotPredictiveCalendarAgeDensity(polya_urn_output)
 #'
 #' # Plot results from two calibrations on the same plot, and show the SPD
-#' PlotPredictiveCalendarAgeDensity(
-#'   list(walker_example_output, polya_urn_example_output), show_SPD = TRUE)
+#' PlotPredictiveCalendarAgeDensity(list(walker_output, polya_urn_output), show_SPD = TRUE)
 #'
 #' # Plot and show the 1-sigma confidence interval, and use F14C scale
-#' PlotPredictiveCalendarAgeDensity(
-#'     polya_urn_example_output, interval_width = "1sigma", plot_14C_age = FALSE)
+#' PlotPredictiveCalendarAgeDensity(polya_urn_output, interval_width = "1sigma", plot_14C_age = FALSE)
 #'
 #' # Plot and show the 80% confidence interval
 #' PlotPredictiveCalendarAgeDensity(
-#'   polya_urn_example_output, interval_width = "bespoke", bespoke_probability = 0.8)
+#'     polya_urn_output, interval_width = "bespoke", bespoke_probability = 0.8)
 PlotPredictiveCalendarAgeDensity <- function(
     output_data,
     n_posterior_samples = 5000,

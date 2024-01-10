@@ -25,5 +25,7 @@ estimate whether the calibration function has converged.
 }
 \examples{
 # Plot results for the example data
-PlotConvergenceData(polya_urn_example_output)
+polya_urn_output <- PolyaUrnBivarDirichlet(
+    two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4)
+PlotConvergenceData(polya_urn_output)
 }

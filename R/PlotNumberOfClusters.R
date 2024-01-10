@@ -11,7 +11,9 @@
 #'
 #' @examples
 #' # Plot results for the number of clusters
-#' PlotNumberOfClusters(polya_urn_example_output)
+#' polya_urn_output <- PolyaUrnBivarDirichlet(
+#'     two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4)
+#' PlotNumberOfClusters(polya_urn_output)
 PlotNumberOfClusters <- function(output_data, n_burn = NA, n_end = NA) {
 
   arg_check <- .InitializeErrorList()

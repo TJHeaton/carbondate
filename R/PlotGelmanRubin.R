@@ -23,7 +23,9 @@
 #'
 #' @examples
 #' # Plot results for the example data
-#' PlotGelmanRubinDiagnosticSingleChain(polya_urn_example_output)
+#' polya_urn_output <- PolyaUrnBivarDirichlet(
+#'     two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4)
+#' PlotGelmanRubinDiagnosticSingleChain(polya_urn_output)
 PlotGelmanRubinDiagnosticSingleChain <- function(output_data, n_burn = NA, n_segments = 3) {
 
   arg_check <- .InitializeErrorList()

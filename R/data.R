@@ -206,36 +206,6 @@
 "armit"
 
 
-#' Example output from Walker calibration
-#'
-#' This output has been provided for trying out the plotting and summarisation
-#' functions without having to first run a calibration. It shows the output from
-#' running [carbondate::WalkerBivarDirichlet] with the [carbondate::two_normals]
-#' radiocarbon input data and the [carbondate::intcal20] calibration curve for
-#' 100,000 iterations. To reduce file size a large \eqn{n_{\textrm{thin}} = 100}
-#' was used.
-#'
-#' @format ## `walker_example_output`
-#' A list with 11 items, as described in [carbondate::WalkerBivarDirichlet]. In
-#' this case \eqn{n_{\textrm{out}}} is 1001 and \eqn{n_{\textrm{obs}}} is 50.
-"walker_example_output"
-
-
-#' Example output from Polya Urn calibration
-#'
-#' This output has been provided for trying out the plotting and summarisation
-#' functions without having to first run a calibration. It shows the output from
-#' running [carbondate::PolyaUrnBivarDirichlet] with the [carbondate::two_normals]
-#' radiocarbon input data and the [carbondate::intcal20] calibration curve for
-#' 100,000 iterations. To reduce file size a large \eqn{n_{\textrm{thin}} = 100}
-#' was used.
-#'
-#' @format ## `polya_urn_example_output`
-#' A list with 10 items, as described in [carbondate::PolyaUrnBivarDirichlet]. In
-#' this case \eqn{n_{\textrm{out}}} is 1001 and \eqn{n_{\textrm{obs}}} is 50.
-"polya_urn_example_output"
-
-
 #' Example real-life data - Alces in Yukon and Alaska
 #'
 #' 58 radiocarbon determinations collated by Dale Guthrie, R. related to
