@@ -20,7 +20,11 @@ A data frame with 40 rows and 4 columns:
 pp_uniform_phase
 }
 \description{
-40 radiocarbon determinations for which the underlying calendar ages are
-drawn .... Tim to complete
+40 simulated radiocarbon determinations for which the underlying calendar ages are
+drawn (uniformly at random) from the period  550--500 cal yr BP. The observational
+uncertainty of each determination is set to be 15 \eqn{{}^{14}}C yrs. \cr \cr The corresponding
+\eqn{{}^{14}}C ages are then simulated based upon the IntCal20 calibration curve (convolved with
+the 15 \eqn{{}^{14}}C yr measurement uncertainty). This dataset matches that used in the
+package vignette to illustrate the Poisson process modelling.
 }
 \keyword{datasets}
