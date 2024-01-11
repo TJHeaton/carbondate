@@ -10,3 +10,6 @@
 ^profiling$
 ^experimenting
 ^.idea
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

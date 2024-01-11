@@ -13,7 +13,7 @@ CalibrateSingleDetermination(
 }
 \arguments{
 \item{rc_determination}{A single observed radiocarbon determination
-(14C BP age or F14C concentration)}
+(\eqn{{}^{14}}C BP age or F14C concentration)}
 
 \item{rc_sigma}{The uncertainty of the radiocarbon determination in the same units}
 
@@ -41,6 +41,7 @@ calib = CalibrateSingleDetermination(31020, 35, intcal20)
 plot(calib, type = "l", xlim = c(36000, 34000))
 
 # Calibration of a single determination expressed as F14C concentration
-calib = CalibrateSingleDetermination(0.02103493, 9.164975e-05, intcal20, F14C_inputs = TRUE)
+calib = CalibrateSingleDetermination(
+    0.02103493, 9.164975e-05, intcal20, F14C_inputs = TRUE)
 plot(calib, type = "l", xlim = c(36000, 34000))
 }

@@ -35,7 +35,7 @@ the calibration curve here. If provided this should be a dataframe which
 should contain at least 3 columns entitled calendar_age, c14_age and c14_sig.
 This format matches \link{intcal20}.}
 
-\item{plot_14C_age}{Whether to use the 14C yr BP as the units of the y-axis.
+\item{plot_14C_age}{Whether to use the \eqn{{}^{14}}C yr BP as the units of the y-axis.
 Defaults to TRUE. If FALSE uses F14C concentration instead.}
 
 \item{show_individual_means}{Whether to calculate and show the individual mean
@@ -79,11 +79,16 @@ individual mean calendar ages.
 }
 \examples{
 pp_output <- PPcalibrate(
-    pp_uniform_phase$c14_age, pp_uniform_phase$c14_sig, intcal20, n_iter = 5000)
+    pp_uniform_phase$c14_age,
+    pp_uniform_phase$c14_sig,
+    intcal20,
+    n_iter = 5000,
+    show_progress = FALSE)
 
 # Default plot with 2 sigma interval
 PlotPosteriorMeanRate(pp_output)
 
 # Specify an 80\% confidence interval
-PlotPosteriorMeanRate(pp_output, interval_width = "bespoke", bespoke_probability = 0.8)
+PlotPosteriorMeanRate(
+    pp_output, interval_width = "bespoke", bespoke_probability = 0.8)
 }

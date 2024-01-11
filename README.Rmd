@@ -25,7 +25,7 @@ An R package to analyse, and summarise, multiple radiocarbon ($^{14}$C) determin
 - Non-Parametric Density Estimation (a rigorous and robust alternative to summed probability distributions)
 - Variable Rate Poisson Process Estimation (a linked approach)
 
-. It is based on the 
+It is based partly on the
 original functions available 
 [here](https://github.com/TJHeaton/NonparametricCalibration) which were used for 
 "Non-parametric calibration of multiple related radiocarbon determinations and 

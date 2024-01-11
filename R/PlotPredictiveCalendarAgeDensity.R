@@ -20,7 +20,7 @@
 #' the calibration curve here. If provided this should be a dataframe which
 #' should contain at least 3 columns entitled calendar_age, c14_age and c14_sig.
 #' This format matches [carbondate::intcal20].
-#' @param plot_14C_age Whether to use the 14C yr BP as the units of the y-axis.
+#' @param plot_14C_age Whether to use the \eqn{{}^{14}}C yr BP as the units of the y-axis.
 #' Defaults to TRUE. If FALSE uses F14C concentration instead.
 #' @param show_SPD Whether to calculate and show the summed probability
 #' distribution on the plot (optional). Default is `FALSE`.
@@ -55,9 +55,9 @@
 #'
 #' @examples
 #' polya_urn_output <- PolyaUrnBivarDirichlet(
-#'     two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4)
+#'     two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4, show_progress = FALSE)
 #' walker_output <- WalkerBivarDirichlet(
-#'     two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4)
+#'     two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4, show_progress = FALSE)
 #'
 #' # Plot results for a single calibration
 #' PlotPredictiveCalendarAgeDensity(polya_urn_output)
@@ -67,10 +67,12 @@
 #' PlotPredictiveCalendarAgeDensity(polya_urn_output)
 #'
 #' # Plot results from two calibrations on the same plot, and show the SPD
-#' PlotPredictiveCalendarAgeDensity(list(walker_output, polya_urn_output), show_SPD = TRUE)
+#' PlotPredictiveCalendarAgeDensity(
+#'     list(walker_output, polya_urn_output), show_SPD = TRUE)
 #'
 #' # Plot and show the 1-sigma confidence interval, and use F14C scale
-#' PlotPredictiveCalendarAgeDensity(polya_urn_output, interval_width = "1sigma", plot_14C_age = FALSE)
+#' PlotPredictiveCalendarAgeDensity(
+#'     polya_urn_output, interval_width = "1sigma", plot_14C_age = FALSE)
 #'
 #' # Plot and show the 80% confidence interval
 #' PlotPredictiveCalendarAgeDensity(

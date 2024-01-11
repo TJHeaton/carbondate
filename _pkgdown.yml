@@ -1,0 +1,55 @@
+url: ~
+template:
+  bootstrap: 5
+  bootswatch: lumen #simplex #minty
+reference:
+  - title: "Helper functions"
+    contents:
+      - CalibrateSingleDetermination
+      - FindSummedProbabilityDistribution
+      - InterpolateCalibrationCurve
+      - GenerateOxcalCode
+  - title: "Non-parametric Summed Density"
+    desc: "Functions for calibration of multiple related samples and plotting results"
+    contents:
+      - PolyaUrnBivarDirichlet
+      - WalkerBivarDirichlet
+      - FindPredictiveCalendarAgeDensity
+      - PlotPredictiveCalendarAgeDensity
+      - PlotNumberOfClusters
+  - title: "Poisson Process Modelling"
+    desc: "Functions for modelling the the occurrence of radiocarbon samples as a variable-rate (inhomogeneous) Poisson process"
+    contents:
+      - PPcalibrate
+      - UpdateCalendarAgesGibbs
+      - UpdatePoissonProcessRateRevJump
+      - PlotPosteriorMeanRate
+      - PlotNumberOfInternalChanges
+      - PlotPosteriorChangePoints
+      - PlotPosteriorHeights
+  - title: "Common plotting functions"
+    desc: "Functions that can be used to plot the output from both the Non-parametric summed and the Poisson Process calibration"
+    contents:
+      - PlotCalendarAgeDensityIndividualSample
+      - PlotConvergenceData
+      - PlotGelmanRubinDiagnosticSingleChain
+      - PlotGelmanRubinDiagnosticMultiChain
+  - title: "Example datasets"
+    desc: >
+      Sets of radiocarbon determinations, either from real life examples or
+      artificially generated, that can be used as examples with the calibration functions
+    contents:
+      - alces
+      - armit
+      - bison
+      - buchanan
+      - cervus
+      - equus
+      - human
+      - kerr
+      - mammuthus
+      - pp_uniform_phase
+      - two_normals
+  - title: "Calibration curves"
+    contents:
+      - starts_with("intcal")

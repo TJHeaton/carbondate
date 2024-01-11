@@ -1,8 +1,8 @@
 ---
-title: "Non-parametric summed density"
+title: "Non-parametric Summed Density"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Non-parametric summed density}
+  %\VignetteIndexEntry{Non-parametric Summed Density}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 bibliography: references.bib

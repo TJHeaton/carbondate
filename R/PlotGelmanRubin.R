@@ -24,7 +24,7 @@
 #' @examples
 #' # Plot results for the example data
 #' polya_urn_output <- PolyaUrnBivarDirichlet(
-#'     two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4)
+#'     two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4, show_progress = FALSE)
 #' PlotGelmanRubinDiagnosticSingleChain(polya_urn_output)
 PlotGelmanRubinDiagnosticSingleChain <- function(output_data, n_burn = NA, n_segments = 3) {
 
@@ -76,7 +76,10 @@ PlotGelmanRubinDiagnosticSingleChain <- function(output_data, n_burn = NA, n_seg
 #' @examples
 #' # Plot results for the many chains
 #' po = list()
-#' for (i in 1:3) po[[i]] = PolyaUrnBivarDirichlet(kerr$c14_age, kerr$c14_sig, intcal20, n_iter=1e4)
+#' for (i in 1:3) {
+#'     po[[i]] = PolyaUrnBivarDirichlet(
+#'         kerr$c14_age, kerr$c14_sig, intcal20, n_iter=1e4, show_progress = FALSE)
+#' }
 #' PlotGelmanRubinDiagnosticMultiChain(po)
 PlotGelmanRubinDiagnosticMultiChain <- function(output_data_list, n_burn = NA) {
 

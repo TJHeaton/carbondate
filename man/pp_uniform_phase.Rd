@@ -9,8 +9,8 @@
 
 A data frame with 40 rows and 4 columns:
 \describe{
-\item{c14_age}{The 14C age (yr BP)}
-\item{c14_sig}{The uncertainty in the 14C age}
+\item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
+\item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age}
 \item{f14c}{The F14C concentration}
 \item{f14c_sig}{The uncertainty in the F14C concentration}
 }

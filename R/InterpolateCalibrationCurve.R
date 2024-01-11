@@ -26,7 +26,7 @@
 #'
 #' # Interpolate at every integer calendar age within the range of dates (for intcal20 this is 0
 #' # to 55000 BP), and add for both radiocarbon scales.
-#' InterpolateCalibrationCurve(NA, intcal20)
+#' cal_curve = InterpolateCalibrationCurve(NA, intcal20)
 InterpolateCalibrationCurve <- function(new_calendar_ages_BP, calibration_curve, F14C_outputs = NA) {
 
   arg_check <- .InitializeErrorList()

@@ -1,4 +1,4 @@
-#' Title
+#' TODO ADD TITLE
 #'
 #' @param theta Vector of the observed times of the events
 #' @param rate_s The current changepoints in the rate

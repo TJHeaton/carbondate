@@ -18,7 +18,7 @@
 #' @examples
 #' # Plot results for the example data
 #' polya_urn_output <- PolyaUrnBivarDirichlet(
-#'     two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4)
+#'     two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4, show_progress = FALSE)
 #' PlotConvergenceData(polya_urn_output)
 PlotConvergenceData <- function(output_data, n_initial = NA) {
 

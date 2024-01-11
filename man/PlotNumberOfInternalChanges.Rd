@@ -29,6 +29,10 @@ the estimated number of internal changes can be plotted using this function.
 }
 \examples{
 pp_output <- PPcalibrate(
-    pp_uniform_phase$c14_age, pp_uniform_phase$c14_sig, intcal20, n_iter = 5000)
+    pp_uniform_phase$c14_age,
+    pp_uniform_phase$c14_sig,
+    intcal20,
+    n_iter = 5000,
+    show_progress = FALSE)
 PlotNumberOfInternalChanges(pp_output)
 }

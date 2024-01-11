@@ -1,4 +1,4 @@
-#' Outputs code suitable for running in OxCal from a series of radiocarbon determinations given as 14C age.
+#' Outputs code suitable for running in OxCal from a series of radiocarbon determinations given as \eqn{{}^{14}}C age.
 #'
 #' @inheritParams FindSummedProbabilityDistribution
 #' @param model_name The name given to the model in the OxCal code.

@@ -16,8 +16,8 @@
 #' A data frame with 9,501 rows and 5 columns:
 #' \describe{
 #'   \item{calendar_age}{The calendar age (yr BP)}
-#'   \item{c14_age}{The 14C age (yr BP)}
-#'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+#'   \item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
+#'   \item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age reported by the radiocarbon laboratory}
 #'   \item{f14c}{The radiocarbon age expressed as F14C conctration}
 #'   \item{f14c_sig}{The uncertainty in F14C}
 #' }
@@ -40,8 +40,8 @@
 #' A data frame with 5,141 rows and 5 columns:
 #' \describe{
 #'   \item{calendar_age}{The calendar age (yr BP)}
-#'   \item{c14_age}{The 14C age (yr BP)}
-#'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+#'   \item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
+#'   \item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age reported by the radiocarbon laboratory}
 #'   \item{f14c}{The radiocarbon age expressed as F14C conctration}
 #'   \item{f14c_sig}{The uncertainty in F14C}
 #' }
@@ -62,8 +62,8 @@
 #' A data frame with 3,521 rows and 5 columns:
 #' \describe{
 #'   \item{calendar_age}{The calendar age (yr BP)}
-#'   \item{c14_age}{The 14C age (yr BP)}
-#'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+#'   \item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
+#'   \item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age reported by the radiocarbon laboratory}
 #'   \item{f14c}{The radiocarbon age expressed as F14C conctration}
 #'   \item{f14c_sig}{The uncertainty in F14C}
 #' }
@@ -84,8 +84,8 @@
 #' A data frame with 3,301 rows and 5 columns:
 #' \describe{
 #'   \item{calendar_age}{The calendar age (yr BP)}
-#'   \item{c14_age}{The 14C age (yr BP)}
-#'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+#'   \item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
+#'   \item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age reported by the radiocarbon laboratory}
 #'   \item{f14c}{The radiocarbon age expressed as F14C conctration}
 #'   \item{f14c_sig}{The uncertainty in F14C}
 #' }
@@ -105,8 +105,8 @@
 #' A data frame with 1,538 rows and 5 columns:
 #' \describe{
 #'   \item{calendar_age}{The calendar age (yr BP)}
-#'   \item{c14_age}{The 14C age (yr BP)}
-#'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+#'   \item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
+#'   \item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age reported by the radiocarbon laboratory}
 #'   \item{f14c}{The radiocarbon age expressed as F14C conctration}
 #'   \item{f14c_sig}{The uncertainty in F14C}
 #' }
@@ -122,8 +122,8 @@
 #' @format ## `two_normals`
 #' A data frame with 50 rows and 4 columns:
 #' \describe{
-#'   \item{c14_age}{The 14C age (yr BP)}
-#'   \item{c14_sig}{The uncertainty in the 14C age}
+#'   \item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
+#'   \item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age}
 #'   \item{f14c}{The F14C concentration}
 #'   \item{f14c_sig}{The uncertainty in the F14C concentration}
 #' }
@@ -141,8 +141,8 @@
 #' @format ## `pp_uniform_phase`
 #' A data frame with 40 rows and 4 columns:
 #' \describe{
-#'   \item{c14_age}{The 14C age (yr BP)}
-#'   \item{c14_sig}{The uncertainty in the 14C age}
+#'   \item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
+#'   \item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age}
 #'   \item{f14c}{The F14C concentration}
 #'   \item{f14c_sig}{The uncertainty in the F14C concentration}
 #' }
@@ -159,8 +159,8 @@
 #' @format ## `kerr`
 #' A data frame with 255 rows and 4 columns:
 #' \describe{
-#'   \item{c14_age}{The 14C age (yr BP)}
-#'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+#'   \item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
+#'   \item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age reported by the radiocarbon laboratory}
 #'   \item{f14c}{The F14C concentration}
 #'   \item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
 #' }
@@ -180,8 +180,8 @@
 #' @format ## `buchanan`
 #' A data frame with 628 rows and 4 columns:
 #' \describe{
-#'   \item{c14_age}{The 14C age (yr BP)}
-#'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+#'   \item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
+#'   \item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age reported by the radiocarbon laboratory}
 #'   \item{f14c}{The F14C concentration}
 #'   \item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
 #' }
@@ -201,8 +201,8 @@
 #' @format ## `armit`
 #' A data frame with 2021 rows and 4 columns:
 #' \describe{
-#'   \item{c14_age}{The 14C age (yr BP)}
-#'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+#'   \item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
+#'   \item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age reported by the radiocarbon laboratory}
 #'   \item{f14c}{The F14C concentration}
 #'   \item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
 #' }
@@ -225,8 +225,8 @@
 #'   \item{lab_code}{The sample code for the \eqn{{}^{14}}C laboratory}
 #'   \item{site_code}{The site/museum code}
 #'   \item{location}{The location of the sample}
-#'   \item{c14_age}{The 14C age (yr BP)}
-#'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+#'   \item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
+#'   \item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age reported by the radiocarbon laboratory}
 #'   \item{f14c}{The F14C concentration}
 #'   \item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
 #' }
@@ -249,8 +249,8 @@
 #'   \item{lab_code}{The sample code for the \eqn{{}^{14}}C laboratory}
 #'   \item{site_code}{The site/museum code}
 #'   \item{location}{The location of the sample}
-#'   \item{c14_age}{The 14C age (yr BP)}
-#'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+#'   \item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
+#'   \item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age reported by the radiocarbon laboratory}
 #'   \item{f14c}{The F14C concentration}
 #'   \item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
 #' }
@@ -273,8 +273,8 @@
 #'   \item{lab_code}{The sample code for the \eqn{{}^{14}}C laboratory}
 #'   \item{site_code}{The site/museum code}
 #'   \item{location}{The location of the sample}
-#'   \item{c14_age}{The 14C age (yr BP)}
-#'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+#'   \item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
+#'   \item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age reported by the radiocarbon laboratory}
 #'   \item{f14c}{The F14C concentration}
 #'   \item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
 #' }
@@ -297,8 +297,8 @@
 #'   \item{lab_code}{The sample code for the \eqn{{}^{14}}C laboratory}
 #'   \item{site_code}{The site/museum code}
 #'   \item{location}{The location of the sample}
-#'   \item{c14_age}{The 14C age (yr BP)}
-#'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+#'   \item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
+#'   \item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age reported by the radiocarbon laboratory}
 #'   \item{f14c}{The F14C concentration}
 #'   \item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
 #' }
@@ -321,8 +321,8 @@
 #'   \item{lab_code}{The sample code for the \eqn{{}^{14}}C laboratory}
 #'   \item{site_code}{The site/museum code}
 #'   \item{location}{The location of the sample}
-#'   \item{c14_age}{The 14C age (yr BP)}
-#'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+#'   \item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
+#'   \item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age reported by the radiocarbon laboratory}
 #'   \item{f14c}{The F14C concentration}
 #'   \item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
 #' }
@@ -345,8 +345,8 @@
 #'   \item{lab_code}{The sample code for the \eqn{{}^{14}}C laboratory}
 #'   \item{site_code}{The site/museum code}
 #'   \item{location}{The location of the sample}
-#'   \item{c14_age}{The 14C age (yr BP)}
-#'   \item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+#'   \item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
+#'   \item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age reported by the radiocarbon laboratory}
 #'   \item{f14c}{The F14C concentration}
 #'   \item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
 #' }

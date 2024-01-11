@@ -45,5 +45,5 @@ InterpolateCalibrationCurve(c(51020.5, 51021.5), intcal20, FALSE)
 
 # Interpolate at every integer calendar age within the range of dates (for intcal20 this is 0
 # to 55000 BP), and add for both radiocarbon scales.
-InterpolateCalibrationCurve(NA, intcal20)
+cal_curve = InterpolateCalibrationCurve(NA, intcal20)
 }
