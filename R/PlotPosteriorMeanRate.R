@@ -49,13 +49,14 @@
 #'
 #' @examples
 #' pp_output <- PPcalibrate(
-#'     pp_uniform_phase$c14_age, pp_uniform_phase$c14_sig, intcal20, n_iter = 5000)
+#'     pp_uniform_phase$c14_age, pp_uniform_phase$c14_sig, intcal20, n_iter = 5000, show_progress = FALSE)
 #'
 #' # Default plot with 2 sigma interval
 #' PlotPosteriorMeanRate(pp_output)
 #'
 #' # Specify an 80% confidence interval
-#' PlotPosteriorMeanRate(pp_output, interval_width = "bespoke", bespoke_probability = 0.8)
+#' PlotPosteriorMeanRate(
+#'     pp_output, interval_width = "bespoke", bespoke_probability = 0.8)
 PlotPosteriorMeanRate <- function(
     output_data,
     n_posterior_samples = 5000,

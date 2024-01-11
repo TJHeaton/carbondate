@@ -129,7 +129,7 @@ plot(
   yaxt="n")
 ```
 
-Note that the summary functions for plotting the predictive joint calendar age density [described below](#density-estimate-to-summarise-objects) can also optionally plot the SPD without having to calculate it separately first.
+Note that the summary functions for plotting the predictive joint calendar age density described in the vignette [Non-parametric Summed Density](Non-parametric-summed-density.html) can also optionally plot the SPD without having to calculate it separately first.
 
 
 

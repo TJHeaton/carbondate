@@ -24,16 +24,16 @@
 #'
 #' @examples
 #' polya_urn_output <- PolyaUrnBivarDirichlet(
-#'     two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4)
+#'     two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4, show_progress = FALSE)
 #'
-#' # Plot results for the 10th determination
+#' # Result for 10th determination
 #' PlotCalendarAgeDensityIndividualSample(10, polya_urn_output)
 #'
-#' # Plot results for the 10th determination and show the unmodelled density and HPD ranges
+#' # Result for 10th determination and show unmodelled density and HPD ranges
 #' PlotCalendarAgeDensityIndividualSample(
 #'     10, polya_urn_output, show_hpd_ranges = TRUE, show_unmodelled_density = TRUE)
 #'
-#' # Now change to showing 1 sigma interval for HPD range and calibration curve
+#' # Now change to show 1 sigma interval for HPD range and calibration curve
 #' PlotCalendarAgeDensityIndividualSample(
 #'     10, polya_urn_output, interval_width = "1sigma",
 #'     show_hpd_ranges = TRUE, show_unmodelled_density = TRUE)

@@ -149,10 +149,9 @@ considers both the mean and the variance of the clusters to be unknown.
 }
 \examples{
 # Basic usage making use of sensible initialisation to set most values and
-# using a saved example data set and the IntCal20 curve. See the result by plotting the predictive
-# density
-output = PolyaUrnBivarDirichlet(two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4)
-PlotPredictiveCalendarAgeDensity(output)
+# using a saved example data set and the IntCal20 curve.
+output = PolyaUrnBivarDirichlet(
+    two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4, show_progress = FALSE)
 
 # The radiocarbon determinations can be given as F14C concentrations
 output = PolyaUrnBivarDirichlet(
@@ -161,5 +160,4 @@ output = PolyaUrnBivarDirichlet(
     intcal20,
     F14C_inputs = TRUE,
     n_iter = 1e4)
-PlotPredictiveCalendarAgeDensity(output)
 }

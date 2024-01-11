@@ -2,7 +2,7 @@
 % Please edit documentation in R/UpdatePoissonProcessRateRevJump.R
 \name{UpdatePoissonProcessRateRevJump}
 \alias{UpdatePoissonProcessRateRevJump}
-\title{Title}
+\title{TODO ADD TITLE}
 \usage{
 UpdatePoissonProcessRateRevJump(
   theta,
@@ -37,7 +37,7 @@ We assume each height in piecewise rate has h ~ Gamma(shape, rate)}
 TODO
 }
 \description{
-Title
+TODO ADD TITLE
 }
 \examples{
 # TO DO

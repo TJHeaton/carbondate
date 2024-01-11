@@ -2,7 +2,7 @@
 % Please edit documentation in R/UpdateCalendarAgesGibbs.R
 \name{UpdateCalendarAgesGibbs}
 \alias{UpdateCalendarAgesGibbs}
-\title{Title}
+\title{TODO ADD TITLE}
 \usage{
 UpdateCalendarAgesGibbs(
   likelihood_calendar_ages_from_calibration_curve,
@@ -27,7 +27,7 @@ piecewise constant Poisson process}
 TODO
 }
 \description{
-Title
+TODO ADD TITLE
 }
 \examples{
 # TODO

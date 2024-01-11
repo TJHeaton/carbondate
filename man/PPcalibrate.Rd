@@ -2,7 +2,7 @@
 % Please edit documentation in R/PPcalibrate.R
 \name{PPcalibrate}
 \alias{PPcalibrate}
-\title{Title}
+\title{Model the occurrence of radiocarbon samples as a variable-rate (inhomogeneous) Poisson process}
 \usage{
 PPcalibrate(
   rc_determinations,
@@ -120,10 +120,14 @@ parameters \code{pp_cal_age_range}, \code{prior_n_internal_changepoints_lambda},
 }
 }
 \description{
-Title
+Model the occurrence of radiocarbon samples as a variable-rate (inhomogeneous) Poisson process
 }
 \examples{
 # Using example data
 pp_output <- PPcalibrate(
-    pp_uniform_phase$c14_age, pp_uniform_phase$c14_sig, intcal20, n_iter = 5000)
+    pp_uniform_phase$c14_age,
+    pp_uniform_phase$c14_sig,
+    intcal20,
+    n_iter = 5000,
+    show_progress = FALSE)
 }

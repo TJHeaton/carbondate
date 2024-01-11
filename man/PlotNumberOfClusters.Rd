@@ -34,6 +34,6 @@ function.
 \examples{
 # Plot results for the number of clusters
 polya_urn_output <- PolyaUrnBivarDirichlet(
-    two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4)
+    two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4, show_progress = FALSE)
 PlotNumberOfClusters(polya_urn_output)
 }
