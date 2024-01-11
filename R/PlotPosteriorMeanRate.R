@@ -16,7 +16,7 @@
 #' the calibration curve here. If provided this should be a dataframe which
 #' should contain at least 3 columns entitled calendar_age, c14_age and c14_sig.
 #' This format matches [carbondate::intcal20].
-#' @param plot_14C_age Whether to use the 14C yr BP as the units of the y-axis.
+#' @param plot_14C_age Whether to use the \eqn{{}^{14}}C yr BP as the units of the y-axis.
 #' Defaults to TRUE. If FALSE uses F14C concentration instead.
 #' @param show_individual_means Whether to calculate and show the individual mean
 #' calendar ages on the plot (optional). Default is `FALSE`.
@@ -49,7 +49,11 @@
 #'
 #' @examples
 #' pp_output <- PPcalibrate(
-#'     pp_uniform_phase$c14_age, pp_uniform_phase$c14_sig, intcal20, n_iter = 5000, show_progress = FALSE)
+#'     pp_uniform_phase$c14_age,
+#'     pp_uniform_phase$c14_sig,
+#'     intcal20,
+#'     n_iter = 5000,
+#'     show_progress = FALSE)
 #'
 #' # Default plot with 2 sigma interval
 #' PlotPosteriorMeanRate(pp_output)

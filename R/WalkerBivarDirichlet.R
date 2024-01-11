@@ -13,7 +13,7 @@
 #' than 1 and not too close to `n_iter`, to ensure there are enought samples from
 #' posterior to potentially use.
 #' @param use_F14C_space Whether the calculations are carried out in F14C space (default is TRUE).
-#' If FALSE, calculations are carried out in 14C yr BP space.
+#' If FALSE, calculations are carried out in \eqn{{}^{14}}C yr BP space.
 #' @param slice_width Parameter for slice sampling (optional). If not given a value
 #' is chosen intelligently based on the spread of the initial calendar ages.
 #' Must be given if `sensible_initialisation` is `FALSE`.

@@ -20,7 +20,7 @@
 #' the calibration curve here. If provided this should be a dataframe which
 #' should contain at least 3 columns entitled calendar_age, c14_age and c14_sig.
 #' This format matches [carbondate::intcal20].
-#' @param plot_14C_age Whether to use the 14C yr BP as the units of the y-axis.
+#' @param plot_14C_age Whether to use the \eqn{{}^{14}}C yr BP as the units of the y-axis.
 #' Defaults to TRUE. If FALSE uses F14C concentration instead.
 #' @param show_SPD Whether to calculate and show the summed probability
 #' distribution on the plot (optional). Default is `FALSE`.

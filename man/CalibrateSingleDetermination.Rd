@@ -13,7 +13,7 @@ CalibrateSingleDetermination(
 }
 \arguments{
 \item{rc_determination}{A single observed radiocarbon determination
-(14C BP age or F14C concentration)}
+(\eqn{{}^{14}}C BP age or F14C concentration)}
 
 \item{rc_sigma}{The uncertainty of the radiocarbon determination in the same units}
 

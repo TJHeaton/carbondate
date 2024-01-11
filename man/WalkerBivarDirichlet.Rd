@@ -51,7 +51,7 @@ than 1 and not too close to \code{n_iter}, to ensure there are enought samples f
 posterior to potentially use.}
 
 \item{use_F14C_space}{Whether the calculations are carried out in F14C space (default is TRUE).
-If FALSE, calculations are carried out in 14C yr BP space.}
+If FALSE, calculations are carried out in \eqn{{}^{14}}C yr BP space.}
 
 \item{slice_width}{Parameter for slice sampling (optional). If not given a value
 is chosen intelligently based on the spread of the initial calendar ages.

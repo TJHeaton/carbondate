@@ -18,7 +18,7 @@ approaches:
   to summed probability distributions)
 - Variable Rate Poisson Process Estimation (a linked approach)
 
-. It is based on the original functions available
+It is based partly on the original functions available
 [here](https://github.com/TJHeaton/NonparametricCalibration) which were
 used for “Non-parametric calibration of multiple related radiocarbon
 determinations and their calendar age summarisation”

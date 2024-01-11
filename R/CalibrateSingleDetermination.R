@@ -5,7 +5,7 @@
 #' calculate the calendar age probability density for it.
 #'
 #' @param rc_determination A single observed radiocarbon determination
-#' (14C BP age or F14C concentration)
+#' (\eqn{{}^{14}}C BP age or F14C concentration)
 #' @param rc_sigma The uncertainty of the radiocarbon determination in the same units
 #' @param calibration_curve A dataframe which must contain one column `calendar_age_BP`, and also
 #' columns `c14_age` and `c14_sig` or `f14c` and `f14c_sig` (or both sets).

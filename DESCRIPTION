@@ -2,7 +2,7 @@ Package: carbondate
 Title: Calibration and Summarisation of Radiocarbon Dates
 Version: 0.0.0.9000
 Authors@R: c(
-    person("Tim", "Heaton", , "T.Heaton@leeds.ac.uk", role = c("aut", "cre"),
+    person("Timothy J", "Heaton", , "T.Heaton@leeds.ac.uk", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-9994-142X")),
     person("Sara", "Al-assam", , "sarassam@gmail.com", role = c("aut"),
            comment = c(ORCID = "0000-0001-7280-6802")))       
