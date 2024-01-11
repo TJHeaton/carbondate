@@ -84,7 +84,7 @@ void WalkerUpdateWeights(
     weight.push_back(new_weight);
     brprod *= (1. - v[clust_num - 1]);
   }
-  if (clust_num < v.size()) v.resize(clust_num);
+  if (clust_num < (int) v.size()) v.resize(clust_num);
 }
 
 
