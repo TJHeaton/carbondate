@@ -53,3 +53,11 @@ reference:
   - title: "Calibration curves"
     contents:
       - starts_with("intcal")
+figures:
+  fig.ext: png
+  fig.width: 7.2916667
+  fig.height: ~
+  fig.retina: 2
+  fig.asp: 1.3
+  bg: NA
+  other.parameters: []

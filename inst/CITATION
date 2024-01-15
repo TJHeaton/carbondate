@@ -1,7 +1,21 @@
-bibentry(
+citEntry(
   "Manual",
   title    = "Calibration and Summarisation of Radiocarbon Dates",
-  author   = "Tim Heaton, Sara Al-Assam",
-  year     = "2022",
+  author   = "Heaton, Timothy J and Al-Assam, Sara",
+  year     = "2024",
   url      = "https://github.com/TJHeaton/carbondate",
+
+)
+citEntry(
+  "Article",
+  title    = "Non-parametric calibration of multiple related radiocarbon determinations and their calendar age summarisation",
+  journal  = "Journal of the Royal Statistical Society Series C: Applied Statistics",
+  author   = "Heaton, Timothy J.",
+  volume   = "71",
+  number   = "5",
+  pages    = "1918-1956",
+  year     = "2022",
+  month    = "10",
+  url      = "https://doi.org/10.1111/rssc.12599",
+  doi      = "10.1111/rssc.12599",
 )
