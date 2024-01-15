@@ -31,5 +31,4 @@ BugReports: https://github.com/TJHeaton/carbondate/issues
 VignetteBuilder: knitr
 LinkingTo: 
     cpp11
-SystemRequirements: C++11
 RoxygenNote: 7.2.3
