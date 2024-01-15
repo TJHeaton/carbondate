@@ -62,12 +62,12 @@ legend(
 
 ```
 
-Each sample has an unknown calendar age $\theta_i$ (for $i = 1, \ldots, N$). Since they are related, the set of calendar ages $\theta_1, \ldots, \theta_n$ for the samples are assumed to arise from the same shared, and unknown, calendar age density. However, we don't observe these true calendar ages - only the ^14^C determinations $X_1, \ldots, X_n$. Due to fluctuations in past radiocarbon levels, the ^14^C determinations need to be calibrated (converted) in order to be understood on the calendar age scale. This calibration must be done simultaneously with the summarisation, introducing additional complexity into the overall process. 
+Each sample has an unknown calendar age $\theta_i$ (for $i = 1, \ldots, N$). Since they are related, the set of calendar ages $\theta_1, \ldots, \theta_n$ for the samples are assumed to arise from the same shared, and unknown, calendar age density $f(\theta)$. However, we don't observe the true calendar ages of the samples  - only the ^14^C determinations $X_1, \ldots, X_n$. Due to fluctuations in past radiocarbon levels, these ^14^C determinations need to be calibrated (converted) in order to be understood on the calendar age scale. This calibration must be done simultaneously with the summarisation, introducing additional complexity into the overall process. 
 
 This library serves two purposes:
 
-- calibration (i.e., the calendar age estimation) of the set of ^14^C determinations can be improved significantly by incorporating the knowledge that the samples are related;
-- summarisation of the underlying calendar age distribution from which the samples arise provides a potentially useful proxy for activity, population size, the frequency of past events. This approach uses the principle of _dates-as-data_ [@rick1987]
+- calibration of the set of ^14^C determinations (i.e., the calendar age estimation of the $\theta_i$) can be improved significantly by incorporating the knowledge that the samples are related;
+- summarisation of the underlying calendar age distribution from which the samples arise $f(\theta)$ provides a potentially useful proxy for activity, population size, the frequency of past events. This approach uses the principle of _dates-as-data_ [@rick1987]
 
 We provide two different, albeit ideologically linked, approaches to achieve this:
 
@@ -88,24 +88,33 @@ In this library, we provide two theoretically-underpinned approaches to overcome
 - A changepoint-based approach that models the occurrence of the ^14^C samples as an inhomogeneous Poisson process. We aim to reconstruct how the rate at which the samples occur varies over calendar time, and to identify if there are statistically significant changepoints (i.e., specific calendar times at which the rate of samples changes abruptly).  [Poisson process modelling vignette](Poisson-process-modelling.html) 
 
 ### Strengths and Weaknesses of Dates-as-Data
-Used well, dates-as-data approaches allow users to borrow strength from more data and hence identify longer term trends and less-obvious effects that are not possible with smaller sets of data. This has the potential to provide greater insight into mechanisms and processes. However, like any scientific tool, it must not be used uncritically, or treated as a black-box. 
+Used well, dates-as-data approaches allow users to borrow strength from more data and hence identify longer term trends and less-obvious effects that are not possible with smaller sets of data. This has the potential to provide greater insight into mechanisms and processes. However, like any scientific tool, they must not be used uncritically, or treated as a black-box. 
 
-The reliability of any dates-as-data inference will depend hugely upon the representativeness of the underlying sampling. Two particular considerations which must be taken into account are:
+In particular, the reliability of any dates-as-data inference will depend hugely upon the representativeness, or otherwise, of the underlying sampling. Two particular considerations which must be taken into account are:
 
-- Potential for Taphonomic Loss --- that certain kinds of samples are more/less likely to remain in the archaeological record (e.g., due to preservation) or that fewer older samples will remain. one can (probably) deal with this if can provide loss likelihood
-- Extent of (Non)-representativeness of the underlying sampling --- the underlying model assumes that each sample is representative of the overall population/activity. Using sets of ^14^C data that are dominated by large studies that only looked at particular time periods, or particular materials/samples, are unlikely to provide such representativeness of an overall population. 
+- Potential for Taphonomic Loss --- that certain kinds of samples are more/less likely to remain in the archaeological record (e.g., due to preservation) or that fewer older samples will remain. One can (probably) deal with this if can provide the likelihood of loss of different objects/periods. This library does not however currently address this. 
+- Extent of (non)-representativeness of the underlying sampling --- the underlying model assumes that each sample is representative of the overall population/activity. Using sets of ^14^C data that are dominated by large studies that only looked at particular time periods, or particular materials/samples, are unlikely to provide reliable representation of an overall population. 
 
 One must always consider what the sample you are wishing to summarise represents.  
 
+## Data Requirements
+The (most-automated) version of the library only requires vectors:
+
+- The ^14^C determinations $X_i$: `rc_determinations`
+- The accompanying (lab-reported) measurement uncertainties $\sigma_i$: `rc_sigmas`
+
+**Note:** These values can either be provided as ^14^C ages, or as F^14^C concentrations. 
+
+All other model parameters will be adaptively chosen based upon these. More experienced users (with external independent information) may however wish to manually set some of the other parameters (see the help files for further information).   
 
 ## Additional Information
 
-The library also provides some joint data (which can be usd by either method) as described below 
+The library also provides some joint data (which can be used by either method) as described below 
 
 
 ## Calibration Curve
 
-Given a set of reference objects for which we have both ^14^C measurements and independently known (or estimated) calendar ages, we can create what is known as a calibration curve. This calibration curve is a mapping providing, for an object of true calendar age $\theta$, the corresponding radiocarbon age $\mu(\theta)$. The radiocarbon determination of any individual sample is assumed to be a noisy observation of this, i.e., 
+A calibration curve is a mapping providing, for an object of true calendar age $\theta$, the corresponding radiocarbon age $\mu(\theta)$. Estimates of such calibration curves are created using reference material for which we have both ^14^C measurements and independently-known (or estimated) calendar ages. The radiocarbon determination of any individual sample is assumed to be a noisy observation of the calibration curve, i.e., 
 $$
 X_i \sim N(\mu(\theta), \sigma_{\textrm{lab}}^2)
 $$
@@ -132,9 +141,11 @@ There are some example ^14^C data sets provided in the package, each of which co
 
 -   `alces`, `bison`, `cervus`, `equus`, `human`, `mammuthus`: radiocarbon determinations related to a variety of megafauna (and humans) from Yukon and Alaska [@guthrie2006]. Samples are restricted to those between 25,000--6000 ^14^C yrs BP. 
 
-# Independent calibration
+# Additional Functions
 
-Although this package is concerned with the calibration of multiple related ^14^C determinations it can also be useful to calibrate a single calibration independently, for example for estimating initial values for the sampler, or for comparison. To calibrate a single independent determination (using the provided IntCal20 calibration curve), run the following:
+## Independent calibration
+
+Although this package is concerned with the calibration of multiple related ^14^C determinations, it can also be useful to calibrate a single calibration independently, for example for estimating initial values for the sampler, or for comparison. To calibrate a single independent determination (using the provided IntCal20 calibration curve), run the following:
 
 ```{r single_calibration, out.width="100%", fig.width=10, fig.height=8}
 calibration_result <- CalibrateSingleDetermination(
@@ -151,11 +162,10 @@ plot(
   yaxt="n")
 ```
 
-For all functions the radiocarbon determinations can be entered as F^14^C concentrations or as the ^14^C age BP. The flag `F14C_inputs` used above (and in other functions) lets the function know what units have been used for the radiocarbon determinations.
+For all functions, the radiocarbon determinations can be entered as F^14^C concentrations or as the ^14^C age BP. The flag `F14C_inputs` used above (and in other functions) lets the function know what units have been used for the radiocarbon determinations.
 
-# Summed Probability Distributions
-
-Currently, the most commonly-used approach to summarise calendar age information from multiple ^14^C determinations is via summed probability distributions (SPD). These are **not statistically valid** estimators of the calendar age of a potential future sample. They should not be used.  
+## Summed Probability Distributions
+Currently, the most commonly-used approach to summarise calendar age information from multiple ^14^C determinations is via summed probability distributions (SPD). These are **not statistically valid** estimators of the calendar age of a potential future sample. It is our view that they should not be used in any dates-as-data approach to provide a population proxy.  
 
 For an SPD, the posterior calendar age density of each object is first calculated independently) from the others as using the function above. These individual densities are then summed/averaged to give an SPD estimate. The independence assumed in the separate calibration of each sample, followed by subsequent summarisation, generates a contradiction. 
 
