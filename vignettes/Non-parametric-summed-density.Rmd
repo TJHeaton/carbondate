@@ -32,7 +32,7 @@ For full technical details of the models used, and explanation of the model para
 
 Updating is performed within an overall Gibbs MCMC scheme by sampling the model parameters. There are two different schemes provided to update the DPMM --- a Polya Urn approach [@neal2000] which integrates out the mixing weights of each cluster; and a slice sampling approach in which they are explicitly retained [@walker2007].
 
-Run using the Poly Urn method:
+Run using the Polya Urn method:
 
 ```{r calculate_walker, results=FALSE}
 polya_urn_output <- PolyaUrnBivarDirichlet(
@@ -93,6 +93,8 @@ densities <- PlotPredictiveCalendarAgeDensity(
 ```
 
 We also have the option to plot the SPD, plot in the F^14^C scale and change the confidence intervals on the plot.
+
+## TODO - Fix HPD interval (should cpp be fabs rather than abs?)
 
 ```{r plot_density_2, out.width="100%", fig.width=10, fig.height=8}
 densities <- PlotPredictiveCalendarAgeDensity(
