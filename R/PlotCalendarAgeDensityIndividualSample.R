@@ -131,6 +131,8 @@ PlotCalendarAgeDensityIndividualSample <- function(
 
   plot_AD <- any(calendar_age < 0)
   graphics::par(xaxs = "i", yaxs = "i")
+  graphics::par(mar = c(5, 4.5, 4, 2) + 0.1, las = 1)
+
   .PlotCalibrationCurve(
     plot_AD,
     xlim = rev(xrange),
