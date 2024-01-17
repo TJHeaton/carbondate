@@ -28,7 +28,7 @@ Imports:
     grDevices,
     stats,
     utils
-URL: https://github.com/TJHeaton/carbondate
+URL: https://github.com/TJHeaton/carbondate, https://tjheaton.github.io/carbondate/
 BugReports: https://github.com/TJHeaton/carbondate/issues
 VignetteBuilder: knitr
 LinkingTo: 
