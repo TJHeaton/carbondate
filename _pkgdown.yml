@@ -17,6 +17,7 @@ reference:
   - FindPredictiveCalendarAgeDensity
   - PlotPredictiveCalendarAgeDensity
   - PlotNumberOfClusters
+  - PlotConvergenceData
 - title: Poisson Process Modelling
   desc: Functions for modelling the the occurrence of radiocarbon samples as a variable-rate
     (inhomogeneous) Poisson process
@@ -31,7 +32,6 @@ reference:
     summed and the Poisson Process calibration
   contents:
   - PlotCalendarAgeDensityIndividualSample
-  - PlotConvergenceData
   - PlotGelmanRubinDiagnosticSingleChain
   - PlotGelmanRubinDiagnosticMultiChain
 - title: Example datasets
@@ -50,7 +50,9 @@ reference:
   - pp_uniform_phase
   - two_normals
 - title: Calibration curves
-  contents: starts_with("intcal")
+  contents:
+    - starts_with("intcal")
+    - starts_with("shcal")
 figures:
   fig.ext: png
   fig.width: 7.2916667
