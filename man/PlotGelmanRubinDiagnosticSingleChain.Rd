@@ -8,8 +8,7 @@ PlotGelmanRubinDiagnosticSingleChain(output_data, n_burn = NA, n_segments = 3)
 }
 \arguments{
 \item{output_data}{The return value from one of the updating functions e.g.
-\link{PolyaUrnBivarDirichlet} or
-\link{WalkerBivarDirichlet}.}
+e.g. \link{PolyaUrnBivarDirichlet}, \link{WalkerBivarDirichlet} or \link{PPcalibrate}.}
 
 \item{n_burn}{The number of iterations required for burn-in  - any iterations before this
 are not used to calculate the PSRF. If not given, the first half of the
