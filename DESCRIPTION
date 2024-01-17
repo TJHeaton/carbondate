@@ -1,5 +1,5 @@
 Package: carbondate
-Title: Calibration and Summarisation of Radiocarbon Dates
+Title: Calibration and Summarization of Radiocarbon Dates
 Version: 0.0.0.9000
 Authors@R: c(
     person("Timothy J", "Heaton", , "T.Heaton@leeds.ac.uk", role = c("aut", "cre"),
@@ -8,8 +8,10 @@ Authors@R: c(
            comment = c(ORCID = "0000-0001-7280-6802")))       
 Description: 
   Performs non-parametric calibration of multiple related radiocarbon 
-  determinations. Functions are also included for summarising the calendar age 
-  information to plot the calendar age density.
+  determinations, and summarises the calendar age information to plot the calendar age density
+  (see <doi:10.1111/rssc.12599> Timothy J. Heaton (2022)).
+  Also models the occurrence of radiocarbon samples as a variable-rate (inhomogeneous) Poisson process,
+  and plots the posterior mean rate and information about the change points.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
