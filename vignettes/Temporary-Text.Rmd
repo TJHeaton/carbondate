@@ -1,0 +1,41 @@
+---
+title: "Temporary-Text"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Temporary-Text}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(carbondate)
+```
+
+### Old Text
+
+We model our unknown calendar age density $f(\theta)$  as an infinite mixture of individual calendar age clusters/phases. These individual calendar age clusters are normal densities that can have different locations and spreads. Such a model allows considerable flexibility into the estimation of the joint calendar age density $f(\theta)$, not only simple mixtures but also
+
+In some cases, this mix of normal densities may represent true and distinct underlying normal archaeological phases, in which case additional practical inference may be possible. However this is not required for the method to provide good estimation, and the clusters will be used
+
+
+### Intuitive Illustration
+We model the underlying shared calendar age distribution as an unknown mixture of calendar age _clusters/phases_:
+$$
+f(\theta) = w_1 \textrm{Cluster}_1 + w_2 \textrm{Cluster}_2 + w_3 \textrm{Cluster}_3 + \ldots 
+$$
+where each _cluster_ has a normal distribution (with unknown mean $\mu_j$ and precision $\tau_j^2$).
+
+
+
+Each object is then considered to be drawn from one of the (infinite) clusters which constitute the overall $f(\theta)$. The probability that it is drawn from a particular cluster will depend upon the relative weight given to that specific cluster. 
+
+It will be more likely that an object will come from some clusters than others. Given an object belongs to a particular cluster, its prior calendar age will be normally distributed with the mean and variance of that cluster. The mean and variance of each individual normal cluster that constitutes the overall $f(\theta)$, together with the weightings associated to each cluster, will be estimated based upon the set of ^14^C determinations we observe.
+
+For full technical details of the models used, and explanation of the model parameters, see [@heaton2021].

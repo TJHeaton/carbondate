@@ -20,19 +20,103 @@ library(carbondate)
 set.seed(5)
 ```
 
-# Non-parametric calibration of multiple related samples
+# Non-parametric calibration of multiple related ^14^C samples
 
 ## Model details
 
-We model our unknown calendar age density $f(\theta)$ as an infinite mixture of individual clusters. These individual calendar age clusters are normal densities that can have different locations and spreads. In some cases, this mix of normal densities may represent true and distinct underlying normal archaeological phases, in which case additional practical inference may be possible. However this is not required for the method to provide good estimation. Each object is then considered to be drawn from one of the (infinite) clusters which constitute the overall $f(\theta)$. The probability that it is drawn from a particular cluster will depend upon the relative weight given to that specific cluster. It will be more likely than an object will come from some clusters than others. Given an object belongs to a particular cluster, its prior calendar age will be normally distributed with the mean and variance of that cluster. The mean and variance of each individual normal cluster that constitutes the overall $f(\theta)$, together with the weightings associated to each cluster, will be estimated based upon the set of ^14^C determinations we observe.
+We model the underlying shared calendar age density $f(\theta)$ as an infinite and unknown mixture of individual calendar age _clusters/phases_:
+$$
+f(\theta) = w_1 \textrm{Cluster}_1 + w_2 \textrm{Cluster}_2 + w_3 \textrm{Cluster}_3 + \ldots 
+$$
+Each calendar age _cluster_ in the mixture has a normal distribution with a different location and spread (i.e., an unknown mean $\mu_j$ and precision $\tau_j^2$). Each object is then considered to have been drawn from one of the (infinite) clusters that together constitute the overall $f(\theta)$.
 
-For full technical details of the models used, and explanation of the model parameters, see [@heaton2021].
+Such a model allows considerable flexibility in the estimation of the joint calendar age density $f(\theta)$ --- not only allowing us to build simple mixtures but also approximate more complex distributions (see illustration below). In some cases, this mix of normal densities may represent true and distinct underlying normal archaeological phases, in which case additional practical inference may be possible. However this is not required for the method to provide good estimation of a wide range of underlying $f(\theta)$ distributions.
 
-## Run the sampler
+The probability that a particular sample is drawn from a particular cluster will depend upon the relative weight $w_j$ given to that specific cluster. It will be more likely that an object will come from some clusters than others. Given an object belongs to a particular cluster, its prior calendar age will then be normally distributed with the mean $\mu_j$ and precision $\tau_j^2$ of that cluster. 
 
-Updating is performed within an overall Gibbs MCMC scheme by sampling the model parameters. There are two different schemes provided to update the DPMM --- a Polya Urn approach [@neal2000] which integrates out the mixing weights of each cluster; and a slice sampling approach in which they are explicitly retained [@walker2007].
 
-Run using the Polya Urn method:
+```{r illustrate_mixture, fig.cap = paste("_An illustration of building up a distribution $f(\\theta)$ using mixtures of normals. It is possible to build up highly complex distributions using a mixture of normals. Left Panel: A simple mixture of three (predominantly disjoint) normal clusters (blue dashed lines) results in an overall $f(\\theta)$ that is tri-modal (solid red). Right Panel: Overlapping normal clusters (blue dashed lines) can however create more complex $f(\\theta)$ distributions (solid red)._"), out.width="100%", fig.width=10, fig.height=4, echo = FALSE}
+
+# Plots summed normal distributions
+par(mfrow = c(1,2))
+t <- 1:100
+wtrue <- c(0.3, 0.4, 0.3)
+phitrue <- c(40, 60, 80)
+tautrue <- 1/c(5, 4, 8)^2
+
+# Find and plot true exact density
+truedensv2 <- function(t, w, truemean, trueprec) {
+  dens <- 0
+  for(i in 1:length(w)) {
+    dens <- dens + w[i] * dnorm(t, mean = truemean[i], sd = 1/sqrt(trueprec[i]))
+  }
+  dens
+}
+
+par(mar = c(5, 4.5, 2, 2) + 0.1)
+curve(truedensv2(x, w = wtrue, truemean = phitrue, trueprec = tautrue), 
+      from = min(t), to = max(t), n = 401, 
+      ylim = c(0, 0.05), 
+      ylab = expression(paste("f(", theta, ")")),
+      xlab = "Calendar Age (cal yr BP)",
+      xlim = rev(c(min(t), max(t))),
+      col = "red", lwd = 2)
+# Add in constituent normals
+for(i in 1:length(wtrue)) {
+  curve(truedensv2(x, w = wtrue[i], truemean = phitrue[i], trueprec = tautrue[i]), 
+        from = min(t), to = max(t), n = 401, add = TRUE,
+        ylim = c(0, 0.06), 
+        xlim = rev(c(min(t), max(t))),
+        col = "blue", lty = 2)
+}
+
+
+## Version two - overlapping
+wtrue <- c(0.2, 0.3, 0.1, 0.2, 0.2)
+phitrue <- c(50, 60, 70, 40, 30)
+tautrue <- 1/c(5, 4, 8, 4, 7)^2
+
+par(mar = c(5, 4.5, 2, 2) + 0.1)
+curve(truedensv2(x, w = wtrue, truemean = phitrue, trueprec = tautrue), 
+      from = min(t), to = max(t), n = 401, 
+      ylim = c(0, 0.05), 
+      ylab = expression(paste("f(", theta, ")")),
+      xlab = "Calendar Age (cal yr BP)",
+      xlim = rev(c(min(t), max(t))),
+      col = "red", lwd = 2)
+# Add in constituent normals
+for(i in 1:length(wtrue)) {
+  curve(truedensv2(x, w = wtrue[i], truemean = phitrue[i], trueprec = tautrue[i]), 
+        from = min(t), to = max(t), n = 401, add = TRUE,
+        ylim = c(0, 0.06), 
+        xlim = rev(c(min(t), max(t))),
+        col = "blue", lty = 2)
+}
+```
+
+## Estimation of the shared underlying density $f(\theta)$
+
+To estimate the shared calendar age density $f(\theta)$ based upon our set of ^14^C observations, $X_1, \ldots, X_N$, we need to estimate:
+
+- the mean $\mu_j$ and precision $\tau_j^2$ of each individual normal cluster within the overall mixture $f(\theta)$, 
+- the weighting $w_j$ associated to that cluster
+
+This requires us to also calibrate the ^14^C determinations to obtain their calendar ages $\theta_1, \ldots, \theta_N$. Since we assume that the calendar ages of each object arise from the shared density, this must be performed simultaneously to the estimation of $f(\theta)$. 
+
+We use Markov Chain Monte Carlo (MCMC) to iterate, for $k = 1, \ldots, M$, between: 
+
+- Calibrate $X_1, \ldots, X_n$ to obtain calendar age estimates $\theta_1^{k+1}, \ldots \theta_N^{k+1}$ given current shared estimate that each $\theta_i \sim \hat{f}^k(\theta)$
+- Update estimate of shared calendar age density (to obtain $\hat{f}_{k+1}(\theta)$ given current set of calendar ages $\theta_1^{k+1}, \ldots \theta_N^{k+1}$
+
+After running the sampler for a large number of iteration (and until we are confident of convergence) we obtain estimates for the calendar age $\theta_i$ of each sample, and an estimate for the shared calendar age density $\hat{f}(\theta)$. These latter estimates of shared calendar age density take are what are called _predictive estimates_, i.e., the provide estimates of the calendar age of a hypothetical new sample (based on the set of $N$ samples that we have observed).     
+
+Critically, with our Bayesian non-parametric method, the number of calendar age clusters that are represented in the observed data is unknown (and is allowed to vary in each MCMC step). This flexibility is different, and offers a substantial advantage, from other methods that require the number of clusters to be known _a priori_. For full technical details of the models used, and explanation of the model parameters, see @heaton2021.
+
+## Running the sampler
+
+The MCMC updating is performed within an overall Gibbs MCMC scheme. There are two different schemes provided to update the DPMM --- a Polya Urn approach [@neal2000] which integrates out the mixing weights of each cluster; and a slice sampling approach in which they are explicitly retained [@walker2007].
+
+Run using the Polya Urn method (our recommended approach based upon testing):
 
 ```{r calculate_walker, results=FALSE}
 polya_urn_output <- PolyaUrnBivarDirichlet(
@@ -54,7 +138,7 @@ walker_output <- WalkerBivarDirichlet(
   n_thin = 5)
 ```
 
-Note this example only runs for 10,000 iterations - this is to keep the run time short, but is not enough to lead to a converged results. We suggest running for at least 100,000 iterations to arrive at the converged results, which are shown in [@heaton2021].
+**Note:** This example only runs for 10,000 iterations - this is to keep the run time short, but is not enough to lead to a converged result. We suggest running for at least 100,000 iterations to arrive at the converged results, which are shown in @heaton2021. More detail on assessing convergence of the MCMC can be found in the [determining convergence vignette](determining-convergence.html) 
 
 Both of these methods will output a list containing the sampler outputs at every $n_{\textrm{thin}}$ iteration, with the values of the model parameters and the calendar ages.
 
@@ -94,8 +178,6 @@ densities <- PlotPredictiveCalendarAgeDensity(
 
 We also have the option to plot the SPD, plot in the F^14^C scale and change the confidence intervals on the plot.
 
-## TODO - Fix HPD interval (should cpp be fabs rather than abs?)
-
 ```{r plot_density_2, out.width="100%", fig.width=10, fig.height=8}
 densities <- PlotPredictiveCalendarAgeDensity(
   output_data = polya_urn_output,
@@ -114,5 +196,9 @@ The output data also contains information about the cluster allocation of each s
 ```{r plot_clusters, out.width="50%", fig.width=5, fig.height=6}
 PlotNumberOfClusters(output_data = polya_urn_output)
 ```
+
+### Where the method does not work
+
+TODO - explain that if the underlying density is close to a mixture of uniform phases then this method will not work well (as you cannot approximate a uniform phase well with a mixture of normal distributions). Should use PPcalibrate instead
 
 # References
