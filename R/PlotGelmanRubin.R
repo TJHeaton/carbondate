@@ -17,7 +17,7 @@
 #' @param n_segments The number of segments to split the chain into. Default is 3, must be a
 #' number between 2 and 10.
 #'
-#' @return No value
+#' @return None
 #'
 #' @export
 #'

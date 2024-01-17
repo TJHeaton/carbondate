@@ -75,6 +75,8 @@ if not given.}
 A list, each item containing a data frame of the \code{calendar_age}, the
 \code{density_mean} and the confidence intervals for the density
 \code{density_ci_lower} and \code{density_ci_upper} for each set of output data.
+
+None
 }
 \description{
 Plots the input radiocarbon determinations and calibration curve, with the

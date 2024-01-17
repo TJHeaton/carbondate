@@ -64,6 +64,9 @@ if not given.}
 \item{show_unmodelled_density}{Set to \code{TRUE} to also show the unmodelled density (i.e. the
 result of \link{CalibrateSingleDetermination}) on the plot. Default is \code{FALSE}.}
 }
+\value{
+None
+}
 \description{
 Once a function has been run to calibrate a set of radiocarbon
 determinations, the posterior density histogram for a single determination can be

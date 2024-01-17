@@ -22,6 +22,8 @@
 #'
 #' @export
 #'
+#' @return None
+#'
 #' @examples
 #' polya_urn_output <- PolyaUrnBivarDirichlet(
 #'     two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4, show_progress = FALSE)

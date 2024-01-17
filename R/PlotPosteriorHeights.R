@@ -8,6 +8,8 @@
 #'
 #' @export
 #'
+#' @return None
+#'
 #' @examples
 #' pp_output <- PPcalibrate(
 #'     pp_uniform_phase$c14_age,

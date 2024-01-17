@@ -11,7 +11,7 @@
 #' which is then compared with all subsequent data points. If not given the minimum of 1000
 #' iterations, or 1 / 10 of the the total number of data points, will be used.
 #'
-#' @return No value
+#' @return None
 #'
 #' @export
 #'

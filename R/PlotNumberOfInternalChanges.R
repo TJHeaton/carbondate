@@ -5,7 +5,8 @@
 #'
 #' @inheritParams PlotPosteriorChangePoints
 #'
-#' @return No return value
+#' @return None
+#'
 #' @export
 #'
 #' @examples

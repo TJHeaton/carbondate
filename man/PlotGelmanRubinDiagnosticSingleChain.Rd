@@ -21,7 +21,7 @@ c\link{PPcalibrate}).}
 number between 2 and 10.}
 }
 \value{
-No value
+None
 }
 \description{
 This plots a histogram of the potential scale reduction factor (PSRF) for each of

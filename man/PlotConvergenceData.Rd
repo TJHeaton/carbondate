@@ -16,7 +16,7 @@ which is then compared with all subsequent data points. If not given the minimum
 iterations, or 1 / 10 of the the total number of data points, will be used.}
 }
 \value{
-No value
+None
 }
 \description{
 This plots the Kullback-Leibler divergence between the initial predictive density

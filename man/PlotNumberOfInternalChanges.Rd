@@ -21,7 +21,7 @@ arguments given to \link{PPcalibrate}).}
 if not given.}
 }
 \value{
-No return value
+None
 }
 \description{
 Once a function has been run to calibrate a set of radiocarbon determinations,

@@ -7,6 +7,8 @@
 #' will be output to the terminal.
 #' @export
 #'
+#' @return None
+#'
 #' @examples
 #' # Generate names automatically and outputs to the screen for 14C ages
 #' GenerateOxcalCode("My_data", c(1123, 1128, 1135), c(32, 24, 25))

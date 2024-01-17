@@ -6,7 +6,8 @@
 #'
 #' @inheritParams PlotPredictiveCalendarAgeDensity
 #'
-#' @return No return value
+#' @return None
+#'
 #' @export
 #'
 #' @examples

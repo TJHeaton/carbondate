@@ -24,7 +24,7 @@ arguments given to \link{PolyaUrnBivarDirichlet} or \link{WalkerBivarDirichlet})
 if not given.}
 }
 \value{
-No return value
+None
 }
 \description{
 Once a function has been run to calibrate a set of radiocarbon

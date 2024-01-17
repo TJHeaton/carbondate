@@ -29,6 +29,9 @@ if they are radiocarbon age BP. Defaults to \code{FALSE}.}
 \item{outfile_path}{Optional. If given the OxCal code will be output to the file at the path given, otherwise it
 will be output to the terminal.}
 }
+\value{
+None
+}
 \description{
 Outputs code suitable for running in OxCal from a series of radiocarbon determinations given as \eqn{{}^{14}}C age.
 }

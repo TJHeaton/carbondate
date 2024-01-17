@@ -71,6 +71,8 @@ if not given.}
 \value{
 A list, each item containing a data frame of the \code{calendar_age}, the \code{rate_mean}
 and the confidence intervals for the rate - \code{rate_ci_lower} and \code{rate_ci_upper}.
+
+None
 }
 \description{
 Plots the input radiocarbon determinations and calibration curve, with the

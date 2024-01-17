@@ -32,6 +32,9 @@ if not given.}
 \item{kernel_bandwidth}{The bandwidth used for the KDE of the density (optional). If not give 1/50th of the
 calendar age range will be used.}
 }
+\value{
+None
+}
 \description{
 Add description
 }
