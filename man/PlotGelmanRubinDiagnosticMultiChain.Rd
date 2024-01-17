@@ -28,7 +28,7 @@ for all calendar ages (a stringent condition is that all values are less than 1.
 po = list()
 for (i in 1:3) {
     set.seed(i)
-    po[[i]] = PolyaUrnBivarDirichlet(
+    po[[i]] <- PolyaUrnBivarDirichlet(
         kerr$c14_age, kerr$c14_sig, intcal20, n_iter=1e3, show_progress = FALSE)
 }
 PlotGelmanRubinDiagnosticMultiChain(po)
