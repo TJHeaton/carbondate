@@ -71,7 +71,7 @@ test_that("UpdatePoissonProcessRateRevJump gives expected outcomes", {
   integrated_rate <- initial_integrated_rate
 
   for(i in 1:n_iters) {
-    return_val <- UpdatePoissonProcessRateRevJump(
+    return_val <- .UpdatePoissonProcessRateRevJump(
       theta = calendar_ages,
       rate_s = rate_s,
       rate_h = rate_h,
@@ -186,7 +186,7 @@ test_that("UpdatePoissonProcessRateRevJump gives same as legacy code", {
   integrated_rate <- initial_integrated_rate
 
   for(i in 1:n_iters) {
-    return_val <- UpdatePoissonProcessRateRevJump(
+    return_val <- .UpdatePoissonProcessRateRevJump(
       theta = calendar_ages,
       rate_s = rate_s,
       rate_h = rate_h,

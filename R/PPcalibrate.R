@@ -354,7 +354,7 @@ PPcalibrate <- function(
       use_fast)
 
     ## Step 2: Update rate_s and rate_h given current calendar_ages (using RJMCMC)
-    updated_poisson_process <- UpdatePoissonProcessRateRevJump(
+    updated_poisson_process <- .UpdatePoissonProcessRateRevJump(
       theta = calendar_ages,
       rate_s = rate_s,
       rate_h = rate_h,
@@ -415,7 +415,7 @@ PPcalibrate <- function(
       likelihood_values = likelihood_values,
       likelihood_offsets = likelihood_offsets)
   } else {
-    calendar_ages <- UpdateCalendarAgesGibbs(
+    calendar_ages <- .UpdateCalendarAgesGibbs(
       likelihood_calendar_ages_from_calibration_curve = likelihood_calendar_ages_from_calibration_curve,
       calendar_age_grid = calendar_age_grid,
       rate_s = rate_s,

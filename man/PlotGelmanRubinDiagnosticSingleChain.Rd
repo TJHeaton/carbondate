@@ -27,7 +27,8 @@ No value
 This plots a histogram of the potential scale reduction factor (PSRF) for each of
 the calendar age observations for a single MCMC chain, by splitting the chain into segments after
 \code{n_burn} and comparing the within-chain variance with the between-chains variance of the segments.
-If the chain have converged to the target posterior distribution, then PSRF should be close to 1.
+If the chain have converged to the target posterior distribution, then PSRF should be close to 1
+for all calendar ages (a stringent condition is that all values are less than 1.1).
 }
 \examples{
 # Plot results for the example data
