@@ -17,7 +17,6 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(carbondate)
-set.seed(15)
 ```
 
 # Introduction  
@@ -44,7 +43,90 @@ We model the occurrence of these events as random and aim to investigate whether
 
 Specifically, we assume that the events occur according to a Poisson Process with a variable rate $\lambda(t)$. This rate $\lambda(t)$ is considered piecewise-constant, but changes an unknown number of times and at unknown calendar ages. We aim to estimate $\lambda(t)$ and hence infer how the rate at which the events occur changes over calendar time. Time periods where the rate $\lambda(t)$ is high will typically be expected to generate a greater number of events (perhaps since there is more activity, or a greater population, at the site/sites); while periods when the rate $\lambda(t)$ is lower (perhaps due to lower activity at the site/sites) will be expected to have fewer events. 
 
-When the calendar ages of the events $\{\theta_i , i=1,\ldots,n\}$ are known exactly, estimation of the variable rate $\lambda(t)$ can be tackled directly via reversible jump Markov Chain Monte Carlo (RJ-MCMC) [@green1995]). However, when we only observe the radiocarbon ages of the samples ($\{ X_i, i= 1,\ldots,n \}$) the underlying calendar ages $\theta_i$ are uncertain and must be estimated via radiocarbon calibration. This complicates the process of estimating $\lambda(t)$ especially as the calibration must be done simultaneously to its estimation (as the modelling will influence the set of $\theta_i$ and vice versa). In this library, we provide a rigorous approach to the estimation of $\lambda(t)$.    
+When the calendar ages of the events $\{\theta_i , i=1,\ldots,n\}$ are known exactly, estimation of the variable rate $\lambda(t)$ can be tackled directly via reversible jump Markov Chain Monte Carlo (RJ-MCMC) [@green1995]). However, when we only observe the radiocarbon ages of the samples ($\{ X_i, i= 1,\ldots,n \}$) the underlying calendar ages $\theta_i$ are uncertain and must be estimated via radiocarbon calibration. This complicates the process of estimating $\lambda(t)$ especially as the calibration must be done simultaneously to its estimation (as the modelling will influence the set of $\theta_i$ and vice versa). In this library, we provide a rigorous approach to the estimation of $\lambda(t)$.   
+
+```{r illustrate_PP, fig.cap = paste("_Modelling sample occurence using a Poisson process with a latent occurence/activity rate.  Left Panel: A simple mixture of three (predominantly disjoint) normal clusters (blue dashed lines) results in an overall $f(\\theta)$ that is tri-modal (solid red). Right Panel: Overlapping normal clusters (blue dashed lines) can however create more complex $f(\\theta)$ distributions (solid red)._"), out.width="100%", fig.width=10, fig.height=4, echo = FALSE}
+
+par(mfrow = c(1,2))
+par(mar = c(4.5, 4, 2, 1) + 0.1, las = 1)
+set.seed(16)
+
+# Artificial start and end dates 
+mincal <- 1950
+maxcal <- 3100
+t <- seq(mincal, maxcal, by = 1)
+
+# Create a simulated lambda (piecewise constant)
+lambda <- c(rep(0.1, 350), rep(0.45, 400), rep(0.2, length(t) - (400 + 350)))
+
+# Choose beta(mutiplier)
+beta <- 0.2
+truerate <- beta * lambda
+
+# Sample calendar ages (according to Poisson process)
+nsamp <- rpois(1, sum(truerate))
+truetheta <- sample(t, nsamp, replace = TRUE, prob = truerate)
+
+# Create plot showing rate and calendar ages
+plot(c(min(t), t, max(t)), 
+     c(0,lambda,0), 
+     lty = 1, lwd = 2, 
+     col = "red", type = "l", 
+     ylim = c(0, max(lambda) + 0.1), 
+     xlim = c(maxcal, mincal) + c(100, -100), yaxs = "i",
+     xlab = "Calendar Age (cal yr BP)", 
+     ylab = expression(
+       paste("Occurrence Rate ", lambda, "(", theta, ")" )),
+     main = "Occurence of Samples")
+rug(truetheta, side = 1, 
+    col = "purple", 
+    lwd = 2, ticksize = 0.05,
+    quiet = TRUE)
+abline(v = t[350], lty = 2, lwd = 2)
+abline(v = t[350 + 400], lty = 2, lwd = 2)
+
+
+# Sample some 14C determinations
+rc_sigmas <- rep(25, nsamp)
+rc_determinations <- rnorm(nsamp, 
+                           mean = approx(intcal20$calendar_age_BP, 
+                                         intcal20$c14_age, 
+                                         truetheta)$y,
+                           sd = sqrt(rc_sigmas^2 + (approx(intcal20$calendar_age_BP, 
+                                                           intcal20$c14_sig, 
+                                                           truetheta)$y)^2) 
+           )
+
+# Plot 14C determinations against IntCal20
+plot(intcal20$calendar_age_BP, 
+     intcal20$c14_age, 
+     col = "blue", 
+     ylim = range(rc_determinations) + c(-4,4) * max(rc_sigmas), 
+     xlim = c(maxcal, mincal) + c(100, -100),
+     xlab = "Calendar Age (cal yr BP)", 
+     ylab = expression(paste("Radiocarbon age (", ""^14, "C ", "yr BP)")),
+     type = "l", main = expression(paste(""^14,"C Changepoint Analysis")))
+lines(intcal20$calendar_age_BP, 
+      intcal20$c14_age + 2 * intcal20$c14_sig,
+      lty = 2, 
+      col = "blue" )
+lines(intcal20$calendar_age_BP, 
+      intcal20$c14_age - 2 * intcal20$c14_sig,
+      lty = 2, 
+      col = "blue" )
+polygon(c(rev(intcal20$calendar_age_BP), intcal20$calendar_age_BP), 
+        c(rev(intcal20$c14_age - 2 * intcal20$c14_sig), 
+          intcal20$c14_age + 2 * intcal20$c14_sig), 
+        col=rgb(0,0,1,.3), border=NA)
+rug(rc_determinations, side = 2, quiet = TRUE)
+
+# Plot the true rate along the bottom
+par(new = TRUE, las = 1)
+plot(c(min(t), t, max(t)), c(0,truerate,0), lty = 1, col = "red", type = "l", 
+     ylim = c(0, 10 * max(truerate)), xlim = c(maxcal, mincal) + c(100, -100),
+     axes = FALSE, xlab = NA, ylab = NA, yaxs = "i")
+```
+
     
 ## A Inhomogeneous Poisson process
 A Poisson process is a common statistical process used to model the occurrence of random events. It is described by specifying the random variables $N(s,t)$ for $0 \leq s \leq t$, where $N(s,t)$ represents the number of events that have occurred in the time interval $(s,t]$. Any Poisson process has a parameter $\lambda(t)$, known as the rate of the process. This controls the expected number of events in a particular time interval. 
@@ -89,6 +171,8 @@ $$
 We will then investigate if we can reconstruct this underlying information, from just the $^{14}$C values, if we only knew that the calendar ages of the samples lay between the bounding [700, 300] cal yr BP. 
 
 ```{r example, out.width="100%", fig.width=10, fig.height=8}
+set.seed(15)
+
 # Set initial values 
 n_observed <- 40
 rc_sigmas <- rep(15, n_observed)

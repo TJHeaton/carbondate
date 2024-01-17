@@ -35,10 +35,10 @@ Such a model allows considerable flexibility in the estimation of the joint cale
 The probability that a particular sample is drawn from a particular cluster will depend upon the relative weight $w_j$ given to that specific cluster. It will be more likely that an object will come from some clusters than others. Given an object belongs to a particular cluster, its prior calendar age will then be normally distributed with the mean $\mu_j$ and precision $\tau_j^2$ of that cluster. 
 
 
-```{r illustrate_mixture, fig.cap = paste("_An illustration of building up a distribution $f(\\theta)$ using mixtures of normals. It is possible to build up highly complex distributions using a mixture of normals. Left Panel: A simple mixture of three (predominantly disjoint) normal clusters (blue dashed lines) results in an overall $f(\\theta)$ that is tri-modal (solid red). Right Panel: Overlapping normal clusters (blue dashed lines) can however create more complex $f(\\theta)$ distributions (solid red)._"), out.width="100%", fig.width=10, fig.height=4, echo = FALSE}
+```{r illustrate_mixture, fig.cap = paste("_An illustration of building up a potentially complex distribution $f(\\theta)$ using mixtures of normals. Left Panel: A simple mixture of three (predominantly disjoint) normal clusters (blue dashed lines) results in an overall $f(\\theta)$ that is tri-modal (solid red). Right Panel: Overlapping normal clusters (blue dashed lines) can however create more complex $f(\\theta)$ distributions (solid red)._"), out.width="100%", fig.width=10, fig.height=4, echo = FALSE}
 
 # Plots summed normal distributions
-par(mfrow = c(1,2))
+graphics::par(mfrow = c(1,2))
 t <- 1:100
 wtrue <- c(0.3, 0.4, 0.3)
 phitrue <- c(40, 60, 80)
@@ -108,7 +108,7 @@ We use Markov Chain Monte Carlo (MCMC) to iterate, for $k = 1, \ldots, M$, betwe
 - Calibrate $X_1, \ldots, X_n$ to obtain calendar age estimates $\theta_1^{k+1}, \ldots \theta_N^{k+1}$ given current shared estimate that each $\theta_i \sim \hat{f}^k(\theta)$
 - Update estimate of shared calendar age density (to obtain $\hat{f}_{k+1}(\theta)$ given current set of calendar ages $\theta_1^{k+1}, \ldots \theta_N^{k+1}$
 
-After running the sampler for a large number of iteration (and until we are confident of convergence) we obtain estimates for the calendar age $\theta_i$ of each sample, and an estimate for the shared calendar age density $\hat{f}(\theta)$. These latter estimates of shared calendar age density take are what are called _predictive estimates_, i.e., the provide estimates of the calendar age of a hypothetical new sample (based on the set of $N$ samples that we have observed).     
+After running the sampler for a large number of iterations (until we are sufficiently confident that the MCMC has converged) we obtain estimates for the calendar age $\theta_i$ of each sample, and an estimate for the shared calendar age density $\hat{f}(\theta)$ from which they arose. These latter estimates of the shared calendar age density are called _predictive estimates_, i.e., they provide estimates of the calendar age of a hypothetical new sample (based on the set of $N$ samples that we have observed).     
 
 Critically, with our Bayesian non-parametric method, the number of calendar age clusters that are represented in the observed data is unknown (and is allowed to vary in each MCMC step). This flexibility is different, and offers a substantial advantage, from other methods that require the number of clusters to be known _a priori_. For full technical details of the models used, and explanation of the model parameters, see @heaton2021.
 
@@ -122,7 +122,7 @@ Run using the Polya Urn method (our recommended approach based upon testing):
 polya_urn_output <- PolyaUrnBivarDirichlet(
   rc_determinations = kerr$c14_age,
   rc_sigmas = kerr$c14_sig,
-  calibration_curve=intcal20,
+  calibration_curve = intcal20,
   n_iter = 1e4,
   n_thin = 5)
 ```
@@ -165,7 +165,7 @@ PlotCalendarAgeDensityIndividualSample(
 
 #### Density Estimate to Summarise Objects
 
-The output data contains information to allow calculation of the predictive distribution for the calendar age of a new, as yet undiscovered, object. This density estimate summarises the calendar ages of all objects. It is generated using the posterior sampled values of the DPMM component of our MCMC sampler. This calendar age density can be calculated and plotted using `PlotPredictiveCalendarAgeDensity`.
+The output data contains information to allow calculation of the predictive distribution for the calendar age of a new, as yet undiscovered, object. This density estimate summarises the calendar ages of all objects. It is generated using the posterior sampled values of the DPMM component of our MCMC sampler. This calendar age density can be calculated and plotted using `PlotPredictiveCalendarAgeDensity`. The pointwise mean of $\hat{f}(\theta)$ will be plotted, together with a corresponding interval at (a user-specified) probability level.   
 
 The function allows calculation using multiple outputs so that their results can be compared. For example below we compare the results from the two sampler methods above.
 
@@ -176,7 +176,7 @@ densities <- PlotPredictiveCalendarAgeDensity(
   denscale = 2.5)
 ```
 
-We also have the option to plot the SPD, plot in the F^14^C scale and change the confidence intervals on the plot.
+We also have the option to plot the SPD, to plot in the F^14^C scale, and to change the confidence intervals on the plot.
 
 ```{r plot_density_2, out.width="100%", fig.width=10, fig.height=8}
 densities <- PlotPredictiveCalendarAgeDensity(
@@ -189,6 +189,10 @@ densities <- PlotPredictiveCalendarAgeDensity(
   plot_14C_age = FALSE)
 ```
 
+**Note:** Around 1176 cal yr BP, when there appears to be a potential spike in the summarised estimate of the joint $f(\theta)$, we see that the 80% probability interval (dashed line) does not include the mean (solid line). This is not an error, but rather highlights a benefit of the DPMM method whereby the number of clusters needed to represent the data is allowed to vary. This feature occurs because the method is unsure if the observed data support an additional (highly-concentrated) cluster located around this period. In some iterations of the MCMC, such a cluster will be included; but for the majority of iterations, the method believes it is not required. In theory, one could look at the individual MCMC iterations to obtain an estimate of how likely such a highly-concentrated cluster (that results in a sudden spike in samples) is. Since the plotted 80% interval does not contain the mean, it is likely that the method thinks there is a less than 10% chance of such a distinct and highly-concentrated cluster (as fewer than 10% of the MCMC iterations contain one).   
+
+_Aside:_ The sharp jump in the calibration curve at 1176 cal yr BP (774 cal AD) is due to an extreme solar particle event (ESPE) also known as a Miyake Event [@miyake2012].  
+
 #### Number of Clusters
 
 The output data also contains information about the cluster allocation of each sampled object, which we can use to build the probability for there being a given number of total clusters. If we believe the underlying individual clusters in the model have inherent meaning in terms of representing genuine and distinct periods of site usage, as opposed to simply providing a tool to enable a non-parametric density estimate, this information may be archaeologically useful.
@@ -197,8 +201,12 @@ The output data also contains information about the cluster allocation of each s
 PlotNumberOfClusters(output_data = polya_urn_output)
 ```
 
-### Where the method does not work
+## When not to use this Bayesian non-parametric method 
 
-TODO - explain that if the underlying density is close to a mixture of uniform phases then this method will not work well (as you cannot approximate a uniform phase well with a mixture of normal distributions). Should use PPcalibrate instead
+The current implementation of our Bayesian non-parametric approach **only** supports normally-distributed clusters as the components in the overall calendar age mixture distribution $f(\theta)$. While this still allows a great deal of flexibility in the modelling, as many distributions can be well approximated by normals, there are certain distributions $f(\theta)$ for which they will struggle. In particular, you cannot approximate a uniform phase well with a mixture of normal distributions. 
+
+If the underlying shared calendar age density $f(\theta)$ is close to a uniform phase, or a mixture of uniform phases, then the current (normally-distributed cluster component) Bayesian non-parametric method is unlikely to work optimally and provide reliable summaries. In such cases, we advise use of `PPcalibrate()`. This alternative approach is ideally suited to such situations. 
+
+The inhomogeneous Poisson process/changepoint approach taken by `PPcalibrate()` implicitly assumes a shared underlying calendar age model for $f(\theta)$ that consists precisely of an unknown mixture of uniform phases. Implementing `PPcalibrate()` and plotting the posterior rate of the Poisson process ([see vignette](Poisson-process-modelling.html)) will provide an estimate of that shared calendar age density.    
 
 # References

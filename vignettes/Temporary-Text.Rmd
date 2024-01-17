@@ -18,6 +18,33 @@ knitr::opts_chunk$set(
 library(carbondate)
 ```
 
+
+
+
+For all functions, the radiocarbon determinations can be entered as F^14^C concentrations or as the ^14^C age BP. The flag `F14C_inputs` used above (and in other functions) lets the function know what units have been used for the radiocarbon determinations.
+
+## Implementing SH calibration
+
+To change to using the Southern Hemisphere calibration curve SHCal20, we can modify the function arguments accordingly: 
+
+```{r single_calibration_SH, out.width="100%", fig.width=10, fig.height=8}
+calibration_result <- CalibrateSingleDetermination(
+  rc_determination = 1413, 
+  rc_sigma = 25, 
+  F14C_inputs = FALSE, 
+  calibration_curve = shcal20)
+plot(
+  calibration_result,
+  type="l", 
+  xlab = "Calendar age (cal yr BP)", 
+  ylab = "Posterior Probability", 
+  main = expression(paste("Calibration of ", 1413, " \u00B1 ", 25, " "^14, "C yr BP using SHCal20")), 
+  xlim=c(1500, 1100))
+```
+**Note:** This simulated SH calibration, of the same ^14^C determination as above, provides a slightly more recent estimate for the calendar due to the offset (the interhemispheric ^14^C gradient) between ^14^C levels in the Southern and Northern Hemisphere. 
+
+
+
 ### Old Text
 
 We model our unknown calendar age density $f(\theta)$  as an infinite mixture of individual calendar age clusters/phases. These individual calendar age clusters are normal densities that can have different locations and spreads. Such a model allows considerable flexibility into the estimation of the joint calendar age density $f(\theta)$, not only simple mixtures but also
