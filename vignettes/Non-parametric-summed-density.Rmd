@@ -94,7 +94,7 @@ for(i in 1:length(wtrue)) {
 }
 ```
 
-## Estimation of the shared underlying density $f(\theta)$
+## Estimation of the shared underlying density 
 
 To estimate the shared calendar age density $f(\theta)$ based upon our set of ^14^C observations, $X_1, \ldots, X_N$, we need to estimate:
 
