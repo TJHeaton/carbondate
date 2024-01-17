@@ -22,8 +22,6 @@ reference:
     (inhomogeneous) Poisson process
   contents:
   - PPcalibrate
-  - UpdateCalendarAgesGibbs
-  - UpdatePoissonProcessRateRevJump
   - PlotPosteriorMeanRate
   - PlotNumberOfInternalChanges
   - PlotPosteriorChangePoints
