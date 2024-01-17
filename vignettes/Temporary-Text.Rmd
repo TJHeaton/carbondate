@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 library(carbondate)
 ```
 
-
+### TODO - Remove this at end
 
 
 For all functions, the radiocarbon determinations can be entered as F^14^C concentrations or as the ^14^C age BP. The flag `F14C_inputs` used above (and in other functions) lets the function know what units have been used for the radiocarbon determinations.
