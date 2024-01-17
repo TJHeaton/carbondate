@@ -113,6 +113,76 @@
 #' @source <https://doi.org/10.1017/S0033822200019123>
 "intcal98"
 
+#' SHCal20 calibration curve
+#'
+#' Atmospheric data from Hogg et al (2020)
+#' Hogg et al. 2020
+#' Hogg AG, Heaton TJ, Hua Q, Palmer JG, Turney CSM, Southon J, Bayliss A, Blackwell PG,
+#' Boswijk G, Bronk Ramsey C, Pearson C, Petchey F, Reimer P, Reimer R, Wacker L.
+#' 2020.
+#' SHCal20 Southern Hemisphere calibration, 0-55,000 years cal BP.
+#' Radiocarbon 62. doi: 10.1017/RDC.2020.59
+#'
+#'
+#' @format ## `shcal20`
+#' A data frame with 9,501 rows and 5 columns:
+#' \describe{
+#'   \item{calendar_age}{The calendar age (yr BP)}
+#'   \item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
+#'   \item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age reported by the radiocarbon laboratory}
+#'   \item{f14c}{The radiocarbon age expressed as F14C conctration}
+#'   \item{f14c_sig}{The uncertainty in F14C}
+#' }
+#' @source <http://doi.org/10.1017/RDC.2020.59>
+"shcal20"
+
+
+#' SHCal13 calibration curve
+#'
+#' SHCal13 atmospheric curve (Hogg et al 2013)
+#' Hogg et al. 2013
+#' Alan G Hogg, Quan Hua, Paul G Blackwell, Caitlin E Buck, Thomas P Guilderson,
+#' Timothy J  Heaton, Mu Niu, Jonathan G Palmer, Paula J Reimer, Ron W Reimer,
+#' Christian S M Turney, Susan R H Zimmerman.
+#' 2013
+#' SHCal13 Southern Hemisphere Calibration, 0-50,000 Years cal BP.
+#' Radiocarbon 55(4):1889-1903. doi:10.2458/azu_js_rc.55.16783
+#'
+#'
+#' @format ## `shcal13`
+#' A data frame with 5,141 rows and 5 columns:
+#' \describe{
+#'   \item{calendar_age}{The calendar age (yr BP)}
+#'   \item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
+#'   \item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age reported by the radiocarbon laboratory}
+#'   \item{f14c}{The radiocarbon age expressed as F14C conctration}
+#'   \item{f14c_sig}{The uncertainty in F14C}
+#' }
+#' @source <http://doi.org/10.2458/azu_js_rc.55.16783>
+"shcal13"
+
+
+#' SHCal04 calibration curve
+#'
+#' SHCal04 atmospheric curve (McCormac et al 2004)
+#' McCormac et al. 2004
+#' FG McCormac, AG Hogg, PG Blackwell, CE Buck, TFG Higham, and PJ Reimer
+#' 2004
+#' SHCal04 Southern Hemisphere Calibration 0 - 11.0 cal kyr BP
+#' Radiocarbon 46(3):1087-1092. doi:10.1017/S0033822200033014
+#'
+#' @format ## `shcal04`
+#' A data frame with 2,202 rows and 5 columns:
+#' \describe{
+#'   \item{calendar_age}{The calendar age (yr BP)}
+#'   \item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
+#'   \item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age reported by the radiocarbon laboratory}
+#'   \item{f14c}{The radiocarbon age expressed as F14C conctration}
+#'   \item{f14c_sig}{The uncertainty in F14C}
+#' }
+#' @source <http://doi.org/10.1017/S0033822200033014>
+"shcal04"
+
 #' Example artificial data - Mixture of Normal Phases
 #'
 #' 50 radiocarbon determinations for which the underlying calendar ages are
