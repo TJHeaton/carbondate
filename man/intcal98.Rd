@@ -10,8 +10,8 @@
 A data frame with 1,538 rows and 5 columns:
 \describe{
 \item{calendar_age}{The calendar age (yr BP)}
-\item{c14_age}{The 14C age (yr BP)}
-\item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+\item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
+\item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age reported by the radiocarbon laboratory}
 \item{f14c}{The radiocarbon age expressed as F14C conctration}
 \item{f14c_sig}{The uncertainty in F14C}
 }
@@ -29,6 +29,6 @@ Stuiver et al 1998
 M. Stuiver, P. J. Reimer, E. Bard, J. W. Beck, G. S. Burr, K. A. Hughen,
 B. Kromer, F. G. McCormac, J. v. d. Plicht and M. Spurk.
 INTCAL98 Radiocarbon Age Calibration, 24,000-0 cal BP.
-Radiocarbon 40, 1041-1083 (1998).
+Radiocarbon 40, 1041--1083 (1998).
 }
 \keyword{datasets}

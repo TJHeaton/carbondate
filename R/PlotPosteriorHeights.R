@@ -8,9 +8,17 @@
 #'
 #' @export
 #'
+#' @return None
+#'
 #' @examples
-#' # Plot results for a single calibration
-#' # TODO
+#' pp_output <- PPcalibrate(
+#'     pp_uniform_phase$c14_age,
+#'     pp_uniform_phase$c14_sig,
+#'     intcal20,
+#'     n_iter = 5000,
+#'     show_progress = FALSE)
+#' # Plot the posterior heights for only 2 or 3 internal changes
+#' PlotPosteriorHeights(pp_output, n_changes = c(2, 3))
 PlotPosteriorHeights <- function(
     output_data,
     n_changes = c(1, 2, 3),
@@ -79,7 +87,7 @@ PlotPosteriorHeights <- function(
     y = NA,
     xlim = c(0, max_height),
     ylim = c(0, max_density * 1.2),
-    xlab = "Rate of process (events per year)",
+    xlab = "Rate of process (events per cal yr)",
     ylab = "Density",
     type = "n"
   )

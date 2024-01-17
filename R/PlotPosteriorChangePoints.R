@@ -17,12 +17,19 @@
 #' @param kernel_bandwidth The bandwidth used for the KDE of the density (optional). If not give 1/50th of the
 #' calendar age range will be used.
 #'
+#' @return None
 #'
 #' @export
 #'
 #' @examples
-#' # Plot results for a single calibration
-#' # TODO
+#' pp_output <- PPcalibrate(
+#'     pp_uniform_phase$c14_age,
+#'     pp_uniform_phase$c14_sig,
+#'     intcal20,
+#'     n_iter = 5000,
+#'     show_progress = FALSE)
+#' # Plot the posterior change points for only 2 or 3 internal changes
+#' PlotPosteriorChangePoints(pp_output, n_changes = c(2, 3))
 PlotPosteriorChangePoints <- function(
     output_data,
     n_changes = c(1, 2, 3),
@@ -84,7 +91,7 @@ PlotPosteriorChangePoints <- function(
     y = NA,
     xlim = rev(cal_age_range),
     ylim = c(0, max_density * 1.2),
-    xlab = "Calendar Age BP",
+    xlab = "Calendar Age (cal yr BP)",
     ylab = "Density",
     type = "n",
   )

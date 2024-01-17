@@ -2,7 +2,7 @@
 % Please edit documentation in R/GenerateOxcalCode.R
 \name{GenerateOxcalCode}
 \alias{GenerateOxcalCode}
-\title{Outputs code suitable for running in OxCal from a series of radiocarbon determinations given as 14C age.}
+\title{Outputs code suitable for running in OxCal from a series of radiocarbon determinations given as \eqn{{}^{14}}C age.}
 \usage{
 GenerateOxcalCode(
   model_name,
@@ -29,8 +29,11 @@ if they are radiocarbon age BP. Defaults to \code{FALSE}.}
 \item{outfile_path}{Optional. If given the OxCal code will be output to the file at the path given, otherwise it
 will be output to the terminal.}
 }
+\value{
+None
+}
 \description{
-Outputs code suitable for running in OxCal from a series of radiocarbon determinations given as 14C age.
+Outputs code suitable for running in OxCal from a series of radiocarbon determinations given as \eqn{{}^{14}}C age.
 }
 \examples{
 # Generate names automatically and outputs to the screen for 14C ages

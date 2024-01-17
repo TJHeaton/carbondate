@@ -2,30 +2,34 @@
 % Please edit documentation in R/PlotGelmanRubin.R
 \name{PlotGelmanRubinDiagnosticMultiChain}
 \alias{PlotGelmanRubinDiagnosticMultiChain}
-\title{Plots a histogram of the Gelman–Rubin convergence diagnostic for a multiple chains}
+\title{Plots a histogram of the Gelman-Rubin convergence diagnostic for a multiple chains}
 \usage{
 PlotGelmanRubinDiagnosticMultiChain(output_data_list, n_burn = NA)
 }
 \arguments{
 \item{output_data_list}{A list, each item containing the return value from one of the updating
-functions e.g. \link{PolyaUrnBivarDirichlet} or \link{WalkerBivarDirichlet}.
+functions e.g. \link{PolyaUrnBivarDirichlet}, \link{WalkerBivarDirichlet} or \link{PPcalibrate}.
 The minimum number of elements in the list is 2.}
 
 \item{n_burn}{The number of samples required for burn-in.}
 }
 \value{
-No value
+None
 }
 \description{
 This plots a histogram of the potential scale reduction factor (PSRF) for each of
 the calendar age observations for a multiple chains by comparing the within-chain variance with
 the between-chains variance after \code{n_burn} iterations.
 If the chain have converged to the target posterior distribution, then PSRF should be close to 1
-for all calendar ages.
+for all calendar ages (a stringent condition is that all values are less than 1.1).
 }
 \examples{
-# Plot results for the many chains
+# Plot results for the many chains - small number of iterations and results show no convergence
 po = list()
-for (i in 1:3) po[[i]] = PolyaUrnBivarDirichlet(kerr$c14_age, kerr$c14_sig, intcal20, n_iter=1e4)
+for (i in 1:3) {
+    set.seed(i)
+    po[[i]] <- PolyaUrnBivarDirichlet(
+        kerr$c14_age, kerr$c14_sig, intcal20, n_iter=1e3, show_progress = FALSE)
+}
 PlotGelmanRubinDiagnosticMultiChain(po)
 }

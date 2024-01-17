@@ -9,8 +9,8 @@
 
 A data frame with 255 rows and 4 columns:
 \describe{
-\item{c14_age}{The 14C age (yr BP)}
-\item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+\item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
+\item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age reported by the radiocarbon laboratory}
 \item{f14c}{The F14C concentration}
 \item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
 }
@@ -27,6 +27,6 @@ kerr
 building and use of raths in Ireland in the early-medieval period. Ref:
 Kerr, T., McCormick, F., 2014. Statistics, sunspots and settlement:
 influences on sum of probability curves.
-Journal of Archaeological Science 41, 493 – 501.
+Journal of Archaeological Science 41, 493--501.
 }
 \keyword{datasets}

@@ -1,4 +1,4 @@
-#' Title
+#' Model the occurrence of radiocarbon samples as a variable-rate (inhomogeneous) Poisson process
 #'
 #' @inheritParams WalkerBivarDirichlet
 #'
@@ -67,7 +67,14 @@
 #' }
 #' @export
 #'
-#' @examples # TODO
+#' @examples
+#' # Using example data
+#' pp_output <- PPcalibrate(
+#'     pp_uniform_phase$c14_age,
+#'     pp_uniform_phase$c14_sig,
+#'     intcal20,
+#'     n_iter = 5000,
+#'     show_progress = FALSE)
 PPcalibrate <- function(
     rc_determinations,
     rc_sigmas,
@@ -81,7 +88,7 @@ PPcalibrate <- function(
     calendar_grid_resolution = 1,
     prior_h_shape = NA,
     prior_h_rate = NA,
-    prior_n_internal_changepoints_lambda = 10,
+    prior_n_internal_changepoints_lambda = 3,
     k_max_internal_changepoints = 30,
     rescale_factor_rev_jump = 0.9,
     bounding_range_prob_cutoff = 0.001,
@@ -347,7 +354,7 @@ PPcalibrate <- function(
       use_fast)
 
     ## Step 2: Update rate_s and rate_h given current calendar_ages (using RJMCMC)
-    updated_poisson_process <- UpdatePoissonProcessRateRevJump(
+    updated_poisson_process <- .UpdatePoissonProcessRateRevJump(
       theta = calendar_ages,
       rate_s = rate_s,
       rate_h = rate_h,
@@ -408,7 +415,7 @@ PPcalibrate <- function(
       likelihood_values = likelihood_values,
       likelihood_offsets = likelihood_offsets)
   } else {
-    calendar_ages <- UpdateCalendarAgesGibbs(
+    calendar_ages <- .UpdateCalendarAgesGibbs(
       likelihood_calendar_ages_from_calibration_curve = likelihood_calendar_ages_from_calibration_curve,
       calendar_age_grid = calendar_age_grid,
       rate_s = rate_s,

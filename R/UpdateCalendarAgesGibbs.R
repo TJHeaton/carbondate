@@ -1,20 +1,4 @@
-#' Title
-#'
-#' @param likelihood_calendar_ages_from_calibration_curve A matrix with column i being vector of
-#' likelihood of theta (for each value in calendar_age_grid) of ith rc_determination
-#'
-#' @param calendar_age_grid The possible set of calendar ages the observations can take
-#'
-#' @param rate_s Current set of (calendar age) changepoints in rate of
-#' piecewise constant Poisson process
-#' @param rate_h Current set of heights/rates in each section of
-#' piecewise constant Poisson process
-#'
-#' @return TODO
-#' @export
-#'
-#' @examples # TODO
-UpdateCalendarAgesGibbs <- function(
+.UpdateCalendarAgesGibbs <- function(
     likelihood_calendar_ages_from_calibration_curve,
     calendar_age_grid,
     rate_s,

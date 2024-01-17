@@ -16,14 +16,16 @@ which is then compared with all subsequent data points. If not given the minimum
 iterations, or 1 / 10 of the the total number of data points, will be used.}
 }
 \value{
-No value
+None
 }
 \description{
-This plots the Kullback–Leibler divergence between the initial predictive density
+This plots the Kullback-Leibler divergence between the initial predictive density
 and the density calculated during a run of a calibration function. This can be used to
 estimate whether the calibration function has converged.
 }
 \examples{
 # Plot results for the example data
-PlotConvergenceData(polya_urn_example_output)
+polya_urn_output <- PolyaUrnBivarDirichlet(
+    two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4, show_progress = FALSE)
+PlotConvergenceData(polya_urn_output)
 }

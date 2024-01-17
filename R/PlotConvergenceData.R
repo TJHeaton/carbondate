@@ -1,6 +1,6 @@
 #' Plots data that can be used to estimate convergence of the MCMC sampler
 #'
-#' This plots the Kullback–Leibler divergence between the initial predictive density
+#' This plots the Kullback-Leibler divergence between the initial predictive density
 #' and the density calculated during a run of a calibration function. This can be used to
 #' estimate whether the calibration function has converged.
 #'
@@ -11,13 +11,15 @@
 #' which is then compared with all subsequent data points. If not given the minimum of 1000
 #' iterations, or 1 / 10 of the the total number of data points, will be used.
 #'
-#' @return No value
+#' @return None
 #'
 #' @export
 #'
 #' @examples
 #' # Plot results for the example data
-#' PlotConvergenceData(polya_urn_example_output)
+#' polya_urn_output <- PolyaUrnBivarDirichlet(
+#'     two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4, show_progress = FALSE)
+#' PlotConvergenceData(polya_urn_output)
 PlotConvergenceData <- function(output_data, n_initial = NA) {
 
   arg_check <- .InitializeErrorList()

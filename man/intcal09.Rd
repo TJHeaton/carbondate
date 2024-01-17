@@ -10,8 +10,8 @@
 A data frame with 3,521 rows and 5 columns:
 \describe{
 \item{calendar_age}{The calendar age (yr BP)}
-\item{c14_age}{The 14C age (yr BP)}
-\item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+\item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
+\item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age reported by the radiocarbon laboratory}
 \item{f14c}{The radiocarbon age expressed as F14C conctration}
 \item{f14c_sig}{The uncertainty in F14C}
 }

@@ -12,8 +12,8 @@ A data frame with 84 rows and 7 columns:
 \item{lab_code}{The sample code for the \eqn{{}^{14}}C laboratory}
 \item{site_code}{The site/museum code}
 \item{location}{The location of the sample}
-\item{c14_age}{The 14C age (yr BP)}
-\item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+\item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
+\item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age reported by the radiocarbon laboratory}
 \item{f14c}{The F14C concentration}
 \item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
 }

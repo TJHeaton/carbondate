@@ -37,7 +37,7 @@ the calibration curve here. If provided this should be a dataframe which
 should contain at least 3 columns entitled calendar_age, c14_age and c14_sig.
 This format matches \link{intcal20}.}
 
-\item{plot_14C_age}{Whether to use the 14C yr BP as the units of the y-axis.
+\item{plot_14C_age}{Whether to use the \eqn{{}^{14}}C yr BP as the units of the y-axis.
 Defaults to TRUE. If FALSE uses F14C concentration instead.}
 
 \item{show_SPD}{Whether to calculate and show the summed probability
@@ -75,6 +75,8 @@ if not given.}
 A list, each item containing a data frame of the \code{calendar_age}, the
 \code{density_mean} and the confidence intervals for the density
 \code{density_ci_lower} and \code{density_ci_upper} for each set of output data.
+
+None
 }
 \description{
 Plots the input radiocarbon determinations and calibration curve, with the
@@ -84,23 +86,27 @@ data, without an accompanying plot, you can use
 \link{FindPredictiveCalendarAgeDensity} instead.
 }
 \examples{
+polya_urn_output <- PolyaUrnBivarDirichlet(
+    two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4, show_progress = FALSE)
+walker_output <- WalkerBivarDirichlet(
+    two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4, show_progress = FALSE)
+
 # Plot results for a single calibration
-PlotPredictiveCalendarAgeDensity(polya_urn_example_output)
+PlotPredictiveCalendarAgeDensity(polya_urn_output)
 
 # Plot results from a calibration, and add a label
-op = PolyaUrnBivarDirichlet(two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter=1e4)
-op$label = "My plot"
-PlotPredictiveCalendarAgeDensity(op)
+polya_urn_output$label = "My plot"
+PlotPredictiveCalendarAgeDensity(polya_urn_output)
 
 # Plot results from two calibrations on the same plot, and show the SPD
 PlotPredictiveCalendarAgeDensity(
-  list(walker_example_output, polya_urn_example_output), show_SPD = TRUE)
+    list(walker_output, polya_urn_output), show_SPD = TRUE)
 
 # Plot and show the 1-sigma confidence interval, and use F14C scale
 PlotPredictiveCalendarAgeDensity(
-    polya_urn_example_output, interval_width = "1sigma", plot_14C_age = FALSE)
+    polya_urn_output, interval_width = "1sigma", plot_14C_age = FALSE)
 
 # Plot and show the 80\% confidence interval
 PlotPredictiveCalendarAgeDensity(
-  polya_urn_example_output, interval_width = "bespoke", bespoke_probability = 0.8)
+    polya_urn_output, interval_width = "bespoke", bespoke_probability = 0.8)
 }

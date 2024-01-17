@@ -51,7 +51,7 @@ than 1 and not too close to \code{n_iter}, to ensure there are enought samples f
 posterior to potentially use.}
 
 \item{use_F14C_space}{Whether the calculations are carried out in F14C space (default is TRUE).
-If FALSE, calculations are carried out in 14C yr BP space.}
+If FALSE, calculations are carried out in \eqn{{}^{14}}C yr BP space.}
 
 \item{slice_width}{Parameter for slice sampling (optional). If not given a value
 is chosen intelligently based on the spread of the initial calendar ages.
@@ -149,10 +149,9 @@ considers both the mean and the variance of the clusters to be unknown.
 }
 \examples{
 # Basic usage making use of sensible initialisation to set most values and
-# using a saved example data set and the IntCal20 curve. See the result by plotting the predictive
-# density
-output = PolyaUrnBivarDirichlet(two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4)
-PlotPredictiveCalendarAgeDensity(output)
+# using a saved example data set and the IntCal20 curve.
+output = PolyaUrnBivarDirichlet(
+    two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4, show_progress = FALSE)
 
 # The radiocarbon determinations can be given as F14C concentrations
 output = PolyaUrnBivarDirichlet(
@@ -161,5 +160,4 @@ output = PolyaUrnBivarDirichlet(
     intcal20,
     F14C_inputs = TRUE,
     n_iter = 1e4)
-PlotPredictiveCalendarAgeDensity(output)
 }

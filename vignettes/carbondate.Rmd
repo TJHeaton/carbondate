@@ -1,0 +1,213 @@
+---
+title: "Introduction to carbondate"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to carbondate}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: references.bib
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(carbondate)
+```
+
+# Introduction
+
+The **carbondate** package contains functions for analysing sets of related radiocarbon (^14^C) determinations. Suppose we have a set of $N$ archaeological samples, each of which has a ^14^C determination $X_i$. Furthermore, suppose that these samples are known to be related to one another (for example, arising from a particular site, or set of sites, populated by a particular culture). We want to estimate the calendar ages of these samples **and** investigate changes/variations in the (calendar age) frequency at which the samples arose (as a potential proxy for activity, population size, ...):
+
+```{r illustrate_set, out.width="100%", fig.width=10, fig.height=8, echo = FALSE}
+set.seed(13)
+calcurve <- intcal20
+
+# Sample 14C determinations between artificial start and end dates 
+mincal <- 2000
+maxcal <- 3000
+nsamp <- 50
+theta_true <- sample(mincal:maxcal, size = nsamp, replace = TRUE)
+
+# Sample some 14C determinations
+xsig <- rep(25, nsamp)
+x <- rnorm(nsamp, mean = approx(calcurve$calendar_age_BP, calcurve$c14_age, theta_true)$y,
+           sd = sqrt(xsig^2 + (approx(calcurve$calendar_age_BP, calcurve$c14_sig, theta_true)$y)^2) )
+
+graphics::par(mar = c(5, 4.5, 4, 2) + 0.1, las = 1)
+plot(calcurve$calendar_age_BP, calcurve$c14_age, col = "blue", 
+     ylim = range(x) + c(-4,4) * max(xsig), xlim = c(maxcal, mincal) + c(100, -100),
+     xlab = "Calendar Age (cal yr BP)", 
+     ylab = expression(paste("Radiocarbon age (", ""^14, "C ", "yr BP)")),
+     type = "l", main = expression(paste(""^14,"C Calibration and Summarisation")))
+calcurve$ub <- calcurve$c14_age + 2 * calcurve$c14_sig
+calcurve$lb <- calcurve$c14_age - 2 * calcurve$c14_sig
+lines(calcurve$calendar_age_BP, calcurve$ub, lty = 2, col = "blue" )
+lines(calcurve$calendar_age_BP, calcurve$lb, lty = 2, col = "blue")
+polygon(c(rev(calcurve$calendar_age_BP), calcurve$calendar_age_BP), c(rev(calcurve$lb), calcurve$ub), col=rgb(0,0,1,.3), border=NA)
+rug(x, side = 2, ticksize = 0.03, lwd = 1, col = "red")
+legend_labels <- c(
+    substitute(paste(""^14, "C determination ")),
+    "IntCal20",
+    expression(paste("2", sigma, " interval")))
+lty <- c(1, 1, 2)
+lwd <- c(1, 1, 1)
+pch <- c(NA, NA, NA)
+col <- c(grDevices::rgb(1, 0, 0, .5), "blue", "blue")
+legend(
+    "topright", legend = legend_labels, lty = lty, lwd=lwd, pch = pch, col = col)
+
+```
+
+Each sample has an unknown calendar age $\theta_i$ (for $i = 1, \ldots, N$). Since they are related, the set of calendar ages $\theta_1, \ldots, \theta_n$ for the samples are assumed to arise from the same shared, and unknown, calendar age density $f(\theta)$. However, we don't observe the true calendar ages of the samples: only the ^14^C determinations $X_1, \ldots, X_n$. Due to fluctuations in past radiocarbon levels, these ^14^C determinations need to be calibrated (converted) in order to be understood on the calendar age scale and obtain estimates for each $\theta_i$. This calibration must be done simultaneously with the summarisation, introducing additional complexity into the overall process. 
+
+This library serves two purposes:
+
+- calibration of the set of ^14^C determinations, i.e., the calendar age estimation of the $\theta_i$, can be improved significantly by incorporating the knowledge that the samples are related;
+- summarisation of the underlying calendar age distribution from which the samples arise, i.e., estimating $f(\theta)$, provides a potentially useful proxy for activity, population size, the frequency of past events, ... This concept uses the principle of _dates-as-data_ [@rick1987]
+
+We provide two distinct, albeit ideologically linked, approaches to achieve this:
+
+- `PolyaUrnBivarDirichlet()` and `WalkerBivarDirichlet()` --- A non-parametric Bayesian density estimation approach using a Dirichlet process mixture model (DPMM) implemented via two different Markov Chain Monte Carlo (MCMC) algorithms [@heaton2021]. This is a statistically-rigorous alternative to summed probability distributions (SPDs) and kernel density estimates (KDE models).
+- `PPcalibrate()` --- A inhomogeneous Poisson process/Changepoint approach using Reversible Jump Markov Chain Monte Carlo (RJ-MCMC) to estimate the changing rate at which the ^14^C samples occur over calendar time.    
+
+Separate vignettes are provided to describe each approach. Which approach is more appropriate to apply will be situation dependent, and will be determined by the nature of the underlying shared calendar age distribution $f(\theta)$:
+
+- Can the set of potential samples (the population) be well approximated by a mixture of, potentially overlapping, clusters? In which case `PolyaUrnBivarDirichlet()` or `WalkerBivarDirichlet()` are likely most suitable. 
+- Or is it more likely that the occurrence of samples is characterised by distinct calendar times when the rate at which those samples arise changes? In which case `PPcalibrate()` will be more appropriate.     
+
+## Dates-as-Data -- Frequency of samples as a proxy for activity 
+
+A commonly-used approach to estimate changes in the frequency of past events or the size of populations looks at variations in the rate of archaeological and environmental samples (e.g., charcoal from fires, human/animal bones, or other evidence of occupation) found at a site over time. Time periods with large numbers of samples suggest increased activity, while those with few samples indicate a reduced level of activity. This paradigm is known as _dates-as-data_ [@rick1987]. 
+
+The reliability of such a _dates-as-data_ approach is highly dependent upon our ability to estimate the calendar ages of the discoveries. Most archaeological/environmental dates are obtained using radiocarbon. The need for calibration of these ^14^C samples introduces considerable uncertainties in the resultant calendar ages and complicates the use of _dates-as-data_, making it more challenging to identify variations in the calendar year density/rates at which samples occur.
+
+In this library, we provide two theoretically-underpinned approaches to overcome these challenges, each of which has its own set of vignettes:
+
+- A statistically-rigorous alternative to summed probability distributions (SPDs) that models the samples as arising from a mixture distribution containing an unknown number of distinct clusters [@heaton2021]. [Non-parametric summed density estimation   vignette](Non-parametric-summed-density.html) ;   
+- A changepoint-based approach that models the occurrence of the ^14^C samples as an inhomogeneous Poisson process. We aim to reconstruct how the rate at which the samples occur varies over calendar time, and to identify if there are statistically significant changepoints (i.e., specific calendar times at which the rate of samples changes abruptly).  [Poisson process modelling vignette](Poisson-process-modelling.html) 
+
+### Strengths and Weaknesses of Dates-as-Data
+Used appropriately, dates-as-data approaches allow users to borrow strength from more data and hence to identify longer-term trends and less-obvious effects that are not possible with smaller sets of data. This has the potential to provide greater insight into mechanisms and processes. However, like any scientific tool, they must not be used uncritically, or treated as a black-box.
+
+In particular, the reliability of any dates-as-data inference will depend hugely upon the representativeness, or otherwise, of the underlying sampling. Two particular considerations which must be taken into account are:
+
+- Potential for Taphonomic Loss --- that certain kinds of samples are more/less likely to remain in the archaeological record (e.g., due to preservation) or that fewer older samples will remain. One can (probably) deal with this if can provide the likelihood of loss of different objects/periods. This library does not however currently address this. 
+- Extent of (non)-representativeness of the underlying sampling --- the underlying model assumes that each sample is representative of the overall population/activity. Using sets of ^14^C data that are dominated by large studies that only looked at particular time periods, or particular materials/samples, are unlikely to provide reliable representation of an overall population. 
+
+One must always consider what the sample you are wishing to summarise represents.  
+
+## Data Requirements
+The (most-automated) version of the library only requires two vectors:
+
+- The ^14^C determinations $X_i$: `rc_determinations`
+- The accompanying (lab-reported) measurement uncertainties $\sigma_{i,\textrm{lab}}$: `rc_sigmas`
+
+**Note:** These values can either be provided as ^14^C ages, or as F^14^C concentrations (setting the flag `F14C_inputs = FALSE` or `TRUE` accordingly). 
+
+All other model parameters will be adaptively chosen based upon these. More experienced users (with external independent information) may however wish to manually set some of the other parameters (see the help files for further information).   
+
+## Additional Information
+
+The library also provides some joint data (which can be used by either method) as described below 
+
+## Calibration Curve
+
+A calibration curve is a mapping providing, for an object of true calendar age $\theta$, the corresponding radiocarbon age $\mu(\theta)$. Estimates of such calibration curves are created using reference material for which we have both ^14^C measurements and independently-known (or estimated) calendar ages. The radiocarbon determination of any individual sample is assumed to be a noisy observation of the calibration curve, i.e., 
+$$
+X_i \sim N(\mu(\theta_i), \sigma_{i,\textrm{lab}}^2)
+$$
+
+Given a undated object for which we obtain a ^14^C determination one can estimate its calendar age by inverting this mapping. A calibration curve is a required input for all the functions in this package.
+
+The internationally-ratified standard for the radiocarbon calibration curve is  known as IntCal, for which regular updates are provided by the IntCal working group: 
+
+- IntCal20 [@reimer2020] is the current version agreed for use by the community for calibrating samples that obtain their ^14^C from the Northern Hemispheric atmosphere. 
+- SHCal20 [@hogg2020] is the current version when calibrating atmospheric samples from the Southern Hemisphere. 
+
+These products provides pointwise estimates of the mean $m(\theta)$ and sd $\rho(\theta)$ of the relevant (NH or SH) calibration curve, which can be integrated out during calibration, i.e.,:
+\begin{align*}
+\mu(\theta) | \theta & \sim N(m(\theta), \rho(\theta)^2), \textrm{ and} \\
+\Rightarrow X_i & \sim N(m(\theta_i), \rho(\theta_i)^2 + \sigma_{i,\textrm{lab}}^2)
+\end{align*}
+
+The curve data `intcal20` and `shcal20` are provided in this package. However it is possible to load and use another calibration curve if you wish.
+
+## Example Data
+
+There are some example ^14^C data sets provided in the package, each of which contain a number of radiocarbon determinations and uncertainties from real-life cases:
+
+-   `kerr`: 255 radiocarbon determinations collated by @kerr2014 related to the building and use of raths in Ireland.
+
+-   `armit`: 2021 radiocarbon determinations collated by @armit2014 from archaeological groups operating in Ireland, to investigate whether a wetter environment around 2700 cal yr BP led to a population collapse.
+
+-   `buchanan`: 628 radiocarbon determinations collated by @buchanan2008 representing the ages of distinct archaeological sites found across Canada and North America during the time of the palaeoindians.
+
+-   `alces`, `bison`, `cervus`, `equus`, `human`, `mammuthus`: radiocarbon determinations related to a variety of megafauna (and humans) from Yukon and Alaska [@guthrie2006]. Samples are restricted to those between 25,000--6000 ^14^C yrs BP. 
+
+# Additional Functions
+
+## Independent calibration
+
+Although this package is concerned with the calibration of multiple related ^14^C determinations, it can also be useful to calibrate a single calibration independently, for example to estimate initial values for the sampler, or for comparison. To calibrate a single independent determination (using the provided IntCal20 calibration curve), run the following:
+
+```{r single_calibration, out.width="100%", fig.width=10, fig.height=8}
+calibration_result <- CalibrateSingleDetermination(
+  rc_determination = 1413, 
+  rc_sigma = 25, 
+  F14C_inputs = FALSE, 
+  calibration_curve = intcal20)
+plot(
+  calibration_result,
+  type="l", 
+  xlab = "Calendar age (cal yr BP)", 
+  ylab = "Posterior Probability",
+  main = expression(paste("Calibration of ", 1413, " \u00B1 ", 25, " "^14, "C yr BP using IntCal20")), 
+  xlim=c(1500, 1100))
+  
+```   
+
+## Summed Probability Distributions
+Currently, the most commonly-used approach to summarise calendar age information from multiple ^14^C determinations is via summed probability distributions (SPD). These are **not statistically valid** estimators of the calendar age of a potential future sample. It is our view that they should not be used in any dates-as-data approach to provide a population proxy.  
+
+For an SPD, the posterior calendar age density of each object is first calculated independently) from the others as using the function above. These individual densities are then summed/averaged to give an SPD estimate. The independence assumed in the separate calibration of each sample, followed by subsequent summarisation, generates a contradiction. 
+
+Additionally, the SPDs approach fundamentally does not model the samples in the calendar age domain. Consequently, it is also not able to deal with inversions in the calibration curve where there are multiple disjoint calendar periods which are consistent with the observed determinations; or with plateau periods. 
+
+The SPD function is **ONLY** provided here as a comparison with the other routines. To calculate the SPD for a set of radiocarbon determinations (here we use the example dataset `armit`) see the example below, where we also plot the results.
+
+```{r find_spd, out.width="100%", fig.width=10, fig.height=8}
+spd <- FindSummedProbabilityDistribution(
+  calendar_age_range_BP = c(1000, 4500), 
+  rc_determinations = armit$c14_age, 
+  rc_sigmas = armit$c14_sig, 
+  F14C_inputs = FALSE, 
+  calibration_curve = intcal20)
+plot(
+  spd,
+  type="l", 
+  xlab = "Calendar age (cal yr BP)", 
+  ylab = "SPD Probability", 
+  xlim=c(4500, 1000),
+  yaxt="n")
+```
+
+**Note:** The summary functions for plotting the predictive joint calendar age density using the rigorous Bayesian non-parametric alternative to SPDs (described in the vignette [Non-parametric Summed Density](Non-parametric-summed-density.html)) can also optionally plot the SPD without having to calculate it separately first.
+
+## Package User Guide
+To learn more about the functions (and methods) in the library, look at:
+
+- [Rigorous Bayesian non-parametric alternative to SPDs](Non-parametric-summed-density.html)
+- [Variable-Rate Poisson Process estimation and Changepoint Identification](Poisson-process-modelling.html) 
+
+These pages provide more details on the methods, and simple examples of their usage. 
+
+
+
+
+
+# References

@@ -52,7 +52,7 @@ double find_probability_and_ranges_for_cut_off(
         p = (a + b) / 2.;
         current_probability = find_probability_and_ranges_for_cut_off(
             p, calendar_ages, density, start_ages, end_ages, auc);
-        if (abs(current_probability - probability) < 1e-4) {
+        if (fabs(current_probability - probability) < 1e-4) {
             break;
         }
         if (current_probability < probability) {

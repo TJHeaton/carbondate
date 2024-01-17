@@ -2,14 +2,13 @@
 % Please edit documentation in R/PlotGelmanRubin.R
 \name{PlotGelmanRubinDiagnosticSingleChain}
 \alias{PlotGelmanRubinDiagnosticSingleChain}
-\title{Plots a histogram of the Gelman–Rubin convergence diagnostic for a single chain}
+\title{Plots a histogram of the Gelman-Rubin convergence diagnostic for a single chain}
 \usage{
 PlotGelmanRubinDiagnosticSingleChain(output_data, n_burn = NA, n_segments = 3)
 }
 \arguments{
 \item{output_data}{The return value from one of the updating functions e.g.
-\link{PolyaUrnBivarDirichlet} or
-\link{WalkerBivarDirichlet}.}
+e.g. \link{PolyaUrnBivarDirichlet}, \link{WalkerBivarDirichlet} or \link{PPcalibrate}.}
 
 \item{n_burn}{The number of iterations required for burn-in  - any iterations before this
 are not used to calculate the PSRF. If not given, the first half of the
@@ -22,15 +21,18 @@ c\link{PPcalibrate}).}
 number between 2 and 10.}
 }
 \value{
-No value
+None
 }
 \description{
 This plots a histogram of the potential scale reduction factor (PSRF) for each of
 the calendar age observations for a single MCMC chain, by splitting the chain into segments after
 \code{n_burn} and comparing the within-chain variance with the between-chains variance of the segments.
-If the chain have converged to the target posterior distribution, then PSRF should be close to 1.
+If the chain have converged to the target posterior distribution, then PSRF should be close to 1
+for all calendar ages (a stringent condition is that all values are less than 1.1).
 }
 \examples{
 # Plot results for the example data
-PlotGelmanRubinDiagnosticSingleChain(polya_urn_example_output)
+polya_urn_output <- PolyaUrnBivarDirichlet(
+    two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4, show_progress = FALSE)
+PlotGelmanRubinDiagnosticSingleChain(polya_urn_output)
 }

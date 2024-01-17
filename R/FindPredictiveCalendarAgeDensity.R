@@ -16,17 +16,21 @@
 #' @export
 #'
 #' @examples
+#' # First generate output data
+#' polya_urn_output <- PolyaUrnBivarDirichlet(
+#'     two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4, show_progress = FALSE)
+#'
 #' # Find results for example output, 2-sigma confidence interval (default)
 #' FindPredictiveCalendarAgeDensity(
-#'   polya_urn_example_output, seq(600, 1700, length=12), 500)
+#'     polya_urn_output, seq(600, 1700, length=12), 500)
 #'
 #' # Find results for example output, 1-sigma confidence interval (default)
 #' FindPredictiveCalendarAgeDensity(
-#'   polya_urn_example_output, seq(600, 1700, length=12), 500, "1sigma")
+#'     polya_urn_output, seq(600, 1700, length=12), 500, "1sigma")
 #'
 #' # Find results for example output, 95% confidence interval (default)
 #' FindPredictiveCalendarAgeDensity(
-#'   polya_urn_example_output, seq(600, 1700, length=12), 500, "bespoke", 0.95)
+#'     polya_urn_output, seq(600, 1700, length=12), 500, "bespoke", 0.95)
 FindPredictiveCalendarAgeDensity <- function(
     output_data,
     calendar_age_sequence,

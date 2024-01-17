@@ -1,23 +1,4 @@
-#' Title
-#'
-#' @param theta Vector of the observed times of the events
-#' @param rate_s The current changepoints in the rate
-#' @param rate_h The current heights in the rate (corresponding to above)
-#' @param integrated_rate The integral of piecewise constant rate i.e.,
-#' integral_0^L nu(t) dt
-#' @param prior_h_shape,prior_h_rate prior parameters on heights
-#' We assume each height in piecewise rate has h ~ Gamma(shape, rate)
-
-#' @param prior_n_internal_changepoints_lambda Prior on number of internal changepoints n ~ Po(lambda)
-#' @param prob_move A list with probability of each type of RJ move
-#' (pos, height, birth, death), the probability being a numeric vector
-#'
-#' @return TODO
-#' @export
-#'
-#'
-#' @examples # TO DO
-UpdatePoissonProcessRateRevJump <- function(
+.UpdatePoissonProcessRateRevJump <- function(
     theta,
     rate_s,
     rate_h,
@@ -26,10 +7,6 @@ UpdatePoissonProcessRateRevJump <- function(
     prior_h_rate,
     prior_n_internal_changepoints_lambda,
     prob_move) {
-
-  arg_check <- .InitializeErrorList()
-  .CheckProbMove(arg_check, prob_move)
-  .ReportErrors(arg_check)
 
   n_changepoints <- length(rate_s)
   n_heights <- length(rate_h)

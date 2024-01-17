@@ -34,7 +34,6 @@ test_that("WalkerBivarDirichlet gives expected result - C14 space and same param
   # Here tempx is the calendar age sequence used to find the predictive density in the legacy code.
   pred_dens <- FindPredictiveCalendarAgeDensity(walker_output, tempx, 5000)
 
-  print(.KLD(postden, pred_dens$density_mean))
   expect_lt(.KLD(postden, pred_dens$density_mean), 1e-3)
 
 })
@@ -63,7 +62,6 @@ test_that("WalkerBivarDirichlet gives expected result - sensible init, F14C spac
   # Here tempx is the calendar age sequence used to find the predictive density in the legacy code.
   pred_dens <- FindPredictiveCalendarAgeDensity(walker_output, tempx, 5000)
 
-  print(.KLD(postden, pred_dens$density_mean))
   expect_lt(.KLD(postden, pred_dens$density_mean), 1e-3)
 })
 
@@ -94,7 +92,6 @@ test_that("WalkerBivarDirichlet gives expected result - sensible init, F14C spac
   # Here tempx is the calendar age sequence used to find the predictive density in the legacy code.
   pred_dens <- FindPredictiveCalendarAgeDensity(walker_output, tempx, 5000)
 
-  print(.KLD(postden, pred_dens$density_mean))
   expect_lt(.KLD(postden, pred_dens$density_mean), 1e-3)
 })
 

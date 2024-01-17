@@ -9,8 +9,8 @@
 
 A data frame with 2021 rows and 4 columns:
 \describe{
-\item{c14_age}{The 14C age (yr BP)}
-\item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+\item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
+\item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age reported by the radiocarbon laboratory}
 \item{f14c}{The F14C concentration}
 \item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
 }
@@ -28,6 +28,6 @@ groups operating in Ireland, to investigate whether a wetter environment
 around 2700 cal yr BP led to a population collapse. Ref:
 Armit, I., Swindles, G.T., Becker, K., Plunkett, G., Blaauw, M., 2014. Rapid
 climate change did not cause population collapse at the end of the European
-Bronze Age. Proceedings of the National Academy of Sciences 111, 17045–17049.
+Bronze Age. Proceedings of the National Academy of Sciences 111, 17045--17049.
 }
 \keyword{datasets}

@@ -1,6 +1,3 @@
-# TODO - Artificial Example - Where answer is known
-# TODO - Short example
-
 test_that("PPcalibrate gives expected outcomes", {
 
   # Checking

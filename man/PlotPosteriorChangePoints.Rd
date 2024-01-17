@@ -32,10 +32,19 @@ if not given.}
 \item{kernel_bandwidth}{The bandwidth used for the KDE of the density (optional). If not give 1/50th of the
 calendar age range will be used.}
 }
+\value{
+None
+}
 \description{
 Add description
 }
 \examples{
-# Plot results for a single calibration
-# TODO
+pp_output <- PPcalibrate(
+    pp_uniform_phase$c14_age,
+    pp_uniform_phase$c14_sig,
+    intcal20,
+    n_iter = 5000,
+    show_progress = FALSE)
+# Plot the posterior change points for only 2 or 3 internal changes
+PlotPosteriorChangePoints(pp_output, n_changes = c(2, 3))
 }

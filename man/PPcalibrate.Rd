@@ -2,7 +2,7 @@
 % Please edit documentation in R/PPcalibrate.R
 \name{PPcalibrate}
 \alias{PPcalibrate}
-\title{Title}
+\title{Model the occurrence of radiocarbon samples as a variable-rate (inhomogeneous) Poisson process}
 \usage{
 PPcalibrate(
   rc_determinations,
@@ -17,7 +17,7 @@ PPcalibrate(
   calendar_grid_resolution = 1,
   prior_h_shape = NA,
   prior_h_rate = NA,
-  prior_n_internal_changepoints_lambda = 10,
+  prior_n_internal_changepoints_lambda = 3,
   k_max_internal_changepoints = 30,
   rescale_factor_rev_jump = 0.9,
   bounding_range_prob_cutoff = 0.001,
@@ -49,7 +49,7 @@ than 1 and not too close to \code{n_iter}, to ensure there are enought samples f
 posterior to potentially use.}
 
 \item{use_F14C_space}{Whether the calculations are carried out in F14C space (default is TRUE).
-If FALSE, calculations are carried out in 14C yr BP space.}
+If FALSE, calculations are carried out in \eqn{{}^{14}}C yr BP space.}
 
 \item{show_progress}{Whether to show a progress bar in the console during
 execution. Default is \code{TRUE}.}
@@ -120,8 +120,14 @@ parameters \code{pp_cal_age_range}, \code{prior_n_internal_changepoints_lambda},
 }
 }
 \description{
-Title
+Model the occurrence of radiocarbon samples as a variable-rate (inhomogeneous) Poisson process
 }
 \examples{
-# TODO
+# Using example data
+pp_output <- PPcalibrate(
+    pp_uniform_phase$c14_age,
+    pp_uniform_phase$c14_sig,
+    intcal20,
+    n_iter = 5000,
+    show_progress = FALSE)
 }

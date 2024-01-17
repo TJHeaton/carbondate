@@ -1,7 +1,23 @@
-bibentry(
+citHeader("To cite carbondate in publications use:")
+
+citEntry(
   "Manual",
-  title    = "Calibration and Summarisation of Radiocarbon Dates",
-  author   = "Tim Heaton, Sara Al-Assam",
-  year     = "2022",
+  title    = sprintf("{%s}: %s", meta$Package, meta$Title),
+  author   = "Timothy J. Heaton and Sara Al-Assam",
+  year     = "2024",
+  note     = sprintf("R package version %s", meta$Version),
   url      = "https://github.com/TJHeaton/carbondate",
+)
+
+citEntry(
+  "Article",
+  title    = "Non-parametric calibration of multiple related radiocarbon determinations and their calendar age summarisation",
+  journal  = "Journal of the Royal Statistical Society Series C: Applied Statistics",
+  author   = "Timothy J. Heaton",
+  volume   = "71",
+  number   = "5",
+  pages    = "1918--1956",
+  year     = "2022",
+  month    = "10",
+  doi      = "10.1111/rssc.12599",
 )

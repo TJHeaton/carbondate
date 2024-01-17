@@ -9,8 +9,8 @@
 
 A data frame with 628 rows and 4 columns:
 \describe{
-\item{c14_age}{The 14C age (yr BP)}
-\item{c14_sig}{The uncertainty in the 14C age reported by the radiocarbon laboratory}
+\item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
+\item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age reported by the radiocarbon laboratory}
 \item{f14c}{The F14C concentration}
 \item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
 }
@@ -28,6 +28,6 @@ ages of distinct archaeological  sites found across Canada and North America
 during the time of the palaeoindians. Ref:
 Buchanan, B., Collard, M., Edinborough, K., 2008. Paleoindian demography and
 the extraterrestrial impact hypothesis. Proceedings of the National Academy
-of Sciences 105, 11651–11654.
+of Sciences 105, 11651--11654.
 }
 \keyword{datasets}

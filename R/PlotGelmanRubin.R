@@ -1,13 +1,13 @@
-#' Plots a histogram of the Gelman–Rubin convergence diagnostic for a single chain
+#' Plots a histogram of the Gelman-Rubin convergence diagnostic for a single chain
 #'
 #' This plots a histogram of the potential scale reduction factor (PSRF) for each of
 #' the calendar age observations for a single MCMC chain, by splitting the chain into segments after
 #' `n_burn` and comparing the within-chain variance with the between-chains variance of the segments.
-#' If the chain have converged to the target posterior distribution, then PSRF should be close to 1.
+#' If the chain have converged to the target posterior distribution, then PSRF should be close to 1
+#' for all calendar ages (a stringent condition is that all values are less than 1.1).
 #'
 #' @param output_data The return value from one of the updating functions e.g.
-#' [carbondate::PolyaUrnBivarDirichlet] or
-#' [carbondate::WalkerBivarDirichlet].
+#' e.g. [carbondate::PolyaUrnBivarDirichlet], [carbondate::WalkerBivarDirichlet] or [carbondate::PPcalibrate].
 #' @param n_burn The number of iterations required for burn-in  - any iterations before this
 #' are not used to calculate the PSRF. If not given, the first half of the
 #' MCMC chain is discarded. Note that the maximum
@@ -17,13 +17,15 @@
 #' @param n_segments The number of segments to split the chain into. Default is 3, must be a
 #' number between 2 and 10.
 #'
-#' @return No value
+#' @return None
 #'
 #' @export
 #'
 #' @examples
 #' # Plot results for the example data
-#' PlotGelmanRubinDiagnosticSingleChain(polya_urn_example_output)
+#' polya_urn_output <- PolyaUrnBivarDirichlet(
+#'     two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4, show_progress = FALSE)
+#' PlotGelmanRubinDiagnosticSingleChain(polya_urn_output)
 PlotGelmanRubinDiagnosticSingleChain <- function(output_data, n_burn = NA, n_segments = 3) {
 
   arg_check <- .InitializeErrorList()
@@ -48,16 +50,16 @@ PlotGelmanRubinDiagnosticSingleChain <- function(output_data, n_burn = NA, n_seg
 }
 
 
-#' Plots a histogram of the Gelman–Rubin convergence diagnostic for a multiple chains
+#' Plots a histogram of the Gelman-Rubin convergence diagnostic for a multiple chains
 #'
 #' This plots a histogram of the potential scale reduction factor (PSRF) for each of
 #' the calendar age observations for a multiple chains by comparing the within-chain variance with
 #' the between-chains variance after `n_burn` iterations.
 #' If the chain have converged to the target posterior distribution, then PSRF should be close to 1
-#' for all calendar ages.
+#' for all calendar ages (a stringent condition is that all values are less than 1.1).
 #'
 #' @param output_data_list A list, each item containing the return value from one of the updating
-#' functions e.g. [carbondate::PolyaUrnBivarDirichlet] or [carbondate::WalkerBivarDirichlet].
+#' functions e.g. [carbondate::PolyaUrnBivarDirichlet], [carbondate::WalkerBivarDirichlet] or [carbondate::PPcalibrate].
 #' The minimum number of elements in the list is 2.
 #' @param n_burn The number of iterations required for burn-in  - any iterations before this
 #' are not used to calculate the PSRF. If not given, the first half of the
@@ -67,14 +69,18 @@ PlotGelmanRubinDiagnosticSingleChain <- function(output_data, n_burn = NA, n_seg
 #' c[carbondate::PPcalibrate]).
 #' @param n_burn The number of samples required for burn-in.
 #'
-#' @return No value
+#' @return None
 #'
 #' @export
 #'
 #' @examples
-#' # Plot results for the many chains
+#' # Plot results for the many chains - small number of iterations and results show no convergence
 #' po = list()
-#' for (i in 1:3) po[[i]] = PolyaUrnBivarDirichlet(kerr$c14_age, kerr$c14_sig, intcal20, n_iter=1e4)
+#' for (i in 1:3) {
+#'     set.seed(i)
+#'     po[[i]] <- PolyaUrnBivarDirichlet(
+#'         kerr$c14_age, kerr$c14_sig, intcal20, n_iter=1e3, show_progress = FALSE)
+#' }
 #' PlotGelmanRubinDiagnosticMultiChain(po)
 PlotGelmanRubinDiagnosticMultiChain <- function(output_data_list, n_burn = NA) {
 
