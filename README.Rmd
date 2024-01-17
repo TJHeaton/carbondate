@@ -33,7 +33,7 @@ their calendar age summarisation" [(Heaton 2022)](https://academic.oup.com/jrsss
 
 ## Installation
 
-The easiest way to install it is via CRAN, by typing the following into your R console:
+The easiest way to install the latest release is via CRAN, by typing the following into your R console:
 ``` r
 install.packages("carbondate")
 ```
