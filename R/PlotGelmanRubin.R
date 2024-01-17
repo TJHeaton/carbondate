@@ -78,7 +78,7 @@ PlotGelmanRubinDiagnosticSingleChain <- function(output_data, n_burn = NA, n_seg
 #' po = list()
 #' for (i in 1:3) {
 #'     set.seed(i)
-#'     po[[i]] = PolyaUrnBivarDirichlet(
+#'     po[[i]] <- PolyaUrnBivarDirichlet(
 #'         kerr$c14_age, kerr$c14_sig, intcal20, n_iter=1e3, show_progress = FALSE)
 #' }
 #' PlotGelmanRubinDiagnosticMultiChain(po)
