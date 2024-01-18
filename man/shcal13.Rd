@@ -18,7 +18,7 @@ A data frame with 5,141 rows and 5 columns:
 }
 }
 \source{
-\url{http://doi.org/10.2458/azu_js_rc.55.16783}
+http://doi.org/10.2458/azu_js_rc.55.16783
 }
 \usage{
 shcal13

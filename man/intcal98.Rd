@@ -18,7 +18,7 @@ A data frame with 1,538 rows and 5 columns:
 }
 }
 \source{
-\url{https://doi.org/10.1017/S0033822200019123}
+https://doi.org/10.1017/S0033822200019123
 }
 \usage{
 intcal98

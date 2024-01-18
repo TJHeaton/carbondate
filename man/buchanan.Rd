@@ -17,7 +17,7 @@ A data frame with 628 rows and 4 columns:
 }
 }
 \source{
-\url{http://doi.org/10.1073/pnas.0803762105}
+http://doi.org/10.1073/pnas.0803762105
 }
 \usage{
 buchanan

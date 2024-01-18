@@ -20,7 +20,7 @@ A data frame with 58 rows and 7 columns:
 }
 }
 \source{
-\url{https://doi.org/10.1038/nature04604}
+https://doi.org/10.1038/nature04604
 }
 \usage{
 alces

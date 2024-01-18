@@ -17,7 +17,7 @@ A data frame with 255 rows and 4 columns:
 }
 }
 \source{
-\url{http://doi.org/10.1016/j.jas.2013.09.002}
+http://doi.org/10.1016/j.jas.2013.09.002
 }
 \usage{
 kerr

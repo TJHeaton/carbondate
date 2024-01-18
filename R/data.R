@@ -21,7 +21,7 @@
 #'   \item{f14c}{The radiocarbon age expressed as F14C conctration}
 #'   \item{f14c_sig}{The uncertainty in F14C}
 #' }
-#' @source <http://doi.org/10.1017/RDC.2020.41>
+#' @source http://doi.org/10.1017/RDC.2020.41
 "intcal20"
 
 #' IntCal13 calibration curve
@@ -45,7 +45,7 @@
 #'   \item{f14c}{The radiocarbon age expressed as F14C conctration}
 #'   \item{f14c_sig}{The uncertainty in F14C}
 #' }
-#' @source <http://doi.org/10.2458/azu_js_rc.55.16947>
+#' @source http://doi.org/10.2458/azu_js_rc.55.16947
 "intcal13"
 
 #' IntCal09 calibration curve
@@ -67,7 +67,7 @@
 #'   \item{f14c}{The radiocarbon age expressed as F14C conctration}
 #'   \item{f14c_sig}{The uncertainty in F14C}
 #' }
-#' @source <http://doi.org/10.1017/S0033822200034202>
+#' @source http://doi.org/10.1017/S0033822200034202
 "intcal09"
 
 #' IntCal04 calibration curve
@@ -89,7 +89,7 @@
 #'   \item{f14c}{The radiocarbon age expressed as F14C conctration}
 #'   \item{f14c_sig}{The uncertainty in F14C}
 #' }
-#' @source <https://doi.org/10.1017/S0033822200032999>
+#' @source https://doi.org/10.1017/S0033822200032999
 "intcal04"
 
 #' IntCal98 calibration curve
@@ -110,7 +110,7 @@
 #'   \item{f14c}{The radiocarbon age expressed as F14C conctration}
 #'   \item{f14c_sig}{The uncertainty in F14C}
 #' }
-#' @source <https://doi.org/10.1017/S0033822200019123>
+#' @source https://doi.org/10.1017/S0033822200019123
 "intcal98"
 
 #' SHCal20 calibration curve
@@ -133,7 +133,7 @@
 #'   \item{f14c}{The radiocarbon age expressed as F14C conctration}
 #'   \item{f14c_sig}{The uncertainty in F14C}
 #' }
-#' @source <http://doi.org/10.1017/RDC.2020.59>
+#' @source http://doi.org/10.1017/RDC.2020.59
 "shcal20"
 
 
@@ -158,7 +158,7 @@
 #'   \item{f14c}{The radiocarbon age expressed as F14C conctration}
 #'   \item{f14c_sig}{The uncertainty in F14C}
 #' }
-#' @source <http://doi.org/10.2458/azu_js_rc.55.16783>
+#' @source http://doi.org/10.2458/azu_js_rc.55.16783
 "shcal13"
 
 
@@ -180,7 +180,7 @@
 #'   \item{f14c}{The radiocarbon age expressed as F14C conctration}
 #'   \item{f14c_sig}{The uncertainty in F14C}
 #' }
-#' @source <http://doi.org/10.1017/S0033822200033014>
+#' @source http://doi.org/10.1017/S0033822200033014
 "shcal04"
 
 #' Example artificial data - Mixture of Normal Phases
@@ -234,7 +234,7 @@
 #'   \item{f14c}{The F14C concentration}
 #'   \item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
 #' }
-#' @source <http://doi.org/10.1016/j.jas.2013.09.002>
+#' @source http://doi.org/10.1016/j.jas.2013.09.002
 "kerr"
 
 
@@ -255,7 +255,7 @@
 #'   \item{f14c}{The F14C concentration}
 #'   \item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
 #' }
-#' @source <http://doi.org/10.1073/pnas.0803762105>
+#' @source http://doi.org/10.1073/pnas.0803762105
 "buchanan"
 
 
@@ -276,7 +276,7 @@
 #'   \item{f14c}{The F14C concentration}
 #'   \item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
 #' }
-#' @source <http://doi.org/10.1073/pnas.1408028111>
+#' @source http://doi.org/10.1073/pnas.1408028111
 "armit"
 
 
@@ -300,7 +300,7 @@
 #'   \item{f14c}{The F14C concentration}
 #'   \item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
 #' }
-#' @source <https://doi.org/10.1038/nature04604>
+#' @source https://doi.org/10.1038/nature04604
 "alces"
 
 
@@ -324,7 +324,7 @@
 #'   \item{f14c}{The F14C concentration}
 #'   \item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
 #' }
-#' @source <https://doi.org/10.1038/nature04604>
+#' @source https://doi.org/10.1038/nature04604
 "bison"
 
 
@@ -348,7 +348,7 @@
 #'   \item{f14c}{The F14C concentration}
 #'   \item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
 #' }
-#' @source <https://doi.org/10.1038/nature04604>
+#' @source https://doi.org/10.1038/nature04604
 "cervus"
 
 
@@ -372,7 +372,7 @@
 #'   \item{f14c}{The F14C concentration}
 #'   \item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
 #' }
-#' @source <https://doi.org/10.1038/nature04604>
+#' @source https://doi.org/10.1038/nature04604
 "equus"
 
 
@@ -396,7 +396,7 @@
 #'   \item{f14c}{The F14C concentration}
 #'   \item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
 #' }
-#' @source <https://doi.org/10.1038/nature04604>
+#' @source https://doi.org/10.1038/nature04604
 "human"
 
 
@@ -420,5 +420,5 @@
 #'   \item{f14c}{The F14C concentration}
 #'   \item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
 #' }
-#' @source <https://doi.org/10.1038/nature04604>
+#' @source https://doi.org/10.1038/nature04604
 "mammuthus"

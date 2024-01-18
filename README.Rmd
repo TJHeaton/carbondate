@@ -17,7 +17,11 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/TJHeaton/carbondate/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/TJHeaton/carbondate/actions/workflows/R-CMD-check.yaml)
+![CRAN status](https://www.r-pkg.org/badges/version/carbondate)
+
+<!-- TODO issue #34: replace the CRAN badge above with this linked one once it is available on CRAN
 [![CRAN status](https://www.r-pkg.org/badges/version/carbondate)](https://CRAN.R-project.org/package=carbondate)
+-->
 <!-- badges: end -->
 
 An R package to analyse, and summarise, multiple radiocarbon (^14^C) determinations. The package provides two linked (but distinct) approaches:

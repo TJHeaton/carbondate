@@ -6,8 +6,11 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/TJHeaton/carbondate/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/TJHeaton/carbondate/actions/workflows/R-CMD-check.yaml)
-[![CRAN
-status](https://www.r-pkg.org/badges/version/carbondate)](https://CRAN.R-project.org/package=carbondate)
+![CRAN status](https://www.r-pkg.org/badges/version/carbondate)
+
+<!-- TODO issue #34: replace the CRAN badge above with this linked one once it is available on CRAN
+[![CRAN status](https://www.r-pkg.org/badges/version/carbondate)](https://CRAN.R-project.org/package=carbondate)
+-->
 <!-- badges: end -->
 
 An R package to analyse, and summarise, multiple radiocarbon
@@ -26,8 +29,8 @@ determinations and their calendar age summarisation” [(Heaton
 
 ## Installation
 
-The easiest way to install it is via CRAN, by typing the following into
-your R console:
+The easiest way to install the latest release is via CRAN, by typing the
+following into your R console:
 
 ``` r
 install.packages("carbondate")

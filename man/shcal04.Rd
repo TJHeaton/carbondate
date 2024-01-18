@@ -18,7 +18,7 @@ A data frame with 2,202 rows and 5 columns:
 }
 }
 \source{
-\url{http://doi.org/10.1017/S0033822200033014}
+http://doi.org/10.1017/S0033822200033014
 }
 \usage{
 shcal04
