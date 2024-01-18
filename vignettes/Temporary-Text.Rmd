@@ -66,3 +66,5 @@ Each object is then considered to be drawn from one of the (infinite) clusters w
 It will be more likely that an object will come from some clusters than others. Given an object belongs to a particular cluster, its prior calendar age will be normally distributed with the mean and variance of that cluster. The mean and variance of each individual normal cluster that constitutes the overall $f(\theta)$, together with the weightings associated to each cluster, will be estimated based upon the set of ^14^C determinations we observe.
 
 For full technical details of the models used, and explanation of the model parameters, see [@heaton2021].
+
+## References
