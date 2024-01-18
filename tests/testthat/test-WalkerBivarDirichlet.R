@@ -4,7 +4,7 @@ test_that("WalkerBivarDirichlet gives expected result - C14 space and same param
   # the function again here and compare the predictive density using the Kullback-Leibler
   # divergence. From experimenting around we expect a divergence of less the 1e-3 to say
   # that the results match.
-
+  skip_on_cran()
   load(test_path("fixtures", "walker_input.rda"))
   set.seed(seednum)
   walker_output <- WalkerBivarDirichlet(
@@ -43,7 +43,7 @@ test_that("WalkerBivarDirichlet gives expected result - sensible init, F14C spac
   # nonparametric calibration code (that we know is working correctly). We run
   # the function again here and compare results to test that the function is
   # working correctly
-
+  skip_on_cran()
   load(test_path("fixtures", "walker_input.rda"))
 
   set.seed(seednum)
@@ -70,7 +70,7 @@ test_that("WalkerBivarDirichlet gives expected result - sensible init, F14C spac
   # nonparametric calibration code (that we know is working correctly). We run
   # the function again here and compare results to test that the function is
   # working correctly
-
+  skip_on_cran()
   load(test_path("fixtures", "walker_input.rda"))
 
   set.seed(seednum)

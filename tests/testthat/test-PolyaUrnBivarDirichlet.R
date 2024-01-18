@@ -4,7 +4,7 @@ test_that("PolyaUrnBivarDirichlet gives expected result - C14 space and same par
   # the function again here and compare the predictive density using the Kullback-Leibler
   # divergence. From experimenting around we expect a divergence of less the 1e-3 to say
   # that the results match.
-
+  skip_on_cran()
   load(test_path("fixtures", "polya_urn_input.rda"))
   set.seed(seednum)
   polya_urn_output <- PolyaUrnBivarDirichlet(
@@ -47,7 +47,7 @@ test_that("PolyaUrnBivarDirichlet gives expected result - sensible init, F14C sp
   load(test_path("fixtures", "polya_urn_input.rda"))
 
   set.seed(seednum)
-
+  skip_on_cran()
   polya_urn_output <- PolyaUrnBivarDirichlet(
     rc_determinations = x,
     rc_sigmas = xsig,
@@ -71,7 +71,7 @@ test_that("PolyaUrnBivarDirichlet gives expected result - sensible init, F14C sp
   # nonparametric calibration code (that we know is working correctly). We run
   # the function again here and compare results to test that the function is
   # working correctly
-
+  skip_on_cran()
   load(test_path("fixtures", "polya_urn_input.rda"))
 
   set.seed(seednum)

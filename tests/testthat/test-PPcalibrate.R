@@ -1,5 +1,5 @@
 test_that("PPcalibrate gives expected outcomes", {
-
+  skip_on_cran()
   # Checking
   set.seed(15)
   n_observed <- 20
