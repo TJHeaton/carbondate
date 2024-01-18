@@ -33,7 +33,7 @@ lines(true_density, col="red")
 
 # Create some radiocarbon determinations
 interpolated_calibration_curve <- InterpolateCalibrationCurve(
-  new_calendar_ages = calendar_ages_true, calibration_curve = intcal20)
+  new_calendar_ages_BP = calendar_ages_true, calibration_curve = intcal20)
 interpolated_c14_age <- interpolated_calibration_curve$c14_age
 interpolated_c14_sig <- interpolated_calibration_curve$c14_sig
 
