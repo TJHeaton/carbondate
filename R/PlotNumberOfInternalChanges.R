@@ -10,12 +10,16 @@
 #' @export
 #'
 #' @examples
+#' # Note all these examples are shown with a small n_iter to speed up execution.
+#' # Try n_iter and n_posterior_samples as the function defaults.
+#'
 #' pp_output <- PPcalibrate(
 #'     pp_uniform_phase$c14_age,
 #'     pp_uniform_phase$c14_sig,
 #'     intcal20,
-#'     n_iter = 5000,
+#'     n_iter = 1000,
 #'     show_progress = FALSE)
+#'
 #' PlotNumberOfInternalChanges(pp_output)
 PlotNumberOfInternalChanges <- function(output_data, n_burn = NA, n_end = NA) {
 

@@ -1,8 +1,12 @@
 #' Plots the posterior mean rate from the output data
 #'
+#' @description
 #' Plots the input radiocarbon determinations and calibration curve, with the
 #' output posterior mean rate on the same plot. Can also optionally show the
 #' individual mean calendar ages.
+#'
+#' For more information read the vignette: \cr
+#' \code{vignette("Poisson-process-modelling", package = "carbondate")}
 #'
 #' @param output_data The return value from the updating functions
 #' [carbondate::PPcalibrate]. Optionally, the output data can have an extra list item
@@ -50,19 +54,26 @@
 #' @return None
 #'
 #' @examples
+#' # Note all these examples are shown with a small n_iter and n_posterior_samples
+#' # to speed up execution.
+#' # Try n_iter and n_posterior_samples as the function defaults.
+#'
 #' pp_output <- PPcalibrate(
 #'     pp_uniform_phase$c14_age,
 #'     pp_uniform_phase$c14_sig,
 #'     intcal20,
-#'     n_iter = 5000,
+#'     n_iter = 1000,
 #'     show_progress = FALSE)
 #'
 #' # Default plot with 2 sigma interval
-#' PlotPosteriorMeanRate(pp_output)
+#' PlotPosteriorMeanRate(pp_output, n_posterior_samples = 100)
 #'
 #' # Specify an 80% confidence interval
 #' PlotPosteriorMeanRate(
-#'     pp_output, interval_width = "bespoke", bespoke_probability = 0.8)
+#'     pp_output,
+#'     interval_width = "bespoke",
+#'     bespoke_probability = 0.8,
+#'     n_posterior_samples = 100)
 PlotPosteriorMeanRate <- function(
     output_data,
     n_posterior_samples = 5000,

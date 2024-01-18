@@ -146,18 +146,29 @@ determinations and associated 1-sigma uncertainties, as well as the
 calibration curve which should be used, and returns output data that can be
 sampled to estimate the joint calendar age density and clusters. This method
 considers both the mean and the variance of the clusters to be unknown.
+
+For more information read the vignette: \cr
+\code{vignette("Non-parametric-summed-density", package = "carbondate")}
 }
 \examples{
+# Note these examples are shown with a small n_iter to speed up execution.
+# When you run ensure n_iter gives convergence (try function default).
+
 # Basic usage making use of sensible initialisation to set most values and
 # using a saved example data set and the IntCal20 curve.
-output = PolyaUrnBivarDirichlet(
-    two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4, show_progress = FALSE)
+polya_urn_output <- PolyaUrnBivarDirichlet(
+    two_normals$c14_age,
+    two_normals$c14_sig,
+    intcal20,
+    n_iter = 100,
+    show_progress = FALSE)
 
 # The radiocarbon determinations can be given as F14C concentrations
-output = PolyaUrnBivarDirichlet(
+polya_urn_output <- PolyaUrnBivarDirichlet(
     two_normals$f14c,
     two_normals$f14c_sig,
     intcal20,
     F14C_inputs = TRUE,
-    n_iter = 1e4)
+    n_iter = 100,
+    show_progress = FALSE)
 }

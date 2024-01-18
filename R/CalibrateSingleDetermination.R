@@ -26,7 +26,7 @@
 #' plot(calib, type = "l", xlim = c(36000, 34000))
 #'
 #' # Calibration of a single determination expressed as F14C concentration
-#' calib = CalibrateSingleDetermination(
+#' calib <- CalibrateSingleDetermination(
 #'     0.02103493, 9.164975e-05, intcal20, F14C_inputs = TRUE)
 #' plot(calib, type = "l", xlim = c(36000, 34000))
 CalibrateSingleDetermination <- function(

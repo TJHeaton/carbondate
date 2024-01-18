@@ -32,8 +32,16 @@ determinations, the estimated number of clusters can be plotted using this
 function.
 }
 \examples{
-# Plot results for the number of clusters
+# Note these examples are shown with a small n_iter to speed up execution.
+# When you run ensure n_iter gives convergence (try function default).
+
 polya_urn_output <- PolyaUrnBivarDirichlet(
-    two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4, show_progress = FALSE)
+    two_normals$c14_age,
+    two_normals$c14_sig,
+    intcal20,
+    n_iter = 500,
+    n_thin = 2,
+    show_progress = FALSE)
+
 PlotNumberOfClusters(polya_urn_output)
 }

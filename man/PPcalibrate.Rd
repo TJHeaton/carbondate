@@ -120,14 +120,19 @@ parameters \code{pp_cal_age_range}, \code{prior_n_internal_changepoints_lambda},
 }
 }
 \description{
-Model the occurrence of radiocarbon samples as a variable-rate (inhomogeneous) Poisson process
+TIM YOU NEED TO ADD THIS
+
+For more information read the vignette: \cr
+\code{vignette("Poisson-process-modelling", package = "carbondate")}
 }
 \examples{
-# Using example data
+# Note this examples is shown with a small n_iter to speed up execution.
+# When you run ensure n_iter gives convergence (try function default).
+
 pp_output <- PPcalibrate(
     pp_uniform_phase$c14_age,
     pp_uniform_phase$c14_sig,
     intcal20,
-    n_iter = 5000,
+    n_iter = 100,
     show_progress = FALSE)
 }

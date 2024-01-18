@@ -75,8 +75,6 @@ if not given.}
 A list, each item containing a data frame of the \code{calendar_age}, the
 \code{density_mean} and the confidence intervals for the density
 \code{density_ci_lower} and \code{density_ci_upper} for each set of output data.
-
-None
 }
 \description{
 Plots the input radiocarbon determinations and calibration curve, with the
@@ -84,29 +82,44 @@ output predicted density on the same plot. Can also optionally show the
 SPD estimate. Note that if all you are only interested in is the density
 data, without an accompanying plot, you can use
 \link{FindPredictiveCalendarAgeDensity} instead.
+
+For more information read the vignette: \cr
+\code{vignette("Non-parametric-summed-density", package = "carbondate")}
 }
 \examples{
+# Note all these examples are shown with a small n_iter and n_posterior_samples
+# to speed up execution.
+# Try n_iter and n_posterior_samples as the function defaults.
+
 polya_urn_output <- PolyaUrnBivarDirichlet(
-    two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4, show_progress = FALSE)
+    two_normals$c14_age,
+    two_normals$c14_sig,
+    intcal20,
+    n_iter = 500,
+    show_progress = FALSE)
 walker_output <- WalkerBivarDirichlet(
-    two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4, show_progress = FALSE)
+    two_normals$c14_age,
+    two_normals$c14_sig,
+    intcal20,
+    n_iter = 500,
+    show_progress = FALSE)
 
 # Plot results for a single calibration
-PlotPredictiveCalendarAgeDensity(polya_urn_output)
+PlotPredictiveCalendarAgeDensity(polya_urn_output, n_posterior_samples = 50)
 
-# Plot results from a calibration, and add a label
+# Plot results from two calibrations on the same plot
+PlotPredictiveCalendarAgeDensity(
+    list(walker_output, polya_urn_output), n_posterior_samples = 50)
+
+# Plot and show the 80\% confidence interval, show the SPD, add a custom label
 polya_urn_output$label = "My plot"
-PlotPredictiveCalendarAgeDensity(polya_urn_output)
-
-# Plot results from two calibrations on the same plot, and show the SPD
 PlotPredictiveCalendarAgeDensity(
-    list(walker_output, polya_urn_output), show_SPD = TRUE)
-
-# Plot and show the 1-sigma confidence interval, and use F14C scale
-PlotPredictiveCalendarAgeDensity(
-    polya_urn_output, interval_width = "1sigma", plot_14C_age = FALSE)
-
-# Plot and show the 80\% confidence interval
-PlotPredictiveCalendarAgeDensity(
-    polya_urn_output, interval_width = "bespoke", bespoke_probability = 0.8)
+    polya_urn_output,
+    n_posterior_samples = 50,
+    interval_width = "bespoke",
+    bespoke_probability = 0.8,
+    show_SPD = TRUE)
+}
+\seealso{
+\link{FindPredictiveCalendarAgeDensity}
 }

@@ -22,14 +22,22 @@ the calendar age observations for a multiple chains by comparing the within-chai
 the between-chains variance after \code{n_burn} iterations.
 If the chain have converged to the target posterior distribution, then PSRF should be close to 1
 for all calendar ages (a stringent condition is that all values are less than 1.1).
+
+For more information read the vignette: \cr
+\code{vignette("determining-convergence", package = "carbondate")}
 }
 \examples{
-# Plot results for the many chains - small number of iterations and results show no convergence
+# Plot results for the example data - n_iter is too small for convergence
+# Try increasing n_iter to see the values of the PSRF decrease
 po = list()
 for (i in 1:3) {
     set.seed(i)
     po[[i]] <- PolyaUrnBivarDirichlet(
-        kerr$c14_age, kerr$c14_sig, intcal20, n_iter=1e3, show_progress = FALSE)
+        two_normals$c14_age,
+        two_normals$c14_sig,
+        intcal20,
+        n_iter=400,
+        show_progress = FALSE)
 }
 PlotGelmanRubinDiagnosticMultiChain(po)
 }

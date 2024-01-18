@@ -22,10 +22,18 @@ None
 This plots the Kullback-Leibler divergence between the initial predictive density
 and the density calculated during a run of a calibration function. This can be used to
 estimate whether the calibration function has converged.
+
+For more information read the vignette: \cr
+\code{vignette("determining-convergence", package = "carbondate")}
 }
 \examples{
-# Plot results for the example data
+# Plot results for the example data - this does not show meaningful
+# results as n_iter is too small. Try increasing n_iter to 1e5.
 polya_urn_output <- PolyaUrnBivarDirichlet(
-    two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4, show_progress = FALSE)
+    two_normals$c14_age,
+    two_normals$c14_sig,
+    intcal20,
+    n_iter = 500,
+    show_progress = FALSE)
 PlotConvergenceData(polya_urn_output)
 }

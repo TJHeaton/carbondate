@@ -1,10 +1,14 @@
 #' Calibration of a set of individual radiocarbon samples using Walker updating
 #' of the DPMM
 #'
+#' @description
 #' This function takes as an input a set of radiocarbon determinations and
 #' associated 1-sigma uncertainties, as well as the calibration curve which
 #' should be used, and returns output data that can be sampled to estimate the
 #' joint calendar age density and cluster.
+#'
+#' For more information read the vignette: \cr
+#' \code{vignette("Non-parametric-summed-density", package = "carbondate")}
 #'
 #' @inheritParams FindSummedProbabilityDistribution
 #' @param n_iter  The number of MCMC iterations (optional). Default is 100,000.
@@ -94,18 +98,23 @@
 #' @export
 #'
 #' @examples
-#' # Basic usage making use of sensible initialisation to set most values and
-#' # using a saved example data set and the IntCal20 curve.
-#' output = WalkerBivarDirichlet(
-#'     two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4, show_progress = FALSE)
+#' # Note these examples are shown with a small n_iter to speed up execution.
+#' # When you run ensure n_iter gives convergence (try function default).
+#'
+#' walker_output <- WalkerBivarDirichlet(
+#'     two_normals$c14_age,
+#'     two_normals$c14_sig,
+#'     intcal20,
+#'     n_iter = 100,
+#'     show_progress = FALSE)
 #'
 #' # The radiocarbon determinations can be given as F14C concentrations
-#' output = WalkerBivarDirichlet(
+#' walker_output <- WalkerBivarDirichlet(
 #'     two_normals$f14c,
 #'     two_normals$f14c_sig,
 #'     intcal20,
 #'     F14C_inputs = TRUE,
-#'     n_iter = 1e4,
+#'     n_iter = 100,
 #'     show_progress = FALSE)
 WalkerBivarDirichlet <- function(
     rc_determinations,
