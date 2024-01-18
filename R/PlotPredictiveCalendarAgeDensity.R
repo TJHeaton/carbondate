@@ -56,29 +56,29 @@
 #' @return None
 #'
 #' @examples
+#' # Note all these examples are shown with a small n_iter and small n_posterior samples to speed
+#' # up execution. When you run ensure n_iter and n_posterior_samples give convergence.
+#'
 #' polya_urn_output <- PolyaUrnBivarDirichlet(
-#'     two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4, show_progress = FALSE)
+#'     two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 500, show_progress = FALSE)
 #' walker_output <- WalkerBivarDirichlet(
-#'     two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4, show_progress = FALSE)
+#'     two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 500, show_progress = FALSE)
 #'
 #' # Plot results for a single calibration
-#' PlotPredictiveCalendarAgeDensity(polya_urn_output)
+#' PlotPredictiveCalendarAgeDensity(polya_urn_output, n_posterior_samples = 50)
 #'
-#' # Plot results from a calibration, and add a label
+#' Plot results from two calibrations on the same plot, and show the SPD
+#' PlotPredictiveCalendarAgeDensity(
+#'     list(walker_output, polya_urn_output), n_posterior_samples = 50)
+#'
+#' # Plot and show the 80% confidence interval, show the SPD, and add a custom label
 #' polya_urn_output$label = "My plot"
-#' PlotPredictiveCalendarAgeDensity(polya_urn_output)
-#'
-#' # Plot results from two calibrations on the same plot, and show the SPD
 #' PlotPredictiveCalendarAgeDensity(
-#'     list(walker_output, polya_urn_output), show_SPD = TRUE)
-#'
-#' # Plot and show the 1-sigma confidence interval, and use F14C scale
-#' PlotPredictiveCalendarAgeDensity(
-#'     polya_urn_output, interval_width = "1sigma", plot_14C_age = FALSE)
-#'
-#' # Plot and show the 80% confidence interval
-#' PlotPredictiveCalendarAgeDensity(
-#'     polya_urn_output, interval_width = "bespoke", bespoke_probability = 0.8)
+#'     polya_urn_output,
+#'     n_posterior_samples = 50,
+#'     interval_width = "bespoke",
+#'     bespoke_probability = 0.8,
+#'     show_SPD = TRUE)
 PlotPredictiveCalendarAgeDensity <- function(
     output_data,
     n_posterior_samples = 5000,

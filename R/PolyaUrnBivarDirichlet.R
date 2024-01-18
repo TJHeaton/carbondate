@@ -56,7 +56,7 @@
 #' # Basic usage making use of sensible initialisation to set most values and
 #' # using a saved example data set and the IntCal20 curve.
 #' output = PolyaUrnBivarDirichlet(
-#'     two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4, show_progress = FALSE)
+#'     two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 500, show_progress = FALSE)
 #'
 #' # The radiocarbon determinations can be given as F14C concentrations
 #' output = PolyaUrnBivarDirichlet(
