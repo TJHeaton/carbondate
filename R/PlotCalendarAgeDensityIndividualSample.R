@@ -238,7 +238,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
 
   legend_labels <- c(
     substitute(paste(""^14, "C determination ")),
-    gsub("intcal", "IntCal", calcurve_name),
+    gsub("intcal", "IntCal", gsub("shcal", "SHCal", calcurve_name)), # Both IntCal and SHCal
     ci_label)
   lty <- c(-1, 1, 2)
   lwd <- c(-1, 1, 1)

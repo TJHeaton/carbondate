@@ -290,7 +290,9 @@ PlotPredictiveCalendarAgeDensity <- function(
     "bespoke" = paste0(round(100 * bespoke_probability), "% interval"))
 
   legend_labels <- c(
-    gsub("intcal", "IntCal", output_data[[1]]$input_data$calibration_curve_name),
+    gsub("intcal", "IntCal",
+         gsub("shcal", "SHCal",
+              output_data[[1]]$input_data$calibration_curve_name)), # Both IntCal and SHCal
     ci_label)
   lty <- c(1, 2)
   pch <- c(NA, NA)

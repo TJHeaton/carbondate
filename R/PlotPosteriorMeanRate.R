@@ -240,7 +240,9 @@ PlotPosteriorMeanRate <- function(
     "bespoke" = paste0(round(100 * bespoke_probability), "% interval"))
 
   legend_labels <- c(
-    gsub("intcal", "IntCal", output_data$input_data$calibration_curve_name),
+    gsub("intcal", "IntCal",
+         gsub("shcal", "SHCal",
+              output_data$input_data$calibration_curve_name)), # Both IntCal and SHCal
     ci_label,
     "Posterior mean rate")
   lty <- c(1, 2, 1)
