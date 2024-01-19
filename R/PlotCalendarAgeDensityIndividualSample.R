@@ -120,8 +120,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
         f14c_age,
         "\u00B1",
         f14c_sig,
-        " F ",
-        ""^14,
+        "F"^14,
         "C"),
       list(i = ident, f14c_age = signif(rc_age, 2), f14c_sig = signif(rc_sig, 2)))
   } else {
