@@ -235,7 +235,7 @@ PlotPosteriorMeanRate <- function(
 
   ci_label <- switch(
     interval_width,
-    "1sigma" = expression(paste(sigma, " interval")),
+    "1sigma" = expression(paste("1", sigma, " interval")),
     "2sigma"  = expression(paste("2", sigma, " interval")),
     "bespoke" = paste0(round(100 * bespoke_probability), "% interval"))
 
