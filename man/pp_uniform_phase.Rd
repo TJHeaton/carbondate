@@ -9,10 +9,10 @@
 
 A data frame with 40 rows and 4 columns:
 \describe{
-\item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
-\item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age}
-\item{f14c}{The F14C concentration}
-\item{f14c_sig}{The uncertainty in the F14C concentration}
+\item{c14_age}{The simulated \eqn{{}^{14}}C age (in \eqn{{}^{14}}C yr BP)}
+\item{c14_sig}{The (fixed) \eqn{{}^{14}}C age measurement uncertainty used in the simulation (set at 15 \eqn{{}^{14}}C yrs)}
+\item{f14c}{The corresponding simulated values of F\eqn{{}^{14}}C concentration}
+\item{f14c_sig}{The (fixed) corresponding F\eqn{{}^{14}}C measurement uncertainty used in the simulation}
 }
 }
 }
@@ -21,10 +21,14 @@ pp_uniform_phase
 }
 \description{
 40 simulated radiocarbon determinations for which the underlying calendar ages are
-drawn (uniformly at random) from the period  550--500 cal yr BP. The observational
-uncertainty of each determination is set to be 15 \eqn{{}^{14}}C yrs. \cr \cr The corresponding
-\eqn{{}^{14}}C ages are then simulated based upon the IntCal20 calibration curve (convolved with
-the 15 \eqn{{}^{14}}C yr measurement uncertainty). This dataset matches that used in the
-package vignette to illustrate the Poisson process modelling.
+drawn (uniformly at random) from the period  550--500 cal yr BP.
+\deqn{f(\theta) = U[550, 500]}
+The observational uncertainty of each determination is set to be 15 \eqn{{}^{14}}C yrs. \cr \cr
+The corresponding \eqn{{}^{14}}C ages are then simulated based upon the IntCal20 calibration curve
+(convolved with the 15 \eqn{{}^{14}}C yr measurement uncertainty):
+\deqn{X_i | \theta_i \sim N(m(\theta_i), \rho(\theta_i)^2 + 15^2),}
+where \eqn{m(\theta_i)} and \eqn{\rho(\theta_i)} are the IntCal20 pointwise
+means and uncertainties. \cr \cr
+This dataset matches that used in the package vignette to illustrate the Poisson process modelling.
 }
 \keyword{datasets}

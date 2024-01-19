@@ -7,13 +7,14 @@
 \format{
 \subsection{\code{shcal13}}{
 
-A data frame with 5,141 rows and 5 columns:
+A data frame with 5,141 rows and 5 columns providing the SHCal13 radiocarbon age
+calibration curve on a calendar grid spanning from 50,000--0 cal yr BP:
 \describe{
-\item{calendar_age}{The calendar age (yr BP)}
-\item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
-\item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age reported by the radiocarbon laboratory}
-\item{f14c}{The radiocarbon age expressed as F14C conctration}
-\item{f14c_sig}{The uncertainty in F14C}
+\item{calendar_age}{The calendar age (in cal yr BP)}
+\item{c14_age}{The \eqn{{}^{14}}C age (in \eqn{{}^{14}}C yr BP)}
+\item{c14_sig}{The (1-\eqn{\sigma}) uncertainty in the \eqn{{}^{14}}C age}
+\item{f14c}{The \eqn{{}^{14}}C age expressed as F\eqn{{}^{14}}C concentration}
+\item{f14c_sig}{The (1-\eqn{\sigma}) uncertainty in the F\eqn{{}^{14}}C concentration}
 }
 }
 }
@@ -24,13 +25,16 @@ http://doi.org/10.2458/azu_js_rc.55.16783
 shcal13
 }
 \description{
-SHCal13 atmospheric curve (Hogg et al 2013)
-Hogg et al. 2013
-Alan G Hogg, Quan Hua, Paul G Blackwell, Caitlin E Buck, Thomas P Guilderson,
+The SHCal13 Southern Hemisphere radiocarbon age calibration curve
+on a calendar grid spanning from 50,000--0 cal yr BP
+(Before Present, 0 cal yr BP corresponds to 1950 CE). \cr \cr
+\emph{Note:} This dataset provides \eqn{{}^{14}}C ages and F\eqn{{}^{14}}C values
+on a calendar age grid. This is different from the \eqn{{}^{14}}C ages
+and \eqn{{\Delta}^{14}}C values provided in oxcal .14c files.\cr \cr
+\strong{Reference:} \cr Alan G Hogg, Quan Hua, Paul G Blackwell, Caitlin E Buck, Thomas P Guilderson,
 Timothy J  Heaton, Mu Niu, Jonathan G Palmer, Paula J Reimer, Ron W Reimer,
-Christian S M Turney, Susan R H Zimmerman.
-2013
+Christian S M Turney, Susan R H Zimmerman. 2013.
 SHCal13 Southern Hemisphere Calibration, 0-50,000 Years cal BP.
-Radiocarbon 55(4):1889-1903. doi:10.2458/azu_js_rc.55.16783
+\emph{Radiocarbon} \strong{55}(4):1889--1903 https://doi.org/10.2458/azu_js_rc.55.16783. \cr \cr
 }
 \keyword{datasets}
