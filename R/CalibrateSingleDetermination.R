@@ -31,17 +31,29 @@
 #'
 #' @examples
 #' # Calibration of a single determination expressed as 14C age BP
-#' calib <- CalibrateSingleDetermination(31020, 35, intcal20)
-#' plot(calib, type = "l", xlim = c(36000, 34000))
+#' calib <- CalibrateSingleDetermination(860, 35, intcal20)
+#' plot(calib, type = "l", xlim = c(1000, 600))
+#'
+#' # Incorporating an automated plot to visualise the calibration
+#' calib <- CalibrateSingleDetermination(860, 35, intcal20, plot_output = TRUE)
+#'
+#' # Calibration of a single (old) determination expressed as 14C age BP
+#' calib <- CalibrateSingleDetermination(
+#'     31020, 100, intcal20)
+#' plot(calib, type = "l", xlim = c(36500, 34500))
 #'
 #' # Calibration of a single determination expressed as F14C concentration
 #' calib <- CalibrateSingleDetermination(
-#'     0.02103493, 9.164975e-05, intcal20, F14C_inputs = TRUE)
-#' plot(calib, type = "l", xlim = c(36000, 34000))
+#'     0.02103493, 0.0002618564, intcal20, F14C_inputs = TRUE)
+#' plot(calib, type = "l", xlim = c(36500, 34500))
 #'
-#' #' # Calibration of a single determination expressed as 14C age BP
-#' #' # against SHCal20 (and plotting the output automatically )
-#' calib <- CalibrateSingleDetermination(1413, 25, intcal20, plot_output = TRUE)
+#' # Calibration of a single determination expressed as 14C age BP
+#' # against SHCal20 (and creating an automated plot)
+#' calib <- CalibrateSingleDetermination(1413, 25, shcal20, plot_output = TRUE)
+#'
+#' # Implementing a bespoke confidence interval level
+#' calib <- CalibrateSingleDetermination(1413, 25, shcal20,
+#'     plot_output = TRUE, interval_width = "bespoke", bespoke_probability = 0.8)
 CalibrateSingleDetermination <- function(
     rc_determination, rc_sigma, calibration_curve, F14C_inputs = FALSE,
     plot_output = FALSE, interval_width = "2sigma", bespoke_probability = NA) {

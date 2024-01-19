@@ -2,7 +2,7 @@
 % Please edit documentation in R/InterpolateCalibrationCurve.R
 \name{InterpolateCalibrationCurve}
 \alias{InterpolateCalibrationCurve}
-\title{Interpolate calendar ages for a calibration curve}
+\title{Interpolate a calibration curve at a set of calendar ages}
 \usage{
 InterpolateCalibrationCurve(
   new_calendar_ages_BP,
@@ -11,10 +11,10 @@ InterpolateCalibrationCurve(
 )
 }
 \arguments{
-\item{new_calendar_ages_BP}{A scalar or vector containing calendar ages (in yr BP) to
-interpolate the calibration curve to. If not provided (and \code{NA} is given) uses the range
-from the minimum calendar age to the maximum calendar age of the original calibration curve
-spaced by 1.}
+\item{new_calendar_ages_BP}{A scalar or vector containing calendar ages (in cal yr BP) at
+which to interpolate the values (both the means and uncertainties) of the given calibration curve.
+If not provided (and \code{NA} is given), will use the range from the minimum calendar age to the maximum calendar age
+of the original calibration curve spaced by 1.}
 
 \item{calibration_curve}{A dataframe which must contain one column \code{calendar_age_BP}, and also
 columns \code{c14_age} and \code{c14_sig} or \code{f14c} and \code{f14c_sig} (or both sets).
@@ -30,20 +30,20 @@ A new dataframe with entries for the interpolated \code{c14_age}, and
 in \code{new_calendar_ages_BP}
 }
 \description{
-Interpolate calendar ages for a calibration curve
+Interpolate a calibration curve at a set of calendar ages
 }
 \examples{
 
-# Interpolate a single calendar age. Generates both radiocarbon scales.
-InterpolateCalibrationCurve(51020.5, intcal20)
+# Interpolate intcal20 at a single calendar age. Generates both 14C ages and F14C scales.
+InterpolateCalibrationCurve(51020, intcal20)
 
-# Interpolate at two calendar ages. Generates F14C ages only.
-InterpolateCalibrationCurve(c(51020.5, 51021.5), intcal20, TRUE)
+# Interpolate intcal20 at two calendar ages. Generates F14C estimates only.
+InterpolateCalibrationCurve(c(51017, 51021), intcal20, TRUE)
 
-# Interpolate at two calendar ages. Generate 14C age BP only.
-InterpolateCalibrationCurve(c(51020.5, 51021.5), intcal20, FALSE)
+# Interpolate intcal20 at two calendar ages. Generate 14C age estimates (cal yr BP) only.
+InterpolateCalibrationCurve(c(51017, 51021), intcal20, FALSE)
 
-# Interpolate at every integer calendar age within the range of dates (for intcal20 this is 0
-# to 55000 BP), and add for both radiocarbon scales.
+# Interpolate intcal20 at every integer calendar age within the range of dates
+# (for intcal20 this is 0 to 55000 BP), and create estimates for both radiocarbon scales.
 cal_curve <- InterpolateCalibrationCurve(NA, intcal20)
 }
