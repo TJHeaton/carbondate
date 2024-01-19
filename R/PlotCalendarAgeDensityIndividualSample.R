@@ -135,7 +135,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
         c14_sig,
         ""^14,
         "C yr BP"),
-      list(i = ident, c14_age = rc_age, c14_sig = rc_sig))
+      list(i = ident, c14_age = round(rc_age), c14_sig = round(rc_sig, 1)))
   }
 
   plot_AD <- any(calendar_age < 0)
