@@ -8,7 +8,10 @@ CalibrateSingleDetermination(
   rc_determination,
   rc_sigma,
   calibration_curve,
-  F14C_inputs = FALSE
+  F14C_inputs = FALSE,
+  plot_output = FALSE,
+  interval_width = "2sigma",
+  bespoke_probability = NA
 )
 }
 \arguments{
@@ -24,6 +27,17 @@ which contain all 5 columns.}
 
 \item{F14C_inputs}{\code{TRUE} if the provided rc_determinations are F14C concentrations and \code{FALSE}
 if they are radiocarbon age BP. Defaults to \code{FALSE}.}
+
+\item{plot_output}{\code{TRUE} if you wish to plot the determination, calibration curve, and the
+posterior calibrated age estimate. Defaults to \code{FALSE}}
+
+\item{interval_width}{Only for usage when \code{plot_output == TRUE}. The confidence intervals to show for the
+calibration curve and for the highest posterior density ranges.
+Choose from one of "1sigma" (68.3\%), "2sigma" (95.4\%) and "bespoke". Default is "2sigma".}
+
+\item{bespoke_probability}{The probability to use for the confidence interval
+if "bespoke" is chosen above. E.g. if 0.95 is chosen, then the 95\% confidence
+interval is calculated. Ignored if "bespoke" is not chosen.}
 }
 \value{
 A data frame with one column \code{calendar_age_BP} containing the calendar
@@ -37,11 +51,15 @@ calculate the calendar age probability density for it.
 }
 \examples{
 # Calibration of a single determination expressed as 14C age BP
-calib = CalibrateSingleDetermination(31020, 35, intcal20)
+calib <- CalibrateSingleDetermination(31020, 35, intcal20)
 plot(calib, type = "l", xlim = c(36000, 34000))
 
 # Calibration of a single determination expressed as F14C concentration
 calib <- CalibrateSingleDetermination(
     0.02103493, 9.164975e-05, intcal20, F14C_inputs = TRUE)
 plot(calib, type = "l", xlim = c(36000, 34000))
+
+#' # Calibration of a single determination expressed as 14C age BP
+#' # against SHCal20 (and plotting the output automatically )
+calib <- CalibrateSingleDetermination(1413, 25, intcal20, plot_output = TRUE)
 }
