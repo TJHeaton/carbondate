@@ -29,14 +29,14 @@ reference:
   - PlotPosteriorHeights
 - title: Common plotting functions
   desc: Functions that can be used to plot the output from both the Non-parametric
-    summed and the Poisson Process calibration
+    Summed and the Poisson Process calibration
   contents:
   - PlotCalendarAgeDensityIndividualSample
   - PlotGelmanRubinDiagnosticSingleChain
   - PlotGelmanRubinDiagnosticMultiChain
 - title: Example datasets
   desc: |
-    Sets of radiocarbon determinations, either from real life examples or artificially generated, that can be used as examples with the calibration functions
+    Sets of radiocarbon determinations, either from real-life examples or artificially-generated, that can be used as examples with the calibration functions
   contents:
   - alces
   - armit
@@ -53,6 +53,17 @@ reference:
   contents:
     - starts_with("intcal")
     - starts_with("shcal")
+navbar:
+ components:
+   articles:
+    text: Articles
+    menu:
+    - text: Non-parametric Summed Density
+      href: articles/Non-parametric-summed-density.html
+    - text: Poisson Process Modelling
+      href: articles/Poisson-process-modelling.html
+    - text: Determining Convergence
+      href: articles/determining-convergence.html
 figures:
   fig.ext: png
   fig.width: 7.2916667
