@@ -13,15 +13,17 @@
 #' which contain all 5 columns.
 #' @param F14C_inputs `TRUE` if the provided rc_determinations are F14C concentrations and `FALSE`
 #' if they are radiocarbon age BP. Defaults to `FALSE`.
-#' @param plot_output `TRUE` if you wish to plot the determination, calibration curve, and the
-#' posterior calibrated age estimate. Defaults to `FALSE`
-#' @param interval_width Only for usage when `plot_output == TRUE`. The confidence intervals to show for the
+#' @param plot_output `TRUE` if you wish to plot the determination, the calibration curve,
+#' and the posterior calibrated age estimate on the same plot. Defaults to `FALSE`
+#' @param interval_width Only for usage when `plot_output = TRUE`. The confidence intervals to show for the
 #' calibration curve and for the highest posterior density ranges.
 #' Choose from one of "1sigma" (68.3%), "2sigma" (95.4%) and "bespoke". Default is "2sigma".
 #' @param bespoke_probability The probability to use for the confidence interval
 #' if "bespoke" is chosen above. E.g. if 0.95 is chosen, then the 95% confidence
 #' interval is calculated. Ignored if "bespoke" is not chosen.
-#'
+#' @param denscale Whether to scale the vertical range of the calendar age density plot
+#' relative to the calibration curve plot (optional). Default is 3 which means
+#' that the maximum calendar age density will be at 1/3 of the height of the plot.
 #'
 #' @export
 #'
@@ -42,7 +44,7 @@
 #'     31020, 100, intcal20)
 #' plot(calib, type = "l", xlim = c(36500, 34500))
 #'
-#' # Calibration of a single determination expressed as F14C concentration
+#' # Calibration of a single (old) determination expressed as F14C concentration
 #' calib <- CalibrateSingleDetermination(
 #'     0.02103493, 0.0002618564, intcal20, F14C_inputs = TRUE)
 #' plot(calib, type = "l", xlim = c(36500, 34500))
@@ -51,18 +53,24 @@
 #' # against SHCal20 (and creating an automated plot)
 #' calib <- CalibrateSingleDetermination(1413, 25, shcal20, plot_output = TRUE)
 #'
+#' # Changing the density scale (so the calendar age density takes up less space)
+#' calib <- CalibrateSingleDetermination(1413, 25, shcal20,
+#'     plot_output = TRUE, denscale = 5)
+#'
 #' # Implementing a bespoke confidence interval level
 #' calib <- CalibrateSingleDetermination(1413, 25, shcal20,
 #'     plot_output = TRUE, interval_width = "bespoke", bespoke_probability = 0.8)
 CalibrateSingleDetermination <- function(
     rc_determination, rc_sigma, calibration_curve, F14C_inputs = FALSE,
-    plot_output = FALSE, interval_width = "2sigma", bespoke_probability = NA) {
+    plot_output = FALSE, interval_width = "2sigma", bespoke_probability = NA, denscale = 3) {
 
   arg_check <- .InitializeErrorList()
   .CheckNumber(arg_check, rc_determination)
   .CheckNumber(arg_check, rc_sigma)
   .CheckFlag(arg_check, F14C_inputs)
+  .CheckFlag(arg_check, plot_output)
   .CheckCalibrationCurve(arg_check, calibration_curve, F14C_inputs)
+  .CheckNumber(arg_check, denscale, lower = 0)
   .ReportErrors(arg_check)
 
   probabilities <- .ProbabilitiesForSingleDetermination(rc_determination, rc_sigma, F14C_inputs, calibration_curve)
@@ -77,7 +85,8 @@ CalibrateSingleDetermination <- function(
       calibration_curve_name = deparse(substitute(calibration_curve)),
       interval_width = interval_width,
       bespoke_probability = bespoke_probability,
-      F14C_inputs = F14C_inputs)
+      F14C_inputs = F14C_inputs,
+      denscale = denscale)
   }
 
   return(
@@ -114,6 +123,7 @@ CalibrateSingleDetermination <- function(
     F14C_inputs,
     interval_width = "2sigma",
     bespoke_probability = NA,
+    denscale = NA,
     show_hpd_ranges = TRUE,
     prob_cutoff = 0.00001) {
 
@@ -162,8 +172,15 @@ CalibrateSingleDetermination <- function(
   }
 
   plot_AD <- FALSE # Plot in calendar year
-  graphics::par(xaxs = "i", yaxs = "i")
-  graphics::par(mar = c(5, 4.5, 4, 2) + 0.1, las = 1)
+
+  # Change plotting parameters
+  opar <- graphics::par(
+    xaxs = "i",
+    yaxs = "i",
+    mar = c(5, 4.5, 4, 2) + 0.1,
+    las = 1)
+  # Revert to main environment pars after complete
+  on.exit(graphics::par(opar))
 
   .PlotCalibrationCurve(
     plot_AD,
@@ -189,14 +206,9 @@ CalibrateSingleDetermination <- function(
   graphics::polygon(radpol, col = grDevices::rgb(1, 0, 0, .5))
 
   # Plot the posterior cal age on the x-axis
-  graphics::par(new = TRUE, las = 1)
-  temp <- graphics::plot(calendar_ages,
-                         probabilities,
-                         axes = FALSE,
-                         xlab = NA, ylab = NA,
-                         xlim = rev(xrange),
-                         ylim = c(0, 3* max(probabilities)),
-                         type = "n")
+  .SetUpDensityPlot(plot_AD,
+                    xlim = rev(xrange),
+                    ylim = c(0, denscale * max(probabilities)))
   graphics::polygon(
     c(calendar_ages, rev(calendar_ages)),
     c(probabilities, rep(0, length(probabilities))),
