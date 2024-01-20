@@ -240,6 +240,35 @@
 #' laboratory measurement uncertainty, was fixed at a common value of 25 \eqn{{}^{14}}C yrs. \cr \cr
 #' This dataset is included simply to give some quick-to-run examples.
 #'
+#' @examples
+#' # Plotting calendar age density underlying two_normals
+#' # Useful for comparisons against estimation techniques
+#' weights_true <- c(0.45, 0.55)
+#' cluster_means_true_calBP <- c(3500, 5000)
+#' cluster_precisions_true <- 1 / c(200, 100)^2
+#'
+#' # Create mixture density
+#' truedens <- function(t, w, truemean, trueprec) {
+#'   dens <- 0
+#'   for(i in 1:length(w)) {
+#'     dens <- dens + w[i] * dnorm(t, mean = truemean[i], sd = 1/sqrt(trueprec[i]))
+#'   }
+#'   dens
+#' }
+#'
+#' # Visualise mixture
+#' curve(truedens(
+#'   x,
+#'   w = weights_true,
+#'   truemean = cluster_means_true_calBP,
+#'   trueprec = cluster_precisions_true),
+#'   from = 2500, to = 7000, n = 401,
+#'   xlim = c(7000, 2500),
+#'   xlab = "Calendar Age (cal yr BP)",
+#'   ylab = "Density",
+#'   col = "red"
+#' )
+#'
 #' @format ## `two_normals`
 #' A data frame with 50 rows and 4 columns:
 #' \describe{
