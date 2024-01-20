@@ -1,13 +1,14 @@
-#' Find the summed probability distribution (SPD) for a set of observations
+#' Find the summed probability distribution (SPD) for a set of radiocarbon observations
 #'
-#' Takes a set of radiocarbon determinations and uncertainties and independently
-#' calibrates each one, and then averages them to give the SPD estimate. \cr \cr
+#' Takes a set of radiocarbon determinations and uncertainties, independently
+#' calibrates each one, and then averages the resultant calendar age estimates
+#' to give the SPD estimate. \cr \cr
 #' \strong{Important:} This function should not be used for inference as SPDs are not statistically rigorous.
 #' Instead use either of:
 #' \itemize{
-#' \item the Bayesian non-parametric summarisation approaches [carbondate::PolyaUrnBivarDirichlet()]
-#'   or [carbondate::WalkerBivarDirichlet()];
-#' \item or the Poisson process rate approach [carbondate::PPcalibrate()]
+#' \item the Bayesian non-parametric summarisation approaches [carbondate::PolyaUrnBivarDirichlet]
+#'   or [carbondate::WalkerBivarDirichlet];
+#' \item or the Poisson process rate approach [carbondate::PPcalibrate]
 #' }
 #' The SPD function provided here is only intended for comparison. We provide a inbuilt plotting option to show the SPD alongside the
 #' determinations and the calibration curve. \cr \cr
@@ -16,14 +17,14 @@
 #' @param calendar_age_range_BP A vector of length 2 with the start and end
 #' calendar age BP to calculate the SPD over. These two values must be in order
 #' with start value less than end value, e.g., (600, 1700) cal yr BP.
-#' The code will extend this range (by 400 cal yrs) for conservativeness
-#' @param rc_determinations A vector of observed radiocarbon determinations
-#' @param rc_sigmas A vector of the radiocarbon determinations
-#' uncertainties (1-sigma). Must be the same length as `rc_determinations`.
-#' @param calibration_curve A dataframe which must contain one column `calendar_age_BP`, and also
-#' columns `c14_age` and `c14_sig` or `f14c` and `f14c_sig` (or both sets).
-#' This format matches the curves supplied with this package, e.g., [carbondate::intcal20], [carbondate::intcal13],
-#' which contain all 5 columns.
+#' The code will extend this range (by 400 cal yrs each side) for conservativeness
+#' @param rc_determinations A vector of observed radiocarbon determinations. Can be provided either as
+#' \eqn{{}^{14}}C ages (in \eqn{{}^{14}}C yr BP) or as F\eqn{{}^{14}}C concentrations.
+#' @param rc_sigmas A vector of the (1-sigma) measurement uncertainties for the
+#' radiocarbon determinations. Must be the same length as `rc_determinations` and
+#' given in the same units.
+#' @param F14C_inputs `TRUE` if the provided `rc_determinations` are F\eqn{{}^{14}}C
+#' concentrations and `FALSE` if they are radiocarbon ages. Defaults to `FALSE`.
 #' @param plot_output `TRUE` if you wish to plot the determinations, the calibration curve,
 #' and the SPD on the same plot. Defaults to `FALSE`
 #' @param interval_width Only for usage when `plot_output = TRUE`. The confidence intervals to show for the
@@ -40,9 +41,9 @@
 #' calendar age
 #' @export
 #'
-#' @seealso [carbondate::PolyaUrnBivarDirichlet()],
-#' [carbondate::WalkerBivarDirichlet()] for rigorous non-parametric Bayesian alternative; and
-#' [carbondate::PPcalibrate()] for rigorous variable-rate Poisson process alternative
+#' @seealso [carbondate::PolyaUrnBivarDirichlet],
+#' [carbondate::WalkerBivarDirichlet] for rigorous non-parametric Bayesian alternatives; and
+#' [carbondate::PPcalibrate] for a rigorous variable-rate Poisson process alternative.
 #'
 #' @examples
 #' # An example using 14C age BP and the IntCal 20 curve

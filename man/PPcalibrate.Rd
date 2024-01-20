@@ -28,28 +28,37 @@ PPcalibrate(
 )
 }
 \arguments{
-\item{rc_determinations}{A vector of observed radiocarbon determinations}
+\item{rc_determinations}{A vector of observed radiocarbon determinations. Can be provided either as
+\eqn{{}^{14}}C ages (in \eqn{{}^{14}}C yr BP) or as F\eqn{{}^{14}}C concentrations.}
 
-\item{rc_sigmas}{A vector of the radiocarbon determinations
-uncertainties (1-sigma). Must be the same length as \code{rc_determinations}.}
+\item{rc_sigmas}{A vector of the (1-sigma) measurement uncertainties for the
+radiocarbon determinations. Must be the same length as \code{rc_determinations} and
+given in the same units.}
 
 \item{calibration_curve}{A dataframe which must contain one column \code{calendar_age_BP}, and also
 columns \code{c14_age} and \code{c14_sig} or \code{f14c} and \code{f14c_sig} (or both sets).
-This format matches the curves supplied with this package e.g. \link{intcal20}, \link{intcal13},
-which contain all 5 columns.}
+This format matches the curves supplied with this package, e.g., \link{intcal20},
+\link{intcal13}, which contain all 5 columns.}
 
-\item{F14C_inputs}{\code{TRUE} if the provided rc_determinations are F14C concentrations and \code{FALSE}
-if they are radiocarbon age BP. Defaults to \code{FALSE}.}
+\item{F14C_inputs}{\code{TRUE} if the provided \code{rc_determinations} are F\eqn{{}^{14}}C
+concentrations and \code{FALSE} if they are radiocarbon ages. Defaults to \code{FALSE}.}
 
 \item{n_iter}{The number of MCMC iterations (optional). Default is 100,000.}
 
-\item{n_thin}{How much to thin the output (optional). 1 is no thinning,
-a larger number is more thinning. Default is 10. Must choose an integer more
-than 1 and not too close to \code{n_iter}, to ensure there are enought samples from
-posterior to potentially use.}
+\item{n_thin}{How much to thin the MCMC output (optional). Will store every
+\code{n_thin}\eqn{{}^\textrm{th}} iteration. 1 is no thinning, while a larger number will result
+in more thinning. Default is 10. Must choose an integer greater than 1. Overall
+number of MCMC realisations stored will be \eqn{n_{\textrm{out}} =
+\textrm{floor}( n_{\textrm{iter}}/n_{\textrm{thin}}) + 1} so do not choose
+\code{n_thin} too large to ensure there are enough samples from the posterior to
+use for later inference.}
 
-\item{use_F14C_space}{Whether the calculations are carried out in F14C space (default is TRUE).
-If FALSE, calculations are carried out in \eqn{{}^{14}}C yr BP space.}
+\item{use_F14C_space}{If \code{TRUE} (default) the calculations within the function are carried
+out in F\eqn{{}^{14}}C space. If \code{FALSE} they are carried out in \eqn{{}^{14}}C
+age space. We recommend selecting \code{TRUE} as, for very old samples, calibrating in
+F\eqn{{}^{14}}C space removes affect of potential asymmetry in radiocarbon ages.
+\emph{Note:} This flag can be set independently of the format/scale on which
+\code{rc_determinations} were originally provided.}
 
 \item{show_progress}{Whether to show a progress bar in the console during
 execution. Default is \code{TRUE}.}

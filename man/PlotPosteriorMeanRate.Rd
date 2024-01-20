@@ -52,9 +52,9 @@ calibration curve and the predictive density. Choose from one of \code{"1sigma"}
 if \code{"bespoke"} is chosen above. E.g. if 0.95 is chosen, then the 95\% confidence
 interval is calculated. Ignored if \code{"bespoke"} is not chosen.}
 
-\item{denscale}{Whether to scale the vertical range of the density plot
+\item{denscale}{Whether to scale the vertical range of the Poisson process mean rate plot
 relative to the calibration curve plot (optional). Default is 3 which means
-that the maximum SPD density will be at 1/3 of the height of the plot.}
+that the maximum mean rate will be at 1/3 of the height of the plot.}
 
 \item{n_calc}{Number of points to use when calculating the predictive
 density. Default is 1001.}

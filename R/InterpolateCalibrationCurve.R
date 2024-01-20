@@ -5,12 +5,12 @@
 #' which to interpolate the values (both the means and uncertainties) of the given calibration curve.
 #' If not provided (and `NA` is given), will use the range from the minimum calendar age to the maximum calendar age
 #' of the original calibration curve spaced by 1.
-#' @param F14C_outputs `TRUE` if only F14C concentrations are required, `FALSE`
-#' if only radiocarbon age BP are required and `NA` if both are required for the new curve.
+#' @param F14C_outputs `TRUE` if only F\eqn{{}^{14}}C concentrations are required, `FALSE`
+#' if only the radiocarbon ages (in \eqn{{}^{14}}C yrs BP) are required and `NA` if both are required for the new curve.
 #'
 #' @return A new dataframe with entries for the interpolated `c14_age`, and
-#' `c14_sig`, `f14c` and `f14c_sig` values at the `calendar_age_BP` values given
-#' in `new_calendar_ages_BP`
+#' `c14_sig`, `f14c` and `f14c_sig` values at the `calendar_age_BP` values that were
+#' given in `new_calendar_ages_BP`
 #' @export
 #'
 #' @examples
@@ -25,7 +25,7 @@
 #' InterpolateCalibrationCurve(c(51017, 51021), intcal20, FALSE)
 #'
 #' # Interpolate intcal20 at every integer calendar age within the range of dates
-#' # (for intcal20 this is 0 to 55000 BP), and create estimates for both radiocarbon scales.
+#' # (for intcal20 this is 0 to 55000 cal yr BP), and create estimates for both radiocarbon scales.
 #' cal_curve <- InterpolateCalibrationCurve(NA, intcal20)
 InterpolateCalibrationCurve <- function(new_calendar_ages_BP, calibration_curve, F14C_outputs = NA) {
 

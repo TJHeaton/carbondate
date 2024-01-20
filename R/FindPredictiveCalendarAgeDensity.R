@@ -1,13 +1,18 @@
-#' Find the predictive calendar age density of from the output data
+#' Find Predictive Estimate of Shared Calendar Age Density from Bayesian Non-Parametric
+#' DPMM Output
 #'
-#' Given a calendar age sequence and output data from one of the package upate
-#' functions, calculates the predicitive calendar age density and confidence
-#' intervals. Note if you want to calculate and plot the result, use
+#' @description
+#' Given output from one of the Bayesian non-parametric summarisation functions (either
+#' [carbondate::PolyaUrnBivarDirichlet] or [carbondate::WalkerBivarDirichlet]) calculate the
+#' predictive (summarised/shared) calendar age density and probability intervals
+#' on a given calendar age grid.
+#'
+#' \strong{Note:} If you want to calculate and plot the result, use
 #' [carbondate::PlotPredictiveCalendarAgeDensity] instead.
 #'
 #' @inheritParams PlotPredictiveCalendarAgeDensity
-#' @param calendar_age_sequence A vector containing the calendar ages to
-#' calculate the predictive density for.
+#' @param calendar_age_sequence A vector containing the calendar age grid on which to
+#' calculate the predictive (summarised/shared) density.
 #'
 #' @return A data frame of the `calendar_age`, the
 #' `density_mean` and the confidence intervals for the density
@@ -18,7 +23,7 @@
 #' @seealso [carbondate::PlotPredictiveCalendarAgeDensity]
 #'
 #' @examples
-#' # Note all these examples are shown with a small n_iter and n_posterior_samples
+#' # NOTE: All these examples are shown with a small n_iter and n_posterior_samples
 #' # to speed up execution.
 #' # Try n_iter and n_posterior_samples as the function defaults.
 #'
@@ -32,7 +37,7 @@
 #'
 #' # Find results for example output, 2-sigma confidence interval (default)
 #' FindPredictiveCalendarAgeDensity(
-#'     polya_urn_output, seq(600, 1700, length=12), n_posterior_samples = 500)
+#'     polya_urn_output, seq(3600, 4700, length=12), n_posterior_samples = 500)
 FindPredictiveCalendarAgeDensity <- function(
     output_data,
     calendar_age_sequence,

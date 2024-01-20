@@ -7,21 +7,22 @@
 PlotNumberOfClusters(output_data, n_burn = NA, n_end = NA)
 }
 \arguments{
-\item{output_data}{The return value from one of the updating functions e.g.
+\item{output_data}{The return value from one of the Bayesian non-parametric DPMM functions, e.g.
 \link{PolyaUrnBivarDirichlet} or
-\link{WalkerBivarDirichlet} or a list, each item containing
-one of these values. Optionally, the output data can have an extra list item
+\link{WalkerBivarDirichlet}, or a list, each item containing
+one of these return values. Optionally, the output data can have an extra list item
 named \code{label} which is used to set the label on the plot legend.}
 
-\item{n_burn}{The number of samples required for burn-in - any samples before this
-are not used in the calculation. If not given, the first half of the
+\item{n_burn}{The number of the (thinned) samples in the DPMM outputs discarded as burn-in (i.e.,
+considered to be occurring before the MCMC has converged). Any samples in the (thinned) DPMM outputs
+before this are not used in the calculation. If not given, the first half of the
 MCMC chain is discarded. Looking at the output of \link{PlotConvergenceData} can
 help determine what an appropriate value is for a given output. Note that the maximum
 value that can be chosen is \code{n_iter - 100 * n_thin} (where \code{n_iter} and \code{n_thin} are the
 arguments given to \link{PolyaUrnBivarDirichlet} or \link{WalkerBivarDirichlet}).}
 
-\item{n_end}{The iteration number of the last sample to use. Assumed to be the number of iterations
-if not given.}
+\item{n_end}{The iteration number of the last sample in the DPMM output to use in the calculations.
+Assumed to be the number of (thinned) realisations stored in the DPMM output if not given.}
 }
 \value{
 None

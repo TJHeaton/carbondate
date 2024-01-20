@@ -1,18 +1,20 @@
 #' Calibrate a single radiocarbon determination
 #'
-#' Uses the supplied calibration curve to take a single radiocarbon
-#' determination and uncertainty (expressed as the radiocarbon age BP or F14C concentration) and
-#' calculate the calendar age probability density for it.
+#' Uses the supplied calibration curve to calibrate a single radiocarbon
+#' determination and uncertainty (expressed either in terms of radiocarbon age, or
+#' as an F\eqn{{}^{14}}C concentration) and obtain its calendar age probability
+#' density estimate.
 #'
 #' @param rc_determination A single observed radiocarbon determination
-#' (\eqn{{}^{14}}C BP age or F14C concentration)
-#' @param rc_sigma The uncertainty of the radiocarbon determination in the same units
+#' provided either as the radiocarbon age (in \eqn{{}^{14}}C yr BP) or the F\eqn{{}^{14}}C concentration.
+#' @param rc_sigma The corresponding measurement uncertainty of the radiocarbon determination
+#' (must be in the same units as above, i.e., reported as \eqn{{}^{14}}C age or F\eqn{{}^{14}}C)
 #' @param calibration_curve A dataframe which must contain one column `calendar_age_BP`, and also
 #' columns `c14_age` and `c14_sig` or `f14c` and `f14c_sig` (or both sets).
-#' This format matches the curves supplied with this package e.g. [carbondate::intcal20],
-#' which contain all 5 columns.
-#' @param F14C_inputs `TRUE` if the provided rc_determinations are F14C concentrations and `FALSE`
-#' if they are radiocarbon age BP. Defaults to `FALSE`.
+#' This format matches the curves supplied with this package, e.g., [carbondate::intcal20],
+#' [carbondate::intcal13], which contain all 5 columns.
+#' @param F14C_inputs `TRUE` if the provided `rc_determination` is an F\eqn{{}^{14}}C
+#' concentration and `FALSE` if it is a radiocarbon age. Defaults to `FALSE`.
 #' @param plot_output `TRUE` if you wish to plot the determination, the calibration curve,
 #' and the posterior calibrated age estimate on the same plot. Defaults to `FALSE`
 #' @param interval_width Only for usage when `plot_output = TRUE`. The confidence intervals to show for the
@@ -53,13 +55,14 @@
 #' # against SHCal20 (and creating an automated plot)
 #' calib <- CalibrateSingleDetermination(1413, 25, shcal20, plot_output = TRUE)
 #'
-#' # Changing the density scale (so the calendar age density takes up less space)
-#' calib <- CalibrateSingleDetermination(1413, 25, shcal20,
-#'     plot_output = TRUE, denscale = 5)
-#'
 #' # Implementing a bespoke confidence interval level
 #' calib <- CalibrateSingleDetermination(1413, 25, shcal20,
 #'     plot_output = TRUE, interval_width = "bespoke", bespoke_probability = 0.8)
+#'
+#' # Changing denscale (so the calendar age density takes up less space)
+#' calib <- CalibrateSingleDetermination(1413, 25, shcal20,
+#'     plot_output = TRUE, interval_width = "bespoke", bespoke_probability = 0.8,
+#'     denscale = 5)
 CalibrateSingleDetermination <- function(
     rc_determination, rc_sigma, calibration_curve, F14C_inputs = FALSE,
     plot_output = FALSE, interval_width = "2sigma", bespoke_probability = NA, denscale = 3) {

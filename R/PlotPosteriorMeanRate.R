@@ -32,9 +32,9 @@
 #' @param bespoke_probability The probability to use for the confidence interval
 #' if `"bespoke"` is chosen above. E.g. if 0.95 is chosen, then the 95% confidence
 #' interval is calculated. Ignored if `"bespoke"` is not chosen.
-#' @param denscale Whether to scale the vertical range of the density plot
+#' @param denscale Whether to scale the vertical range of the Poisson process mean rate plot
 #' relative to the calibration curve plot (optional). Default is 3 which means
-#' that the maximum SPD density will be at 1/3 of the height of the plot.
+#' that the maximum mean rate will be at 1/3 of the height of the plot.
 #' @param n_calc Number of points to use when calculating the predictive
 #' density. Default is 1001.
 #' @param n_burn The number of samples required for burn-in - any samples before this

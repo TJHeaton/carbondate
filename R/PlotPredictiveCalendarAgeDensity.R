@@ -1,54 +1,66 @@
-#' Plots the calendar age density of all objects from the output data
+#' Plot Predictive Estimate of Shared Calendar Age Density from Bayesian Non-Parametric
+#' DPMM Output
 #'
 #' @description
-#' Plots the input radiocarbon determinations and calibration curve, with the
-#' output predicted density on the same plot. Can also optionally show the
-#' SPD estimate. Note that if all you are only interested in is the density
+#' Given output from one of the Bayesian non-parametric summarisation functions (either
+#' [carbondate::PolyaUrnBivarDirichlet] or [carbondate::WalkerBivarDirichlet]) calculate
+#' and plot the predictive (summarised/shared) calendar age density and probability intervals
+#' on a given calendar age grid.
+#'
+#' Will show the original set of radiocarbon determinations (those you are summarising),
+#' the chosen calibration curve, and the summarised predictive calendar age density on the
+#' same plot. Can also optionally show the SPD estimate.
+#'
+#' \strong{Note:} If all you are only interested in is the density
 #' data, without an accompanying plot, you can use
 #' [carbondate::FindPredictiveCalendarAgeDensity] instead.
 #'
 #' For more information read the vignette: \cr
 #' \code{vignette("Non-parametric-summed-density", package = "carbondate")}
 #'
-#' @param output_data The return value from one of the updating functions e.g.
+#' @param output_data The return value from one of the Bayesian non-parametric DPMM functions, e.g.
 #' [carbondate::PolyaUrnBivarDirichlet] or
-#' [carbondate::WalkerBivarDirichlet] or a list, each item containing
-#' one of these values. Optionally, the output data can have an extra list item
+#' [carbondate::WalkerBivarDirichlet], or a list, each item containing
+#' one of these return values. Optionally, the output data can have an extra list item
 #' named `label` which is used to set the label on the plot legend.
-#' @param n_posterior_samples Current number of samples it will draw from this
-#' posterior to estimate the calendar age density (possibly repeats). If not
-#' given 5000 is used.
+#' @param n_posterior_samples Number of samples it will draw, after having removed `n_burn`,
+#' from the (thinned) realisations stored in the DPMM outputs to estimate the
+#' predictive calendar age density. These samples may be repeats if the number of, post burn-in,
+#' realisations is less than `n_posterior_samples`. If not given, 5000 is used.
 #' @param calibration_curve This is usually not required since the name of the
-#' calibration curve variable is saved in the output data. However if the
+#' calibration curve variable is saved in the output data. However, if the
 #' variable with this name is no longer in your environment then you should pass
-#' the calibration curve here. If provided this should be a dataframe which
-#' should contain at least 3 columns entitled calendar_age, c14_age and c14_sig.
+#' the calibration curve here. If provided, this should be a dataframe which
+#' should contain at least 3 columns entitled `calendar_age`, `c14_age` and `c14_sig`.
 #' This format matches [carbondate::intcal20].
-#' @param plot_14C_age Whether to use the \eqn{{}^{14}}C yr BP as the units of the y-axis.
-#' Defaults to TRUE. If FALSE uses F14C concentration instead.
+#' @param plot_14C_age Whether to use the radiocarbon age (\eqn{{}^{14}}C yr BP) as
+#' the units of the y-axis in the plot. Defaults to `TRUE`. If `FALSE` uses
+#' F\eqn{{}^{14}}C concentration instead.
 #' @param show_SPD Whether to calculate and show the summed probability
 #' distribution on the plot (optional). Default is `FALSE`.
-#' @param show_confidence_intervals Whether to show the confidence intervals
-#' for the chosen probability on the plot. Default is `TRUE`.
+#' @param show_confidence_intervals Whether to show the pointwise confidence intervals
+#' for the chosen probability level on the plot. Default is `TRUE`.
 #' @param interval_width The confidence intervals to show for both the
 #' calibration curve and the predictive density. Choose from one of `"1sigma"` (68.3%),
 #' `"2sigma"` (95.4%) and `"bespoke"`. Default is `"2sigma"`.
 #' @param bespoke_probability The probability to use for the confidence interval
-#' if `"bespoke"` is chosen above. E.g. if 0.95 is chosen, then the 95% confidence
+#' if `"bespoke"` is chosen above. E.g., if 0.95 is chosen, then the 95% confidence
 #' interval is calculated. Ignored if `"bespoke"` is not chosen.
-#' @param denscale Whether to scale the vertical range of the density plot
+#' @param denscale Whether to scale the vertical range of the summarised calendar age density plot
 #' relative to the calibration curve plot (optional). Default is 3 which means
-#' that the maximum SPD density will be at 1/3 of the height of the plot.
-#' @param n_calc Number of points to use when calculating the predictive
-#' density. Default is 1001.
-#' @param n_burn The number of samples required for burn-in - any samples before this
-#' are not used in the calculation. If not given, the first half of the
+#' that the maximum predictive density will be at 1/3 of the height of the plot.
+#' @param n_calc Number of calendar ages at which to calculate the predictive shared
+#' density. These ages will be created on a regular grid that automatically covers the
+#' calendar period of the given set of \eqn{{}^{14}}C samples. Default is 1001.
+#' @param n_burn The number of the (thinned) samples in the DPMM outputs discarded as burn-in (i.e.,
+#' considered to be occurring before the MCMC has converged). Any samples in the (thinned) DPMM outputs
+#' before this are not used in the calculation. If not given, the first half of the
 #' MCMC chain is discarded. Looking at the output of [carbondate::PlotConvergenceData] can
 #' help determine what an appropriate value is for a given output. Note that the maximum
 #' value that can be chosen is `n_iter - 100 * n_thin` (where `n_iter` and `n_thin` are the
 #' arguments given to [carbondate::PolyaUrnBivarDirichlet] or [carbondate::WalkerBivarDirichlet]).
-#' @param n_end The iteration number of the last sample to use. Assumed to be the number of iterations
-#' if not given.
+#' @param n_end The iteration number of the last sample in the DPMM output to use in the calculations.
+#' Assumed to be the number of (thinned) realisations stored in the DPMM output if not given.
 #'
 #'
 #' @return A list, each item containing a data frame of the `calendar_age`, the
@@ -60,7 +72,7 @@
 #' @seealso [carbondate::FindPredictiveCalendarAgeDensity]
 #'
 #' @examples
-#' # Note all these examples are shown with a small n_iter and n_posterior_samples
+#' # NOTE: All these examples are shown with a small n_iter and n_posterior_samples
 #' # to speed up execution.
 #' # Try n_iter and n_posterior_samples as the function defaults.
 #'

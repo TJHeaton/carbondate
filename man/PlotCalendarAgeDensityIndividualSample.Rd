@@ -22,21 +22,22 @@ PlotCalendarAgeDensityIndividualSample(
 \item{ident}{the determination you want to show the individual posterior
 calendar age for.}
 
-\item{output_data}{The return value from one of the updating functions e.g.
+\item{output_data}{The return value from one of the Bayesian non-parametric DPMM functions, e.g.
 \link{PolyaUrnBivarDirichlet} or
-\link{WalkerBivarDirichlet} or a list, each item containing
-one of these values. Optionally, the output data can have an extra list item
+\link{WalkerBivarDirichlet}, or a list, each item containing
+one of these return values. Optionally, the output data can have an extra list item
 named \code{label} which is used to set the label on the plot legend.}
 
 \item{calibration_curve}{This is usually not required since the name of the
-calibration curve variable is saved in the output data. However if the
+calibration curve variable is saved in the output data. However, if the
 variable with this name is no longer in your environment then you should pass
-the calibration curve here. If provided this should be a dataframe which
-should contain at least 3 columns entitled calendar_age, c14_age and c14_sig.
+the calibration curve here. If provided, this should be a dataframe which
+should contain at least 3 columns entitled \code{calendar_age}, \code{c14_age} and \code{c14_sig}.
 This format matches \link{intcal20}.}
 
-\item{plot_14C_age}{Whether to use the \eqn{{}^{14}}C yr BP as the units of the y-axis.
-Defaults to TRUE. If FALSE uses F14C concentration instead.}
+\item{plot_14C_age}{Whether to use the radiocarbon age (\eqn{{}^{14}}C yr BP) as
+the units of the y-axis in the plot. Defaults to \code{TRUE}. If \code{FALSE} uses
+F\eqn{{}^{14}}C concentration instead.}
 
 \item{resolution}{The distance between histogram breaks for the calendar age density.
 Must be an integer greater than one.}
@@ -49,15 +50,16 @@ Choose from one of "1sigma" (68.3\%), "2sigma" (95.4\%) and "bespoke". Default i
 if "bespoke" is chosen above. E.g. if 0.95 is chosen, then the 95\% confidence
 interval is calculated. Ignored if "bespoke" is not chosen.}
 
-\item{n_burn}{The number of samples required for burn-in - any samples before this
-are not used in the calculation. If not given, the first half of the
+\item{n_burn}{The number of the (thinned) samples in the DPMM outputs discarded as burn-in (i.e.,
+considered to be occurring before the MCMC has converged). Any samples in the (thinned) DPMM outputs
+before this are not used in the calculation. If not given, the first half of the
 MCMC chain is discarded. Looking at the output of \link{PlotConvergenceData} can
 help determine what an appropriate value is for a given output. Note that the maximum
 value that can be chosen is \code{n_iter - 100 * n_thin} (where \code{n_iter} and \code{n_thin} are the
 arguments given to \link{PolyaUrnBivarDirichlet} or \link{WalkerBivarDirichlet}).}
 
-\item{n_end}{The iteration number of the last sample to use. Assumed to be the number of iterations
-if not given.}
+\item{n_end}{The iteration number of the last sample in the DPMM output to use in the calculations.
+Assumed to be the number of (thinned) realisations stored in the DPMM output if not given.}
 
 \item{show_hpd_ranges}{Set to \code{TRUE} to also show the highest posterior range on the plot.}
 

@@ -2,32 +2,54 @@
 % Please edit documentation in R/FindSummedProbabilityDistribution.R
 \name{FindSummedProbabilityDistribution}
 \alias{FindSummedProbabilityDistribution}
-\title{Find the summed probability distribution (SPD) for a set of observations}
+\title{Find the summed probability distribution (SPD) for a set of radiocarbon observations}
 \usage{
 FindSummedProbabilityDistribution(
   calendar_age_range_BP,
   rc_determinations,
   rc_sigmas,
   calibration_curve,
-  F14C_inputs = FALSE
+  F14C_inputs = FALSE,
+  plot_output = FALSE,
+  interval_width = "2sigma",
+  bespoke_probability = NA,
+  denscale = 3
 )
 }
 \arguments{
 \item{calendar_age_range_BP}{A vector of length 2 with the start and end
-calendar age BP to calculate the SPD over}
+calendar age BP to calculate the SPD over. These two values must be in order
+with start value less than end value, e.g., (600, 1700) cal yr BP.
+The code will extend this range (by 400 cal yrs each side) for conservativeness}
 
-\item{rc_determinations}{A vector of observed radiocarbon determinations}
+\item{rc_determinations}{A vector of observed radiocarbon determinations. Can be provided either as
+\eqn{{}^{14}}C ages (in \eqn{{}^{14}}C yr BP) or as F\eqn{{}^{14}}C concentrations.}
 
-\item{rc_sigmas}{A vector of the radiocarbon determinations
-uncertainties (1-sigma). Must be the same length as \code{rc_determinations}.}
+\item{rc_sigmas}{A vector of the (1-sigma) measurement uncertainties for the
+radiocarbon determinations. Must be the same length as \code{rc_determinations} and
+given in the same units.}
 
 \item{calibration_curve}{A dataframe which must contain one column \code{calendar_age_BP}, and also
 columns \code{c14_age} and \code{c14_sig} or \code{f14c} and \code{f14c_sig} (or both sets).
-This format matches the curves supplied with this package e.g. \link{intcal20}, \link{intcal13},
-which contain all 5 columns.}
+This format matches the curves supplied with this package, e.g., \link{intcal20},
+\link{intcal13}, which contain all 5 columns.}
 
-\item{F14C_inputs}{\code{TRUE} if the provided rc_determinations are F14C concentrations and \code{FALSE}
-if they are radiocarbon age BP. Defaults to \code{FALSE}.}
+\item{F14C_inputs}{\code{TRUE} if the provided \code{rc_determinations} are F\eqn{{}^{14}}C
+concentrations and \code{FALSE} if they are radiocarbon ages. Defaults to \code{FALSE}.}
+
+\item{plot_output}{\code{TRUE} if you wish to plot the determinations, the calibration curve,
+and the SPD on the same plot. Defaults to \code{FALSE}}
+
+\item{interval_width}{Only for usage when \code{plot_output = TRUE}. The confidence intervals to show for the
+calibration curve. Choose from one of "1sigma" (68.3\%), "2sigma" (95.4\%) and "bespoke". Default is "2sigma".}
+
+\item{bespoke_probability}{The probability to use for the confidence interval
+if "bespoke" is chosen above. E.g. if 0.95 is chosen, then the 95\% confidence
+interval is calculated. Ignored if "bespoke" is not chosen.}
+
+\item{denscale}{Whether to scale the vertical range of the calendar age density plot
+relative to the calibration curve plot (optional). Default is 3 which means
+that the maximum SPD will be at 1/3 of the height of the plot.}
 }
 \value{
 A data frame with one column \code{calendar_age_BP} containing the calendar
@@ -35,24 +57,53 @@ ages, and the other column \code{probability} containing the probability at that
 calendar age
 }
 \description{
-Takes a set of radiocarbon determinations and uncertainties and independently
-calibrates each one, and then averages them to give the SPD estimate.
+Takes a set of radiocarbon determinations and uncertainties, independently
+calibrates each one, and then averages the resultant calendar age estimates
+to give the SPD estimate. \cr \cr
+\strong{Important:} This function should not be used for inference as SPDs are not statistically rigorous.
+Instead use either of:
+\itemize{
+\item the Bayesian non-parametric summarisation approaches \link{PolyaUrnBivarDirichlet}
+or \link{WalkerBivarDirichlet};
+\item or the Poisson process rate approach \link{PPcalibrate}
+}
+The SPD function provided here is only intended for comparison. We provide a inbuilt plotting option to show the SPD alongside the
+determinations and the calibration curve. \cr \cr
 }
 \examples{
 # An example using 14C age BP and the IntCal 20 curve
 SPD <- FindSummedProbabilityDistribution(
-   calendar_age_range_BP=c(600, 1600),
+   calendar_age_range_BP=c(400, 1700),
    rc_determinations=c(602, 805, 1554),
    rc_sigmas=c(35, 34, 45),
    calibration_curve=intcal20)
-plot(SPD, type = "l")
+plot(SPD, type = "l",
+   xlim = rev(range(SPD$calendar_age_BP)),
+   xlab = "Calendar Age (cal yr BP)")
 
-# An example using F14C concentrations and the IntCal 13 curve
+# Using the inbuilt plotting features
 SPD <- FindSummedProbabilityDistribution(
-   calendar_age_range_BP=c(600, 1600),
+   calendar_age_range_BP=c(400, 1700),
+   rc_determinations=c(602, 805, 1554),
+   rc_sigmas=c(35, 34, 45),
+   calibration_curve=intcal20,
+   plot_output = TRUE,
+   interval_width = "bespoke",
+   bespoke_probability = 0.8)
+
+# An different example using F14C concentrations and the IntCal 13 curve
+SPD <- FindSummedProbabilityDistribution(
+   calendar_age_range_BP=c(400, 2100),
    rc_determinations=c(0.8, 0.85, 0.9),
    rc_sigmas=c(0.01, 0.015, 0.012),
    F14C_inputs=TRUE,
    calibration_curve=intcal13)
-plot(SPD, type = "l")
+plot(SPD, type = "l",
+   xlim = rev(range(SPD$calendar_age_BP)),
+   xlab = "Calendar Age (cal yr BP)")
+}
+\seealso{
+\link{PolyaUrnBivarDirichlet},
+\link{WalkerBivarDirichlet} for rigorous non-parametric Bayesian alternatives; and
+\link{PPcalibrate} for a rigorous variable-rate Poisson process alternative.
 }

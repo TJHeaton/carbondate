@@ -18,16 +18,16 @@ of the original calibration curve spaced by 1.}
 
 \item{calibration_curve}{A dataframe which must contain one column \code{calendar_age_BP}, and also
 columns \code{c14_age} and \code{c14_sig} or \code{f14c} and \code{f14c_sig} (or both sets).
-This format matches the curves supplied with this package e.g. \link{intcal20}, \link{intcal13},
-which contain all 5 columns.}
+This format matches the curves supplied with this package, e.g., \link{intcal20},
+\link{intcal13}, which contain all 5 columns.}
 
-\item{F14C_outputs}{\code{TRUE} if only F14C concentrations are required, \code{FALSE}
-if only radiocarbon age BP are required and \code{NA} if both are required for the new curve.}
+\item{F14C_outputs}{\code{TRUE} if only F\eqn{{}^{14}}C concentrations are required, \code{FALSE}
+if only the radiocarbon ages (in \eqn{{}^{14}}C yrs BP) are required and \code{NA} if both are required for the new curve.}
 }
 \value{
 A new dataframe with entries for the interpolated \code{c14_age}, and
-\code{c14_sig}, \code{f14c} and \code{f14c_sig} values at the \code{calendar_age_BP} values given
-in \code{new_calendar_ages_BP}
+\code{c14_sig}, \code{f14c} and \code{f14c_sig} values at the \code{calendar_age_BP} values that were
+given in \code{new_calendar_ages_BP}
 }
 \description{
 Interpolate a calibration curve at a set of calendar ages
@@ -44,6 +44,6 @@ InterpolateCalibrationCurve(c(51017, 51021), intcal20, TRUE)
 InterpolateCalibrationCurve(c(51017, 51021), intcal20, FALSE)
 
 # Interpolate intcal20 at every integer calendar age within the range of dates
-# (for intcal20 this is 0 to 55000 BP), and create estimates for both radiocarbon scales.
+# (for intcal20 this is 0 to 55000 cal yr BP), and create estimates for both radiocarbon scales.
 cal_curve <- InterpolateCalibrationCurve(NA, intcal20)
 }

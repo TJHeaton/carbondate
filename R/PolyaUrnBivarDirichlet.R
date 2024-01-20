@@ -1,52 +1,82 @@
-#' Calibration of a set of individual radiocarbon samples by performing the
-#' Gibbs sampler using a DPMM
+#' Calibrate and Summarise Multiple Radiocarbon Samples via
+#' a Bayesian Non-Parametric DPMM (with Polya Urn Updating)
 #'
 #'
 #' @description
-#' This function takes as an input a set of radiocarbon
-#' determinations and associated 1-sigma uncertainties, as well as the
-#' calibration curve which should be used, and returns output data that can be
-#' sampled to estimate the joint calendar age density and clusters. This method
-#' considers both the mean and the variance of the clusters to be unknown.
+#' This function calibrates sets of multiple radiocarbon (\eqn{{}^{14}}C)
+#' determinations, and simultaneously summarises the resultant calendar age information.
+#' This is achieved using Bayesian non-parametric density estimation,
+#' providing a statistically-rigorous alternative to summed probability
+#' distributions (SPDs).
+#'
+#' It takes as an input a set of \eqn{{}^{14}}C determinations and associated \eqn{1\sigma}
+#' uncertainties, as well as the radiocarbon age calibration curve to be used. The samples
+#' are assumed to arise from an (unknown) shared calendar age distribution \eqn{f(\theta)} that
+#' we would like to estimate, alongside performing calibration of each sample.
+#'
+#' The function models the underlying distribution \eqn{f(\theta)} as a Dirichlet process
+#' mixture model (DPMM), whereby the samples are considered to arise from an unknown number of
+#' distinct clusters. Fitting is achieved via MCMC.
+#'
+#' It returns estimates for the calendar age of each individual radiocarbon sample; and broader
+#' output (including the means and variances of the underpinning calendar age clusters)
+#' that can be used by other library functions to provide a predictive estimate of the
+#' shared calendar age density \eqn{f(\theta)}.
 #'
 #' For more information read the vignette: \cr
 #' \code{vignette("Non-parametric-summed-density", package = "carbondate")}
 #'
+#' \strong{Note:} The library provides two slightly-different update schemes for the MCMC. In this
+#' particular function, updating of the DPMM is achieved by a Polya Urn approach (Neal 2000)
+#' This is our recommended updating approach based on testing. The alternative, slice-sampled, approach
+#' can be found at [carbondate::WalkerBivarDirichlet]
+#'
+#' \strong{References:} \cr
+#' Heaton, TJ. 2022. “Non-parametric Calibration of Multiple Related Radiocarbon
+#' Determinations and their Calendar Age Summarisation.” \emph{Journal of the Royal Statistical
+#' Society Series C: Applied Statistics} \strong{71} (5):1918-56. https://doi.org/10.1111/rssc.12599. \cr
+#' Neal, RM. 2000. “Markov Chain Sampling Methods for Dirichlet Process Mixture Models.”
+#' \emph{Journal of Computational and Graphical Statistics} \strong{9} (2):249 https://doi.org/10.2307/1390653.
+#'
 #' @inheritParams WalkerBivarDirichlet
 #'
-#' @return A list with 10 items. The first 7 items contain output data, each of
-#' which have one dimension of size \eqn{n_{\textrm{out}} =
-#' \textrm{floor}( n_{\textrm{iter}}/n_{\textrm{thin}}) + 1}, each row storing
-#' the result from every \eqn{n_{\textrm{thin}}}th iteration:
+#' @return A list with 10 items. The first 8 items contain output of the model, each of
+#' which has one dimension of size \eqn{n_{\textrm{out}} =
+#' \textrm{floor}( n_{\textrm{iter}}/n_{\textrm{thin}}) + 1}. The rows in these items store
+#' the state of the MCMC from every \eqn{n_{\textrm{thin}}}\eqn{{}^\textrm{th}} iteration:
 #'
 #' \describe{
 #'  \item{`cluster_identifiers`}{A list of length \eqn{n_{\textrm{out}}} each entry
-#'      giving the cluster allocation - an integer between 1 and n_clust - for each
-#'      observation.}
-#'  \item{`alpha`}{A double vector of length \eqn{n_{\textrm{out}}} giving the
-#'      DP concentration parameter.}
+#'      gives the cluster allocation (an integer between 1 and `n_clust`)
+#'      for each observation on the relevant MCMC iteration. Information on the state of
+#'      these calendar age clusters (means and precisions) can be found in the other output items.}
+#'  \item{`alpha`}{A double vector of length \eqn{n_{\textrm{out}}} giving the Dirichlet Process
+#'     concentration parameter \eqn{\alpha}.}
 #'  \item{`n_clust`}{An integer vector of length \eqn{n_{\textrm{out}}} giving
-#'      the number of clusters.}
+#'      the current number of clusters in the model.}
 #'  \item{`phi`}{A list of length \eqn{n_{\textrm{out}}} each entry giving
-#'      a vector of length n_clust of the cluster means \eqn{\phi_j}.}
+#'      a vector of length `n_clust` of the means of the current calendar age clusters
+#'      \eqn{\phi_j}.}
 #'  \item{`tau`}{A list of length \eqn{n_{\textrm{out}}} each entry giving
-#'      a vector of length n_clust of the cluster uncertainties \eqn{\tau_j}.}
+#'      a vector of length `n_clust` of the precisions of the current calenadar age cluster
+#'      \eqn{\tau_j}.}
 #'  \item{`observations_per_cluster`}{A list of length \eqn{n_{\textrm{out}}} each entry giving
-#'      a vector of length n_clust of the number of observations for that cluster.}
+#'      a vector of length `n_clust` of the number of observations for that cluster.}
 #'  \item{`calendar_ages`}{An \eqn{n_{\textrm{out}}} by \eqn{n_{\textrm{obs}}}
-#'     integer matrix. Gives the calendar age for each observation.}
+#'     integer matrix. Gives the current estimate for the calendar age of each individual
+#'     observation.}
 #'  \item{`mu_phi`}{A vector of length \eqn{n_{\textrm{out}}} giving the overall
-#'      centering \eqn{\mu_{\phi}} of the clusters.}
+#'      centering \eqn{\mu_{\phi}} of the calendar age clusters.}
 #' }
 #' where \eqn{n_{\textrm{obs}}} is the number of radiocarbon observations i.e.
 #' the length of `rc_determinations`.
 #'
-#' The remaining items give information about input data, input parameters (or
-#' those calculated using `sensible_initialisation`) and update_type
+#' The remaining items give information about the input data, input parameters (or
+#' those calculated using `sensible_initialisation`) and the update_type
 #'
 #' \describe{
 #'  \item{`update_type`}{A string that always has the value "Polya Urn".}
-#'  \item{`input_data`}{a list containing the C14 data used and the name of
+#'  \item{`input_data`}{A list containing the \eqn{{}^{14}}C data used, and the name of
 #'  the calibration curve used.}
 #'  \item{`input_parameters`}{A list containing the values of the fixed
 #'  hyperparameters `lambda`, `nu1`, `nu2`, `A`, `B`, `alpha_shape`,
@@ -55,6 +85,15 @@
 #' }
 #'
 #' @export
+#'
+#' @seealso
+#' [carbondate::WalkerBivarDirichlet] for our less-preferred MCMC method to update the Bayesian DPMM
+#' (otherwise an identical model); and [carbondate::PlotCalendarAgeDensityIndividualSample],
+#' [carbondate::PlotPredictiveCalendarAgeDensity] and [carbondate::PlotNumberOfClusters]
+#' to access the model output and estimate the calendar age information. \cr \cr
+#' See also [carbondate::PPcalibrate] for an an alternative (similarly rigorous) approach to
+#' calibration and summarisation of related radiocarbon determinations using a variable-rate Poisson process
+#'
 #'
 #' @examples
 #' # Note these examples are shown with a small n_iter to speed up execution.

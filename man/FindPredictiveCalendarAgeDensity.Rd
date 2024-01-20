@@ -2,7 +2,8 @@
 % Please edit documentation in R/FindPredictiveCalendarAgeDensity.R
 \name{FindPredictiveCalendarAgeDensity}
 \alias{FindPredictiveCalendarAgeDensity}
-\title{Find the predictive calendar age density of from the output data}
+\title{Find Predictive Estimate of Shared Calendar Age Density from Bayesian Non-Parametric
+DPMM Output}
 \usage{
 FindPredictiveCalendarAgeDensity(
   output_data,
@@ -15,36 +16,38 @@ FindPredictiveCalendarAgeDensity(
 )
 }
 \arguments{
-\item{output_data}{The return value from one of the updating functions e.g.
+\item{output_data}{The return value from one of the Bayesian non-parametric DPMM functions, e.g.
 \link{PolyaUrnBivarDirichlet} or
-\link{WalkerBivarDirichlet} or a list, each item containing
-one of these values. Optionally, the output data can have an extra list item
+\link{WalkerBivarDirichlet}, or a list, each item containing
+one of these return values. Optionally, the output data can have an extra list item
 named \code{label} which is used to set the label on the plot legend.}
 
-\item{calendar_age_sequence}{A vector containing the calendar ages to
-calculate the predictive density for.}
+\item{calendar_age_sequence}{A vector containing the calendar age grid on which to
+calculate the predictive (summarised/shared) density.}
 
-\item{n_posterior_samples}{Current number of samples it will draw from this
-posterior to estimate the calendar age density (possibly repeats). If not
-given 5000 is used.}
+\item{n_posterior_samples}{Number of samples it will draw, after having removed \code{n_burn},
+from the (thinned) realisations stored in the DPMM outputs to estimate the
+predictive calendar age density. These samples may be repeats if the number of, post burn-in,
+realisations is less than \code{n_posterior_samples}. If not given, 5000 is used.}
 
 \item{interval_width}{The confidence intervals to show for both the
 calibration curve and the predictive density. Choose from one of \code{"1sigma"} (68.3\%),
 \code{"2sigma"} (95.4\%) and \code{"bespoke"}. Default is \code{"2sigma"}.}
 
 \item{bespoke_probability}{The probability to use for the confidence interval
-if \code{"bespoke"} is chosen above. E.g. if 0.95 is chosen, then the 95\% confidence
+if \code{"bespoke"} is chosen above. E.g., if 0.95 is chosen, then the 95\% confidence
 interval is calculated. Ignored if \code{"bespoke"} is not chosen.}
 
-\item{n_burn}{The number of samples required for burn-in - any samples before this
-are not used in the calculation. If not given, the first half of the
+\item{n_burn}{The number of the (thinned) samples in the DPMM outputs discarded as burn-in (i.e.,
+considered to be occurring before the MCMC has converged). Any samples in the (thinned) DPMM outputs
+before this are not used in the calculation. If not given, the first half of the
 MCMC chain is discarded. Looking at the output of \link{PlotConvergenceData} can
 help determine what an appropriate value is for a given output. Note that the maximum
 value that can be chosen is \code{n_iter - 100 * n_thin} (where \code{n_iter} and \code{n_thin} are the
 arguments given to \link{PolyaUrnBivarDirichlet} or \link{WalkerBivarDirichlet}).}
 
-\item{n_end}{The iteration number of the last sample to use. Assumed to be the number of iterations
-if not given.}
+\item{n_end}{The iteration number of the last sample in the DPMM output to use in the calculations.
+Assumed to be the number of (thinned) realisations stored in the DPMM output if not given.}
 }
 \value{
 A data frame of the \code{calendar_age}, the
@@ -52,13 +55,16 @@ A data frame of the \code{calendar_age}, the
 \code{density_ci_lower} and \code{density_ci_upper}.
 }
 \description{
-Given a calendar age sequence and output data from one of the package upate
-functions, calculates the predicitive calendar age density and confidence
-intervals. Note if you want to calculate and plot the result, use
+Given output from one of the Bayesian non-parametric summarisation functions (either
+\link{PolyaUrnBivarDirichlet} or \link{WalkerBivarDirichlet}) calculate the
+predictive (summarised/shared) calendar age density and probability intervals
+on a given calendar age grid.
+
+\strong{Note:} If you want to calculate and plot the result, use
 \link{PlotPredictiveCalendarAgeDensity} instead.
 }
 \examples{
-# Note all these examples are shown with a small n_iter and n_posterior_samples
+# NOTE: All these examples are shown with a small n_iter and n_posterior_samples
 # to speed up execution.
 # Try n_iter and n_posterior_samples as the function defaults.
 
@@ -72,7 +78,7 @@ polya_urn_output <- PolyaUrnBivarDirichlet(
 
 # Find results for example output, 2-sigma confidence interval (default)
 FindPredictiveCalendarAgeDensity(
-    polya_urn_output, seq(600, 1700, length=12), n_posterior_samples = 500)
+    polya_urn_output, seq(3600, 4700, length=12), n_posterior_samples = 500)
 }
 \seealso{
 \link{PlotPredictiveCalendarAgeDensity}
