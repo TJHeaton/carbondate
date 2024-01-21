@@ -11,8 +11,8 @@
 #' the chosen calibration curve, and the summarised predictive calendar age density on the
 #' same plot. Can also optionally show the SPD estimate.
 #'
-#' \strong{Note:} If all you are only interested in is the density
-#' data, without an accompanying plot, you can use
+#' \strong{Note:} If all you are interested in is the estimated value of the predictive density
+#' on a grid, without an accompanying plot, you can use
 #' [carbondate::FindPredictiveCalendarAgeDensity] instead.
 #'
 #' For more information read the vignette: \cr
@@ -69,7 +69,9 @@
 #'
 #' @export
 #'
-#' @seealso [carbondate::FindPredictiveCalendarAgeDensity]
+#' @seealso [carbondate::FindPredictiveCalendarAgeDensity] if only interested in the estimated value of
+#' the predictive density on a grid; [carbondate::PlotNumberOfClusters] and
+#' [carbondate::PlotCalendarAgeDensityIndividualSample] for more plotting functions using DPMM output.
 #'
 #' @examples
 #' # NOTE: All these examples are shown with a small n_iter and n_posterior_samples

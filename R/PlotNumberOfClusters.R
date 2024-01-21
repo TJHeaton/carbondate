@@ -1,8 +1,13 @@
-#' Plots the number of clusters
+#' Plot Number of Calendar Age Clusters Estimated
+#' in Bayesian Non-Parametric DPMM Output
 #'
-#' Once a function has been run to calibrate a set of radiocarbon
-#' determinations, the estimated number of clusters can be plotted using this
-#' function.
+#' @description
+#' Given output from one of the Bayesian non-parametric summarisation functions (either
+#' [carbondate::PolyaUrnBivarDirichlet] or [carbondate::WalkerBivarDirichlet]) plot the
+#' estimated number of calendar age clusters represented by the \eqn{{}^{14}}C samples.
+#'
+#' For more information read the vignette: \cr
+#' \code{vignette("Non-parametric-summed-density", package = "carbondate")}
 #'
 #' @inheritParams PlotPredictiveCalendarAgeDensity
 #'
@@ -10,8 +15,11 @@
 #'
 #' @export
 #'
+#' @seealso [carbondate::PlotPredictiveCalendarAgeDensity] and
+#' [carbondate::PlotCalendarAgeDensityIndividualSample] for more plotting functions using DPMM output.
+#'
 #' @examples
-#' # Note these examples are shown with a small n_iter to speed up execution.
+#' # NOTE: these examples are shown with a small n_iter to speed up execution.
 #' # When you run ensure n_iter gives convergence (try function default).
 #'
 #' polya_urn_output <- PolyaUrnBivarDirichlet(

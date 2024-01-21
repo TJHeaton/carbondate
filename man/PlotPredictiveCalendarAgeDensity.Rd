@@ -91,8 +91,8 @@ Will show the original set of radiocarbon determinations (those you are summaris
 the chosen calibration curve, and the summarised predictive calendar age density on the
 same plot. Can also optionally show the SPD estimate.
 
-\strong{Note:} If all you are only interested in is the density
-data, without an accompanying plot, you can use
+\strong{Note:} If all you are interested in is the estimated value of the predictive density
+on a grid, without an accompanying plot, you can use
 \link{FindPredictiveCalendarAgeDensity} instead.
 
 For more information read the vignette: \cr
@@ -133,5 +133,7 @@ PlotPredictiveCalendarAgeDensity(
     show_SPD = TRUE)
 }
 \seealso{
-\link{FindPredictiveCalendarAgeDensity}
+\link{FindPredictiveCalendarAgeDensity} if only interested in the estimated value of
+the predictive density on a grid; \link{PlotNumberOfClusters} and
+\link{PlotCalendarAgeDensityIndividualSample} for more plotting functions using DPMM output.
 }
