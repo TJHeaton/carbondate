@@ -191,7 +191,7 @@ densities <- PlotPredictiveCalendarAgeDensity(
 
 **Note:** Around 1176 cal yr BP, when there appears to be a potential spike in the summarised estimate of the joint $f(\theta)$, we see that the 80% probability interval (dashed line) does not include the mean (solid line). This is not an error, but rather highlights a benefit of the DPMM method whereby the number of clusters needed to represent the data is allowed to vary. This feature occurs because the method is unsure if the observed data support an additional (highly-concentrated) cluster located around this period. In some iterations of the MCMC, such a cluster will be included; but for the majority of iterations, the method believes it is not required. In theory, one could look at the individual MCMC iterations to obtain an estimate of how likely such a highly-concentrated cluster (that results in a sudden spike in samples) is. Since the plotted 80% interval does not contain the mean, it is likely that the method thinks there is a less than 10% chance of such a distinct and highly-concentrated cluster (as fewer than 10% of the MCMC iterations contain one).   
 
-_Aside:_ The sharp jump in the calibration curve at 1176 cal yr BP (774 cal AD) is due to an extreme solar particle event (ESPE) also known as a Miyake Event [@miyake2012].  
+_Aside:_ The sharp jump in the IntCal20 calibration curve at 1176 cal yr BP (774 cal AD) is due to an extreme solar particle event (ESPE) also known as a Miyake Event [@miyake2012].  
 
 #### Number of Clusters
 

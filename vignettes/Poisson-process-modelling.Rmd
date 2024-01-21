@@ -24,9 +24,17 @@ library(carbondate)
 <!-- badges: start -->
 <!-- badges: end -->
 
-This component  of the library allows you to model (and estimate) the occurrence of radiocarbon samples as a variable-rate (inhomogeneous) Poisson process. This is done using function `PPcalibrate`. The aim of this function is primarily to allow a user to estimate the variable (calendar year) rate at which a set of radiocarbon samples are observed, and identify changepoints in that rate. 
+This component  of the library allows you to model (and estimate) the occurrence of radiocarbon samples as a variable-rate (inhomogeneous) Poisson process. This is done using the function `PPcalibrate`. The aim of this function is primarily to allow a user to estimate the variable (calendar year) rate at which a set of radiocarbon samples are observed, and identify changepoints in that rate. 
 
-Dependent upon the representativeness of the underlying sampling, this can then be used via a _"dates-as-data"_ approach [@rick1987] to provide a proxy for changes in population or activity.    
+This Poisson process model can also be used in a _"dates-as-data"_ approach [@rick1987] to provide a proxy for changes in population or activity, dependent upon the representativeness of the underlying sampling. For this method, the estimated rate of the Poisson process provides the proxy.       
+
+<!--- Similarly to the ,
+
+Similarly to the Bayesian non-parametric approach, and 
+
+Dependent upon the representativeness of the underlying sampling, the Poisson process's rate 
+
+approach can be used via a _"dates-as-data"_ approach [@rick1987] to provide a proxy for changes in population or activity. Here the Poisson process's occurrence rate provides the proxy. --->
 
 <!--- Radiocarbon Calibration Of Multiple $^{14}$C Samples Using Reversible Jump MCMC and a Poisson process -->
 
