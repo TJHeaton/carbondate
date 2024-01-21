@@ -47,7 +47,8 @@
 #' @param use_F14C_space If `TRUE` (default) the calculations within the function are carried
 #' out in F\eqn{{}^{14}}C space. If `FALSE` they are carried out in \eqn{{}^{14}}C
 #' age space. We recommend selecting `TRUE` as, for very old samples, calibrating in
-#' F\eqn{{}^{14}}C space removes affect of potential asymmetry in radiocarbon ages.
+#' F\eqn{{}^{14}}C space removes the potential affect of asymmetry in the radiocarbon age
+#' uncertainty.
 #' \emph{Note:} This flag can be set independently of the format/scale on which
 #' `rc_determinations` were originally provided.
 #' @param slice_width Parameter for slice sampling (optional). If not given a value
@@ -143,7 +144,7 @@
 #'
 #'
 #' @examples
-#' # Note these examples are shown with a small n_iter to speed up execution.
+#' # NOTE: These examples are shown with a small n_iter to speed up execution.
 #' # When you run ensure n_iter gives convergence (try function default).
 #'
 #' walker_output <- WalkerBivarDirichlet(
