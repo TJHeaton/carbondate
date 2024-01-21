@@ -3,7 +3,12 @@ template:
   bootstrap: 5
   bootswatch: lumen
 reference:
-- title: Non-Parametric Joint Density Estimation
+- title: Calibration of a Single Radiocarbon Sample
+  desc: Function to calibrate a single radiocarbon determination against a given calibration curve. The rest of
+    the library concerns calibration of multiple (related) samples
+  contents:
+  - CalibrateSingleDetermination
+- title: Bayesian Non-Parametric Joint Density Estimation
   desc: Functions providing a rigorous Bayesian non-parametric alternative to summed probability distributions (SPDs).
     These functions enable the calibration and calendar age summarisation of multiple related radiocarbon samples
     (and provide plotting of the results)
@@ -37,7 +42,6 @@ reference:
     in your inference (use either the Bayesian non-parametric or Poisson Process
     approaches decribed above)
   contents:
-  - CalibrateSingleDetermination
   - FindSummedProbabilityDistribution
   - InterpolateCalibrationCurve
   - GenerateOxcalCode
