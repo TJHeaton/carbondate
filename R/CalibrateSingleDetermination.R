@@ -1,4 +1,4 @@
-#' Calibrate a single radiocarbon determination
+#' Calibrate a Single Radiocarbon Determination
 #'
 #' Uses the supplied calibration curve to calibrate a single radiocarbon
 #' determination and uncertainty (expressed either in terms of radiocarbon age, or

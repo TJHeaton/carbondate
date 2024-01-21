@@ -2,7 +2,7 @@
 % Please edit documentation in R/CalibrateSingleDetermination.R
 \name{CalibrateSingleDetermination}
 \alias{CalibrateSingleDetermination}
-\title{Calibrate a single radiocarbon determination}
+\title{Calibrate a Single Radiocarbon Determination}
 \usage{
 CalibrateSingleDetermination(
   rc_determination,

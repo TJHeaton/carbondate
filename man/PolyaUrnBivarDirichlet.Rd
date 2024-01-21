@@ -58,7 +58,8 @@ use for later inference.}
 \item{use_F14C_space}{If \code{TRUE} (default) the calculations within the function are carried
 out in F\eqn{{}^{14}}C space. If \code{FALSE} they are carried out in \eqn{{}^{14}}C
 age space. We recommend selecting \code{TRUE} as, for very old samples, calibrating in
-F\eqn{{}^{14}}C space removes affect of potential asymmetry in radiocarbon ages.
+F\eqn{{}^{14}}C space removes the potential affect of asymmetry in the radiocarbon age
+uncertainty.
 \emph{Note:} This flag can be set independently of the format/scale on which
 \code{rc_determinations} were originally provided.}
 
