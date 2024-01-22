@@ -15,7 +15,7 @@ PlotPredictiveCalendarAgeDensity(
   interval_width = "2sigma",
   bespoke_probability = NA,
   denscale = 3,
-  n_calc = 1001,
+  resolution = 1,
   n_burn = NA,
   n_end = NA
 )
@@ -61,9 +61,9 @@ interval is calculated. Ignored if \code{"bespoke"} is not chosen.}
 relative to the calibration curve plot (optional). Default is 3 which means
 that the maximum predictive density will be at 1/3 of the height of the plot.}
 
-\item{n_calc}{Number of calendar ages at which to calculate the predictive shared
+\item{resolution}{The distance between calendar ages at which to calculate the predictive shared
 density. These ages will be created on a regular grid that automatically covers the
-calendar period of the given set of \eqn{{}^{14}}C samples. Default is 1001.}
+calendar period of the given set of \eqn{{}^{14}}C samples. Default is 1.}
 
 \item{n_burn}{The number of MCMC iterations that should be discarded as burn-in (i.e.,
 considered to be occurring before the MCMC has converged). This relates to the number

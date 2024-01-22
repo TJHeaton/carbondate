@@ -49,9 +49,9 @@
 #' @param denscale Whether to scale the vertical range of the summarised calendar age density plot
 #' relative to the calibration curve plot (optional). Default is 3 which means
 #' that the maximum predictive density will be at 1/3 of the height of the plot.
-#' @param n_calc Number of calendar ages at which to calculate the predictive shared
+#' @param resolution The distance between calendar ages at which to calculate the predictive shared
 #' density. These ages will be created on a regular grid that automatically covers the
-#' calendar period of the given set of \eqn{{}^{14}}C samples. Default is 1001.
+#' calendar period of the given set of \eqn{{}^{14}}C samples. Default is 1.
 #' @param n_burn The number of MCMC iterations that should be discarded as burn-in (i.e.,
 #' considered to be occurring before the MCMC has converged). This relates to the number
 #' of iterations (`n_iter`) when running the original update functions (not the thinned `output_data`).
@@ -116,7 +116,7 @@ PlotPredictiveCalendarAgeDensity <- function(
     interval_width = "2sigma",
     bespoke_probability = NA,
     denscale = 3,
-    n_calc = 1001,
+    resolution = 1,
     n_burn = NA,
     n_end = NA) {
 
@@ -142,6 +142,7 @@ PlotPredictiveCalendarAgeDensity <- function(
   .CheckInteger(arg_check, n_posterior_samples, lower = 10)
   .CheckIntervalWidth(arg_check, interval_width, bespoke_probability)
   .CheckNumber(arg_check, denscale, lower = 0)
+  .CheckNumber(arg_check, resolution, lower = 0.01)
   .ReportErrors(arg_check)
 
   # Ensure revert to main environment par on exit of function
@@ -182,7 +183,7 @@ PlotPredictiveCalendarAgeDensity <- function(
     output_colours <- c(output_colours, grDevices::hcl.colors(n=num_data-4, "Roma"))
   }
 
-  calendar_age_sequence <- .CreateXRangeToPlotDensity(output_data[[1]], n_calc)
+  calendar_age_sequence <- .CreateXRangeToPlotDensity(output_data[[1]], resolution)
   plot_AD <- any(calendar_age_sequence < 0)
   ##############################################################################
   # Calculate density distributions
@@ -251,10 +252,14 @@ PlotPredictiveCalendarAgeDensity <- function(
 }
 
 
-.CreateXRangeToPlotDensity <- function(output_data, n_calc) {
+.CreateXRangeToPlotDensity <- function(output_data, resolution) {
   start_age <- min(output_data$calendar_ages, output_data$density_data$calendar_ages[1])
+  start_age <- floor(start_age / resolution) * resolution
+
   end_age <- max(output_data$calendar_ages, output_data$density_data$calendar_ages[2])
-  calendar_age_sequence <- seq(start_age, end_age, length = n_calc)
+  end_age <- ceiling(end_age / resolution) * resolution
+
+  calendar_age_sequence <- seq(start_age, end_age, by = resolution)
   return(calendar_age_sequence)
 }
 

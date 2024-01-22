@@ -41,7 +41,7 @@
 FindPredictiveCalendarAgeDensity <- function(
     output_data,
     calendar_age_sequence,
-    n_posterior_samples,
+    n_posterior_samples = 5000,
     interval_width = "2sigma",
     bespoke_probability = NA,
     n_burn = NA,
