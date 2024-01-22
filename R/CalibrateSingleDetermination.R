@@ -79,6 +79,10 @@ CalibrateSingleDetermination <- function(
   probabilities <- .ProbabilitiesForSingleDetermination(rc_determination, rc_sigma, F14C_inputs, calibration_curve)
 
   if(plot_output == TRUE) {
+    # Esnure revert to main environment par on exit of function
+    opar <- graphics::par(no.readonly = TRUE)
+    on.exit(graphics::par(opar))
+
     .PlotIndependentCalibration(
       rc_determination = rc_determination,
       rc_sigma = rc_sigma,
@@ -176,14 +180,12 @@ CalibrateSingleDetermination <- function(
 
   plot_AD <- FALSE # Plot in calendar year
 
-  # Change plotting parameters
-  opar <- graphics::par(
+  graphics::par(
+    mgp = c(3, 0.7, 0),
     xaxs = "i",
     yaxs = "i",
     mar = c(5, 4.5, 4, 2) + 0.1,
     las = 1)
-  # Revert to main environment pars after complete
-  on.exit(graphics::par(opar))
 
   .PlotCalibrationCurve(
     plot_AD,
