@@ -27,7 +27,7 @@ if only the radiocarbon ages (in \eqn{{}^{14}}C yrs BP) are required and \code{N
 \value{
 A new dataframe with entries for the interpolated \code{c14_age}, and
 \code{c14_sig}, \code{f14c} and \code{f14c_sig} values at the \code{calendar_age_BP} values that were
-given in \code{new_calendar_ages_BP}
+given in \code{new_calendar_ages_BP}.
 }
 \description{
 Interpolate a calibration curve at a set of calendar ages
