@@ -23,7 +23,7 @@ reference:
   desc: Functions for modelling the occurrence of radiocarbon samples as a variable-rate
     (inhomogeneous) Poisson process. This is a further (analogous) approach that enables
     the rigorous summarisation of calendar age information from multiple related
-    radiocarbon samples
+    radiocarbon samples.
   contents:
   - PPcalibrate
   - PlotPosteriorMeanRate
@@ -32,7 +32,7 @@ reference:
   - PlotPosteriorHeights
 - title: Common plotting functions
   desc: Functions that can be used to plot the output from both the Bayesian
-    non-parametric DPMM and the Poisson process approaches to calibration and summarisation
+    non-parametric DPMM and the Poisson process approaches to calibration and summarisation.
   contents:
   - PlotCalendarAgeDensityIndividualSample
   - PlotGelmanRubinDiagnosticSingleChain
@@ -40,14 +40,14 @@ reference:
 - title: Helper functions
   desc: General functions that may be of use. However, please do not use SPDs
     in your inference (use either the Bayesian non-parametric or Poisson Process
-    approaches decribed above)
+    approaches described above).
   contents:
   - FindSummedProbabilityDistribution
   - InterpolateCalibrationCurve
   - GenerateOxcalCode
 - title: Example datasets
   desc: |
-    Sets of radiocarbon determinations, either from real-life examples or artificially-generated, that can be used as examples with the calibration functions
+    Sets of radiocarbon determinations, either from real-life examples or artificially-generated, that can be used as examples with the calibration functions.
   contents:
   - alces
   - armit

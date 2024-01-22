@@ -42,8 +42,7 @@
 #' calib <- CalibrateSingleDetermination(860, 35, intcal20, plot_output = TRUE)
 #'
 #' # Calibration of a single (old) determination expressed as 14C age BP
-#' calib <- CalibrateSingleDetermination(
-#'     31020, 100, intcal20)
+#' calib <- CalibrateSingleDetermination(31020, 100, intcal20)
 #' plot(calib, type = "l", xlim = c(36500, 34500))
 #'
 #' # Calibration of a single (old) determination expressed as F14C concentration
@@ -56,12 +55,22 @@
 #' calib <- CalibrateSingleDetermination(1413, 25, shcal20, plot_output = TRUE)
 #'
 #' # Implementing a bespoke confidence interval level
-#' calib <- CalibrateSingleDetermination(1413, 25, shcal20,
-#'     plot_output = TRUE, interval_width = "bespoke", bespoke_probability = 0.8)
+#' calib <- CalibrateSingleDetermination(
+#'     1413,
+#'     25,
+#'     shcal20,
+#'     plot_output = TRUE,
+#'     interval_width = "bespoke",
+#'     bespoke_probability = 0.8)
 #'
 #' # Changing denscale (so the calendar age density takes up less space)
-#' calib <- CalibrateSingleDetermination(1413, 25, shcal20,
-#'     plot_output = TRUE, interval_width = "bespoke", bespoke_probability = 0.8,
+#' calib <- CalibrateSingleDetermination(
+#'     1413,
+#'     25,
+#'     shcal20,
+#'     plot_output = TRUE,
+#'     interval_width = "bespoke",
+#'     bespoke_probability = 0.8,
 #'     denscale = 5)
 CalibrateSingleDetermination <- function(
     rc_determination, rc_sigma, calibration_curve, F14C_inputs = FALSE,
@@ -117,7 +126,11 @@ CalibrateSingleDetermination <- function(
 
   probabilities <- stats::dnorm(rc_determination, mean=calcurve_rc_ages, sd=sqrt(calcurve_rc_sigs^2 + rc_sigma^2))
   probabilities <- probabilities / sum(probabilities)
-  return(probabilities)
+  if (plot_output == TRUE) {
+    invisible(probabilities)
+  } else {
+    return(probabilities)
+  }
 }
 
 .PlotIndependentCalibration <- function(

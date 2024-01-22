@@ -10,7 +10,7 @@
 #'
 #' @return A new dataframe with entries for the interpolated `c14_age`, and
 #' `c14_sig`, `f14c` and `f14c_sig` values at the `calendar_age_BP` values that were
-#' given in `new_calendar_ages_BP`
+#' given in `new_calendar_ages_BP`.
 #' @export
 #'
 #' @examples
