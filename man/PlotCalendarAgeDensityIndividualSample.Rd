@@ -9,7 +9,7 @@ PlotCalendarAgeDensityIndividualSample(
   output_data,
   calibration_curve = NULL,
   plot_14C_age = TRUE,
-  resolution = 5,
+  hist_resolution = 5,
   interval_width = "2sigma",
   bespoke_probability = NA,
   n_burn = NA,
@@ -39,8 +39,8 @@ This format matches \link{intcal20}.}
 the units of the y-axis in the plot. Defaults to \code{TRUE}. If \code{FALSE} uses
 F\eqn{{}^{14}}C concentration instead.}
 
-\item{resolution}{The distance between histogram breaks when plotting the individual
-posterior calendar age density. Must be an integer greater than one.}
+\item{hist_resolution}{The distance between histogram breaks when plotting the individual
+posterior calendar age density. Default is 5.}
 
 \item{interval_width}{The confidence intervals to show for the calibration curve and
 for the highest posterior density ranges.

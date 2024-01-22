@@ -25,8 +25,8 @@
 #' from the Poisson process modelling function ([carbondate::PPcalibrate]). Can also be a list, each
 #' item containing one of these return values. Optionally, the output data can have an extra list
 #' item named `label` which is used to set the label on the plot legend.
-#' @param resolution The distance between histogram breaks when plotting the individual
-#' posterior calendar age density. Must be an integer greater than one.
+#' @param hist_resolution The distance between histogram breaks when plotting the individual
+#' posterior calendar age density. Default is 5.
 #' @param interval_width The confidence intervals to show for the calibration curve and
 #' for the highest posterior density ranges.
 #' Choose from one of "1sigma" (68.3%), "2sigma" (95.4%) and "bespoke". Default is "2sigma".
@@ -75,7 +75,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
     output_data,
     calibration_curve = NULL,
     plot_14C_age = TRUE,
-    resolution = 5,
+    hist_resolution = 5,
     interval_width = "2sigma",
     bespoke_probability = NA,
     n_burn = NA,
@@ -90,7 +90,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
   n_thin <- output_data$input_parameters$n_thin
 
   .CheckCalibrationCurveFromOutput(arg_check, output_data, calibration_curve)
-  .CheckInteger(arg_check, resolution, lower = 1)
+  .CheckNumber(arg_check, hist_resolution, lower = 0.01)
   .CheckNBurnAndNEnd(arg_check, n_burn, n_end, n_iter, n_thin)
   .ReportErrors(arg_check)
 
@@ -133,11 +133,8 @@ PlotCalendarAgeDensityIndividualSample <- function(
   # Find the calendar age range to plot
   xrange <- range(calendar_age)
   xrange <- xrange + 0.1 * c(-1, 1) * diff(xrange)
-  xrange[1] <- floor(xrange[1])
-  if (resolution > 1) while (xrange[1] %% resolution != 0) xrange[1] <- xrange[1] - 1
-
-  xrange[2] <- ceiling(xrange[2])
-  if (resolution > 1) while (xrange[2] %% resolution != 0) xrange[2] <- xrange[2] + 1
+  xrange[1] <- floor(xrange[1] / hist_resolution) * hist_resolution
+  xrange[2] <- ceiling(xrange[2] / hist_resolution) * hist_resolution
 
   if (plot_14C_age == FALSE) {
     title <- substitute(
@@ -207,9 +204,9 @@ PlotCalendarAgeDensityIndividualSample <- function(
   graphics::par(new = TRUE, las = 1)
   # Create hist but do not plot - works out sensible ylim
   if (plot_AD) {
-    breaks <-seq(xrange[2], xrange[1], by=resolution)
+    breaks <-seq(xrange[2], xrange[1], by=hist_resolution)
   } else {
-    breaks <-seq(xrange[1], xrange[2], by=resolution)
+    breaks <-seq(xrange[1], xrange[2], by=hist_resolution)
   }
   temphist <- graphics::hist(calendar_age, breaks = breaks, plot = FALSE)
 
@@ -229,7 +226,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
   if (show_unmodelled_density) {
     unmodelled <- CalibrateSingleDetermination(
       rc_age, rc_sig, InterpolateCalibrationCurve(breaks, calibration_curve))
-    unmodelled$probability <- unmodelled$probability / sum(unmodelled$probability * resolution)
+    unmodelled$probability <- unmodelled$probability / sum(unmodelled$probability * hist_resolution)
     graphics::polygon(
       c(unmodelled$calendar_age_BP, rev(unmodelled$calendar_age_BP)),
       c(unmodelled$probability, rep(0, length(unmodelled$probability))),
