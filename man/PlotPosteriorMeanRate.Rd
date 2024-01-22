@@ -14,7 +14,7 @@ PlotPosteriorMeanRate(
   interval_width = "2sigma",
   bespoke_probability = NA,
   denscale = 3,
-  n_calc = 1001,
+  resolution = 1,
   n_burn = NA,
   n_end = NA
 )
@@ -59,9 +59,9 @@ interval is calculated. Ignored if \code{"bespoke"} is not chosen.}
 relative to the calibration curve plot. Default is 3 which means
 that the maximum of the mean rate will be at 1/3 of the height of the plot.}
 
-\item{n_calc}{Number of calendar ages at which to calculate the value of the rate
+\item{resolution}{The distance between calendar ages at which to calculate the value of the rate
 \eqn{\lambda(t)}. These ages will be created on a regular grid that automatically covers
-the calendar period specified in \code{output_data}. Default is 1001.}
+the calendar period specified in \code{output_data}. Default is 1.}
 
 \item{n_burn}{The number of MCMC iterations that should be discarded as burn-in (i.e.,
 considered to be occurring before the MCMC has converged). This relates to the number
@@ -77,8 +77,6 @@ total number of iterations performed, i.e. \code{niter}, if not given.}
 \value{
 A list, each item containing a data frame of the \code{calendar_age}, the \code{rate_mean}
 and the confidence intervals for the rate - \code{rate_ci_lower} and \code{rate_ci_upper}.
-
-None
 }
 \description{
 Given output from the Poisson process fitting function \link{PPcalibrate} calculate
@@ -88,6 +86,10 @@ rate \eqn{\lambda(t)}) together with specified probability intervals, on a given
 Will show the original set of radiocarbon determinations (those you are modelling/summarising),
 the chosen calibration curve, and the estimated posterior rate of occurrence \eqn{\lambda(t)} on the same plot.
 Can also optionally show the posterior mean of each individual sample's calendar age estimate.
+
+\strong{Note:} If all you are interested in is the value of the posterior mean rate
+on a grid, without an accompanying plot, you can use
+\link{FindPosteriorMeanRate} instead.
 
 For more information read the vignette: \cr
 \code{vignette("Poisson-process-modelling", package = "carbondate")}

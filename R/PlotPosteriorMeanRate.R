@@ -9,6 +9,10 @@
 #' the chosen calibration curve, and the estimated posterior rate of occurrence \eqn{\lambda(t)} on the same plot.
 #' Can also optionally show the posterior mean of each individual sample's calendar age estimate.
 #'
+#' \strong{Note:} If all you are interested in is the value of the posterior mean rate
+#' on a grid, without an accompanying plot, you can use
+#' [carbondate::FindPosteriorMeanRate] instead.
+#'
 #' For more information read the vignette: \cr
 #' \code{vignette("Poisson-process-modelling", package = "carbondate")}
 #'
@@ -42,9 +46,9 @@
 #' @param denscale (Optional) Whether to scale the vertical range of the Poisson process mean rate plot
 #' relative to the calibration curve plot. Default is 3 which means
 #' that the maximum of the mean rate will be at 1/3 of the height of the plot.
-#' @param n_calc Number of calendar ages at which to calculate the value of the rate
+#' @param resolution The distance between calendar ages at which to calculate the value of the rate
 #' \eqn{\lambda(t)}. These ages will be created on a regular grid that automatically covers
-#' the calendar period specified in `output_data`. Default is 1001.
+#' the calendar period specified in `output_data`. Default is 1.
 #' @param n_burn The number of MCMC iterations that should be discarded as burn-in (i.e.,
 #' considered to be occurring before the MCMC has converged). This relates to the number
 #' of iterations (`n_iter`) when running the original update functions (not the thinned `output_data`).
@@ -60,8 +64,6 @@
 #' and the confidence intervals for the rate - `rate_ci_lower` and `rate_ci_upper`.
 #'
 #' @export
-#'
-#' @return None
 #'
 #' @examples
 #' # NOTE: All these examples are shown with a small n_iter and n_posterior_samples
@@ -94,12 +96,9 @@ PlotPosteriorMeanRate <- function(
     interval_width = "2sigma",
     bespoke_probability = NA,
     denscale = 3,
-    n_calc = 1001,
+    resolution = 1,
     n_burn = NA,
     n_end = NA) {
-
-  n_iter <- output_data$input_parameters$n_iter
-  n_thin <- output_data$input_parameters$n_thin
 
   arg_check <- .InitializeErrorList()
   .CheckOutputData(arg_check, output_data, "RJPP")
@@ -110,16 +109,12 @@ PlotPosteriorMeanRate <- function(
   .CheckFlag(arg_check, show_confidence_intervals)
   .CheckIntervalWidth(arg_check, interval_width, bespoke_probability)
   .CheckNumber(arg_check, denscale, lower = 0)
-  .CheckInteger(arg_check, n_calc, lower = 20)
-  .CheckNBurnAndNEnd(arg_check, n_burn, n_end, n_iter, n_thin)
+  .CheckNumber(arg_check, resolution, lower = 0.01)
   .ReportErrors(arg_check)
 
   # Ensure revert to main environment par on exit of function
   opar <- graphics::par(no.readonly = TRUE)
   on.exit(graphics::par(opar))
-
-  n_burn <- .SetNBurn(n_burn, n_iter, n_thin)
-  n_end <- .SetNEnd(n_end, n_iter, n_thin)
 
   if (is.null(calibration_curve)) {
     calibration_curve <- get(output_data$input_data$calibration_curve_name)
@@ -148,41 +143,35 @@ PlotPosteriorMeanRate <- function(
   calibration_curve_bg <- grDevices::rgb(0, 0, 1, .3)
   output_colour <- "purple"
 
-  calendar_age_sequence <- seq(
-    from = min(output_data$rate_s[[1]]), to = max(output_data$rate_s[[1]]), length.out = n_calc)
+  start_age <- ceiling(min(output_data$rate_s[[1]]) / resolution) * resolution
+  end_age <- floor(max(output_data$rate_s[[1]]) / resolution) * resolution
+  if (end_age == max(output_data$rate_s[[1]])) {
+    # Removes issue of sequence coinciding with end changepoint
+    end_age <- end_age - resolution
+  }
+
+  calendar_age_sequence <- seq(from = start_age, to = end_age, by = resolution)
   xlim <- rev(range(calendar_age_sequence))
 
-  calendar_age_sequence[n_calc] <- calendar_age_sequence[n_calc] - 1e-6 * diff(calendar_age_sequence)[1]
   plot_AD <- any(calendar_age_sequence < 0)
   ##############################################################################
   # Calculate means and rate
+  posterior_rate <- FindPosteriorMeanRate(
+    output_data,
+    calendar_age_sequence,
+    n_posterior_samples,
+    interval_width,
+    bespoke_probability,
+    n_burn,
+    n_end)
 
   if (show_individual_means){
+    n_iter <- output_data$input_parameters$n_iter
+    n_thin <- output_data$input_parameters$n_thin
+    n_burn <- .SetNBurn(n_burn, n_iter, n_thin)
+    n_end <- .SetNEnd(n_end, n_iter, n_thin)
     calendar_age_means <- apply(output_data$calendar_ages[(n_burn + 1):n_end, ], 2, mean)
   }
-
-  indices <- sample((n_burn + 1):n_end, n_posterior_samples, replace = ((n_end - n_burn) < n_posterior_samples))
-  rate <- matrix(NA, nrow = n_posterior_samples, ncol = length(calendar_age_sequence))
-  for (i in 1:n_posterior_samples) {
-    ind <- indices[i]
-    rate[i,] <- stats::approx(
-      x = output_data$rate_s[[ind]],
-      y = c(output_data$rate_h[[ind]], 0),
-      xout = calendar_age_sequence,
-      method = "constant")$y
-  }
-  edge_width <- switch(
-    interval_width,
-    "1sigma" = 1 - stats::pnorm(1),
-    "2sigma"  = 1 - stats::pnorm(2),
-    "bespoke" = (1 - bespoke_probability)/2
-  )
-  posterior_rate <- data.frame(
-    calendar_age = calendar_age_sequence,
-    rate_mean = apply(rate, 2, mean),
-    rate_ci_lower = apply(rate, 2, stats::quantile, probs = edge_width),
-    rate_ci_upper = apply(rate, 2, stats::quantile, probs = 1 - edge_width)
-  )
 
   ylim_rate <- c(0, denscale * max(posterior_rate$rate_mean))
 
