@@ -5,7 +5,7 @@ template:
 reference:
 - title: Calibration of a Single Radiocarbon Sample
   desc: Function to calibrate a single radiocarbon determination against a given calibration curve. The rest of
-    the library concerns calibration of multiple (related) samples
+    the library concerns calibration of multiple (related) radiocarbon samples.
   contents:
   - CalibrateSingleDetermination
 - title: Bayesian Non-Parametric Joint Density Estimation
@@ -31,8 +31,8 @@ reference:
   - PlotPosteriorChangePoints
   - PlotPosteriorHeights
 - title: Common plotting functions
-  desc: Functions that can be used to plot the output from both the non-parametric
-    joint density and the Poisson Process approaches to calibration and summarisation
+  desc: Functions that can be used to plot the output from both the Bayesian
+    non-parametric DPMM and the Poisson process approaches to calibration and summarisation
   contents:
   - PlotCalendarAgeDensityIndividualSample
   - PlotGelmanRubinDiagnosticSingleChain

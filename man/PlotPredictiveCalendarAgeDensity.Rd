@@ -47,7 +47,7 @@ F\eqn{{}^{14}}C concentration instead.}
 distribution on the plot (optional). Default is \code{FALSE}.}
 
 \item{show_confidence_intervals}{Whether to show the pointwise confidence intervals
-for the chosen probability level on the plot. Default is \code{TRUE}.}
+(at the chosen probability level) on the plot. Default is \code{TRUE}.}
 
 \item{interval_width}{The confidence intervals to show for both the
 calibration curve and the predictive density. Choose from one of \code{"1sigma"} (68.3\%),
@@ -65,7 +65,7 @@ that the maximum predictive density will be at 1/3 of the height of the plot.}
 density. These ages will be created on a regular grid that automatically covers the
 calendar period of the given set of \eqn{{}^{14}}C samples. Default is 1001.}
 
-\item{n_burn}{The number of the (thinned) samples in the DPMM outputs discarded as burn-in (i.e.,
+\item{n_burn}{The number of (thinned) samples in the DPMM outputs discarded as burn-in (i.e.,
 considered to be occurring before the MCMC has converged). Any samples in the (thinned) DPMM outputs
 before this are not used in the calculation. If not given, the first half of the
 MCMC chain is discarded. Looking at the output of \link{PlotConvergenceData} can

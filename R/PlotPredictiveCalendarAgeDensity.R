@@ -39,7 +39,7 @@
 #' @param show_SPD Whether to calculate and show the summed probability
 #' distribution on the plot (optional). Default is `FALSE`.
 #' @param show_confidence_intervals Whether to show the pointwise confidence intervals
-#' for the chosen probability level on the plot. Default is `TRUE`.
+#' (at the chosen probability level) on the plot. Default is `TRUE`.
 #' @param interval_width The confidence intervals to show for both the
 #' calibration curve and the predictive density. Choose from one of `"1sigma"` (68.3%),
 #' `"2sigma"` (95.4%) and `"bespoke"`. Default is `"2sigma"`.
@@ -52,7 +52,7 @@
 #' @param n_calc Number of calendar ages at which to calculate the predictive shared
 #' density. These ages will be created on a regular grid that automatically covers the
 #' calendar period of the given set of \eqn{{}^{14}}C samples. Default is 1001.
-#' @param n_burn The number of the (thinned) samples in the DPMM outputs discarded as burn-in (i.e.,
+#' @param n_burn The number of (thinned) samples in the DPMM outputs discarded as burn-in (i.e.,
 #' considered to be occurring before the MCMC has converged). Any samples in the (thinned) DPMM outputs
 #' before this are not used in the calculation. If not given, the first half of the
 #' MCMC chain is discarded. Looking at the output of [carbondate::PlotConvergenceData] can
