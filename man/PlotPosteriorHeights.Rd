@@ -2,7 +2,7 @@
 % Please edit documentation in R/PlotPosteriorHeights.R
 \name{PlotPosteriorHeights}
 \alias{PlotPosteriorHeights}
-\title{Plots the posterior heights}
+\title{Plot Heights of Segments in Rate of Sample Occurrence for Poisson Process Model}
 \usage{
 PlotPosteriorHeights(
   output_data,
@@ -13,33 +13,51 @@ PlotPosteriorHeights(
 )
 }
 \arguments{
-\item{output_data}{The return value from the updating functions
+\item{output_data}{The return value from the updating function
 \link{PPcalibrate}. Optionally, the output data can have an extra list item
 named \code{label} which is used to set the label on the plot legend.}
 
-\item{n_changes}{Which number of internal changes to plot for - a vector which can contain at most 4 elements, with
-values in the range 1 to 6. If not given \code{c(1, 2, 3)} will be used.}
+\item{n_changes}{Number of internal changepoints to condition on, and plot for. A vector
+which can contain at most 4 elements, with values in the range 1 to 6. If not given, then
+\code{c(1, 2, 3)} will be used.}
 
-\item{n_burn}{The number of samples required for burn-in - any samples before this
-are not used in the calculation. If not given, the first half of the
+\item{n_burn}{The number of (thinned) samples in \code{output_data} discarded as burn-in (i.e.,
+considered to be occurring before the MCMC has converged). Any samples in the (thinned) outputs
+before this are not used in the calculation. If not given, the first half of the
 MCMC chain is discarded. Note that the maximum
 value that can be chosen is \code{n_iter - 100 * n_thin} (where \code{n_iter} and \code{n_thin} are the
 arguments given to \link{PPcalibrate}).}
 
-\item{n_end}{The iteration number of the last sample to use. Assumed to be the number of iterations
-if not given.}
+\item{n_end}{The iteration number of the last sample in \code{output_data} to use in the calculations.
+Assumed to be the total number of (thinned) realisations stored if not given.}
 
-\item{kernel_bandwidth}{The bandwidth used for the KDE of the density (optional). If not give 1/50th of the
-maximum height will be used.}
+\item{kernel_bandwidth}{(Optional) The bandwidth used for the (Gaussian) kernel smoothing of
+the calendar age densities. If not given, 1/50th of the maximum height will be used.}
 }
 \value{
 None
 }
 \description{
-Description here
+Given output from the Poisson process fitting function \link{PPcalibrate}, plot the
+posterior density estimates for the heights (i.e., values) of the piecewise-constant rate
+\eqn{\lambda(t)} used to model sample occurrence. These density estimates are calculated
+\strong{conditional} upon the number of internal changepoints within the period under study
+(which is specified as an input to the function).
+
+Having conditioned on the number of changes, \code{n_change}, the code will extract all realisations
+from the the posterior of the MCMC sampler which have that number of internal changepoints in the
+estimate of \eqn{\lambda(t)}. It will then provide density estimates for the heights (i.e., the value)
+of the rate function between each of the determined (ordered) changepoints. These density estimates
+are obtained using a Gaussian kernel.
+
+\strong{Note: These graphs will become harder to interpret as the specified number of changepoints
+increases}
+
+For more information read the vignette: \cr
+\code{vignette("Poisson-process-modelling", package = "carbondate")}
 }
 \examples{
-# Note all these examples are shown with a small n_iter to speed up execution.
+# NOTE: This example is shown with a small n_iter to speed up execution.
 # Try n_iter and n_posterior_samples as the function defaults.
 
 pp_output <- PPcalibrate(

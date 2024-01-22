@@ -2,7 +2,7 @@
 % Please edit documentation in R/PlotPosteriorMeanRate.R
 \name{PlotPosteriorMeanRate}
 \alias{PlotPosteriorMeanRate}
-\title{Plots the posterior mean rate from the output data}
+\title{Plot Posterior Mean Rate of Sample Occurrence for Poisson Process Model}
 \usage{
 PlotPosteriorMeanRate(
   output_data,
@@ -20,53 +20,58 @@ PlotPosteriorMeanRate(
 )
 }
 \arguments{
-\item{output_data}{The return value from the updating functions
+\item{output_data}{The return value from the updating function
 \link{PPcalibrate}. Optionally, the output data can have an extra list item
 named \code{label} which is used to set the label on the plot legend.}
 
-\item{n_posterior_samples}{Current number of samples it will draw from this
-posterior to estimate the calendar age density (possibly repeats). If not
-given 5000 is used.}
+\item{n_posterior_samples}{Number of samples it will draw, after having removed \code{n_burn},
+from the (thinned) MCMC realisations stored in \code{output_data} to estimate the
+rate \eqn{\lambda(t)}. These samples may be repeats if the number of, post burn-in,
+realisations is less than \code{n_posterior_samples}. If not given, 5000 is used.}
 
 \item{calibration_curve}{This is usually not required since the name of the
-calibration curve variable is saved in the output data. However if the
+calibration curve variable is saved in the output data. However, if the
 variable with this name is no longer in your environment then you should pass
-the calibration curve here. If provided this should be a dataframe which
-should contain at least 3 columns entitled calendar_age, c14_age and c14_sig.
+the calibration curve here. If provided, this should be a dataframe which
+should contain at least 3 columns entitled \code{calendar_age}, \code{c14_age} and \code{c14_sig}.
 This format matches \link{intcal20}.}
 
-\item{plot_14C_age}{Whether to use the \eqn{{}^{14}}C yr BP as the units of the y-axis.
-Defaults to TRUE. If FALSE uses F14C concentration instead.}
+\item{plot_14C_age}{Whether to use the radiocarbon age (\eqn{{}^{14}}C yr BP) as
+the units of the y-axis in the plot. Defaults to \code{TRUE}. If \code{FALSE} uses
+F\eqn{{}^{14}}C concentration instead.}
 
-\item{show_individual_means}{Whether to calculate and show the individual mean
-calendar ages on the plot (optional). Default is \code{FALSE}.}
+\item{show_individual_means}{(Optional) Whether to calculate and show the mean posterior
+calendar age estimated for each individual \eqn{{}^{14}}C sample on the plot as a rug on
+the x-axis. Default is \code{TRUE}.}
 
-\item{show_confidence_intervals}{Whether to show the confidence intervals
-for the chosen probability on the plot. Default is \code{TRUE}.}
+\item{show_confidence_intervals}{Whether to show the pointwise confidence intervals
+(at chosen probability level) on the plot. Default is \code{TRUE}.}
 
 \item{interval_width}{The confidence intervals to show for both the
 calibration curve and the predictive density. Choose from one of \code{"1sigma"} (68.3\%),
 \code{"2sigma"} (95.4\%) and \code{"bespoke"}. Default is \code{"2sigma"}.}
 
 \item{bespoke_probability}{The probability to use for the confidence interval
-if \code{"bespoke"} is chosen above. E.g. if 0.95 is chosen, then the 95\% confidence
+if \code{"bespoke"} is chosen above. E.g., if 0.95 is chosen, then the 95\% confidence
 interval is calculated. Ignored if \code{"bespoke"} is not chosen.}
 
-\item{denscale}{Whether to scale the vertical range of the Poisson process mean rate plot
-relative to the calibration curve plot (optional). Default is 3 which means
-that the maximum mean rate will be at 1/3 of the height of the plot.}
+\item{denscale}{(Optional) Whether to scale the vertical range of the Poisson process mean rate plot
+relative to the calibration curve plot. Default is 3 which means
+that the maximum of the mean rate will be at 1/3 of the height of the plot.}
 
-\item{n_calc}{Number of points to use when calculating the predictive
-density. Default is 1001.}
+\item{n_calc}{Number of calendar ages at which to calculate the value of the rate
+\eqn{\lambda(t)}. These ages will be created on a regular grid that automatically covers
+the calendar period specified in \code{output_data}. Default is 1001.}
 
-\item{n_burn}{The number of samples required for burn-in - any samples before this
-are not used in the calculation. If not given, the first half of the
+\item{n_burn}{The number of (thinned) samples in \code{output_data} discarded as burn-in (i.e.,
+considered to be occurring before the MCMC has converged). Any samples in the (thinned) outputs
+before this are not used in the calculation. If not given, the first half of the
 MCMC chain is discarded. Note that the maximum
 value that can be chosen is \code{n_iter - 100 * n_thin} (where \code{n_iter} and \code{n_thin} are the
 arguments given to \link{PPcalibrate}).}
 
-\item{n_end}{The iteration number of the last sample to use. Assumed to be the number of iterations
-if not given.}
+\item{n_end}{The iteration number of the last sample in \code{output_data} to use in the calculations.
+Assumed to be the total number of (thinned) realisations stored if not given.}
 }
 \value{
 A list, each item containing a data frame of the \code{calendar_age}, the \code{rate_mean}
@@ -75,15 +80,19 @@ and the confidence intervals for the rate - \code{rate_ci_lower} and \code{rate_
 None
 }
 \description{
-Plots the input radiocarbon determinations and calibration curve, with the
-output posterior mean rate on the same plot. Can also optionally show the
-individual mean calendar ages.
+Given output from the Poisson process fitting function \link{PPcalibrate} calculate
+and plot the posterior mean rate of sample occurrence (i.e., the underlying Poisson process
+rate \eqn{\lambda(t)}) together with specified probability intervals, on a given calendar age grid.
+
+Will show the original set of radiocarbon determinations (those you are modelling/summarising),
+the chosen calibration curve, and the estimated posterior rate of occurrence \eqn{\lambda(t)} on the same plot.
+Can also optionally show the posterior mean of each individual sample's calendar age estimate.
 
 For more information read the vignette: \cr
 \code{vignette("Poisson-process-modelling", package = "carbondate")}
 }
 \examples{
-# Note all these examples are shown with a small n_iter and n_posterior_samples
+# NOTE: All these examples are shown with a small n_iter and n_posterior_samples
 # to speed up execution.
 # Try n_iter and n_posterior_samples as the function defaults.
 

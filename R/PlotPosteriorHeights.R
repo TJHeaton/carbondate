@@ -1,17 +1,34 @@
-#' Plots the posterior heights
+#' Plot Heights of Segments in Rate of Sample Occurrence for Poisson Process Model
 #'
-#' Description here
+#' @description
+#' Given output from the Poisson process fitting function [carbondate::PPcalibrate], plot the
+#' posterior density estimates for the heights (i.e., values) of the piecewise-constant rate
+#' \eqn{\lambda(t)} used to model sample occurrence. These density estimates are calculated
+#' \strong{conditional} upon the number of internal changepoints within the period under study
+#' (which is specified as an input to the function).
+#'
+#' Having conditioned on the number of changes, `n_change`, the code will extract all realisations
+#' from the the posterior of the MCMC sampler which have that number of internal changepoints in the
+#' estimate of \eqn{\lambda(t)}. It will then provide density estimates for the heights (i.e., the value)
+#' of the rate function between each of the determined (ordered) changepoints. These density estimates
+#' are obtained using a Gaussian kernel.
+#'
+#' \strong{Note: These graphs will become harder to interpret as the specified number of changepoints
+#' increases}
+#'
+#' For more information read the vignette: \cr
+#' \code{vignette("Poisson-process-modelling", package = "carbondate")}
 #'
 #' @inheritParams PlotPosteriorChangePoints
-#' @param kernel_bandwidth The bandwidth used for the KDE of the density (optional). If not give 1/50th of the
-#' maximum height will be used.
+#' @param kernel_bandwidth (Optional) The bandwidth used for the (Gaussian) kernel smoothing of
+#' the calendar age densities. If not given, 1/50th of the maximum height will be used.
 #'
 #' @export
 #'
 #' @return None
 #'
 #' @examples
-#' # Note all these examples are shown with a small n_iter to speed up execution.
+#' # NOTE: This example is shown with a small n_iter to speed up execution.
 #' # Try n_iter and n_posterior_samples as the function defaults.
 #'
 #' pp_output <- PPcalibrate(
