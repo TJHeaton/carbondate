@@ -119,6 +119,8 @@ plot(
 
 **Note:** The summary functions for plotting the predictive joint calendar age density using the rigorous Bayesian non-parametric alternative to SPDs (described in the vignette [Non-parametric Summed Density](Non-parametric-summed-density.html)) can also optionally plot the SPD without having to calculate it separately first.
 
+### Website stuff
 
+Due to fluctuations in past radiocarbon levels, all 14C determinations need to be calibrated (converted) in order to be understood on the calendar age scale. In many cases, we wish to calibrate a set of samples which are known to be related to one another (for example, arising from a particular site, or set of sites, populated by a particular culture). Each sample has an unknown calendar age but, since they are related, these calendar ages are assumed to arise from the same unknown shared calendar age density.
 
 ## References
