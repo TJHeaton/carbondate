@@ -52,10 +52,10 @@
 #'
 #' # Calibration of a single determination expressed as 14C age BP
 #' # against SHCal20 (and creating an automated plot)
-#' calib <- CalibrateSingleDetermination(1413, 25, shcal20, plot_output = TRUE)
+#' CalibrateSingleDetermination(1413, 25, shcal20, plot_output = TRUE)
 #'
 #' # Implementing a bespoke confidence interval level
-#' calib <- CalibrateSingleDetermination(
+#' CalibrateSingleDetermination(
 #'     1413,
 #'     25,
 #'     shcal20,
@@ -64,7 +64,7 @@
 #'     bespoke_probability = 0.8)
 #'
 #' # Changing denscale (so the calendar age density takes up less space)
-#' calib <- CalibrateSingleDetermination(
+#' CalibrateSingleDetermination(
 #'     1413,
 #'     25,
 #'     shcal20,
@@ -105,9 +105,12 @@ CalibrateSingleDetermination <- function(
       denscale = denscale)
   }
 
-  return(
-    data.frame(
-      calendar_age_BP=calibration_curve$calendar_age, probability=probabilities))
+  return_data <- data.frame(calendar_age_BP=calibration_curve$calendar_age, probability=probabilities)
+  if (plot_output == TRUE) {
+    invisible(return_data)
+  } else {
+    return(return_data)
+  }
 }
 
 
@@ -126,11 +129,7 @@ CalibrateSingleDetermination <- function(
 
   probabilities <- stats::dnorm(rc_determination, mean=calcurve_rc_ages, sd=sqrt(calcurve_rc_sigs^2 + rc_sigma^2))
   probabilities <- probabilities / sum(probabilities)
-  if (plot_output == TRUE) {
-    invisible(probabilities)
-  } else {
-    return(probabilities)
-  }
+  return(probabilities)
 }
 
 .PlotIndependentCalibration <- function(
