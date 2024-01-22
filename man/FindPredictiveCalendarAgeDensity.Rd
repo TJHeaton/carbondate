@@ -38,8 +38,8 @@ calibration curve and the predictive density. Choose from one of \code{"1sigma"}
 if \code{"bespoke"} is chosen above. E.g., if 0.95 is chosen, then the 95\% confidence
 interval is calculated. Ignored if \code{"bespoke"} is not chosen.}
 
-\item{n_burn}{The number of (thinned) samples in the DPMM outputs discarded as burn-in (i.e.,
-considered to be occurring before the MCMC has converged). Any samples in the (thinned) DPMM outputs
+\item{n_burn}{The number of (thinned) samples in \code{output_data} discarded as burn-in (i.e.,
+considered to be occurring before the MCMC has converged). Any samples in the (thinned) outputs
 before this are not used in the calculation. If not given, the first half of the
 MCMC chain is discarded. Looking at the output of \link{PlotConvergenceData} can
 help determine what an appropriate value is for a given output. Note that the maximum

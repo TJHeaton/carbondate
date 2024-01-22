@@ -2,7 +2,7 @@
 % Please edit documentation in R/PlotCalendarAgeDensityIndividualSample.R
 \name{PlotCalendarAgeDensityIndividualSample}
 \alias{PlotCalendarAgeDensityIndividualSample}
-\title{Plots the posterior calendar ages for an individual determination}
+\title{Plot Posterior Calendar Age Estimate for an Individual Determination}
 \usage{
 PlotCalendarAgeDensityIndividualSample(
   ident,
@@ -19,14 +19,14 @@ PlotCalendarAgeDensityIndividualSample(
 )
 }
 \arguments{
-\item{ident}{the determination you want to show the individual posterior
-calendar age for.}
+\item{ident}{The individual determination for which you want to plot the posterior
+density estimate of the calendar age.}
 
-\item{output_data}{The return value from one of the Bayesian non-parametric DPMM functions, e.g.
-\link{PolyaUrnBivarDirichlet} or
-\link{WalkerBivarDirichlet}, or a list, each item containing
-one of these return values. Optionally, the output data can have an extra list item
-named \code{label} which is used to set the label on the plot legend.}
+\item{output_data}{The return value either from one of the Bayesian non-parametric DPMM
+functions (\link{PolyaUrnBivarDirichlet} or \link{WalkerBivarDirichlet}); or
+from the Poisson process modelling function (\link{PPcalibrate}). Can also be a list, each
+item containing one of these return values. Optionally, the output data can have an extra list
+item named \code{label} which is used to set the label on the plot legend.}
 
 \item{calibration_curve}{This is usually not required since the name of the
 calibration curve variable is saved in the output data. However, if the
@@ -39,44 +39,54 @@ This format matches \link{intcal20}.}
 the units of the y-axis in the plot. Defaults to \code{TRUE}. If \code{FALSE} uses
 F\eqn{{}^{14}}C concentration instead.}
 
-\item{resolution}{The distance between histogram breaks for the calendar age density.
-Must be an integer greater than one.}
+\item{resolution}{The distance between histogram breaks when plotting the individual
+posterior calendar age density. Must be an integer greater than one.}
 
-\item{interval_width}{The confidence intervals to show for the
-calibration curve and for the highest posterior density ranges.
+\item{interval_width}{The confidence intervals to show for the calibration curve and
+for the highest posterior density ranges.
 Choose from one of "1sigma" (68.3\%), "2sigma" (95.4\%) and "bespoke". Default is "2sigma".}
 
 \item{bespoke_probability}{The probability to use for the confidence interval
-if "bespoke" is chosen above. E.g. if 0.95 is chosen, then the 95\% confidence
-interval is calculated. Ignored if "bespoke" is not chosen.}
+if \code{"bespoke"} is chosen above. E.g., if 0.95 is chosen, then the 95\% confidence
+interval is calculated. Ignored if \code{"bespoke"} is not chosen.}
 
-\item{n_burn}{The number of (thinned) samples in the DPMM outputs discarded as burn-in (i.e.,
-considered to be occurring before the MCMC has converged). Any samples in the (thinned) DPMM outputs
+\item{n_burn}{The number of (thinned) samples in \code{output_data} discarded as burn-in (i.e.,
+considered to be occurring before the MCMC has converged). Any samples in the (thinned) outputs
 before this are not used in the calculation. If not given, the first half of the
 MCMC chain is discarded. Looking at the output of \link{PlotConvergenceData} can
 help determine what an appropriate value is for a given output. Note that the maximum
 value that can be chosen is \code{n_iter - 100 * n_thin} (where \code{n_iter} and \code{n_thin} are the
 arguments given to \link{PolyaUrnBivarDirichlet} or \link{WalkerBivarDirichlet}).}
 
-\item{n_end}{The iteration number of the last sample in the DPMM output to use in the calculations.
-Assumed to be the number of (thinned) realisations stored in the DPMM output if not given.}
+\item{n_end}{The iteration number of the last sample in \code{output_data} to use in the calculations.
+Assumed to be the total number of (thinned) realisations stored if not given.}
 
-\item{show_hpd_ranges}{Set to \code{TRUE} to also show the highest posterior range on the plot.}
+\item{show_hpd_ranges}{Set to \code{TRUE} to also show the highest posterior density (HPD) range
+on the plot.}
 
-\item{show_unmodelled_density}{Set to \code{TRUE} to also show the unmodelled density (i.e. the
-result of \link{CalibrateSingleDetermination}) on the plot. Default is \code{FALSE}.}
+\item{show_unmodelled_density}{Set to \code{TRUE} to also show the unmodelled density (i.e., the
+result of independent calibration using \link{CalibrateSingleDetermination}) on the plot.
+Default is \code{FALSE}.}
 }
 \value{
 None
 }
 \description{
-Once a function has been run to calibrate a set of radiocarbon
-determinations, the posterior density histogram for a single determination can be
-plotted using this function. This also plots a kernel density estimation from the histogram data
-and shows the highest posterior density range for the interval width specified (default 2\eqn{\sigma}).
+Once a joint calibration function (any of \link{PolyaUrnBivarDirichlet}, \link{WalkerBivarDirichlet}
+or \link{PPcalibrate}) has been run to calibrate a set of related radiocarbon
+determinations, this function plots the posterior calendar age estimate for a given single
+determination. Shown are a (direct) histogram of the posterior calendar ages generated by the MCMC
+chain and also a (snoothed) kernel density estimate obtained using a Gaussian kernel. The highest
+posterior density (HPD) interval is also shown for the interval width specified (default 2\eqn{\sigma}).
+}
+\details{
+\strong{Note:} The output of this function will provide different results from independent calibration
+of the determination. By jointly, and simultaneously, calibrating all the related \eqn{{}^{14}}C determinations
+using the library functions we are able to share the available calendar information between the samples. This should result in improved
+individual calibration.
 }
 \examples{
-# Note these examples are shown with a small n_iter to speed up execution.
+# NOTE: These examples are shown with a small n_iter to speed up execution.
 # When you run ensure n_iter gives convergence (try function default).
 
 polya_urn_output <- PolyaUrnBivarDirichlet(
@@ -88,7 +98,7 @@ polya_urn_output <- PolyaUrnBivarDirichlet(
     show_progress = FALSE)
 
 # Result for 15th determination
-PlotCalendarAgeDensityIndividualSample(10, polya_urn_output)
+PlotCalendarAgeDensityIndividualSample(15, polya_urn_output)
 
 # Now change to show 1 sigma interval for HPD range and calibration curve
 PlotCalendarAgeDensityIndividualSample(
@@ -97,4 +107,8 @@ PlotCalendarAgeDensityIndividualSample(
     interval_width = "1sigma",
     show_hpd_ranges = TRUE,
     show_unmodelled_density = TRUE)
+}
+\seealso{
+\link{CalibrateSingleDetermination} for independent calibration of a sample against
+a calibration curve.
 }

@@ -15,10 +15,11 @@
 
 An R package to analyse, and summarise, multiple radiocarbon
 (<sup>14</sup>C) determinations. The package provides two linked (but
-distinct) approaches:
+distinct) approaches that can both be used to obtain rigorous and robust
+alternatives to summed probability distributions:
 
-- Non-Parametric Density Estimation (a rigorous and robust alternative
-  to summed probability distributions)
+- Bayesian Non-Parametric Density Estimation (a rigorous and robust
+  alternative to summed probability distributions)
 - Variable Rate Poisson Process Estimation (a linked approach)
 
 It is based partly on the original functions available
@@ -52,17 +53,17 @@ library(carbondate)
 
 ## Data
 
-There are a few example datasets of radiocarbon determinations
-(e.g. `two_normals`, `kerr`, `pp_uniform_phase`, `buchanan`) provided,
-which can be used to try out the calibration functions. `two_normals` is
-a small artificial data set for which the underlying calendar ages were
-drawn from a mixture of two normals. It is included simply to give some
-quick-to-run examples for the non-parametric calibration functions.
-`pp_uniform_phase` is another small artificial dataset which is included
-to give quick-to-run examples for the Poisson Process modelling
-functions. The remaining datasets are from real-life data. The IntCal
-calibration curves and southern hemisphere calibration curves are also
-provided.
+There are a few example datasets of radiocarbon determinations (e.g.,
+`two_normals`, `kerr`, `pp_uniform_phase`, `buchanan`, `alces`, `equus`,
+`human`, …) provided, which can be used to try out the calibration
+functions. `two_normals` is a small artificial data set for which the
+underlying calendar ages were drawn from a mixture of two normals. It is
+included simply to give some quick-to-run examples for the
+non-parametric calibration functions. `pp_uniform_phase` is another
+small artificial dataset which is included to give quick-to-run examples
+for the Poisson Process modelling functions. The remaining datasets are
+from real-life data. The Northern Hemispehere IntCal calibration curves
+and Southern Hemisphere SHCal calibration curves are also provided.
 
 ## Non-parametric calibration quick-start example
 

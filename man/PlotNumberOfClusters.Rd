@@ -14,8 +14,8 @@ PlotNumberOfClusters(output_data, n_burn = NA, n_end = NA)
 one of these return values. Optionally, the output data can have an extra list item
 named \code{label} which is used to set the label on the plot legend.}
 
-\item{n_burn}{The number of (thinned) samples in the DPMM outputs discarded as burn-in (i.e.,
-considered to be occurring before the MCMC has converged). Any samples in the (thinned) DPMM outputs
+\item{n_burn}{The number of (thinned) samples in \code{output_data} discarded as burn-in (i.e.,
+considered to be occurring before the MCMC has converged). Any samples in the (thinned) outputs
 before this are not used in the calculation. If not given, the first half of the
 MCMC chain is discarded. Looking at the output of \link{PlotConvergenceData} can
 help determine what an appropriate value is for a given output. Note that the maximum

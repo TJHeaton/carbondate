@@ -4,8 +4,8 @@ template:
   bootswatch: lumen
 reference:
 - title: Calibration of a Single Radiocarbon Sample
-  desc: Function to calibrate a single radiocarbon determination against a given calibration curve. The rest of
-    the library concerns calibration of multiple (related) radiocarbon samples.
+  desc: Function to independently calibrate a single radiocarbon determination against a given calibration curve.
+    The rest of the library concerns calibration of multiple (related) radiocarbon samples.
   contents:
   - CalibrateSingleDetermination
 - title: Bayesian Non-Parametric Joint Density Estimation
