@@ -12,7 +12,7 @@ Description:
   (see <doi:10.1111/rssc.12599> Timothy J. Heaton (2022)).
   Also models the occurrence of radiocarbon samples as a variable-rate (inhomogeneous) Poisson process,
   and plots the posterior mean rate and information about the change points.
-License: MIT + file LICENSE
+License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 Suggests: 
