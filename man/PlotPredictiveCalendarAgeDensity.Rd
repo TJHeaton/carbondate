@@ -65,16 +65,17 @@ that the maximum predictive density will be at 1/3 of the height of the plot.}
 density. These ages will be created on a regular grid that automatically covers the
 calendar period of the given set of \eqn{{}^{14}}C samples. Default is 1001.}
 
-\item{n_burn}{The number of (thinned) samples in \code{output_data} discarded as burn-in (i.e.,
-considered to be occurring before the MCMC has converged). Any samples in the (thinned) outputs
-before this are not used in the calculation. If not given, the first half of the
-MCMC chain is discarded. Looking at the output of \link{PlotConvergenceData} can
-help determine what an appropriate value is for a given output. Note that the maximum
-value that can be chosen is \code{n_iter - 100 * n_thin} (where \code{n_iter} and \code{n_thin} are the
-arguments given to \link{PolyaUrnBivarDirichlet} or \link{WalkerBivarDirichlet}).}
+\item{n_burn}{The number of MCMC iterations that should be discarded as burn-in (i.e.,
+considered to be occurring before the MCMC has converged). This relates to the number
+of iterations (\code{n_iter}) when running the original update functions (not the thinned \code{output_data}).
+Any MCMC iterations before this are not used in the calculations. If not given, the first half of
+the MCMC chain is discarded. Note: The maximum value that the function will allow is
+\code{n_iter - 100 * n_thin} (where \code{n_iter} and \code{n_thin} are the arguments given to
+\link{PolyaUrnBivarDirichlet} or \link{WalkerBivarDirichlet})
+which would leave only 100 of the (thinned) values in \code{output_data}.}
 
-\item{n_end}{The iteration number of the last sample in the DPMM output to use in the calculations.
-Assumed to be the number of (thinned) realisations stored in the DPMM output if not given.}
+\item{n_end}{The last iteration in the original MCMC chain to use in the calculations. Assumed to be the
+total number of iterations performed, i.e. \code{niter}, if not given.}
 }
 \value{
 A list, each item containing a data frame of the \code{calendar_age}, the

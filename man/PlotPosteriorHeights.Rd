@@ -21,15 +21,16 @@ named \code{label} which is used to set the label on the plot legend.}
 which can contain at most 4 elements, with values in the range 1 to 6. If not given, then
 \code{c(1, 2, 3)} will be used.}
 
-\item{n_burn}{The number of (thinned) samples in \code{output_data} discarded as burn-in (i.e.,
-considered to be occurring before the MCMC has converged). Any samples in the (thinned) outputs
-before this are not used in the calculation. If not given, the first half of the
-MCMC chain is discarded. Note that the maximum
-value that can be chosen is \code{n_iter - 100 * n_thin} (where \code{n_iter} and \code{n_thin} are the
-arguments given to \link{PPcalibrate}).}
+\item{n_burn}{The number of MCMC iterations that should be discarded as burn-in (i.e.,
+considered to be occurring before the MCMC has converged). This relates to the number
+of iterations (\code{n_iter}) when running the original update functions (not the thinned \code{output_data}).
+Any MCMC iterations before this are not used in the calculations. If not given, the first half of the
+MCMC chain is discarded. Note: The maximum value that the function
+will allow is \code{n_iter - 100 * n_thin} (where \code{n_iter} and \code{n_thin} are the arguments that were given to
+\link{PPcalibrate}) which would leave only 100 of the (thinned) values in \code{output_data}.}
 
-\item{n_end}{The iteration number of the last sample in \code{output_data} to use in the calculations.
-Assumed to be the total number of (thinned) realisations stored if not given.}
+\item{n_end}{The last iteration in the original MCMC chain to use in the calculations. Assumed to be the
+total number of iterations performed, i.e. \code{niter}, if not given.}
 
 \item{kernel_bandwidth}{(Optional) The bandwidth used for the (Gaussian) kernel smoothing of
 the calendar age densities. If not given, 1/50th of the maximum height will be used.}

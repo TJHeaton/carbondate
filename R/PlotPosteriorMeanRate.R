@@ -45,14 +45,15 @@
 #' @param n_calc Number of calendar ages at which to calculate the value of the rate
 #' \eqn{\lambda(t)}. These ages will be created on a regular grid that automatically covers
 #' the calendar period specified in `output_data`. Default is 1001.
-#' @param n_burn The number of (thinned) samples in `output_data` discarded as burn-in (i.e.,
-#' considered to be occurring before the MCMC has converged). Any samples in the (thinned) outputs
-#' before this are not used in the calculation. If not given, the first half of the
-#' MCMC chain is discarded. Note that the maximum
-#' value that can be chosen is `n_iter - 100 * n_thin` (where `n_iter` and `n_thin` are the
-#' arguments given to [carbondate::PPcalibrate]).
-#' @param n_end The iteration number of the last sample in `output_data` to use in the calculations.
-#' Assumed to be the total number of (thinned) realisations stored if not given.
+#' @param n_burn The number of MCMC iterations that should be discarded as burn-in (i.e.,
+#' considered to be occurring before the MCMC has converged). This relates to the number
+#' of iterations (`n_iter`) when running the original update functions (not the thinned `output_data`).
+#' Any MCMC iterations before this are not used in the calculations. If not given, the first half of the
+#' MCMC chain is discarded. Note: The maximum value that the function
+#' will allow is `n_iter - 100 * n_thin` (where `n_iter` and `n_thin` are the arguments that were given to
+#' [carbondate::PPcalibrate]) which would leave only 100 of the (thinned) values in `output_data`.
+#' @param n_end The last iteration in the original MCMC chain to use in the calculations. Assumed to be the
+#' total number of iterations performed, i.e. `niter`, if not given.
 #'
 #'
 #' @return A list, each item containing a data frame of the `calendar_age`, the `rate_mean`
