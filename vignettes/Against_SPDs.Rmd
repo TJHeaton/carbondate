@@ -1,0 +1,43 @@
+---
+title: "Why Not to Use SPDs"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Why Not to Use SPDs}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: references.bib
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(carbondate)
+```
+
+## Summed Probability Distributions
+Currently, the most commonly-used approach to summarise calendar age information from multiple ^14^C determinations is via summed probability distributions (SPD). These are **not statistically valid** estimators of the calendar age of a potential future sample. It is our view that they should not be used in any dates-as-data approach to provide a population proxy.  
+
+For an SPD, the posterior calendar age density of each object is first calculated independently) from the others as using the function above. These individual densities are then summed/averaged to give an SPD estimate. The independence assumed in the separate calibration of each sample, followed by subsequent summarisation, generates a contradiction. 
+
+Additionally, the SPDs approach fundamentally does not model the samples in the calendar age domain. Consequently, it is also not able to deal with inversions in the calibration curve where there are multiple disjoint calendar periods which are consistent with the observed determinations; or with plateau periods. 
+
+The SPD function is **ONLY** provided here as a comparison with the other routines. To calculate the SPD for a set of radiocarbon determinations (here we use the example dataset `armit` [@armit2014]) see the example below, where we also plot the results.
+
+```{r find_spd, out.width="100%", fig.width=10, fig.height=8}
+spd <- FindSummedProbabilityDistribution(
+  calendar_age_range_BP = c(1000, 4500), 
+  rc_determinations = armit$c14_age, 
+  rc_sigmas = armit$c14_sig, 
+  F14C_inputs = FALSE, 
+  calibration_curve = intcal20,
+  plot_output = TRUE)
+```
+
+**Note:** The summary functions for plotting the predictive joint calendar age density using the rigorous Bayesian non-parametric alternative to SPDs (described in the vignette [Non-parametric Summed Density](Non-parametric-summed-density.html)) can also optionally plot the SPD without having to calculate it separately first.
+
+# References

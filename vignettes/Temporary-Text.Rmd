@@ -67,4 +67,58 @@ It will be more likely that an object will come from some clusters than others. 
 
 For full technical details of the models used, and explanation of the model parameters, see [@heaton2021].
 
+
+## Text from old Intro
+
+# Additional Functions
+
+## Independent calibration
+
+Although this package is concerned with the calibration of multiple related ^14^C determinations, it can also be useful to calibrate a single calibration independently, for example to estimate initial values for the sampler, or for comparison. To calibrate a single independent determination (using the provided IntCal20 calibration curve), run the following:
+
+```{r single_calibration, out.width="100%", fig.width=10, fig.height=8}
+calibration_result <- CalibrateSingleDetermination(
+  rc_determination = 1413, 
+  rc_sigma = 25, 
+  F14C_inputs = FALSE, 
+  calibration_curve = intcal20)
+plot(
+  calibration_result,
+  type="l", 
+  xlab = "Calendar age (cal yr BP)", 
+  ylab = "Posterior Probability",
+  main = expression(paste("Calibration of ", 1413, " \u00B1 ", 25, " "^14, "C yr BP using IntCal20")), 
+  xlim=c(1500, 1100))
+  
+```   
+
+## Summed Probability Distributions
+Currently, the most commonly-used approach to summarise calendar age information from multiple ^14^C determinations is via summed probability distributions (SPD). These are **not statistically valid** estimators of the calendar age of a potential future sample. It is our view that they should not be used in any dates-as-data approach to provide a population proxy.  
+
+For an SPD, the posterior calendar age density of each object is first calculated independently) from the others as using the function above. These individual densities are then summed/averaged to give an SPD estimate. The independence assumed in the separate calibration of each sample, followed by subsequent summarisation, generates a contradiction. 
+
+Additionally, the SPDs approach fundamentally does not model the samples in the calendar age domain. Consequently, it is also not able to deal with inversions in the calibration curve where there are multiple disjoint calendar periods which are consistent with the observed determinations; or with plateau periods. 
+
+The SPD function is **ONLY** provided here as a comparison with the other routines. To calculate the SPD for a set of radiocarbon determinations (here we use the example dataset `armit`) see the example below, where we also plot the results.
+
+```{r find_spd, out.width="100%", fig.width=10, fig.height=8}
+spd <- FindSummedProbabilityDistribution(
+  calendar_age_range_BP = c(1000, 4500), 
+  rc_determinations = armit$c14_age, 
+  rc_sigmas = armit$c14_sig, 
+  F14C_inputs = FALSE, 
+  calibration_curve = intcal20)
+plot(
+  spd,
+  type="l", 
+  xlab = "Calendar age (cal yr BP)", 
+  ylab = "SPD Probability", 
+  xlim=c(4500, 1000),
+  yaxt="n")
+```
+
+**Note:** The summary functions for plotting the predictive joint calendar age density using the rigorous Bayesian non-parametric alternative to SPDs (described in the vignette [Non-parametric Summed Density](Non-parametric-summed-density.html)) can also optionally plot the SPD without having to calculate it separately first.
+
+
+
 ## References
