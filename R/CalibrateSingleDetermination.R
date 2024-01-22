@@ -73,8 +73,14 @@
 #'     bespoke_probability = 0.8,
 #'     denscale = 5)
 CalibrateSingleDetermination <- function(
-    rc_determination, rc_sigma, calibration_curve, F14C_inputs = FALSE,
-    plot_output = FALSE, interval_width = "2sigma", bespoke_probability = NA, denscale = 3) {
+    rc_determination,
+    rc_sigma,
+    calibration_curve,
+    F14C_inputs = FALSE,
+    plot_output = FALSE,
+    interval_width = "2sigma",
+    bespoke_probability = NA,
+    denscale = 3) {
 
   arg_check <- .InitializeErrorList()
   .CheckNumber(arg_check, rc_determination)

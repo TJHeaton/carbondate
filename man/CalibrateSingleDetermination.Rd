@@ -65,8 +65,7 @@ plot(calib, type = "l", xlim = c(1000, 600))
 calib <- CalibrateSingleDetermination(860, 35, intcal20, plot_output = TRUE)
 
 # Calibration of a single (old) determination expressed as 14C age BP
-calib <- CalibrateSingleDetermination(
-    31020, 100, intcal20)
+calib <- CalibrateSingleDetermination(31020, 100, intcal20)
 plot(calib, type = "l", xlim = c(36500, 34500))
 
 # Calibration of a single (old) determination expressed as F14C concentration
@@ -76,14 +75,24 @@ plot(calib, type = "l", xlim = c(36500, 34500))
 
 # Calibration of a single determination expressed as 14C age BP
 # against SHCal20 (and creating an automated plot)
-calib <- CalibrateSingleDetermination(1413, 25, shcal20, plot_output = TRUE)
+CalibrateSingleDetermination(1413, 25, shcal20, plot_output = TRUE)
 
 # Implementing a bespoke confidence interval level
-calib <- CalibrateSingleDetermination(1413, 25, shcal20,
-    plot_output = TRUE, interval_width = "bespoke", bespoke_probability = 0.8)
+CalibrateSingleDetermination(
+    1413,
+    25,
+    shcal20,
+    plot_output = TRUE,
+    interval_width = "bespoke",
+    bespoke_probability = 0.8)
 
 # Changing denscale (so the calendar age density takes up less space)
-calib <- CalibrateSingleDetermination(1413, 25, shcal20,
-    plot_output = TRUE, interval_width = "bespoke", bespoke_probability = 0.8,
+CalibrateSingleDetermination(
+    1413,
+    25,
+    shcal20,
+    plot_output = TRUE,
+    interval_width = "bespoke",
+    bespoke_probability = 0.8,
     denscale = 5)
 }
