@@ -10,7 +10,13 @@
     interval_width,
     bespoke_probability,
     title = "Calendar age density estimate"){
-  graphics::par(mar = c(5, 4.5, 4, 2) + 0.1, las = 1)
+
+  # Set nice plotting parameters
+  graphics::par(
+    mgp = c(3, 0.7, 0),
+    mar = c(5, 4.5, 4, 2) + 0.1,
+    las = 1)
+
   .PlotCalibrationCurve(
     plot_AD,
     xlim,

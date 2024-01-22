@@ -123,6 +123,10 @@ FindSummedProbabilityDistribution <- function(
     probability=probabilities_per_calendar_age)
 
   if(plot_output == TRUE) {
+    # Ensure revert to main environment par on exit of function
+    opar <- graphics::par(no.readonly = TRUE)
+    on.exit(graphics::par(opar))
+
     .PlotSPD(
       rc_determinations = rc_determinations,
       rc_sigmas = rc_sigmas,
@@ -171,14 +175,13 @@ FindSummedProbabilityDistribution <- function(
 
   plot_AD <- FALSE # Plot in calendar year
 
-  # Change plotting parameters
-  opar <- graphics::par(
+  # Set nice plotting parameters
+  graphics::par(
+    mgp = c(3, 0.7, 0),
     xaxs = "i",
     yaxs = "i",
     mar = c(5, 4.5, 4, 2) + 0.1,
     las = 1)
-  # Revert to main environment pars after complete
-  on.exit(graphics::par(opar))
 
   .PlotCalibrationCurveAndInputData(
     plot_AD,

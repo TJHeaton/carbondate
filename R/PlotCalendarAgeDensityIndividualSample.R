@@ -94,6 +94,10 @@ PlotCalendarAgeDensityIndividualSample <- function(
   .CheckNBurnAndNEnd(arg_check, n_burn, n_end, n_iter, n_thin)
   .ReportErrors(arg_check)
 
+  # Ensure revert to main environment par on exit of function
+  opar <- graphics::par(no.readonly = TRUE)
+  on.exit(graphics::par(opar))
+
   n_burn <- .SetNBurn(n_burn, n_iter, n_thin)
   n_end <- .SetNEnd(n_end, n_iter, n_thin)
 
@@ -162,8 +166,14 @@ PlotCalendarAgeDensityIndividualSample <- function(
   }
 
   plot_AD <- any(calendar_age < 0)
-  graphics::par(xaxs = "i", yaxs = "i")
-  graphics::par(mar = c(5, 4.5, 4, 2) + 0.1, las = 1)
+
+  # Set nice plotting parameters
+  graphics::par(
+    mgp = c(3, 0.7, 0),
+    xaxs = "i",
+    yaxs = "i",
+    mar = c(5, 4.5, 4, 2) + 0.1,
+    las = 1)
 
   .PlotCalibrationCurve(
     plot_AD,

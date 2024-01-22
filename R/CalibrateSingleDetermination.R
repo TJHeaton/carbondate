@@ -79,7 +79,7 @@ CalibrateSingleDetermination <- function(
   probabilities <- .ProbabilitiesForSingleDetermination(rc_determination, rc_sigma, F14C_inputs, calibration_curve)
 
   if(plot_output == TRUE) {
-    # Esnure revert to main environment par on exit of function
+    # Ensure revert to main environment par on exit of function
     opar <- graphics::par(no.readonly = TRUE)
     on.exit(graphics::par(opar))
 
@@ -180,6 +180,7 @@ CalibrateSingleDetermination <- function(
 
   plot_AD <- FALSE # Plot in calendar year
 
+  # Set nice plotting parameters
   graphics::par(
     mgp = c(3, 0.7, 0),
     xaxs = "i",

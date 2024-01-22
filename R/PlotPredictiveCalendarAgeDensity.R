@@ -144,6 +144,10 @@ PlotPredictiveCalendarAgeDensity <- function(
   .CheckNumber(arg_check, denscale, lower = 0)
   .ReportErrors(arg_check)
 
+  # Ensure revert to main environment par on exit of function
+  opar <- graphics::par(no.readonly = TRUE)
+  on.exit(graphics::par(opar))
+
   if (is.null(calibration_curve)) {
     calibration_curve <- get(output_data[[1]]$input_data$calibration_curve_name)
   }
