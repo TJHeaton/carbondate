@@ -1,4 +1,4 @@
-#' Plot Posterior Calendar Age Estimate for an Individual Determination
+#' Plot Posterior Calendar Age Estimate for an Individual Determination after Joint Calibration
 #'
 #' @description
 #' Once a joint calibration function (any of [carbondate::PolyaUrnBivarDirichlet], [carbondate::WalkerBivarDirichlet]

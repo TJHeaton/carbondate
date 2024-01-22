@@ -2,7 +2,7 @@
 % Please edit documentation in R/PlotCalendarAgeDensityIndividualSample.R
 \name{PlotCalendarAgeDensityIndividualSample}
 \alias{PlotCalendarAgeDensityIndividualSample}
-\title{Plot Posterior Calendar Age Estimate for an Individual Determination}
+\title{Plot Posterior Calendar Age Estimate for an Individual Determination after Joint Calibration}
 \usage{
 PlotCalendarAgeDensityIndividualSample(
   ident,
