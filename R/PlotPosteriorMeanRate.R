@@ -57,7 +57,7 @@
 #' will allow is `n_iter - 100 * n_thin` (where `n_iter` and `n_thin` are the arguments that were given to
 #' [carbondate::PPcalibrate]) which would leave only 100 of the (thinned) values in `output_data`.
 #' @param n_end The last iteration in the original MCMC chain to use in the calculations. Assumed to be the
-#' total number of iterations performed, i.e. `niter`, if not given.
+#' total number of iterations performed, i.e. `n_iter`, if not given.
 #'
 #'
 #' @return A list, each item containing a data frame of the `calendar_age`, the `rate_mean`

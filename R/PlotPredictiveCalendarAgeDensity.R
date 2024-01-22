@@ -61,7 +61,7 @@
 #' [carbondate::PolyaUrnBivarDirichlet] or [carbondate::WalkerBivarDirichlet])
 #' which would leave only 100 of the (thinned) values in `output_data`.
 #' @param n_end The last iteration in the original MCMC chain to use in the calculations. Assumed to be the
-#' total number of iterations performed, i.e. `niter`, if not given.
+#' total number of iterations performed, i.e. `n_iter`, if not given.
 #'
 #' @return A list, each item containing a data frame of the `calendar_age`, the
 #' `density_mean` and the confidence intervals for the density
