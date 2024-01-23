@@ -92,6 +92,7 @@ CalibrateSingleDetermination <- function(
   .CheckFlag(arg_check, plot_output)
   .CheckCalibrationCurve(arg_check, calibration_curve, NA)
   .CheckNumber(arg_check, denscale, lower = 0)
+  .CheckNumber(arg_check, resolution, lower = 0.01)
   .ReportErrors(arg_check)
 
   calibration_curve_name <- deparse(substitute(calibration_curve))
@@ -121,7 +122,7 @@ CalibrateSingleDetermination <- function(
       denscale = denscale)
   }
 
-  return_data <- data.frame(calendar_age_BP=calibration_curve$calendar_age, probability=probabilities)
+  return_data <- data.frame(calendar_age_BP=calibration_curve$calendar_age_BP, probability=probabilities)
   if (plot_output == TRUE) {
     invisible(return_data)
   } else {
@@ -208,7 +209,10 @@ CalibrateSingleDetermination <- function(
       list(c14_age = round(rc_age), c14_sig = round(rc_sig, 1)))
   }
 
-  plot_AD <- any(xrange < 0)
+  plot_AD <- any(calendar_ages < 0)
+  if (plot_AD) {
+    calendar_ages <- 1950 - calendar_ages
+  }
 
   # Set nice plotting parameters
   graphics::par(
@@ -258,7 +262,11 @@ CalibrateSingleDetermination <- function(
       "2sigma" = 0.954,
       "bespoke" = bespoke_probability)
     hpd <- FindHPD(as.numeric(rev(calendar_ages)), rev(probabilities), hpd_probability)
-    graphics::segments(hpd$start_ages, hpd$height, hpd$end_ages, hpd$height, lwd=4, col='black', lend='butt')
+    if (length(hpd$start_ages) > 0) {
+      graphics::segments(hpd$start_ages, hpd$height, hpd$end_ages, hpd$height, lwd=4, col='black', lend='butt')
+    } else {
+      warning("HPD Interval could not be found")
+    }
   }
 
   .AddLegendToIndividualCalibrationPlot(

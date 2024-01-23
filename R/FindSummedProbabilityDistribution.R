@@ -93,6 +93,7 @@ FindSummedProbabilityDistribution <- function(
   .CheckFlag(arg_check, F14C_inputs)
   .CheckFlag(arg_check, plot_output)
   .CheckNumber(arg_check, denscale, lower = 0)
+  .CheckNumber(arg_check, resolution, lower = 0.01)
   .CheckInputData(arg_check, rc_determinations, rc_sigmas, F14C_inputs)
   .CheckCalibrationCurve(arg_check, calibration_curve, NA)
   .ReportErrors(arg_check)
@@ -141,7 +142,11 @@ FindSummedProbabilityDistribution <- function(
       denscale = denscale)
   }
 
-  return(SPD)
+  if (plot_output == TRUE) {
+    invisible(SPD)
+  } else {
+    return(SPD)
+  }
 }
 
 
@@ -171,7 +176,10 @@ FindSummedProbabilityDistribution <- function(
 
   title <- "Summed Probability Distribution \n(Do Not Use For Inference)"
 
-  plot_AD <- any(xrange < 0)
+  plot_AD <- any(calendar_ages < 0)
+  if (plot_AD) {
+    calendar_ages <- 1950 - calendar_ages
+  }
 
   # Set nice plotting parameters
   graphics::par(
@@ -197,6 +205,8 @@ FindSummedProbabilityDistribution <- function(
   .SetUpDensityPlot(plot_AD,
                     xlim = rev(xrange),
                     ylim = c(0, denscale * max(probabilities)))
+
+
   graphics::polygon(
     c(calendar_ages, rev(calendar_ages)),
     c(probabilities, rep(0, length(probabilities))),

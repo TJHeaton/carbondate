@@ -100,6 +100,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
 
   .CheckCalibrationCurveFromOutput(arg_check, output_data, calibration_curve)
   .CheckNumber(arg_check, hist_resolution, lower = 0.01)
+  .CheckNumber(arg_check, density_resolution, lower = 0.01)
   .CheckNBurnAndNEnd(arg_check, n_burn, n_end, n_iter, n_thin)
   .ReportErrors(arg_check)
 
@@ -246,10 +247,14 @@ PlotCalendarAgeDensityIndividualSample <- function(
 
   if (show_unmodelled_density) {
     unmodelled <- CalibrateSingleDetermination(
-      rc_age, rc_sig, InterpolateCalibrationCurve(breaks, calibration_curve))
-    unmodelled$probability <- unmodelled$probability / sum(unmodelled$probability * hist_resolution)
+      rc_age, rc_sig, calibration_curve, resolution = density_resolution)
+    if (plot_AD) {
+      unmodelled$calendar_age <- 1950 - unmodelled$calendar_age_BP
+    } else {
+       unmodelled$calendar_age <- unmodelled$calendar_age_BP
+    }
     graphics::polygon(
-      c(unmodelled$calendar_age_BP, rev(unmodelled$calendar_age_BP)),
+      c(unmodelled$calendar_age, rev(unmodelled$calendar_age)),
       c(unmodelled$probability, rep(0, length(unmodelled$probability))),
       border = NA,
       col = grDevices::grey(0.1, alpha = 0.25))
