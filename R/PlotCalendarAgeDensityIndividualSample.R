@@ -27,6 +27,8 @@
 #' item named `label` which is used to set the label on the plot legend.
 #' @param hist_resolution The distance between histogram breaks when plotting the individual
 #' posterior calendar age density. Default is 5.
+#' @param density_resolution The distance between calendar ages for the returned smoothed calendar age
+#' probability. Default is 1.
 #' @param interval_width The confidence intervals to show for the calibration curve and
 #' for the highest posterior density ranges.
 #' Choose from one of "1sigma" (68.3%), "2sigma" (95.4%) and "bespoke". Default is "2sigma".

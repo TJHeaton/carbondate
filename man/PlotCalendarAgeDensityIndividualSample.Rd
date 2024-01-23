@@ -10,6 +10,7 @@ PlotCalendarAgeDensityIndividualSample(
   calibration_curve = NULL,
   plot_14C_age = TRUE,
   hist_resolution = 5,
+  density_resolution = 1,
   interval_width = "2sigma",
   bespoke_probability = NA,
   n_burn = NA,
@@ -42,6 +43,9 @@ F\eqn{{}^{14}}C concentration instead.}
 \item{hist_resolution}{The distance between histogram breaks when plotting the individual
 posterior calendar age density. Default is 5.}
 
+\item{density_resolution}{The distance between calendar ages for the returned smoothed calendar age
+probability. Default is 1.}
+
 \item{interval_width}{The confidence intervals to show for the calibration curve and
 for the highest posterior density ranges.
 Choose from one of "1sigma" (68.3\%), "2sigma" (95.4\%) and "bespoke". Default is "2sigma".}
@@ -70,7 +74,9 @@ result of independent calibration using \link{CalibrateSingleDetermination}) on 
 Default is \code{FALSE}.}
 }
 \value{
-None
+A data frame with one column \code{calendar_age_BP} containing the calendar ages, and the other
+column \code{probability} containing the (smoothed) kernel density estimate of the probability at that
+calendar age.
 }
 \description{
 Once a joint calibration function (any of \link{PolyaUrnBivarDirichlet}, \link{WalkerBivarDirichlet}
@@ -111,6 +117,10 @@ PlotCalendarAgeDensityIndividualSample(
     interval_width = "1sigma",
     show_hpd_ranges = TRUE,
     show_unmodelled_density = TRUE)
+
+# Plot and then use the returned probability to find the mean posterior calendar age
+posterior_dens <- PlotCalendarAgeDensityIndividualSample(15, polya_urn_output)
+weighted.mean(posterior_dens.calendar_age_BP, posterior_dens.probability)
 }
 \seealso{
 \link{CalibrateSingleDetermination} for independent calibration of a sample against
