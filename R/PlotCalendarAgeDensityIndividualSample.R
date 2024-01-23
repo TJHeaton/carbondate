@@ -77,7 +77,7 @@
 #'
 #' # Plot and then use the returned probability to find the mean posterior calendar age
 #' posterior_dens <- PlotCalendarAgeDensityIndividualSample(15, polya_urn_output)
-#' weighted.mean(posterior_dens.calendar_age_BP, posterior_dens.probability)
+#' weighted.mean(posterior_dens$calendar_age_BP, posterior_dens$probability)
 PlotCalendarAgeDensityIndividualSample <- function(
     ident,
     output_data,
@@ -147,7 +147,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
     by = density_resolution)
   returned_density <- data.frame(
     calendar_age_BP = returned_calendar_age,
-    probability = approx(smoothed_density$x, smoothed_density$y, returned_calendar_age)$y)
+    probability = stats::approx(smoothed_density$x, smoothed_density$y, returned_calendar_age)$y)
 
   # Expand the calendar age range for plotting
   xrange <- xrange + 0.1 * c(-1, 1) * diff(xrange)

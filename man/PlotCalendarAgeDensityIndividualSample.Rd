@@ -120,7 +120,7 @@ PlotCalendarAgeDensityIndividualSample(
 
 # Plot and then use the returned probability to find the mean posterior calendar age
 posterior_dens <- PlotCalendarAgeDensityIndividualSample(15, polya_urn_output)
-weighted.mean(posterior_dens.calendar_age_BP, posterior_dens.probability)
+weighted.mean(posterior_dens$calendar_age_BP, posterior_dens$probability)
 }
 \seealso{
 \link{CalibrateSingleDetermination} for independent calibration of a sample against
