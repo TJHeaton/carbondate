@@ -30,7 +30,7 @@ will allow is \code{n_iter - 100 * n_thin} (where \code{n_iter} and \code{n_thin
 \link{PPcalibrate}) which would leave only 100 of the (thinned) values in \code{output_data}.}
 
 \item{n_end}{The last iteration in the original MCMC chain to use in the calculations. Assumed to be the
-total number of iterations performed, i.e. \code{niter}, if not given.}
+total number of iterations performed, i.e. \code{n_iter}, if not given.}
 
 \item{kernel_bandwidth}{(Optional) The bandwidth used for the (Gaussian) kernel smoothing of
 the calendar age densities. If not given, then 1/50th of the overall calendar age range will be used.}

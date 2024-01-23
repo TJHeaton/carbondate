@@ -75,7 +75,7 @@ the MCMC chain is discarded. Note: The maximum value that the function will allo
 which would leave only 100 of the (thinned) values in \code{output_data}.}
 
 \item{n_end}{The last iteration in the original MCMC chain to use in the calculations. Assumed to be the
-total number of iterations performed, i.e. \code{niter}, if not given.}
+total number of iterations performed, i.e. \code{n_iter}, if not given.}
 }
 \value{
 A list, each item containing a data frame of the \code{calendar_age}, the
