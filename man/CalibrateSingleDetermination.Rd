@@ -9,6 +9,7 @@ CalibrateSingleDetermination(
   rc_sigma,
   calibration_curve,
   F14C_inputs = FALSE,
+  resolution = 1,
   plot_output = FALSE,
   interval_width = "2sigma",
   bespoke_probability = NA,
@@ -29,6 +30,9 @@ This format matches the curves supplied with this package, e.g., \link{intcal20}
 
 \item{F14C_inputs}{\code{TRUE} if the provided \code{rc_determination} is an F\eqn{{}^{14}}C
 concentration and \code{FALSE} if it is a radiocarbon age. Defaults to \code{FALSE}.}
+
+\item{resolution}{The distance between the calendar ages at which to calculate the calendar age probability.
+Default is 1.}
 
 \item{plot_output}{\code{TRUE} if you wish to plot the determination, the calibration curve,
 and the posterior calibrated age estimate on the same plot. Defaults to \code{FALSE}}

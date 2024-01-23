@@ -82,6 +82,7 @@ FindSummedProbabilityDistribution <- function(
     rc_sigmas,
     calibration_curve,
     F14C_inputs = FALSE,
+    resolution = 1,
     plot_output = FALSE,
     interval_width = "2sigma",
     bespoke_probability = NA,
@@ -103,7 +104,7 @@ FindSummedProbabilityDistribution <- function(
   new_calendar_ages <- seq(
     max(calibration_data_range[1], calendar_age_range_BP[1] - range_margin),
     min(calibration_data_range[2], calendar_age_range_BP[2] + range_margin),
-    by = 1)
+    by = resolution)
 
   interpolated_calibration_data <- InterpolateCalibrationCurve(
     new_calendar_ages, calibration_curve, F14C_inputs)
@@ -165,15 +166,12 @@ FindSummedProbabilityDistribution <- function(
     calibration_curve <- .AddC14ageColumns(calibration_curve)
   }
 
-  rc_ages <- rc_determinations
-  rc_sigs <- rc_sigmas
-
   # Calculate calendar age plotting range
   xrange <- range(calibration_curve$calendar_age)
 
   title <- "Summed Probability Distribution \n(Do Not Use For Inference)"
 
-  plot_AD <- FALSE # Plot in calendar year
+  plot_AD <- any(xrange < 0)
 
   # Set nice plotting parameters
   graphics::par(

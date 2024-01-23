@@ -194,6 +194,7 @@ PlotPredictiveCalendarAgeDensity <- function(
       rc_determinations = rc_determinations,
       rc_sigmas = rc_sigmas,
       F14C_inputs = !plot_14C_age,
+      resolution = resolution,
       calibration_curve = calibration_curve)
   }
 

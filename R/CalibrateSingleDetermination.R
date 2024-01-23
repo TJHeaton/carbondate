@@ -15,6 +15,8 @@
 #' [carbondate::intcal13], which contain all 5 columns.
 #' @param F14C_inputs `TRUE` if the provided `rc_determination` is an F\eqn{{}^{14}}C
 #' concentration and `FALSE` if it is a radiocarbon age. Defaults to `FALSE`.
+#' @param resolution The distance between the calendar ages at which to calculate the calendar age probability.
+#' Default is 1.
 #' @param plot_output `TRUE` if you wish to plot the determination, the calibration curve,
 #' and the posterior calibrated age estimate on the same plot. Defaults to `FALSE`
 #' @param interval_width Only for usage when `plot_output = TRUE`. The confidence intervals to show for the
@@ -77,6 +79,7 @@ CalibrateSingleDetermination <- function(
     rc_sigma,
     calibration_curve,
     F14C_inputs = FALSE,
+    resolution = 1,
     plot_output = FALSE,
     interval_width = "2sigma",
     bespoke_probability = NA,
@@ -87,9 +90,16 @@ CalibrateSingleDetermination <- function(
   .CheckNumber(arg_check, rc_sigma)
   .CheckFlag(arg_check, F14C_inputs)
   .CheckFlag(arg_check, plot_output)
-  .CheckCalibrationCurve(arg_check, calibration_curve, F14C_inputs)
+  .CheckCalibrationCurve(arg_check, calibration_curve, NA)
   .CheckNumber(arg_check, denscale, lower = 0)
   .ReportErrors(arg_check)
+
+  calibration_curve_name <- deparse(substitute(calibration_curve))
+  calendar_age_range <- range(calibration_curve$calendar_age_BP)
+  calibration_curve <- InterpolateCalibrationCurve(
+    seq(from = calendar_age_range[1], to = calendar_age_range[2], by = resolution),
+    calibration_curve,
+    F14C_outputs = F14C_inputs)
 
   probabilities <- .ProbabilitiesForSingleDetermination(rc_determination, rc_sigma, F14C_inputs, calibration_curve)
 
@@ -104,7 +114,7 @@ CalibrateSingleDetermination <- function(
       calendar_ages = calibration_curve$calendar_age,
       probabilities = probabilities,
       calibration_curve = calibration_curve,
-      calibration_curve_name = deparse(substitute(calibration_curve)),
+      calibration_curve_name = calibration_curve_name,
       interval_width = interval_width,
       bespoke_probability = bespoke_probability,
       F14C_inputs = F14C_inputs,
@@ -120,8 +130,9 @@ CalibrateSingleDetermination <- function(
 }
 
 
-.ProbabilitiesForSingleDetermination <- function(
-    rc_determination, rc_sigma, F14C_inputs, calibration_curve) {
+.ProbabilitiesForSingleDetermination <- function(rc_determination, rc_sigma, F14C_inputs, calibration_curve) {
+
+  calendar_age_diff <- abs(diff(calibration_curve$calendar_age_BP)[1])
 
   if (F14C_inputs) {
     calibration_curve <- .AddF14cColumns(calibration_curve)
@@ -134,9 +145,10 @@ CalibrateSingleDetermination <- function(
   }
 
   probabilities <- stats::dnorm(rc_determination, mean=calcurve_rc_ages, sd=sqrt(calcurve_rc_sigs^2 + rc_sigma^2))
-  probabilities <- probabilities / sum(probabilities)
+  probabilities <- probabilities / (sum(probabilities) * calendar_age_diff)
   return(probabilities)
 }
+
 
 .PlotIndependentCalibration <- function(
     rc_determination,
@@ -165,12 +177,12 @@ CalibrateSingleDetermination <- function(
   rc_sig <- rc_sigma
 
   # Find the calendar age range to plot
-  cumulativeprobabilities <- cumsum(probabilities)
-  min_potential_calendar_age <- calibration_curve$calendar_age_BP[
+  cumulativeprobabilities <- cumsum(probabilities) / sum(probabilities)
+  calendar_age_bound_1 <- calibration_curve$calendar_age_BP[
     min(which(cumulativeprobabilities > prob_cutoff))]
-  max_potential_calendar_age <- calibration_curve$calendar_age_BP[
+  calendar_age_bound_2 <- calibration_curve$calendar_age_BP[
     max(which(cumulativeprobabilities <= (1 - prob_cutoff)))]
-  xrange <- c(max_potential_calendar_age, min_potential_calendar_age)
+  xrange <- sort(c(calendar_age_bound_1, calendar_age_bound_2))
   # Extend by 20% either side
   xrange <- xrange + 0.2 * c(-1, 1) * diff(xrange)
 
@@ -196,7 +208,7 @@ CalibrateSingleDetermination <- function(
       list(c14_age = round(rc_age), c14_sig = round(rc_sig, 1)))
   }
 
-  plot_AD <- FALSE # Plot in calendar year
+  plot_AD <- any(xrange < 0)
 
   # Set nice plotting parameters
   graphics::par(

@@ -10,6 +10,7 @@ FindSummedProbabilityDistribution(
   rc_sigmas,
   calibration_curve,
   F14C_inputs = FALSE,
+  resolution = 1,
   plot_output = FALSE,
   interval_width = "2sigma",
   bespoke_probability = NA,
@@ -36,6 +37,9 @@ This format matches the curves supplied with this package, e.g., \link{intcal20}
 
 \item{F14C_inputs}{\code{TRUE} if the provided \code{rc_determinations} are F\eqn{{}^{14}}C
 concentrations and \code{FALSE} if they are radiocarbon ages. Defaults to \code{FALSE}.}
+
+\item{resolution}{The distance between the calendar ages at which to calculate the calendar age probability.
+Default is 1.}
 
 \item{plot_output}{\code{TRUE} if you wish to plot the determinations, the calibration curve,
 and the SPD on the same plot. Defaults to \code{FALSE}}
