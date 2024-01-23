@@ -12,7 +12,7 @@ double find_probability_and_ranges_for_cut_off(
     start_ages.clear();
     end_ages.clear();
     auc.clear();
-    double y1, y2, dx, res = calendar_ages[1] - calendar_ages[0];
+    double y1, y2, dx, res = fabs(calendar_ages[1] - calendar_ages[0]);
     double range_probability = 0, total_probability = 0;
     for (int i = 0; i < calendar_ages.size() - 1; i++) {
         y1 = density[i];
