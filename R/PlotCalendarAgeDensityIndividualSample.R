@@ -43,7 +43,9 @@
 #'
 #' @export
 #'
-#' @return None
+#' @return A data frame with one column `calendar_age_BP` containing the calendar ages, and the other
+#' column `probability` containing the (smoothed) kernel density estimate of the probability at that
+#' calendar age.
 #'
 #' @seealso [carbondate::CalibrateSingleDetermination] for independent calibration of a sample against
 #' a calibration curve.
@@ -70,12 +72,17 @@
 #'     interval_width = "1sigma",
 #'     show_hpd_ranges = TRUE,
 #'     show_unmodelled_density = TRUE)
+#'
+#' # Plot and then use the returned probability to find the mean posterior calendar age
+#' posterior_dens <- PlotCalendarAgeDensityIndividualSample(15, polya_urn_output)
+#' weighted.mean(posterior_dens.calendar_age_BP, posterior_dens.probability)
 PlotCalendarAgeDensityIndividualSample <- function(
     ident,
     output_data,
     calibration_curve = NULL,
     plot_14C_age = TRUE,
     hist_resolution = 5,
+    density_resolution = 1,
     interval_width = "2sigma",
     bespoke_probability = NA,
     n_burn = NA,
@@ -130,8 +137,17 @@ PlotCalendarAgeDensityIndividualSample <- function(
 
   smoothed_density <- stats::density(calendar_age, bw="SJ")
 
-  # Find the calendar age range to plot
   xrange <- range(calendar_age)
+  # Interpolate for the smoothed density to return
+  returned_calendar_age <- seq(
+    from = ceiling(xrange[1] / density_resolution) * density_resolution,
+    to = floor(xrange[2] / density_resolution) * density_resolution,
+    by = density_resolution)
+  returned_density <- data.frame(
+    calendar_age_BP = returned_calendar_age,
+    probability = approx(smoothed_density$x, smoothed_density$y, returned_calendar_age)$y)
+
+  # Expand the calendar age range for plotting
   xrange <- xrange + 0.1 * c(-1, 1) * diff(xrange)
   xrange[1] <- floor(xrange[1] / hist_resolution) * hist_resolution
   xrange[2] <- ceiling(xrange[2] / hist_resolution) * hist_resolution
@@ -186,6 +202,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
   if (plot_AD) {
     calendar_age <- 1950 - calendar_age
     xrange <- 1950 - xrange
+    smoothed_density$x <- 1950 - smoothed_density$x
   }
 
   # Plot the 14C determination on the y-axis
@@ -223,6 +240,8 @@ PlotCalendarAgeDensityIndividualSample <- function(
     ylim = c(0, 3 * max(temphist$density)),
     col = "lavender",
     border = "purple")
+  graphics::lines(smoothed_density, lwd=2, col='purple', lty=2)
+
   if (show_unmodelled_density) {
     unmodelled <- CalibrateSingleDetermination(
       rc_age, rc_sig, InterpolateCalibrationCurve(breaks, calibration_curve))
@@ -234,7 +253,6 @@ PlotCalendarAgeDensityIndividualSample <- function(
       col = grDevices::grey(0.1, alpha = 0.25))
   }
   if (show_hpd_ranges) {
-    graphics::lines(smoothed_density, lwd=1, col='black', lty=2)
     hpd_probability <- switch(
       interval_width,
       "1sigma" = 0.682,
@@ -251,6 +269,8 @@ PlotCalendarAgeDensityIndividualSample <- function(
     show_hpd_ranges,
     show_unmodelled_density,
     hpd)
+
+  invisible(returned_density)
 }
 
 .AddLegendToDensitySamplePlot <- function(
