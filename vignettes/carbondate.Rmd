@@ -150,12 +150,19 @@ There are some example ^14^C data sets provided in the package, each of which co
 -   `alces`, `bison`, `cervus`, `equus`, `human`, `mammuthus`: radiocarbon determinations related to a variety of megafauna (and humans) from Yukon and Alaska [@guthrie2006]. Samples are restricted to those between 25,000--6000 ^14^C yrs BP. 
 
 ## Package User Guide
+For those new to calibration we provide the introductory vignettes:
+
+- [Independent and Joint Calibration of Radiocarbon Samples](Independent_calibration.html)
+- [Why not to Use SPDs](Against_SPDs.html) 
+
 To learn more about the functions (and methods) in the library, look at:
 
 - [Rigorous Bayesian non-parametric alternative to SPDs](Non-parametric-summed-density.html)
 - [Variable-Rate Poisson Process estimation and Changepoint Identification](Poisson-process-modelling.html) 
 
-These pages provide more details on the methods, and simple examples of their usage. 
+These pages provide more details on the methods, and simple examples of their usage.
+
+
 
 
 

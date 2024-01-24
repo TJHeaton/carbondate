@@ -123,4 +123,19 @@ plot(
 
 Due to fluctuations in past radiocarbon levels, all 14C determinations need to be calibrated (converted) in order to be understood on the calendar age scale. In many cases, we wish to calibrate a set of samples which are known to be related to one another (for example, arising from a particular site, or set of sites, populated by a particular culture). Each sample has an unknown calendar age but, since they are related, these calendar ages are assumed to arise from the same unknown shared calendar age density.
 
+### Text from independent calibration
+
+Introduction 
+
+This package is concerned with the calibration of multiple related 14C determinations. However it can also be useful to calibrate a single calibration independently, for example to estimate initial values for the sampler, or for comparison. 
+
+### Text from determining convergence
+
+summary 
+
+model the posterior calendar ages are not suitable parameters to
+use - rather we are interested in the number and distribution of clusters. However, they cannot be easily
+compared using this diagnostic as the number and identity of clusters can change with each iteration. For this model,
+the predictive density is a much more useful indicator.
+
 ## References
