@@ -9,6 +9,7 @@ PlotCalendarAgeDensityIndividualSample(
   output_data,
   calibration_curve = NULL,
   plot_14C_age = TRUE,
+  plot_cal_age_scale = "BP",
   hist_resolution = 5,
   density_resolution = 1,
   interval_width = "2sigma",
@@ -39,6 +40,9 @@ This format matches \link{intcal20}.}
 \item{plot_14C_age}{Whether to use the radiocarbon age (\eqn{{}^{14}}C yr BP) as
 the units of the y-axis in the plot. Defaults to \code{TRUE}. If \code{FALSE} uses
 F\eqn{{}^{14}}C concentration instead.}
+
+\item{plot_cal_age_scale}{The scale to use for the x-axis. Allowed values are
+"BP" and "AD".}
 
 \item{hist_resolution}{The distance between histogram breaks when plotting the individual
 posterior calendar age density. Default is 5.}
@@ -111,15 +115,18 @@ polya_urn_output <- PolyaUrnBivarDirichlet(
 PlotCalendarAgeDensityIndividualSample(15, polya_urn_output)
 
 # Now change to show 1 sigma interval for HPD range and calibration curve
+# and plot in yr AD
 PlotCalendarAgeDensityIndividualSample(
     15,
     polya_urn_output,
+    plot_cal_age_scale = "AD",
     interval_width = "1sigma",
     show_hpd_ranges = TRUE,
     show_unmodelled_density = TRUE)
 
-# Plot and then use the returned probability to find the mean posterior calendar age
+# Plot and then assign the returned probability
 posterior_dens <- PlotCalendarAgeDensityIndividualSample(15, polya_urn_output)
+# Use this to find the mean posterior calendar age
 weighted.mean(posterior_dens$calendar_age_BP, posterior_dens$probability)
 }
 \seealso{

@@ -68,9 +68,11 @@
 #' PlotCalendarAgeDensityIndividualSample(15, polya_urn_output)
 #'
 #' # Now change to show 1 sigma interval for HPD range and calibration curve
+#' # and plot in yr AD
 #' PlotCalendarAgeDensityIndividualSample(
 #'     15,
 #'     polya_urn_output,
+#'     plot_cal_age_scale = "AD",
 #'     interval_width = "1sigma",
 #'     show_hpd_ranges = TRUE,
 #'     show_unmodelled_density = TRUE)

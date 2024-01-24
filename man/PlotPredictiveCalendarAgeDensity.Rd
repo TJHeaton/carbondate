@@ -10,6 +10,7 @@ PlotPredictiveCalendarAgeDensity(
   n_posterior_samples = 5000,
   calibration_curve = NULL,
   plot_14C_age = TRUE,
+  plot_cal_age_scale = "BP",
   show_SPD = FALSE,
   show_confidence_intervals = TRUE,
   interval_width = "2sigma",
@@ -42,6 +43,9 @@ This format matches \link{intcal20}.}
 \item{plot_14C_age}{Whether to use the radiocarbon age (\eqn{{}^{14}}C yr BP) as
 the units of the y-axis in the plot. Defaults to \code{TRUE}. If \code{FALSE} uses
 F\eqn{{}^{14}}C concentration instead.}
+
+\item{plot_cal_age_scale}{The scale to use for the x-axis. Allowed values are
+"BP" and "AD".}
 
 \item{show_SPD}{Whether to calculate and show the summed probability
 distribution on the plot (optional). Default is \code{FALSE}.}

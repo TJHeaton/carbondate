@@ -12,6 +12,7 @@ FindSummedProbabilityDistribution(
   F14C_inputs = FALSE,
   resolution = 1,
   plot_output = FALSE,
+  plot_cal_age_scale = "BP",
   interval_width = "2sigma",
   bespoke_probability = NA,
   denscale = 3
@@ -43,6 +44,9 @@ Default is 1.}
 
 \item{plot_output}{\code{TRUE} if you wish to plot the determinations, the calibration curve,
 and the SPD on the same plot. Defaults to \code{FALSE}}
+
+\item{plot_cal_age_scale}{Only for usage when \code{plot_output = TRUE}.
+The scale to use for the x-axis. Allowed values are "BP" and "AD".}
 
 \item{interval_width}{Only for usage when \code{plot_output = TRUE}. The confidence intervals to show for the
 calibration curve. Choose from one of "1sigma" (68.3\%), "2sigma" (95.4\%) and "bespoke". Default is "2sigma".}

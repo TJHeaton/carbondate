@@ -9,6 +9,7 @@ PlotPosteriorMeanRate(
   n_posterior_samples = 5000,
   calibration_curve = NULL,
   plot_14C_age = TRUE,
+  plot_cal_age_scale = "BP",
   show_individual_means = TRUE,
   show_confidence_intervals = TRUE,
   interval_width = "2sigma",
@@ -39,6 +40,9 @@ This format matches \link{intcal20}.}
 \item{plot_14C_age}{Whether to use the radiocarbon age (\eqn{{}^{14}}C yr BP) as
 the units of the y-axis in the plot. Defaults to \code{TRUE}. If \code{FALSE} uses
 F\eqn{{}^{14}}C concentration instead.}
+
+\item{plot_cal_age_scale}{The scale to use for the x-axis. Allowed values are
+"BP" and "AD".}
 
 \item{show_individual_means}{(Optional) Whether to calculate and show the mean posterior
 calendar age estimated for each individual \eqn{{}^{14}}C sample on the plot as a rug on
