@@ -39,7 +39,8 @@ Default is 1.}
 and the posterior calibrated age estimate on the same plot. Defaults to \code{FALSE}}
 
 \item{plot_cal_age_scale}{Only for usage when \code{plot_output = TRUE}.
-The scale to use for the x-axis. Allowed values are "BP", "AD" and "BC".}
+The calendar scale to use for the x-axis. Allowed values are "BP", "AD" and "BC". The default
+is "BP", corresponding to plotting in cal yr BP.}
 
 \item{interval_width}{Only for usage when \code{plot_output = TRUE}. The confidence intervals to show for the
 calibration curve and for the highest posterior density ranges.

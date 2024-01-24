@@ -32,8 +32,8 @@
 #' @param plot_14C_age Whether to use the radiocarbon age (\eqn{{}^{14}}C yr BP) as
 #' the units of the y-axis in the plot. Defaults to `TRUE`. If `FALSE` uses
 #' F\eqn{{}^{14}}C concentration instead.
-#' @param plot_cal_age_scale The scale to use for the x-axis. Allowed values are
-#' "BP", "AD" and "BC".
+#' @param plot_cal_age_scale (Optional) The calendar scale to use for the x-axis. Allowed values are
+#' "BP", "AD" and "BC". The default is "BP" corresponding to plotting in cal yr BP.
 #' @param show_individual_means (Optional) Whether to calculate and show the mean posterior
 #' calendar age estimated for each individual \eqn{{}^{14}}C sample on the plot as a rug on
 #' the x-axis. Default is `TRUE`.
