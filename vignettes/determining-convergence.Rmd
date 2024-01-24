@@ -20,13 +20,14 @@ library(carbondate)
 
 # Introduction
 
-A few tools to determine how well the result has converged.
+A few tools to determine how well the MCMC for the various aproaches have converged.
 
 ## Examining the Gelman-Rubin convergence diagnostic
 
-This is often used to evaluate MCMC convergence. It compares the between-chains variance with the within-chains variance of the model parameters for multiple chains. If the chain have converged to the target posterior distribution, then the potential scale reduction factor (PSRF) should be close to 1 for every calendar age observation.
+This is often used to evaluate MCMC convergence. It compares the _between-chains_ variance with the _within-chains_ variance of the model parameters for multiple MCMC chains. If the MCMC has converged to the target posterior, then these values should be similar. 
+To assess convergence of our methods, we apply it to the individual posterior calendar age estimates of the ^14^C samples. We have $N$ such samples, each of which has a individual sequence of sampled calendar age values that are stored within the overall MCMC. We calculate the potential scale reduction factor (PSRF) for each individual sample's calendar age sequence, generating $N$ PSRF values. If the MCMC has converged to the target posterior distribution, then each of these PSRFs should be close to 1.  
 
-In the first case, the calculation can be run multiple times to generate different chains.
+In the first case, the relevant MCMC function can be run multiple times. This generate different chains.
 
 ```{r calculate_gr_multiple, fig.width=10, fig.height=8, results=FALSE}
 all_outputs <- list()
@@ -38,7 +39,7 @@ for (i in 1:3) {
 PlotGelmanRubinDiagnosticMultiChain(all_outputs)
 ```
 
-It can also be calculated by taking a single chain, and splitting it into multiple parts to compare the within-segment variance with the between-segment variance for each calendar age observation. 
+It can also be calculated by taking a single MCMC run, and splitting it into multiple parts to compare the _within-segment_ variance with the _between-segment_ variance for each calendar age observation. 
 
 ```{r calculate_gr, fig.width=10, fig.height=8, results=FALSE}
 set.seed(3)
@@ -48,15 +49,17 @@ output <- PolyaUrnBivarDirichlet(
 PlotGelmanRubinDiagnosticSingleChain(output, n_burn = 5e3)
 ```
 
-As you can see, even with a few iterations (where we would expect the result not to have converged yet)
-the PSRF is close to one. For this model the posterior calendar ages are not suitable parameters to
-use - rather we are interested in the number and distribution of clusters. However, they cannot be easily
-compared using this diagnostic as the number and identity of clusters can change with each iteration. For this model,
-the predictive density is a much more useful indicator.
+As you can see, even with a few iterations (where we would expect the result not to have converged yet) the PSRF values are close to one. 
 
-## Compare multiple runs
+## Examining the predictive distribution or posterior occurrence rate
 
-Running a few time with different random number seeds can give an idea of how many iterations are needed for convergence. If the result is converged each run should lead to a similar result for the predictive density. E.g.
+When calibrating multiple ^14^C determinations, primary interest will frequently be in the summarised (predictive) calendar age estimate if using the Bayesian non-parametric method, or the posterior occurrence rate if using the Poisson process approach, rather than the age of any individual sample. Information on the predictive estimate is encapsulated in the model parameters relating to the underlying clusters (e.g., weights and distributions). While the occurrence rate is defined by the locations of the changepoints, and the segment heights, in the Poisson process model.
+
+Unfortunately, the chains storing these parameters are not suitable for the Gelman-Rubin diagnostic. In the case of the predictive Bayesian non-parametric estimate, the number and identity of the clusters stored in the MCMC can change with each iteration (as clusters drop-in and out, or are relabelled). In the case of the Poisson process occurrence rate, the number and labelling of changepoints varies throughout the MCMC. We therefore provide a further diagnostic, based upon assessing the predictive calendar age estimate or posterior occurrence rate, which may be a much more useful indicator of MCMC convergence.        
+
+### Visually comparing multiple runs
+
+Running the functions a few time with different random number seeds can give an idea of how many iterations are needed for convergence. If the MCMC has converged, then each run should lead to a similar result for the predictive density (or the posterior occurrence rate in the case of the POisson process model). For example,
 
 ```{r calculate_polya_kerr, fig.width=10, fig.height=8, results=FALSE}
 outputs <- list()
@@ -91,12 +94,11 @@ for (i in 1:3) {
 PlotPredictiveCalendarAgeDensity(
   outputs, n_posterior_samples = 500, denscale = 2, interval_width = "1sigma")
 ```
+This approach to assessing convergence can be taken with either the Bayesian non-parametric method, or the Poisson process modelling.
 
+### Examining the Kullback--Leibler divergence (Bayesian non-parametrics only)
 
-## Examining the Kullback--Leibler divergence
-
-This gives a measure of the difference between the initial predictive density and the predictive
-density as the simulation progresses.
+We also provide a further diagnostic specifically for the Bayesian non-parametric approach (it is not applicable for the Poisson process model). This diagnostic gives a measure of the difference between an initial (baseline) predictive density and the predictive density as the MCMC progresses.
 
 ```{r calculate_kld, fig.width=10, fig.height=8, results=FALSE}
 set.seed(50)
@@ -109,6 +111,5 @@ output <- WalkerBivarDirichlet(
 PlotConvergenceData(output)
 ```
 
-It can give an idea of convergence as well as which iteration number to use for `n_burn` when
-calculating the predictive density (by default set to half the chain).
+It can give an idea of convergence as well as which iteration number to use for `n_burn` when calculating the predictive density (by default set to half the chain).
 

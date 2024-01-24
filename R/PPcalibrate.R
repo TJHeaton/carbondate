@@ -1,56 +1,97 @@
-#' Model the occurrence of radiocarbon samples as a variable-rate (inhomogeneous) Poisson process
+#' Model Occurrence of Multiple Radiocarbon Samples as a
+#' Variable-Rate Poisson Process
+#'
+#' @description
+#' This function calibrates a set of radiocarbon (\eqn{{}^{14}}C) samples, and provides an estimate
+#' of how the underlying rate at which the samples occurred varies over calendar time (including any
+#' specific changepoints in the rate). The method can be used as an alternative approach to summarise
+#' calendar age information contained in a set of related \eqn{{}^{14}}C samples, enabling inference
+#' on the latent \emph{activity} rate which led to their creation.
+#'
+#' It takes as an input a set of \eqn{{}^{14}}C determinations and associated \eqn{1\sigma}
+#' uncertainties, as well as the radiocarbon age calibration curve to be used. The (calendar age)
+#' occurrence of these radiocarbon (\eqn{{}^{14}}C) samples is modelled as a Poisson process. The
+#' underlying rate of this Poisson process \eqn{\lambda(t)}, which represents the rate at which the
+#' samples occurred, is considered unknown and assumed to vary over calendar time.
+#'
+#' Specifically, the sample occurrence rate \eqn{\lambda(t)} is modelled as piecewise constant, but with
+#' an unknown number of changepoints, which can occur at unknown times. The value of \eqn{\lambda(t)}
+#' between any set of changepoints is also unknown. The function jointly calibrates the given \eqn{{}^{14}}C
+#' samples under this model, and simultaneously provides an estimate of \eqn{\lambda(t)}. Fitting is performed
+#' using reversible-jump MCMC within Gibbs.
+#'
+#' It returns estimates for the calendar age of each individual radiocarbon sample in the input set;
+#' and broader output on the estimated value of \eqn{\lambda(t)} which can be used by other library functions.
+#' Analysis of the estimated changepoints in the piecewise \eqn{\lambda(t)} permits wider inference on whether
+#' the occurrence rate of samples changed significantly at any particular calendar time and, if so, when and
+#' by how much.
+#'
+#' For more information read the vignette: \cr
+#' \code{vignette("Poisson-process-modelling", package = "carbondate")}
 #'
 #' @inheritParams WalkerBivarDirichlet
 #'
-#' @param calendar_age_range Minimum and maximum calendar ages permitted
-#' for the calendar ages of the samples, i.e. range_1 < theta < range_2.
+#' @param calendar_age_range (Optional) Overall minimum and maximum calendar ages (in cal yr BP) permitted
+#' for the set of radiocarbon samples, i.e., `calendar_age_range[1]` < \eqn{\theta_1, \ldots, \theta_n} <
+#' `calendar_age_range[1]`. This is used to bound the start and end of the Poisson process (so no events
+#' will be permitted to occur outside this interval). If not selected then automated selection will be
+#' made based on given `rc_determinations` and value of `bounding_range_prob_cutoff`
 #'
-#' @param calendar_grid_resolution The spacing of the calendar age grid on which to consider
-#' the ages of the samples, e.g. t, t + resolution, t + 2 * resolution, ..
+#' @param calendar_grid_resolution The spacing of the calendar age grid on which to restrict
+#' the potential calendar ages of the samples, e.g., calendar ages of samples are limited to being one of
+#' `t, t + resolution, t + 2 * resolution, ...` Default is 1 (i.e., all calendar years in the overall
+#' calendar range are considered). Primarily used to speed-up code if have large range, when may select
+#' larger resolution.
 #'
-#' @param prior_h_shape,prior_h_rate Prior for Poisson Process rate height in any interval
-#' rate_h ~ Gamma(shape = prior_h_shape, rate = prior_h_rate)
-#' If they are both `NA` then prior_h_shape is selected adaptively (internally)
-#' to match n_observations (and selecting prior_h_rate = 0.1 to provide diffuse prior)
+#' @param prior_h_shape,prior_h_rate (Optional) Prior for the value of the Poisson Process rate (the height `rate_h`)
+#' in any specific interval:
+#' \deqn{\textrm{rate_h} \sim \textrm{Gamma}(\textrm{shape = prior_h_shape}, \textrm{rate = prior_h_rate}).}
+#' If they are both `NA` then `prior_h_shape` is selected to be 1 (so `rate_h` follows an Exponential
+#' distribution) and `prior_h_rate` chosen adaptively (internally) to match `n_observations`.
 #'
-#' @param prior_n_internal_changepoints_lambda Prior on Poisson parameter specifying
-#' n_internal_changepoints ~ Po(prior_n_internal_changepoints_lambda)
+#' @param prior_n_internal_changepoints_lambda Prior mean for the number of internal changepoints
+#' in the rate \eqn{\lambda(t)}.
+#' \deqn{\textrm{n_internal_changepoints} \sim \textrm{Po}(\textrm{prior_n_internal_changepoints_lambda})}
 #'
 #' @param k_max_internal_changepoints Maximum permitted number of internal changepoints
 #'
 #' @param rescale_factor_rev_jump Factor weighting probability of dimension change
-#' in the reversible jump update step for poisson process rate_h and rate_s
+#' in the reversible jump update step for Poisson process `rate_h` and `rate_s`
 #'
 #' @param bounding_range_prob_cutoff Probability cut-off for choosing the bounds for the
 #' potential calendar ages for the observations
 #'
-#' @param initial_n_internal_changepoints Number of internal changepoints to initialise
-#' the sampler with. The default is 10 (so diffuse).
-#' Will place them randomly within calendar interval
+#' @param initial_n_internal_changepoints Number of internal changepoints to initialise MCMC sampler with.
+#' The default is 10 (so initialise with diffuse state). Will place these initial changepoints uniformly at random
+#' within overall calendar age range.
 #'
-#' @param grid_extension_factor If you adaptively select the calendar_age_range from
-#' rc_determinations, how far you wish to extend the grid beyond this adaptive minimum and maximum
-#' The final range will be extended (equally on both sides) to cover (1 + grid_extension_factor) * (calendar_age_range)
+#' @param grid_extension_factor If you adaptively select the `calendar_age_range` from `rc_determinations`, how
+#' far you wish to extend the grid beyond this adaptive minimum and maximum. The final range will be extended
+#' (equally on both sides) to cover `(1 + grid_extension_factor) * (calendar_age_range)`
 #'
-#' @param use_fast,fast_approx_prob_cutoff A flag to allow trimming the likelihood of theta (for each value in
-#' calendar_age_grid) based on probability cutoff. If true, then the likelihood is cut-off at `fast_approx_prob_cutoff`.
+#' @param use_fast,fast_approx_prob_cutoff A flag to allow trimming the calendar age likelihood (i.e., reducing the
+#' range of calendar ages) for each individual sample to speed up the sampler. If `TRUE` (default), for each
+#' individual sample, those tail calendar ages (in the overall `calendar_age_grid`) with very small likelihoods will
+#' be trimmed (speeding up the updating of the calendar ages). If `TRUE` the probability cut-off to remove the tails
+#' is `fast_approx_prob_cutoff`.
 #'
-#' @return A list with 7 items. The first 4 items contain output data, each of
-#' which have one dimension of size \eqn{n_{\textrm{out}} =
-#' \textrm{floor}( n_{\textrm{iter}}/n_{\textrm{thin}}) + 1}, each row storing
-#' the result from every \eqn{n_{\textrm{thin}}}th iteration:
+#' @return A list with 7 items. The first 4 items contain output of the model, each of
+#' which has one dimension of size \eqn{n_{\textrm{out}} =
+#' \textrm{floor}( n_{\textrm{iter}}/n_{\textrm{thin}}) + 1}. The rows in these items store
+#' the state of the MCMC from every \eqn{n_{\textrm{thin}}}\eqn{{}^\textrm{th}} iteration:
 #'
 #' \describe{
 #'  \item{`rate_s`}{A list of length \eqn{n_{\textrm{out}}} each entry giving the current set of
-#'  (calendar age) changepoints in rate of piecewise constant Poisson process.}
+#'  (calendar age) changepoint locations in the piecewise-constant rate \eqn{\lambda(t)}.}
 #'  \item{`rate_h`}{A list of length \eqn{n_{\textrm{out}}} each entry giving the current set of
-#'  heights/rates in each section of piecewise constant Poisson process}
+#'  heights (values for the rate) in each piecewise-constant section of \eqn{\lambda(t)}.}
 #'  \item{`calendar_ages`}{An \eqn{n_{\textrm{out}}} by \eqn{n_{\textrm{obs}}}
-#'     matrix. Gives the calendar age for each observation.}
-#'  \item{`n_internal_changes`}{A vector of length \eqn{n_{\textrm{out}}} giving the number of
-#'  internal chanhes.}
+#'     matrix. Gives the current estimate for the calendar age of each individual
+#'     observation.}
+#'  \item{`n_internal_changes`}{A vector of length \eqn{n_{\textrm{out}}} giving the current number of
+#'  internal changes in the value of \eqn{\lambda(t)}.}
 #' }
-#' where \eqn{n_{\textrm{obs}}} is the number of radiocarbon observations i.e.
+#' where \eqn{n_{\textrm{obs}}} is the number of radiocarbon observations, i.e.,
 #' the length of `rc_determinations`.
 #'
 #' The remaining items give information about input data, input parameters (or
@@ -58,7 +99,7 @@
 #'
 #' \describe{
 #'  \item{`update_type`}{A string that always has the value "RJPP".}
-#'  \item{`input_data`}{a list containing the C14 data used and the name of
+#'  \item{`input_data`}{A list containing the \eqn{{}^{14}}C data used, and the name of
 #'  the calibration curve used.}
 #'  \item{`input_parameters`}{A list containing the values of the fixed
 #'  parameters `pp_cal_age_range`, `prior_n_internal_changepoints_lambda`,
@@ -68,12 +109,14 @@
 #' @export
 #'
 #' @examples
-#' # Using example data
+#' # NOTE: This example is shown with a small n_iter to speed up execution.
+#' # When you run ensure n_iter gives convergence (try function default).
+#'
 #' pp_output <- PPcalibrate(
 #'     pp_uniform_phase$c14_age,
 #'     pp_uniform_phase$c14_sig,
 #'     intcal20,
-#'     n_iter = 5000,
+#'     n_iter = 100,
 #'     show_progress = FALSE)
 PPcalibrate <- function(
     rc_determinations,

@@ -1,5 +1,5 @@
 test_that("UpdatePoissonProcessRateRevJump gives expected outcomes", {
-
+  skip_on_cran()
   # Set up "true" values
   set.seed(14)
   n_iters <- 1000
@@ -122,7 +122,7 @@ test_that("UpdatePoissonProcessRateRevJump gives expected outcomes", {
 
 ### Second test
 test_that("UpdatePoissonProcessRateRevJump gives same as legacy code", {
-
+  skip_on_cran()
   # Set up "true" values
   set.seed(14)
   n_iters <- 1000

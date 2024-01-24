@@ -2,38 +2,56 @@
 % Please edit documentation in R/PlotNumberOfClusters.R
 \name{PlotNumberOfClusters}
 \alias{PlotNumberOfClusters}
-\title{Plots the number of clusters}
+\title{Plot Number of Calendar Age Clusters Estimated
+in Bayesian Non-Parametric DPMM Output}
 \usage{
 PlotNumberOfClusters(output_data, n_burn = NA, n_end = NA)
 }
 \arguments{
-\item{output_data}{The return value from one of the updating functions e.g.
+\item{output_data}{The return value from one of the Bayesian non-parametric DPMM functions, e.g.
 \link{PolyaUrnBivarDirichlet} or
-\link{WalkerBivarDirichlet} or a list, each item containing
-one of these values. Optionally, the output data can have an extra list item
+\link{WalkerBivarDirichlet}, or a list, each item containing
+one of these return values. Optionally, the output data can have an extra list item
 named \code{label} which is used to set the label on the plot legend.}
 
-\item{n_burn}{The number of samples required for burn-in - any samples before this
-are not used in the calculation. If not given, the first half of the
-MCMC chain is discarded. Looking at the output of \link{PlotConvergenceData} can
-help determine what an appropriate value is for a given output. Note that the maximum
-value that can be chosen is \code{n_iter - 100 * n_thin} (where \code{n_iter} and \code{n_thin} are the
-arguments given to \link{PolyaUrnBivarDirichlet} or \link{WalkerBivarDirichlet}).}
+\item{n_burn}{The number of MCMC iterations that should be discarded as burn-in (i.e.,
+considered to be occurring before the MCMC has converged). This relates to the number
+of iterations (\code{n_iter}) when running the original update functions (not the thinned \code{output_data}).
+Any MCMC iterations before this are not used in the calculations. If not given, the first half of
+the MCMC chain is discarded. Note: The maximum value that the function will allow is
+\code{n_iter - 100 * n_thin} (where \code{n_iter} and \code{n_thin} are the arguments given to
+\link{PolyaUrnBivarDirichlet} or \link{WalkerBivarDirichlet})
+which would leave only 100 of the (thinned) values in \code{output_data}.}
 
-\item{n_end}{The iteration number of the last sample to use. Assumed to be the number of iterations
-if not given.}
+\item{n_end}{The last iteration in the original MCMC chain to use in the calculations. Assumed to be the
+total number of iterations performed, i.e. \code{n_iter}, if not given.}
 }
 \value{
 None
 }
 \description{
-Once a function has been run to calibrate a set of radiocarbon
-determinations, the estimated number of clusters can be plotted using this
-function.
+Given output from one of the Bayesian non-parametric summarisation functions (either
+\link{PolyaUrnBivarDirichlet} or \link{WalkerBivarDirichlet}) plot the
+estimated number of calendar age clusters represented by the \eqn{{}^{14}}C samples.
+
+For more information read the vignette: \cr
+\code{vignette("Non-parametric-summed-density", package = "carbondate")}
 }
 \examples{
-# Plot results for the number of clusters
+# NOTE: these examples are shown with a small n_iter to speed up execution.
+# When you run ensure n_iter gives convergence (try function default).
+
 polya_urn_output <- PolyaUrnBivarDirichlet(
-    two_normals$c14_age, two_normals$c14_sig, intcal20, n_iter = 1e4, show_progress = FALSE)
+    two_normals$c14_age,
+    two_normals$c14_sig,
+    intcal20,
+    n_iter = 500,
+    n_thin = 2,
+    show_progress = FALSE)
+
 PlotNumberOfClusters(polya_urn_output)
+}
+\seealso{
+\link{PlotPredictiveCalendarAgeDensity} and
+\link{PlotCalendarAgeDensityIndividualSample} for more plotting functions using DPMM output.
 }

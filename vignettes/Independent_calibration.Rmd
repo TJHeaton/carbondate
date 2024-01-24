@@ -1,0 +1,59 @@
+---
+title: "Independent Single Sample Calibration"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Independent Single Sample Calibration}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: references.bib
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(carbondate)
+```
+
+# Introduction
+
+This package is primarily concerned with the calibration, and summarisation, of multiple related ^14^C determinations. With such a set of samples, which are believed to arise from a common calendar distribution related to the culture/context under study, calibration should be performed jointly. This will allow calendar age information to be shared between the samples during the calibration process leading to improved overall calibration accuracy. It also allows us to combine and summarise the calendar age information in the entire set. 
+
+However, our library also provides functions for calibrating a single ^14^C sample independently. This can be useful if one does only have a single sample, or to provide comparison with the joint calibration approaches. 
+
+## Independent Calibration of Single ^14^C Samples
+
+To calibrate a single independent determination using the provided IntCal20 calibration curve [@reimer2020], run the following:
+
+```{r single_calibration, out.width="100%", fig.width=10, fig.height=8}
+calibration_result <- CalibrateSingleDetermination(
+  rc_determination = 1413, 
+  rc_sigma = 25, 
+  F14C_inputs = FALSE, 
+  calibration_curve = intcal20,
+  plot_output = TRUE)
+```   
+
+
+### Implementing SH calibration
+
+To change to using the Southern Hemisphere calibration curve SHCal20 [@hogg2020], we can modify the function arguments accordingly: 
+
+```{r single_calibration_SH, out.width="100%", fig.width=10, fig.height=8}
+calibration_result <- CalibrateSingleDetermination(
+  rc_determination = 1413, 
+  rc_sigma = 25, 
+  F14C_inputs = FALSE, 
+  calibration_curve = shcal20,
+  plot_output = TRUE)
+```
+**Note:** This simulated SH calibration, of the same ^14^C determination as above, provides a slightly more recent estimate for the calendar due to the offset (the interhemispheric ^14^C gradient) between atmospheric ^14^C levels in the Southern and Northern Hemisphere. 
+
+
+## References
+
+

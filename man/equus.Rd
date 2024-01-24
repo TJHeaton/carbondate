@@ -12,15 +12,15 @@ A data frame with 84 rows and 7 columns:
 \item{lab_code}{The sample code for the \eqn{{}^{14}}C laboratory}
 \item{site_code}{The site/museum code}
 \item{location}{The location of the sample}
-\item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
-\item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age reported by the radiocarbon laboratory}
-\item{f14c}{The F14C concentration}
-\item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
+\item{c14_age}{The observed \eqn{{}^{14}}C ages of the samples (in \eqn{{}^{14}}C yr BP)}
+\item{c14_sig}{The uncertainty in the observed \eqn{{}^{14}}C ages reported by the radiocarbon laboratory}
+\item{f14c}{The observed F\eqn{{}^{14}}C concentrations}
+\item{f14c_sig}{The uncertainty in the observed F\eqn{{}^{14}}C concentrations reported by the radiocarbon laboratory}
 }
 }
 }
 \source{
-\url{https://doi.org/10.1038/nature04604}
+https://doi.org/10.1038/nature04604
 }
 \usage{
 equus
@@ -29,7 +29,8 @@ equus
 84 radiocarbon determinations collated by Dale Guthrie, R. related to
 Equus (horse) in Yukon and Alaska. Samples
 are restricted to those between 25,000--6000 \eqn{{}^{14}}C yrs BP. \cr \cr
-Ref: Dale Guthrie, R. New carbon dates link climatic change with human colonization
+\strong{Reference:} \cr
+Dale Guthrie, R. New carbon dates link climatic change with human colonization
 and Pleistocene extinctions. \emph{Nature} \strong{441}, 207--209 (2006).
 https://doi.org/10.1038/nature04604
 }

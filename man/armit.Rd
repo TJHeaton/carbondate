@@ -9,15 +9,15 @@
 
 A data frame with 2021 rows and 4 columns:
 \describe{
-\item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
-\item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age reported by the radiocarbon laboratory}
-\item{f14c}{The F14C concentration}
-\item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
+\item{c14_age}{The observed \eqn{{}^{14}}C ages of the samples (in \eqn{{}^{14}}C yr BP)}
+\item{c14_sig}{The uncertainty in the observed \eqn{{}^{14}}C ages reported by the radiocarbon laboratory}
+\item{f14c}{The observed F\eqn{{}^{14}}C concentrations}
+\item{f14c_sig}{The uncertainty in the observed F\eqn{{}^{14}}C concentrations reported by the radiocarbon laboratory}
 }
 }
 }
 \source{
-\url{http://doi.org/10.1073/pnas.1408028111}
+http://doi.org/10.1073/pnas.1408028111
 }
 \usage{
 armit
@@ -25,9 +25,11 @@ armit
 \description{
 2021 radiocarbon determinations collated by Armit et al. from archaeological
 groups operating in Ireland, to investigate whether a wetter environment
-around 2700 cal yr BP led to a population collapse. Ref:
+around 2700 cal yr BP led to a population collapse. \cr \cr
+\strong{Reference:} \cr
 Armit, I., Swindles, G.T., Becker, K., Plunkett, G., Blaauw, M., 2014. Rapid
 climate change did not cause population collapse at the end of the European
-Bronze Age. Proceedings of the National Academy of Sciences 111, 17045--17049.
+Bronze Age. \emph{Proceedings of the National Academy
+of Sciences} \strong{111}, 17045--17049.
 }
 \keyword{datasets}

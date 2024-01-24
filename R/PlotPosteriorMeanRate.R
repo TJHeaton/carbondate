@@ -1,45 +1,65 @@
-#' Plots the posterior mean rate from the output data
+#' Plot Posterior Mean Rate of Sample Occurrence for Poisson Process Model
 #'
-#' Plots the input radiocarbon determinations and calibration curve, with the
-#' output posterior mean rate on the same plot. Can also optionally show the
-#' individual mean calendar ages.
+#' @description
+#' Given output from the Poisson process fitting function [carbondate::PPcalibrate] calculate
+#' and plot the posterior mean rate of sample occurrence (i.e., the underlying Poisson process
+#' rate \eqn{\lambda(t)}) together with specified probability intervals, on a given calendar age grid.
 #'
-#' @param output_data The return value from the updating functions
+#' Will show the original set of radiocarbon determinations (those you are modelling/summarising),
+#' the chosen calibration curve, and the estimated posterior rate of occurrence \eqn{\lambda(t)} on the same plot.
+#' Can also optionally show the posterior mean of each individual sample's calendar age estimate.
+#'
+#' \strong{Note:} If all you are interested in is the value of the posterior mean rate
+#' on a grid, without an accompanying plot, you can use
+#' [carbondate::FindPosteriorMeanRate] instead.
+#'
+#' For more information read the vignette: \cr
+#' \code{vignette("Poisson-process-modelling", package = "carbondate")}
+#'
+#' @param output_data The return value from the updating function
 #' [carbondate::PPcalibrate]. Optionally, the output data can have an extra list item
 #' named `label` which is used to set the label on the plot legend.
-#' @param n_posterior_samples Current number of samples it will draw from this
-#' posterior to estimate the calendar age density (possibly repeats). If not
-#' given 5000 is used.
+#' @param n_posterior_samples Number of samples it will draw, after having removed `n_burn`,
+#' from the (thinned) MCMC realisations stored in `output_data` to estimate the
+#' rate \eqn{\lambda(t)}. These samples may be repeats if the number of, post burn-in,
+#' realisations is less than `n_posterior_samples`. If not given, 5000 is used.
 #' @param calibration_curve This is usually not required since the name of the
-#' calibration curve variable is saved in the output data. However if the
+#' calibration curve variable is saved in the output data. However, if the
 #' variable with this name is no longer in your environment then you should pass
-#' the calibration curve here. If provided this should be a dataframe which
-#' should contain at least 3 columns entitled calendar_age, c14_age and c14_sig.
+#' the calibration curve here. If provided, this should be a dataframe which
+#' should contain at least 3 columns entitled `calendar_age`, `c14_age` and `c14_sig`.
 #' This format matches [carbondate::intcal20].
-#' @param plot_14C_age Whether to use the \eqn{{}^{14}}C yr BP as the units of the y-axis.
-#' Defaults to TRUE. If FALSE uses F14C concentration instead.
-#' @param show_individual_means Whether to calculate and show the individual mean
-#' calendar ages on the plot (optional). Default is `FALSE`.
-#' @param show_confidence_intervals Whether to show the confidence intervals
-#' for the chosen probability on the plot. Default is `TRUE`.
+#' @param plot_14C_age Whether to use the radiocarbon age (\eqn{{}^{14}}C yr BP) as
+#' the units of the y-axis in the plot. Defaults to `TRUE`. If `FALSE` uses
+#' F\eqn{{}^{14}}C concentration instead.
+#' @param plot_cal_age_scale The scale to use for the x-axis. Allowed values are
+#' "BP", "AD" and "BC".
+#' @param show_individual_means (Optional) Whether to calculate and show the mean posterior
+#' calendar age estimated for each individual \eqn{{}^{14}}C sample on the plot as a rug on
+#' the x-axis. Default is `TRUE`.
+#' @param show_confidence_intervals Whether to show the pointwise confidence intervals
+#' (at chosen probability level) on the plot. Default is `TRUE`.
 #' @param interval_width The confidence intervals to show for both the
 #' calibration curve and the predictive density. Choose from one of `"1sigma"` (68.3%),
 #' `"2sigma"` (95.4%) and `"bespoke"`. Default is `"2sigma"`.
 #' @param bespoke_probability The probability to use for the confidence interval
-#' if `"bespoke"` is chosen above. E.g. if 0.95 is chosen, then the 95% confidence
+#' if `"bespoke"` is chosen above. E.g., if 0.95 is chosen, then the 95% confidence
 #' interval is calculated. Ignored if `"bespoke"` is not chosen.
-#' @param denscale Whether to scale the vertical range of the density plot
-#' relative to the calibration curve plot (optional). Default is 3 which means
-#' that the maximum SPD density will be at 1/3 of the height of the plot.
-#' @param n_calc Number of points to use when calculating the predictive
-#' density. Default is 1001.
-#' @param n_burn The number of samples required for burn-in - any samples before this
-#' are not used in the calculation. If not given, the first half of the
-#' MCMC chain is discarded. Note that the maximum
-#' value that can be chosen is `n_iter - 100 * n_thin` (where `n_iter` and `n_thin` are the
-#' arguments given to [carbondate::PPcalibrate]).
-#' @param n_end The iteration number of the last sample to use. Assumed to be the number of iterations
-#' if not given.
+#' @param denscale (Optional) Whether to scale the vertical range of the Poisson process mean rate plot
+#' relative to the calibration curve plot. Default is 3 which means
+#' that the maximum of the mean rate will be at 1/3 of the height of the plot.
+#' @param resolution The distance between calendar ages at which to calculate the value of the rate
+#' \eqn{\lambda(t)}. These ages will be created on a regular grid that automatically covers
+#' the calendar period specified in `output_data`. Default is 1.
+#' @param n_burn The number of MCMC iterations that should be discarded as burn-in (i.e.,
+#' considered to be occurring before the MCMC has converged). This relates to the number
+#' of iterations (`n_iter`) when running the original update functions (not the thinned `output_data`).
+#' Any MCMC iterations before this are not used in the calculations. If not given, the first half of the
+#' MCMC chain is discarded. Note: The maximum value that the function
+#' will allow is `n_iter - 100 * n_thin` (where `n_iter` and `n_thin` are the arguments that were given to
+#' [carbondate::PPcalibrate]) which would leave only 100 of the (thinned) values in `output_data`.
+#' @param n_end The last iteration in the original MCMC chain to use in the calculations. Assumed to be the
+#' total number of iterations performed, i.e. `n_iter`, if not given.
 #'
 #'
 #' @return A list, each item containing a data frame of the `calendar_age`, the `rate_mean`
@@ -47,54 +67,58 @@
 #'
 #' @export
 #'
-#' @return None
-#'
 #' @examples
+#' # NOTE: All these examples are shown with a small n_iter and n_posterior_samples
+#' # to speed up execution.
+#' # Try n_iter and n_posterior_samples as the function defaults.
+#'
 #' pp_output <- PPcalibrate(
 #'     pp_uniform_phase$c14_age,
 #'     pp_uniform_phase$c14_sig,
 #'     intcal20,
-#'     n_iter = 5000,
+#'     n_iter = 1000,
 #'     show_progress = FALSE)
 #'
 #' # Default plot with 2 sigma interval
-#' PlotPosteriorMeanRate(pp_output)
+#' PlotPosteriorMeanRate(pp_output, n_posterior_samples = 100)
 #'
 #' # Specify an 80% confidence interval
 #' PlotPosteriorMeanRate(
-#'     pp_output, interval_width = "bespoke", bespoke_probability = 0.8)
+#'     pp_output,
+#'     interval_width = "bespoke",
+#'     bespoke_probability = 0.8,
+#'     n_posterior_samples = 100)
 PlotPosteriorMeanRate <- function(
     output_data,
     n_posterior_samples = 5000,
     calibration_curve = NULL,
     plot_14C_age = TRUE,
+    plot_cal_age_scale = "BP",
     show_individual_means = TRUE,
     show_confidence_intervals = TRUE,
     interval_width = "2sigma",
     bespoke_probability = NA,
     denscale = 3,
-    n_calc = 1001,
+    resolution = 1,
     n_burn = NA,
     n_end = NA) {
-
-  n_iter <- output_data$input_parameters$n_iter
-  n_thin <- output_data$input_parameters$n_thin
 
   arg_check <- .InitializeErrorList()
   .CheckOutputData(arg_check, output_data, "RJPP")
   .CheckInteger(arg_check, n_posterior_samples, lower = 10)
   .CheckCalibrationCurveFromOutput(arg_check, output_data, calibration_curve)
   .CheckFlag(arg_check, plot_14C_age)
+  .CheckChoice(arg_check, plot_cal_age_scale, c("BP", "AD", "BC"))
   .CheckFlag(arg_check, show_individual_means)
   .CheckFlag(arg_check, show_confidence_intervals)
   .CheckIntervalWidth(arg_check, interval_width, bespoke_probability)
   .CheckNumber(arg_check, denscale, lower = 0)
-  .CheckInteger(arg_check, n_calc, lower = 20)
-  .CheckNBurnAndNEnd(arg_check, n_burn, n_end, n_iter, n_thin)
+  .CheckNumber(arg_check, resolution, lower = 0.01)
   .ReportErrors(arg_check)
 
-  n_burn <- .SetNBurn(n_burn, n_iter, n_thin)
-  n_end <- .SetNEnd(n_end, n_iter, n_thin)
+  # Ensure revert to main environment par on exit of function
+  opar <- graphics::par()[c("mgp", "xaxs", "yaxs", "mar", "las")]
+  on.exit(graphics::par(opar))
 
   if (is.null(calibration_curve)) {
     calibration_curve <- get(output_data$input_data$calibration_curve_name)
@@ -123,41 +147,34 @@ PlotPosteriorMeanRate <- function(
   calibration_curve_bg <- grDevices::rgb(0, 0, 1, .3)
   output_colour <- "purple"
 
-  calendar_age_sequence <- seq(
-    from = min(output_data$rate_s[[1]]), to = max(output_data$rate_s[[1]]), length.out = n_calc)
+  start_age <- ceiling(min(output_data$rate_s[[1]]) / resolution) * resolution
+  end_age <- floor(max(output_data$rate_s[[1]]) / resolution) * resolution
+  if (end_age == max(output_data$rate_s[[1]])) {
+    # Removes issue of sequence coinciding with end changepoint
+    end_age <- end_age - resolution
+  }
+
+  calendar_age_sequence <- seq(from = start_age, to = end_age, by = resolution)
   xlim <- rev(range(calendar_age_sequence))
 
-  calendar_age_sequence[n_calc] <- calendar_age_sequence[n_calc] - 1e-6 * diff(calendar_age_sequence)[1]
-  plot_AD <- any(calendar_age_sequence < 0)
   ##############################################################################
   # Calculate means and rate
+  posterior_rate <- FindPosteriorMeanRate(
+    output_data,
+    calendar_age_sequence,
+    n_posterior_samples,
+    interval_width,
+    bespoke_probability,
+    n_burn,
+    n_end)
 
   if (show_individual_means){
+    n_iter <- output_data$input_parameters$n_iter
+    n_thin <- output_data$input_parameters$n_thin
+    n_burn <- .SetNBurn(n_burn, n_iter, n_thin)
+    n_end <- .SetNEnd(n_end, n_iter, n_thin)
     calendar_age_means <- apply(output_data$calendar_ages[(n_burn + 1):n_end, ], 2, mean)
   }
-
-  indices <- sample((n_burn + 1):n_end, n_posterior_samples, replace = ((n_end - n_burn) < n_posterior_samples))
-  rate <- matrix(NA, nrow = n_posterior_samples, ncol = length(calendar_age_sequence))
-  for (i in 1:n_posterior_samples) {
-    ind <- indices[i]
-    rate[i,] <- stats::approx(
-      x = output_data$rate_s[[ind]],
-      y = c(output_data$rate_h[[ind]], 0),
-      xout = calendar_age_sequence,
-      method = "constant")$y
-  }
-  edge_width <- switch(
-    interval_width,
-    "1sigma" = 1 - stats::pnorm(1),
-    "2sigma"  = 1 - stats::pnorm(2),
-    "bespoke" = (1 - bespoke_probability)/2
-  )
-  posterior_rate <- data.frame(
-    calendar_age = calendar_age_sequence,
-    rate_mean = apply(rate, 2, mean),
-    rate_ci_lower = apply(rate, 2, stats::quantile, probs = edge_width),
-    rate_ci_upper = apply(rate, 2, stats::quantile, probs = 1 - edge_width)
-  )
 
   ylim_rate <- c(0, denscale * max(posterior_rate$rate_mean))
 
@@ -165,7 +182,7 @@ PlotPosteriorMeanRate <- function(
   # Plot curves
 
   .PlotCalibrationCurveAndInputData(
-    plot_AD,
+    plot_cal_age_scale,
     xlim,
     calibration_curve,
     rc_determinations,
@@ -176,15 +193,13 @@ PlotPosteriorMeanRate <- function(
     bespoke_probability,
     title = expression(paste("Estimate of Poisson process rate ", lambda, "(t)")))
 
-  .SetUpDensityPlot(plot_AD, xlim, ylim_rate)
+  .SetUpDensityPlot(plot_cal_age_scale, xlim, ylim_rate)
 
   if (show_individual_means) {
-    if (plot_AD) {
-      calendar_age_means <- 1950 - calendar_age_means
-    }
+    calendar_age_means <- .ConvertCalendarAge(plot_cal_age_scale, calendar_age_means)
     graphics::rug(calendar_age_means, side = 1, quiet = TRUE)
   }
-  .PlotRateEstimateOnCurrentPlot(plot_AD, posterior_rate, output_colour, show_confidence_intervals)
+  .PlotRateEstimateOnCurrentPlot(plot_cal_age_scale, posterior_rate, output_colour, show_confidence_intervals)
 
   .AddLegendToRatePlot(
     output_data,
@@ -198,13 +213,10 @@ PlotPosteriorMeanRate <- function(
 }
 
 
-.PlotRateEstimateOnCurrentPlot <- function(plot_AD, posterior_rate, output_colour, show_confidence_intervals) {
+.PlotRateEstimateOnCurrentPlot <- function(
+  plot_cal_age_scale, posterior_rate, output_colour, show_confidence_intervals) {
 
-  if (plot_AD) {
-    cal_age <- 1950 - posterior_rate$calendar_age
-  } else {
-    cal_age <- posterior_rate$calendar_age
-  }
+  cal_age <- .ConvertCalendarAge(plot_cal_age_scale, posterior_rate$calendar_age)
 
   graphics::lines(cal_age, posterior_rate$rate_mean, col = output_colour)
   if (show_confidence_intervals) {
@@ -224,12 +236,14 @@ PlotPosteriorMeanRate <- function(
 
   ci_label <- switch(
     interval_width,
-    "1sigma" = expression(paste(sigma, " interval")),
+    "1sigma" = expression(paste("1", sigma, " interval")),
     "2sigma"  = expression(paste("2", sigma, " interval")),
     "bespoke" = paste0(round(100 * bespoke_probability), "% interval"))
 
   legend_labels <- c(
-    gsub("intcal", "IntCal", output_data$input_data$calibration_curve_name),
+    gsub("intcal", "IntCal",
+         gsub("shcal", "SHCal",
+              output_data$input_data$calibration_curve_name)), # Both IntCal and SHCal
     ci_label,
     "Posterior mean rate")
   lty <- c(1, 2, 1)

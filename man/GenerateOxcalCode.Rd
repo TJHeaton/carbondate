@@ -2,7 +2,7 @@
 % Please edit documentation in R/GenerateOxcalCode.R
 \name{GenerateOxcalCode}
 \alias{GenerateOxcalCode}
-\title{Outputs code suitable for running in OxCal from a series of radiocarbon determinations given as \eqn{{}^{14}}C age.}
+\title{Outputs code suitable for running in OxCal from a series of radiocarbon determinations}
 \usage{
 GenerateOxcalCode(
   model_name,
@@ -16,15 +16,17 @@ GenerateOxcalCode(
 \arguments{
 \item{model_name}{The name given to the model in the OxCal code.}
 
-\item{rc_determinations}{A vector of observed radiocarbon determinations}
+\item{rc_determinations}{A vector of observed radiocarbon determinations. Can be provided either as
+\eqn{{}^{14}}C ages (in \eqn{{}^{14}}C yr BP) or as F\eqn{{}^{14}}C concentrations.}
 
-\item{rc_sigmas}{A vector of the radiocarbon determinations
-uncertainties (1-sigma). Must be the same length as \code{rc_determinations}.}
+\item{rc_sigmas}{A vector of the (1-sigma) measurement uncertainties for the
+radiocarbon determinations. Must be the same length as \code{rc_determinations} and
+given in the same units.}
 
 \item{rc_names}{Optional. The name of each data point - if given it must be the same length of rc_determinations.}
 
-\item{F14C_inputs}{\code{TRUE} if the provided rc_determinations are F14C concentrations and \code{FALSE}
-if they are radiocarbon age BP. Defaults to \code{FALSE}.}
+\item{F14C_inputs}{\code{TRUE} if the provided \code{rc_determinations} are F\eqn{{}^{14}}C
+concentrations and \code{FALSE} if they are radiocarbon ages. Defaults to \code{FALSE}.}
 
 \item{outfile_path}{Optional. If given the OxCal code will be output to the file at the path given, otherwise it
 will be output to the terminal.}
@@ -33,7 +35,8 @@ will be output to the terminal.}
 None
 }
 \description{
-Outputs code suitable for running in OxCal from a series of radiocarbon determinations given as \eqn{{}^{14}}C age.
+Outputs code suitable for running in OxCal from a series of radiocarbon determinations
+that can be given as either \eqn{{}^{14}}C age or F\eqn{{}^{14}}C.
 }
 \examples{
 # Generate names automatically and outputs to the screen for 14C ages

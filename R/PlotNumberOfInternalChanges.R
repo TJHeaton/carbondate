@@ -1,21 +1,30 @@
-#' Plots the number of internal changes
+#' Plot Number of Changepoints in Rate of Sample Occurrence for Poisson Process Model
 #'
-#' Once a function has been run to calibrate a set of radiocarbon determinations,
-#' the estimated number of internal changes can be plotted using this function.
+#' @description
+#' Given output from the Poisson process fitting function [carbondate::PPcalibrate], plot
+#' the posterior distribution for the number of internal changepoints in the underlying rate of
+#' sample occurrence (i.e., in \eqn{\lambda(t)}) over the period under study.
 #'
-#' @inheritParams PlotPosteriorChangePoints
+#' For more information read the vignette: \cr
+#' \code{vignette("Poisson-process-modelling", package = "carbondate")}
+#'
+#' @inheritParams PlotPosteriorMeanRate
 #'
 #' @return None
 #'
 #' @export
 #'
 #' @examples
+#' # NOTE: This example is shown with a small n_iter to speed up execution.
+#' # Try n_iter and n_posterior_samples as the function defaults.
+#'
 #' pp_output <- PPcalibrate(
 #'     pp_uniform_phase$c14_age,
 #'     pp_uniform_phase$c14_sig,
 #'     intcal20,
-#'     n_iter = 5000,
+#'     n_iter = 1000,
 #'     show_progress = FALSE)
+#'
 #' PlotNumberOfInternalChanges(pp_output)
 PlotNumberOfInternalChanges <- function(output_data, n_burn = NA, n_end = NA) {
 

@@ -7,29 +7,36 @@
 \format{
 \subsection{\code{intcal09}}{
 
-A data frame with 3,521 rows and 5 columns:
+A data frame with 3,521 rows and 5 columns providing the IntCal09 radiocarbon age
+calibration curve on a calendar grid spanning from 50,000--0 cal yr BP:
 \describe{
-\item{calendar_age}{The calendar age (yr BP)}
-\item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
-\item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age reported by the radiocarbon laboratory}
-\item{f14c}{The radiocarbon age expressed as F14C conctration}
-\item{f14c_sig}{The uncertainty in F14C}
+\item{calendar_age}{The calendar age (in cal yr BP)}
+\item{c14_age}{The \eqn{{}^{14}}C age (in \eqn{{}^{14}}C yr BP)}
+\item{c14_sig}{The (1-\eqn{\sigma}) uncertainty in the \eqn{{}^{14}}C age}
+\item{f14c}{The \eqn{{}^{14}}C age expressed as F\eqn{{}^{14}}C concentration}
+\item{f14c_sig}{The (1-\eqn{\sigma}) uncertainty in the F\eqn{{}^{14}}C concentration}
 }
 }
 }
 \source{
-\url{http://doi.org/10.1017/S0033822200034202}
+http://doi.org/10.1017/S0033822200034202
 }
 \usage{
 intcal09
 }
 \description{
-Atmospheric data from Reimer et al (2009)
-Reimer et al. 2009
-PJ Reimer, MGL Baillie, E Bard, A Bayliss, JW Beck, PG Blackwell,
+The IntCal09 Northern Hemisphere radiocarbon age calibration curve
+on a calendar grid spanning from 50,000--0 cal yr BP
+(Before Present, 0 cal yr BP corresponds to 1950 CE). \cr \cr
+\emph{Note:} This dataset provides \eqn{{}^{14}}C ages and F\eqn{{}^{14}}C values
+on a calendar age grid. This is different from the \eqn{{}^{14}}C ages
+and \eqn{{\Delta}^{14}}C values provided in oxcal .14c files.\cr \cr
+\strong{Reference:} \cr PJ Reimer, MGL Baillie, E Bard, A Bayliss, JW Beck, PG Blackwell,
 C Bronk Ramsey, CE Buck, GS Burr, RL Edwards, M Friedrich, PM Grootes,
 TP Guilderson, I Hajdas, TJ Heaton, AG Hogg, KA Hughen, KF Kaiser, B Kromer,
 FG McCormac, SW Manning, RW Reimer, DA Richards, JR Southon, S Talamo,
-CSM Turney, J van der Plicht, CE Weyhenmeyer (2009) Radiocarbon 51:1111-1150
+CSM Turney, J van der Plicht, CE Weyhenmeyer. 2009.
+IntCal09 and Marine09 Radiocarbon Age Calibration Curves, 0--50,000 Years cal BP
+\emph{Radiocarbon} \strong{51}(4):1111-1150 https://doi.org/10.1017/S0033822200034202. \cr \cr
 }
 \keyword{datasets}

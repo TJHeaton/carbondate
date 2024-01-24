@@ -1,63 +1,91 @@
-url: ~
+url: https://tjheaton.github.io/carbondate/
 template:
   bootstrap: 5
-  bootswatch: lumen #simplex #minty
+  bootswatch: lumen
 reference:
-  - title: "Helper functions"
-    contents:
-      - CalibrateSingleDetermination
-      - FindSummedProbabilityDistribution
-      - InterpolateCalibrationCurve
-      - GenerateOxcalCode
-  - title: "Non-parametric Summed Density"
-    desc: "Functions for calibration of multiple related samples and plotting results"
-    contents:
-      - PolyaUrnBivarDirichlet
-      - WalkerBivarDirichlet
-      - FindPredictiveCalendarAgeDensity
-      - PlotPredictiveCalendarAgeDensity
-      - PlotNumberOfClusters
-  - title: "Poisson Process Modelling"
-    desc: "Functions for modelling the the occurrence of radiocarbon samples as a variable-rate (inhomogeneous) Poisson process"
-    contents:
-      - PPcalibrate
-      - UpdateCalendarAgesGibbs
-      - UpdatePoissonProcessRateRevJump
-      - PlotPosteriorMeanRate
-      - PlotNumberOfInternalChanges
-      - PlotPosteriorChangePoints
-      - PlotPosteriorHeights
-  - title: "Common plotting functions"
-    desc: "Functions that can be used to plot the output from both the Non-parametric summed and the Poisson Process calibration"
-    contents:
-      - PlotCalendarAgeDensityIndividualSample
-      - PlotConvergenceData
-      - PlotGelmanRubinDiagnosticSingleChain
-      - PlotGelmanRubinDiagnosticMultiChain
-  - title: "Example datasets"
-    desc: >
-      Sets of radiocarbon determinations, either from real life examples or
-      artificially generated, that can be used as examples with the calibration functions
-    contents:
-      - alces
-      - armit
-      - bison
-      - buchanan
-      - cervus
-      - equus
-      - human
-      - kerr
-      - mammuthus
-      - pp_uniform_phase
-      - two_normals
-  - title: "Calibration curves"
-    contents:
-      - starts_with("intcal")
+- title: Calibration of a Single Radiocarbon Sample
+  desc: Function to independently calibrate a single radiocarbon determination against a given calibration curve.
+    The rest of the library concerns calibration of multiple (related) radiocarbon samples.
+  contents:
+  - CalibrateSingleDetermination
+- title: Bayesian Non-Parametric Joint Density Estimation
+  desc: Functions providing a rigorous Bayesian non-parametric alternative to summed probability distributions (SPDs).
+    These functions enable the calibration and calendar age summarisation of multiple related radiocarbon samples
+    (and provide plotting of the results)
+  contents:
+  - PolyaUrnBivarDirichlet
+  - WalkerBivarDirichlet
+  - FindPredictiveCalendarAgeDensity
+  - PlotPredictiveCalendarAgeDensity
+  - PlotNumberOfClusters
+  - PlotConvergenceData
+- title: Poisson Process Modelling
+  desc: Functions for modelling the occurrence of radiocarbon samples as a variable-rate
+    (inhomogeneous) Poisson process. This is a further (analogous) approach that enables
+    the rigorous summarisation of calendar age information from multiple related
+    radiocarbon samples.
+  contents:
+  - PPcalibrate
+  - FindPosteriorMeanRate
+  - PlotPosteriorMeanRate
+  - PlotNumberOfInternalChanges
+  - PlotPosteriorChangePoints
+  - PlotPosteriorHeights
+- title: Common plotting functions
+  desc: Functions that can be used to plot the output from both the Bayesian
+    non-parametric DPMM and the Poisson process approaches to calibration and summarisation.
+  contents:
+  - PlotCalendarAgeDensityIndividualSample
+  - PlotGelmanRubinDiagnosticSingleChain
+  - PlotGelmanRubinDiagnosticMultiChain
+- title: Helper functions
+  desc: General functions that may be of use. However, please do not use SPDs
+    in your inference (use either the Bayesian non-parametric or Poisson Process
+    approaches described above).
+  contents:
+  - FindSummedProbabilityDistribution
+  - InterpolateCalibrationCurve
+  - GenerateOxcalCode
+- title: Example datasets
+  desc: |
+    Sets of radiocarbon determinations, either from real-life examples or artificially-generated, that can be used as examples with the calibration functions.
+  contents:
+  - alces
+  - armit
+  - bison
+  - buchanan
+  - cervus
+  - equus
+  - human
+  - kerr
+  - mammuthus
+  - pp_uniform_phase
+  - two_normals
+- title: Calibration curves
+  contents:
+    - starts_with("intcal")
+    - starts_with("shcal")
+navbar:
+ components:
+   articles:
+    text: Articles
+    menu:
+    - text: Independent and Joint Radiocarbon Calibration
+      href: articles/Independent_calibration.html
+    - text: Why not to Use SPDs
+      href: articles/Against_SPDs.html
+    - text: Non-parametric Summed Density
+      href: articles/Non-parametric-summed-density.html
+    - text: Poisson Process Modelling
+      href: articles/Poisson-process-modelling.html
+    - text: Determining Convergence
+      href: articles/determining-convergence.html
 figures:
   fig.ext: png
   fig.width: 7.2916667
   fig.height: ~
   fig.retina: 2
-  fig.asp: 1.3
+  fig.asp: 1
   bg: NA
   other.parameters: []
+

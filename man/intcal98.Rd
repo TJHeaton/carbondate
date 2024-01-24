@@ -7,28 +7,33 @@
 \format{
 \subsection{\code{intcal98}}{
 
-A data frame with 1,538 rows and 5 columns:
+A data frame with 1,538 rows and 5 columns providing the IntCal98 radiocarbon age
+calibration curve on a calendar grid spanning from 24,000--0 cal yr BP:
 \describe{
-\item{calendar_age}{The calendar age (yr BP)}
-\item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
-\item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age reported by the radiocarbon laboratory}
-\item{f14c}{The radiocarbon age expressed as F14C conctration}
-\item{f14c_sig}{The uncertainty in F14C}
+\item{calendar_age}{The calendar age (in cal yr BP)}
+\item{c14_age}{The \eqn{{}^{14}}C age (in \eqn{{}^{14}}C yr BP)}
+\item{c14_sig}{The (1-\eqn{\sigma}) uncertainty in the \eqn{{}^{14}}C age}
+\item{f14c}{The \eqn{{}^{14}}C age expressed as F\eqn{{}^{14}}C concentration}
+\item{f14c_sig}{The (1-\eqn{\sigma}) uncertainty in the F\eqn{{}^{14}}C concentration}
 }
 }
 }
 \source{
-\url{https://doi.org/10.1017/S0033822200019123}
+https://doi.org/10.1017/S0033822200019123
 }
 \usage{
 intcal98
 }
 \description{
-Atmospheric data from Stuiver et al 1998
-Stuiver et al 1998
-M. Stuiver, P. J. Reimer, E. Bard, J. W. Beck, G. S. Burr, K. A. Hughen,
-B. Kromer, F. G. McCormac, J. v. d. Plicht and M. Spurk.
-INTCAL98 Radiocarbon Age Calibration, 24,000-0 cal BP.
-Radiocarbon 40, 1041--1083 (1998).
+The IntCal98 Northern Hemisphere radiocarbon age calibration curve
+on a calendar grid spanning from 24,000--0 cal yr BP
+(Before Present, 0 cal yr BP corresponds to 1950 CE). \cr \cr
+\emph{Note:} This dataset provides \eqn{{}^{14}}C ages and F\eqn{{}^{14}}C values
+on a calendar age grid. This is different from the \eqn{{}^{14}}C ages
+and \eqn{{\Delta}^{14}}C values provided in oxcal .14c files.\cr \cr
+\strong{Reference:} \cr M. Stuiver, P. J. Reimer, E. Bard, J. W. Beck, G. S. Burr, K. A. Hughen,
+B. Kromer, F. G. McCormac, J. v. d. Plicht and M. Spurk. 1998.
+INTCAL98 Radiocarbon Age Calibration, 24,000--0 cal BP.
+\emph{Radiocarbon} \strong{40}(3):1041-1083 https://doi.org/10.1017/S0033822200019123. \cr \cr
 }
 \keyword{datasets}

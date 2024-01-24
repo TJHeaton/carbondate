@@ -9,24 +9,25 @@
 
 A data frame with 255 rows and 4 columns:
 \describe{
-\item{c14_age}{The \eqn{{}^{14}}C age (yr BP)}
-\item{c14_sig}{The uncertainty in the \eqn{{}^{14}}C age reported by the radiocarbon laboratory}
-\item{f14c}{The F14C concentration}
-\item{f14c_sig}{The uncertainty in the F14C concentration reported by the radiocarbon laboratory}
+\item{c14_age}{The observed \eqn{{}^{14}}C ages of the samples (in \eqn{{}^{14}}C yr BP)}
+\item{c14_sig}{The uncertainty in the observed \eqn{{}^{14}}C ages reported by the radiocarbon laboratory}
+\item{f14c}{The observed F\eqn{{}^{14}}C concentrations}
+\item{f14c_sig}{The uncertainty in the observed F\eqn{{}^{14}}C concentrations reported by the radiocarbon laboratory}
 }
 }
 }
 \source{
-\url{http://doi.org/10.1016/j.jas.2013.09.002}
+http://doi.org/10.1016/j.jas.2013.09.002
 }
 \usage{
 kerr
 }
 \description{
 255 radiocarbon determinations collated by Kerr and McCormick related to the
-building and use of raths in Ireland in the early-medieval period. Ref:
+building and use of raths in Ireland in the early-medieval period. \cr \cr
+\strong{Reference:} \cr
 Kerr, T., McCormick, F., 2014. Statistics, sunspots and settlement:
 influences on sum of probability curves.
-Journal of Archaeological Science 41, 493--501.
+\emph{Journal of Archaeological Science} \strong{41}, 493--501.
 }
 \keyword{datasets}

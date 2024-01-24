@@ -2,37 +2,47 @@
 % Please edit documentation in R/PlotNumberOfInternalChanges.R
 \name{PlotNumberOfInternalChanges}
 \alias{PlotNumberOfInternalChanges}
-\title{Plots the number of internal changes}
+\title{Plot Number of Changepoints in Rate of Sample Occurrence for Poisson Process Model}
 \usage{
 PlotNumberOfInternalChanges(output_data, n_burn = NA, n_end = NA)
 }
 \arguments{
-\item{output_data}{The return value from the updating functions
+\item{output_data}{The return value from the updating function
 \link{PPcalibrate}. Optionally, the output data can have an extra list item
 named \code{label} which is used to set the label on the plot legend.}
 
-\item{n_burn}{The number of samples required for burn-in - any samples before this
-are not used in the calculation. If not given, the first half of the
-MCMC chain is discarded. Note that the maximum
-value that can be chosen is \code{n_iter - 100 * n_thin} (where \code{n_iter} and \code{n_thin} are the
-arguments given to \link{PPcalibrate}).}
+\item{n_burn}{The number of MCMC iterations that should be discarded as burn-in (i.e.,
+considered to be occurring before the MCMC has converged). This relates to the number
+of iterations (\code{n_iter}) when running the original update functions (not the thinned \code{output_data}).
+Any MCMC iterations before this are not used in the calculations. If not given, the first half of the
+MCMC chain is discarded. Note: The maximum value that the function
+will allow is \code{n_iter - 100 * n_thin} (where \code{n_iter} and \code{n_thin} are the arguments that were given to
+\link{PPcalibrate}) which would leave only 100 of the (thinned) values in \code{output_data}.}
 
-\item{n_end}{The iteration number of the last sample to use. Assumed to be the number of iterations
-if not given.}
+\item{n_end}{The last iteration in the original MCMC chain to use in the calculations. Assumed to be the
+total number of iterations performed, i.e. \code{n_iter}, if not given.}
 }
 \value{
 None
 }
 \description{
-Once a function has been run to calibrate a set of radiocarbon determinations,
-the estimated number of internal changes can be plotted using this function.
+Given output from the Poisson process fitting function \link{PPcalibrate}, plot
+the posterior distribution for the number of internal changepoints in the underlying rate of
+sample occurrence (i.e., in \eqn{\lambda(t)}) over the period under study.
+
+For more information read the vignette: \cr
+\code{vignette("Poisson-process-modelling", package = "carbondate")}
 }
 \examples{
+# NOTE: This example is shown with a small n_iter to speed up execution.
+# Try n_iter and n_posterior_samples as the function defaults.
+
 pp_output <- PPcalibrate(
     pp_uniform_phase$c14_age,
     pp_uniform_phase$c14_sig,
     intcal20,
-    n_iter = 5000,
+    n_iter = 1000,
     show_progress = FALSE)
+
 PlotNumberOfInternalChanges(pp_output)
 }
