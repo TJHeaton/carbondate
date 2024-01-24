@@ -33,7 +33,7 @@
 #' the units of the y-axis in the plot. Defaults to `TRUE`. If `FALSE` uses
 #' F\eqn{{}^{14}}C concentration instead.
 #' @param plot_cal_age_scale The scale to use for the x-axis. Allowed values are
-#' "BP" and "AD".
+#' "BP", "AD" and "BC".
 #' @param show_individual_means (Optional) Whether to calculate and show the mean posterior
 #' calendar age estimated for each individual \eqn{{}^{14}}C sample on the plot as a rug on
 #' the x-axis. Default is `TRUE`.
@@ -108,7 +108,7 @@ PlotPosteriorMeanRate <- function(
   .CheckInteger(arg_check, n_posterior_samples, lower = 10)
   .CheckCalibrationCurveFromOutput(arg_check, output_data, calibration_curve)
   .CheckFlag(arg_check, plot_14C_age)
-  .CheckChoice(arg_check, plot_cal_age_scale, c("BP", "AD"))
+  .CheckChoice(arg_check, plot_cal_age_scale, c("BP", "AD", "BC"))
   .CheckFlag(arg_check, show_individual_means)
   .CheckFlag(arg_check, show_confidence_intervals)
   .CheckIntervalWidth(arg_check, interval_width, bespoke_probability)
@@ -180,10 +180,9 @@ PlotPosteriorMeanRate <- function(
 
   ##############################################################################
   # Plot curves
-  plot_AD <- (plot_cal_age_scale == "AD")
 
   .PlotCalibrationCurveAndInputData(
-    plot_AD,
+    plot_cal_age_scale,
     xlim,
     calibration_curve,
     rc_determinations,
@@ -194,15 +193,13 @@ PlotPosteriorMeanRate <- function(
     bespoke_probability,
     title = expression(paste("Estimate of Poisson process rate ", lambda, "(t)")))
 
-  .SetUpDensityPlot(plot_AD, xlim, ylim_rate)
+  .SetUpDensityPlot(plot_cal_age_scale, xlim, ylim_rate)
 
   if (show_individual_means) {
-    if (plot_AD) {
-      calendar_age_means <- 1950 - calendar_age_means
-    }
+    calendar_age_means <- .ConvertCalendarAge(plot_cal_age_scale, calendar_age_means)
     graphics::rug(calendar_age_means, side = 1, quiet = TRUE)
   }
-  .PlotRateEstimateOnCurrentPlot(plot_AD, posterior_rate, output_colour, show_confidence_intervals)
+  .PlotRateEstimateOnCurrentPlot(plot_cal_age_scale, posterior_rate, output_colour, show_confidence_intervals)
 
   .AddLegendToRatePlot(
     output_data,
@@ -216,13 +213,10 @@ PlotPosteriorMeanRate <- function(
 }
 
 
-.PlotRateEstimateOnCurrentPlot <- function(plot_AD, posterior_rate, output_colour, show_confidence_intervals) {
+.PlotRateEstimateOnCurrentPlot <- function(
+  plot_cal_age_scale, posterior_rate, output_colour, show_confidence_intervals) {
 
-  if (plot_AD) {
-    cal_age <- 1950 - posterior_rate$calendar_age
-  } else {
-    cal_age <- posterior_rate$calendar_age
-  }
+  cal_age <- .ConvertCalendarAge(plot_cal_age_scale, posterior_rate$calendar_age)
 
   graphics::lines(cal_age, posterior_rate$rate_mean, col = output_colour)
   if (show_confidence_intervals) {

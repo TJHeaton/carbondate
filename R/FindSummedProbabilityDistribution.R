@@ -94,7 +94,7 @@ FindSummedProbabilityDistribution <- function(
   .CheckFlag(arg_check, F14C_inputs)
   .CheckFlag(arg_check, plot_output)
   .CheckNumber(arg_check, denscale, lower = 0)
-  .CheckChoice(arg_check, plot_cal_age_scale, c("BP", "AD"))
+  .CheckChoice(arg_check, plot_cal_age_scale, c("BP", "AD", "BC"))
   .CheckNumber(arg_check, resolution, lower = 0.01)
   .CheckInputData(arg_check, rc_determinations, rc_sigmas, F14C_inputs)
   .CheckCalibrationCurve(arg_check, calibration_curve, NA)
@@ -134,7 +134,7 @@ FindSummedProbabilityDistribution <- function(
 
     .PlotSPD(
       rc_determinations = rc_determinations,
-      calendar_ages = new_calendar_ages,
+      calendar_age_BP = new_calendar_ages,
       probabilities = probabilities_per_calendar_age,
       calibration_curve = interpolated_calibration_data,
       calibration_curve_name = deparse(substitute(calibration_curve)),
@@ -154,16 +154,16 @@ FindSummedProbabilityDistribution <- function(
 
 
 .PlotSPD <- function(
-    rc_determinations,
-    calendar_ages,
-    probabilities,
-    calibration_curve,
-    calibration_curve_name,
-    F14C_inputs,
-    plot_cal_age_scale,
-    interval_width = "2sigma",
-    bespoke_probability = NA,
-    denscale = NA) {
+  rc_determinations,
+  calendar_age_BP,
+  probabilities,
+  calibration_curve,
+  calibration_curve_name,
+  F14C_inputs,
+  plot_cal_age_scale,
+  interval_width = "2sigma",
+  bespoke_probability = NA,
+  denscale = NA) {
 
   # What domain to plot in
   plot_14C_age <- !F14C_inputs
@@ -179,11 +179,6 @@ FindSummedProbabilityDistribution <- function(
 
   title <- "Summed Probability Distribution \n(Do Not Use For Inference)"
 
-  plot_AD <- (plot_cal_age_scale == "AD")
-  if (plot_AD) {
-    calendar_ages <- 1950 - calendar_ages
-  }
-
   # Set nice plotting parameters
   graphics::par(
     mgp = c(3, 0.7, 0),
@@ -193,7 +188,7 @@ FindSummedProbabilityDistribution <- function(
     las = 1)
 
   .PlotCalibrationCurveAndInputData(
-    plot_AD,
+    plot_cal_age_scale,
     xlim = rev(xrange),
     rc_determinations = rc_determinations,
     plot_14C_age = plot_14C_age,
@@ -205,16 +200,12 @@ FindSummedProbabilityDistribution <- function(
     title = title)
 
   # Plot the posterior cal age on the x-axis
-  .SetUpDensityPlot(plot_AD,
-                    xlim = rev(xrange),
-                    ylim = c(0, denscale * max(probabilities)))
+  .SetUpDensityPlot(
+    plot_cal_age_scale,
+    xlim = rev(xrange),
+    ylim = c(0, denscale * max(probabilities)))
 
-
-  graphics::polygon(
-    c(calendar_ages, rev(calendar_ages)),
-    c(probabilities, rep(0, length(probabilities))),
-    border = NA,
-    col = grDevices::grey(0.1, alpha = 0.25))
+  .PlotSPDEstimateOnCurrentPlot(plot_cal_age_scale, calendar_age_BP, probabilities)
 
   .AddLegendToSPDPlot(
     interval_width,

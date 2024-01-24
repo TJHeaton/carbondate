@@ -20,7 +20,7 @@
 #' @param plot_output `TRUE` if you wish to plot the determination, the calibration curve,
 #' and the posterior calibrated age estimate on the same plot. Defaults to `FALSE`
 #' @param plot_cal_age_scale Only for usage when `plot_output = TRUE`.
-#' The scale to use for the x-axis. Allowed values are "BP" and "AD".
+#' The scale to use for the x-axis. Allowed values are "BP", "AD" and "BC".
 #' @param interval_width Only for usage when `plot_output = TRUE`. The confidence intervals to show for the
 #' calibration curve and for the highest posterior density ranges.
 #' Choose from one of "1sigma" (68.3%), "2sigma" (95.4%) and "bespoke". Default is "2sigma".
@@ -58,12 +58,13 @@
 #' # against SHCal20 (and creating an automated plot)
 #' CalibrateSingleDetermination(1413, 25, shcal20, plot_output = TRUE)
 #'
-#' # Implementing a bespoke confidence interval level
+#' # Implementing a bespoke confidence interval level and plot in AD
 #' CalibrateSingleDetermination(
 #'     1413,
 #'     25,
 #'     shcal20,
 #'     plot_output = TRUE,
+#'     plot_cal_age_scale = "AD",
 #'     interval_width = "bespoke",
 #'     bespoke_probability = 0.8)
 #'
@@ -93,7 +94,7 @@ CalibrateSingleDetermination <- function(
   .CheckNumber(arg_check, rc_sigma)
   .CheckFlag(arg_check, F14C_inputs)
   .CheckFlag(arg_check, plot_output)
-  .CheckChoice(arg_check, plot_cal_age_scale, c("BP", "AD"))
+  .CheckChoice(arg_check, plot_cal_age_scale, c("BP", "AD", "BC"))
   .CheckCalibrationCurve(arg_check, calibration_curve, NA)
   .CheckNumber(arg_check, denscale, lower = 0)
   .CheckNumber(arg_check, resolution, lower = 0.01)
@@ -116,7 +117,7 @@ CalibrateSingleDetermination <- function(
     .PlotIndependentCalibration(
       rc_determination = rc_determination,
       rc_sigma = rc_sigma,
-      calendar_ages = calibration_curve$calendar_age,
+      calendar_ages = calibration_curve$calendar_age_BP,
       probabilities = probabilities,
       calibration_curve = calibration_curve,
       calibration_curve_name = calibration_curve_name,
@@ -189,9 +190,9 @@ CalibrateSingleDetermination <- function(
     min(which(cumulativeprobabilities > prob_cutoff))]
   calendar_age_bound_2 <- calibration_curve$calendar_age_BP[
     max(which(cumulativeprobabilities <= (1 - prob_cutoff)))]
-  xrange <- sort(c(calendar_age_bound_1, calendar_age_bound_2))
+  xrange_BP <- sort(c(calendar_age_bound_1, calendar_age_bound_2))
   # Extend by 20% either side
-  xrange <- xrange + 0.2 * c(-1, 1) * diff(xrange)
+  xrange_BP <- xrange_BP + 0.2 * c(-1, 1) * diff(xrange_BP)
 
   if (plot_14C_age == FALSE) {
     title <- substitute(
@@ -215,11 +216,6 @@ CalibrateSingleDetermination <- function(
       list(c14_age = round(rc_age), c14_sig = round(rc_sig, 1)))
   }
 
-  plot_AD <- (plot_cal_age_scale == "AD")
-  if (plot_AD) {
-    calendar_ages <- 1950 - calendar_ages
-  }
-
   # Set nice plotting parameters
   graphics::par(
     mgp = c(3, 0.7, 0),
@@ -229,8 +225,8 @@ CalibrateSingleDetermination <- function(
     las = 1)
 
   .PlotCalibrationCurve(
-    plot_AD,
-    xlim = rev(xrange),
+    plot_cal_age_scale,
+    xlim = rev(xrange_BP),
     plot_14C_age = plot_14C_age,
     calibration_curve = calibration_curve,
     calibration_curve_colour = "blue",
@@ -238,6 +234,9 @@ CalibrateSingleDetermination <- function(
     interval_width = interval_width,
     bespoke_probability = bespoke_probability,
     title = title)
+
+  calendar_ages <- .ConvertCalendarAge(plot_cal_age_scale, calendar_ages)
+  xrange <- .ConvertCalendarAge(plot_cal_age_scale, xrange_BP)
 
   # Plot the 14C determination on the y-axis
   yfromto <- seq(rc_age - 4 * rc_sig, rc_age + 4 * rc_sig, length.out = 100)
@@ -252,9 +251,12 @@ CalibrateSingleDetermination <- function(
   graphics::polygon(radpol, col = grDevices::rgb(1, 0, 0, .5))
 
   # Plot the posterior cal age on the x-axis
-  .SetUpDensityPlot(plot_AD,
-                    xlim = rev(xrange),
-                    ylim = c(0, denscale * max(probabilities)))
+
+  .SetUpDensityPlot(
+    plot_cal_age_scale,
+    xlim = rev(xrange_BP),
+    ylim = c(0, denscale * max(probabilities)))
+
   graphics::polygon(
     c(calendar_ages, rev(calendar_ages)),
     c(probabilities, rep(0, length(probabilities))),
@@ -276,7 +278,6 @@ CalibrateSingleDetermination <- function(
   }
 
   .AddLegendToIndividualCalibrationPlot(
-    plot_AD,
     interval_width,
     bespoke_probability,
     calcurve_name = calibration_curve_name,
@@ -287,7 +288,6 @@ CalibrateSingleDetermination <- function(
 
 
 .AddLegendToIndividualCalibrationPlot <- function(
-    plot_AD,
     interval_width,
     bespoke_probability,
     calcurve_name,

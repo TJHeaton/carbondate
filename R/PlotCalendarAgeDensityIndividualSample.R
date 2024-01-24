@@ -105,7 +105,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
   .CheckCalibrationCurveFromOutput(arg_check, output_data, calibration_curve)
   .CheckNumber(arg_check, hist_resolution, lower = 0.01)
   .CheckNumber(arg_check, density_resolution, lower = 0.01)
-  .CheckChoice(arg_check, plot_cal_age_scale, c("BP", "AD"))
+  .CheckChoice(arg_check, plot_cal_age_scale, c("BP", "AD", "BC"))
   .CheckNBurnAndNEnd(arg_check, n_burn, n_end, n_iter, n_thin)
   .ReportErrors(arg_check)
 
@@ -139,26 +139,26 @@ PlotCalendarAgeDensityIndividualSample <- function(
     }
   }
 
-  calendar_age <- output_data$calendar_ages[(n_burn+1):n_end, ident]
+  calendar_age_BP <- output_data$calendar_ages[(n_burn+1):n_end, ident]
   rc_age <- rc_determinations[ident]
   rc_sig <- rc_sigmas[ident]
 
-  smoothed_density <- stats::density(calendar_age, bw="SJ")
+  smoothed_density <- stats::density(calendar_age_BP, bw="SJ")
+  xrange_BP <- range(calendar_age_BP)
 
-  xrange <- range(calendar_age)
   # Interpolate for the smoothed density to return
-  returned_calendar_age <- seq(
-    from = ceiling(xrange[1] / density_resolution) * density_resolution,
-    to = floor(xrange[2] / density_resolution) * density_resolution,
+  returned_calendar_age_BP <- seq(
+    from = ceiling(xrange_BP[1] / density_resolution) * density_resolution,
+    to = floor(xrange_BP[2] / density_resolution) * density_resolution,
     by = density_resolution)
   returned_density <- data.frame(
-    calendar_age_BP = returned_calendar_age,
-    probability = stats::approx(smoothed_density$x, smoothed_density$y, returned_calendar_age)$y)
+    calendar_age_BP = returned_calendar_age_BP,
+    probability = stats::approx(smoothed_density$x, smoothed_density$y, returned_calendar_age_BP)$y)
 
   # Expand the calendar age range for plotting
-  xrange <- xrange + 0.1 * c(-1, 1) * diff(xrange)
-  xrange[1] <- floor(xrange[1] / hist_resolution) * hist_resolution
-  xrange[2] <- ceiling(xrange[2] / hist_resolution) * hist_resolution
+  xrange_BP <- xrange_BP + 0.1 * c(-1, 1) * diff(xrange_BP)
+  xrange_BP[1] <- floor(xrange_BP[1] / hist_resolution) * hist_resolution
+  xrange_BP[2] <- ceiling(xrange_BP[2] / hist_resolution) * hist_resolution
 
   if (plot_14C_age == FALSE) {
     title <- substitute(
@@ -186,8 +186,6 @@ PlotCalendarAgeDensityIndividualSample <- function(
       list(i = ident, c14_age = round(rc_age), c14_sig = round(rc_sig, 1)))
   }
 
-  plot_AD <- (plot_cal_age_scale == "AD")
-
   # Set nice plotting parameters
   graphics::par(
     mgp = c(3, 0.7, 0),
@@ -197,8 +195,8 @@ PlotCalendarAgeDensityIndividualSample <- function(
     las = 1)
 
   .PlotCalibrationCurve(
-    plot_AD,
-    xlim = rev(xrange),
+    plot_cal_age_scale,
+    xlim = rev(xrange_BP),
     plot_14C_age = plot_14C_age,
     calibration_curve = calibration_curve,
     calibration_curve_colour = "blue",
@@ -207,11 +205,9 @@ PlotCalendarAgeDensityIndividualSample <- function(
     bespoke_probability = bespoke_probability,
     title = title)
 
-  if (plot_AD) {
-    calendar_age <- 1950 - calendar_age
-    xrange <- 1950 - xrange
-    smoothed_density$x <- 1950 - smoothed_density$x
-  }
+  calendar_age <- .ConvertCalendarAge(plot_cal_age_scale, calendar_age_BP)
+  xrange <- .ConvertCalendarAge(plot_cal_age_scale, xrange_BP)
+  smoothed_density$x <- .ConvertCalendarAge(plot_cal_age_scale, smoothed_density$x)
 
   # Plot the 14C determination on the y-axis
   yfromto <- seq(rc_age - 4 * rc_sig, rc_age + 4 * rc_sig, length.out = 100)
@@ -228,7 +224,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
   # Plot the posterior cal age on the x-axis
   graphics::par(new = TRUE, las = 1)
   # Create hist but do not plot - works out sensible ylim
-  if (plot_AD) {
+  if (plot_cal_age_scale == "AD") {
     breaks <-seq(xrange[2], xrange[1], by=hist_resolution)
   } else {
     breaks <-seq(xrange[1], xrange[2], by=hist_resolution)
@@ -253,11 +249,8 @@ PlotCalendarAgeDensityIndividualSample <- function(
   if (show_unmodelled_density) {
     unmodelled <- CalibrateSingleDetermination(
       rc_age, rc_sig, calibration_curve, resolution = density_resolution)
-    if (plot_AD) {
-      unmodelled$calendar_age <- 1950 - unmodelled$calendar_age_BP
-    } else {
-       unmodelled$calendar_age <- unmodelled$calendar_age_BP
-    }
+    unmodelled$calendar_age <- .ConvertCalendarAge(plot_cal_age_scale, unmodelled$calendar_age_BP)
+
     graphics::polygon(
       c(unmodelled$calendar_age, rev(unmodelled$calendar_age)),
       c(unmodelled$probability, rep(0, length(unmodelled$probability))),

@@ -37,7 +37,7 @@
 #' the units of the y-axis in the plot. Defaults to `TRUE`. If `FALSE` uses
 #' F\eqn{{}^{14}}C concentration instead.
 #' @param plot_cal_age_scale The scale to use for the x-axis. Allowed values are
-#' "BP" and "AD".
+#' "BP", "AD" and "BC".
 #' @param show_SPD Whether to calculate and show the summed probability
 #' distribution on the plot (optional). Default is `FALSE`.
 #' @param show_confidence_intervals Whether to show the pointwise confidence intervals
@@ -142,7 +142,7 @@ PlotPredictiveCalendarAgeDensity <- function(
     }
   }
   .CheckFlag(arg_check, plot_14C_age)
-  .CheckChoice(arg_check, plot_cal_age_scale, c("BP", "AD"))
+  .CheckChoice(arg_check, plot_cal_age_scale, c("BP", "AD", "BC"))
   .CheckInteger(arg_check, n_posterior_samples, lower = 10)
   .CheckIntervalWidth(arg_check, interval_width, bespoke_probability)
   .CheckNumber(arg_check, denscale, lower = 0)
@@ -179,7 +179,6 @@ PlotPredictiveCalendarAgeDensity <- function(
   ##############################################################################
   # Initialise plotting parameters
 
-  SPD_colour <- grDevices::grey(0.1, alpha = 0.3)
   calibration_curve_colour <- "blue"
   calibration_curve_bg <- grDevices::rgb(0, 0, 1, .3)
   output_colours <- c("purple", "darkgreen", "darkorange2", "deeppink3")
@@ -188,7 +187,6 @@ PlotPredictiveCalendarAgeDensity <- function(
   }
 
   calendar_age_sequence <- .CreateXRangeToPlotDensity(output_data[[1]], resolution)
-  plot_AD <- (plot_cal_age_scale == "AD")
   ##############################################################################
   # Calculate density distributions
 
@@ -222,7 +220,7 @@ PlotPredictiveCalendarAgeDensity <- function(
   # Plot curves
 
   .PlotCalibrationCurveAndInputData(
-    plot_AD,
+    plot_cal_age_scale,
     xlim,
     calibration_curve,
     rc_determinations,
@@ -232,15 +230,15 @@ PlotPredictiveCalendarAgeDensity <- function(
     interval_width,
     bespoke_probability)
 
-  .SetUpDensityPlot(plot_AD, xlim, ylim_density)
+  .SetUpDensityPlot(plot_cal_age_scale, xlim, ylim_density)
 
   if (show_SPD) {
-    .PlotSPDEstimateOnCurrentPlot(plot_AD, SPD, SPD_colour)
+    .PlotSPDEstimateOnCurrentPlot(plot_cal_age_scale, SPD$calendar_age_BP, SPD$probability)
   }
 
   for (i in 1:num_data) {
     .PlotDensityEstimateOnCurrentPlot(
-      plot_AD, predictive_density[[i]], output_colours[[i]], show_confidence_intervals)
+      plot_cal_age_scale, predictive_density[[i]], output_colours[[i]], show_confidence_intervals)
   }
 
   .AddLegendToDensityPlot(
@@ -250,8 +248,7 @@ PlotPredictiveCalendarAgeDensity <- function(
     interval_width,
     bespoke_probability,
     calibration_curve_colour,
-    output_colours,
-    SPD_colour)
+    output_colours)
 
   invisible(predictive_density)
 }
@@ -269,29 +266,10 @@ PlotPredictiveCalendarAgeDensity <- function(
 }
 
 
-.PlotSPDEstimateOnCurrentPlot <- function(plot_AD, SPD, SPD_colour) {
-  if (plot_AD) {
-    cal_age <- 1950 - SPD$calendar_age
-  } else {
-    cal_age <- SPD$calendar_age
-  }
-
-  graphics::polygon(
-    c(cal_age, rev(cal_age)),
-    c(SPD$probability, rep(0, length(SPD$probability))),
-    border = NA,
-    col = SPD_colour)
-}
-
-
 .PlotDensityEstimateOnCurrentPlot <- function(
-    plot_AD, predictive_density, output_colour, show_confidence_intervals) {
+    plot_cal_age_scale, predictive_density, output_colour, show_confidence_intervals) {
 
-  if (plot_AD) {
-    cal_age <- 1950 - predictive_density$calendar_age
-  } else {
-    cal_age <- predictive_density$calendar_age
-  }
+  cal_age <- .ConvertCalendarAge(plot_cal_age_scale, predictive_density$calendar_age)
 
   graphics::lines(cal_age, predictive_density$density_mean, col = output_colour)
   if (show_confidence_intervals) {
@@ -308,8 +286,8 @@ PlotPredictiveCalendarAgeDensity <- function(
     interval_width,
     bespoke_probability,
     calibration_curve_colour,
-    output_colours,
-    SPD_colour) {
+    output_colours) {
+  SPD_colour <- grDevices::grey(0.1, alpha = 0.3)
 
   ci_label <- switch(
     interval_width,
