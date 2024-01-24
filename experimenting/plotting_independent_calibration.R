@@ -47,7 +47,7 @@ curve(truedens(
 
 
 FindSummedProbabilityDistribution(
-  calendar_age_range_BP=c(7000, 2500),
+  calendar_age_range_BP=c(2500, 7000),
   rc_determinations= two_normals$c14_age,
   rc_sigmas = two_normals$c14_sig,
   calibration_curve=intcal20,
