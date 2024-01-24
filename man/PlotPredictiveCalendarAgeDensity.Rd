@@ -45,7 +45,7 @@ the units of the y-axis in the plot. Defaults to \code{TRUE}. If \code{FALSE} us
 F\eqn{{}^{14}}C concentration instead.}
 
 \item{plot_cal_age_scale}{The scale to use for the x-axis. Allowed values are
-"BP" and "AD".}
+"BP", "AD" and "BC".}
 
 \item{show_SPD}{Whether to calculate and show the summed probability
 distribution on the plot (optional). Default is \code{FALSE}.}

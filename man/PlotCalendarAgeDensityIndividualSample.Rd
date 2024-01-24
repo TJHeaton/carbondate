@@ -42,7 +42,7 @@ the units of the y-axis in the plot. Defaults to \code{TRUE}. If \code{FALSE} us
 F\eqn{{}^{14}}C concentration instead.}
 
 \item{plot_cal_age_scale}{The scale to use for the x-axis. Allowed values are
-"BP" and "AD".}
+"BP", "AD" and "BC".}
 
 \item{hist_resolution}{The distance between histogram breaks when plotting the individual
 posterior calendar age density. Default is 5.}
