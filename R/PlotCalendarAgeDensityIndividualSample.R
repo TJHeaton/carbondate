@@ -105,7 +105,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
   .ReportErrors(arg_check)
 
   # Ensure revert to main environment par on exit of function
-  opar <- graphics::par(no.readonly = TRUE)
+  opar <- graphics::par()[c("mgp", "xaxs", "yaxs", "mar", "las")]
   on.exit(graphics::par(opar))
 
   n_burn <- .SetNBurn(n_burn, n_iter, n_thin)
