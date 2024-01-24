@@ -43,9 +43,14 @@
 #'
 #' # Plot the posterior change points for only 2 or 3 internal changes
 #' PlotPosteriorChangePoints(pp_output, n_changes = c(2, 3))
+#'
+#' # Changing the calendar age plotting scale to cal AD
+#' PlotPosteriorChangePoints(pp_output, n_changes = c(2, 3),
+#'     plot_cal_age_scale = "AD")
 PlotPosteriorChangePoints <- function(
     output_data,
     n_changes = c(1, 2, 3),
+    plot_cal_age_scale = "BP",
     n_burn = NA,
     n_end = NA,
     kernel_bandwidth = NA) {
@@ -56,6 +61,7 @@ PlotPosteriorChangePoints <- function(
   arg_check <- .InitializeErrorList()
   .CheckOutputData(arg_check, output_data, "RJPP")
   .CheckIntegerVector(arg_check, n_changes, lower = 1, upper = 6, max_length = 4)
+  .CheckChoice(arg_check, plot_cal_age_scale, c("BP", "AD", "BC"))
   .CheckNBurnAndNEnd(arg_check, n_burn, n_end, n_iter, n_thin)
   if (!is.na(kernel_bandwidth)) .CheckNumber(arg_check, kernel_bandwidth, lower = 0)
   .ReportErrors(arg_check)
@@ -99,17 +105,28 @@ PlotPosteriorChangePoints <- function(
     }
   }
 
+  cal_age_range <- .ConvertCalendarAge(plot_cal_age_scale, cal_age_range)
+  if (plot_cal_age_scale == "AD") {
+    x_label <- "Calendar Age (cal AD)"
+  } else if (plot_cal_age_scale == "BC") {
+    x_label <- "Calendar Age (cal BC)"
+  } else {
+    x_label <- "Calendar Age (cal yr BP)"
+  }
+
+
   graphics::plot(
     x = NA,
     y = NA,
     xlim = rev(cal_age_range),
     ylim = c(0, max_density * 1.2),
-    xlab = "Calendar Age (cal yr BP)",
+    xlab = x_label,
     ylab = "Density",
     type = "n",
   )
   for (line in all_densities) {
-    graphics::lines(line$x, line$y, lty = line$n_change, col = colors[line$n_change], lwd = 2)
+    cal_age_line_x <- .ConvertCalendarAge(plot_cal_age_scale, line$x)
+    graphics::lines(cal_age_line_x, line$y, lty = line$n_change, col = colors[line$n_change], lwd = 2)
   }
   graphics::legend("topright", legend = legend, lty = n_changes, col = colors[n_changes])
 }
