@@ -49,7 +49,7 @@
   if (plot_AD) {
     cal_age <- 1950 - calibration_curve$calendar_age
     xlim <- 1950 - xlim
-    x_label <- "Calendar Age (AD)"
+    x_label <- "Calendar Age (cal AD)"
   } else {
     cal_age <- calibration_curve$calendar_age
     x_label <- "Calendar Age (cal yr BP)"

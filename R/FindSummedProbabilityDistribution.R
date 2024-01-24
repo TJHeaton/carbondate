@@ -84,6 +84,7 @@ FindSummedProbabilityDistribution <- function(
     F14C_inputs = FALSE,
     resolution = 1,
     plot_output = FALSE,
+    plot_cal_age_scale = "BP",
     interval_width = "2sigma",
     bespoke_probability = NA,
     denscale = 3) {
@@ -93,6 +94,7 @@ FindSummedProbabilityDistribution <- function(
   .CheckFlag(arg_check, F14C_inputs)
   .CheckFlag(arg_check, plot_output)
   .CheckNumber(arg_check, denscale, lower = 0)
+  .CheckChoice(arg_check, plot_cal_age_scale, c("BP", "AD"))
   .CheckNumber(arg_check, resolution, lower = 0.01)
   .CheckInputData(arg_check, rc_determinations, rc_sigmas, F14C_inputs)
   .CheckCalibrationCurve(arg_check, calibration_curve, NA)
@@ -100,6 +102,7 @@ FindSummedProbabilityDistribution <- function(
 
 
   calibration_data_range <- range(calibration_curve$calendar_age)
+  calendar_age_range_BP <- sort(calendar_age_range_BP)
   range_margin <- 400
 
   new_calendar_ages <- seq(
@@ -131,12 +134,12 @@ FindSummedProbabilityDistribution <- function(
 
     .PlotSPD(
       rc_determinations = rc_determinations,
-      rc_sigmas = rc_sigmas,
       calendar_ages = new_calendar_ages,
       probabilities = probabilities_per_calendar_age,
       calibration_curve = interpolated_calibration_data,
       calibration_curve_name = deparse(substitute(calibration_curve)),
       F14C_inputs = F14C_inputs,
+      plot_cal_age_scale = plot_cal_age_scale,
       interval_width = interval_width,
       bespoke_probability = bespoke_probability,
       denscale = denscale)
@@ -152,12 +155,12 @@ FindSummedProbabilityDistribution <- function(
 
 .PlotSPD <- function(
     rc_determinations,
-    rc_sigmas,
     calendar_ages,
     probabilities,
     calibration_curve,
     calibration_curve_name,
     F14C_inputs,
+    plot_cal_age_scale,
     interval_width = "2sigma",
     bespoke_probability = NA,
     denscale = NA) {
@@ -176,7 +179,7 @@ FindSummedProbabilityDistribution <- function(
 
   title <- "Summed Probability Distribution \n(Do Not Use For Inference)"
 
-  plot_AD <- any(calendar_ages < 0)
+  plot_AD <- (plot_cal_age_scale == "AD")
   if (plot_AD) {
     calendar_ages <- 1950 - calendar_ages
   }

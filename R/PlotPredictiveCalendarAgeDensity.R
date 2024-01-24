@@ -36,6 +36,8 @@
 #' @param plot_14C_age Whether to use the radiocarbon age (\eqn{{}^{14}}C yr BP) as
 #' the units of the y-axis in the plot. Defaults to `TRUE`. If `FALSE` uses
 #' F\eqn{{}^{14}}C concentration instead.
+#' @param plot_cal_age_scale The scale to use for the x-axis. Allowed values are
+#' "BP" and "AD".
 #' @param show_SPD Whether to calculate and show the summed probability
 #' distribution on the plot (optional). Default is `FALSE`.
 #' @param show_confidence_intervals Whether to show the pointwise confidence intervals
@@ -111,6 +113,7 @@ PlotPredictiveCalendarAgeDensity <- function(
     n_posterior_samples = 5000,
     calibration_curve = NULL,
     plot_14C_age = TRUE,
+    plot_cal_age_scale = "BP",
     show_SPD = FALSE,
     show_confidence_intervals = TRUE,
     interval_width = "2sigma",
@@ -138,7 +141,8 @@ PlotPredictiveCalendarAgeDensity <- function(
       output_data[[i]]$label <- output_data[[i]]$update_type
     }
   }
-
+  .CheckFlag(arg_check, plot_14C_age)
+  .CheckChoice(arg_check, plot_cal_age_scale, c("BP", "AD"))
   .CheckInteger(arg_check, n_posterior_samples, lower = 10)
   .CheckIntervalWidth(arg_check, interval_width, bespoke_probability)
   .CheckNumber(arg_check, denscale, lower = 0)
@@ -184,7 +188,7 @@ PlotPredictiveCalendarAgeDensity <- function(
   }
 
   calendar_age_sequence <- .CreateXRangeToPlotDensity(output_data[[1]], resolution)
-  plot_AD <- any(calendar_age_sequence < 0)
+  plot_AD <- (plot_cal_age_scale == "AD")
   ##############################################################################
   # Calculate density distributions
 

@@ -19,6 +19,8 @@
 #' Default is 1.
 #' @param plot_output `TRUE` if you wish to plot the determination, the calibration curve,
 #' and the posterior calibrated age estimate on the same plot. Defaults to `FALSE`
+#' @param plot_cal_age_scale Only for usage when `plot_output = TRUE`.
+#' The scale to use for the x-axis. Allowed values are "BP" and "AD".
 #' @param interval_width Only for usage when `plot_output = TRUE`. The confidence intervals to show for the
 #' calibration curve and for the highest posterior density ranges.
 #' Choose from one of "1sigma" (68.3%), "2sigma" (95.4%) and "bespoke". Default is "2sigma".
@@ -41,7 +43,7 @@
 #' plot(calib, type = "l", xlim = c(1000, 600))
 #'
 #' # Incorporating an automated plot to visualise the calibration
-#' calib <- CalibrateSingleDetermination(860, 35, intcal20, plot_output = TRUE)
+#' CalibrateSingleDetermination(860, 35, intcal20, plot_output = TRUE)
 #'
 #' # Calibration of a single (old) determination expressed as 14C age BP
 #' calib <- CalibrateSingleDetermination(31020, 100, intcal20)
@@ -81,6 +83,7 @@ CalibrateSingleDetermination <- function(
     F14C_inputs = FALSE,
     resolution = 1,
     plot_output = FALSE,
+    plot_cal_age_scale = "BP",
     interval_width = "2sigma",
     bespoke_probability = NA,
     denscale = 3) {
@@ -90,6 +93,7 @@ CalibrateSingleDetermination <- function(
   .CheckNumber(arg_check, rc_sigma)
   .CheckFlag(arg_check, F14C_inputs)
   .CheckFlag(arg_check, plot_output)
+  .CheckChoice(arg_check, plot_cal_age_scale, c("BP", "AD"))
   .CheckCalibrationCurve(arg_check, calibration_curve, NA)
   .CheckNumber(arg_check, denscale, lower = 0)
   .CheckNumber(arg_check, resolution, lower = 0.01)
@@ -116,6 +120,7 @@ CalibrateSingleDetermination <- function(
       probabilities = probabilities,
       calibration_curve = calibration_curve,
       calibration_curve_name = calibration_curve_name,
+      plot_cal_age_scale = plot_cal_age_scale,
       interval_width = interval_width,
       bespoke_probability = bespoke_probability,
       F14C_inputs = F14C_inputs,
@@ -159,6 +164,7 @@ CalibrateSingleDetermination <- function(
     calibration_curve,
     calibration_curve_name,
     F14C_inputs,
+    plot_cal_age_scale,
     interval_width = "2sigma",
     bespoke_probability = NA,
     denscale = NA,
@@ -209,7 +215,7 @@ CalibrateSingleDetermination <- function(
       list(c14_age = round(rc_age), c14_sig = round(rc_sig, 1)))
   }
 
-  plot_AD <- any(calendar_ages < 0)
+  plot_AD <- (plot_cal_age_scale == "AD")
   if (plot_AD) {
     calendar_ages <- 1950 - calendar_ages
   }
@@ -261,7 +267,7 @@ CalibrateSingleDetermination <- function(
       "1sigma" = 0.682,
       "2sigma" = 0.954,
       "bespoke" = bespoke_probability)
-    hpd <- FindHPD(as.numeric(rev(calendar_ages)), rev(probabilities), hpd_probability)
+    hpd <- FindHPD(as.numeric(calendar_ages), probabilities, hpd_probability)
     if (length(hpd$start_ages) > 0) {
       graphics::segments(hpd$start_ages, hpd$height, hpd$end_ages, hpd$height, lwd=4, col='black', lend='butt')
     } else {
@@ -270,6 +276,7 @@ CalibrateSingleDetermination <- function(
   }
 
   .AddLegendToIndividualCalibrationPlot(
+    plot_AD,
     interval_width,
     bespoke_probability,
     calcurve_name = calibration_curve_name,
@@ -280,6 +287,7 @@ CalibrateSingleDetermination <- function(
 
 
 .AddLegendToIndividualCalibrationPlot <- function(
+    plot_AD,
     interval_width,
     bespoke_probability,
     calcurve_name,

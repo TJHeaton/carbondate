@@ -32,6 +32,8 @@
 #' @param plot_14C_age Whether to use the radiocarbon age (\eqn{{}^{14}}C yr BP) as
 #' the units of the y-axis in the plot. Defaults to `TRUE`. If `FALSE` uses
 #' F\eqn{{}^{14}}C concentration instead.
+#' @param plot_cal_age_scale The scale to use for the x-axis. Allowed values are
+#' "BP" and "AD".
 #' @param show_individual_means (Optional) Whether to calculate and show the mean posterior
 #' calendar age estimated for each individual \eqn{{}^{14}}C sample on the plot as a rug on
 #' the x-axis. Default is `TRUE`.
@@ -91,6 +93,7 @@ PlotPosteriorMeanRate <- function(
     n_posterior_samples = 5000,
     calibration_curve = NULL,
     plot_14C_age = TRUE,
+    plot_cal_age_scale = "BP",
     show_individual_means = TRUE,
     show_confidence_intervals = TRUE,
     interval_width = "2sigma",
@@ -105,6 +108,7 @@ PlotPosteriorMeanRate <- function(
   .CheckInteger(arg_check, n_posterior_samples, lower = 10)
   .CheckCalibrationCurveFromOutput(arg_check, output_data, calibration_curve)
   .CheckFlag(arg_check, plot_14C_age)
+  .CheckChoice(arg_check, plot_cal_age_scale, c("BP", "AD"))
   .CheckFlag(arg_check, show_individual_means)
   .CheckFlag(arg_check, show_confidence_intervals)
   .CheckIntervalWidth(arg_check, interval_width, bespoke_probability)
@@ -153,7 +157,6 @@ PlotPosteriorMeanRate <- function(
   calendar_age_sequence <- seq(from = start_age, to = end_age, by = resolution)
   xlim <- rev(range(calendar_age_sequence))
 
-  plot_AD <- any(calendar_age_sequence < 0)
   ##############################################################################
   # Calculate means and rate
   posterior_rate <- FindPosteriorMeanRate(
@@ -177,6 +180,7 @@ PlotPosteriorMeanRate <- function(
 
   ##############################################################################
   # Plot curves
+  plot_AD <- (plot_cal_age_scale == "AD")
 
   .PlotCalibrationCurveAndInputData(
     plot_AD,

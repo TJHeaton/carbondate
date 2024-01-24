@@ -75,14 +75,16 @@
 #'     show_hpd_ranges = TRUE,
 #'     show_unmodelled_density = TRUE)
 #'
-#' # Plot and then use the returned probability to find the mean posterior calendar age
+#' # Plot and then assign the returned probability
 #' posterior_dens <- PlotCalendarAgeDensityIndividualSample(15, polya_urn_output)
+#' # Use this to find the mean posterior calendar age
 #' weighted.mean(posterior_dens$calendar_age_BP, posterior_dens$probability)
 PlotCalendarAgeDensityIndividualSample <- function(
     ident,
     output_data,
     calibration_curve = NULL,
     plot_14C_age = TRUE,
+    plot_cal_age_scale = "BP",
     hist_resolution = 5,
     density_resolution = 1,
     interval_width = "2sigma",
@@ -101,6 +103,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
   .CheckCalibrationCurveFromOutput(arg_check, output_data, calibration_curve)
   .CheckNumber(arg_check, hist_resolution, lower = 0.01)
   .CheckNumber(arg_check, density_resolution, lower = 0.01)
+  .CheckChoice(arg_check, plot_cal_age_scale, c("BP", "AD"))
   .CheckNBurnAndNEnd(arg_check, n_burn, n_end, n_iter, n_thin)
   .ReportErrors(arg_check)
 
@@ -181,7 +184,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
       list(i = ident, c14_age = round(rc_age), c14_sig = round(rc_sig, 1)))
   }
 
-  plot_AD <- any(calendar_age < 0)
+  plot_AD <- (plot_cal_age_scale == "AD")
 
   # Set nice plotting parameters
   graphics::par(
