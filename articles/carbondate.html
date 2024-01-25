@@ -45,8 +45,8 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/Independent_calibration.html">Independent and Joint Radiocarbon Calibration</a>
-    <a class="dropdown-item" href="../articles/Against_SPDs.html">Why not to Use SPDs</a>
-    <a class="dropdown-item" href="../articles/Non-parametric-summed-density.html">Non-parametric Summed Density</a>
+    <a class="dropdown-item" href="../articles/Against_SPDs.html">Why Not to Use SPDs</a>
+    <a class="dropdown-item" href="../articles/Non-parametric-summed-density.html">Non-Parametric Joint Density Estimation</a>
     <a class="dropdown-item" href="../articles/Poisson-process-modelling.html">Poisson Process Modelling</a>
     <a class="dropdown-item" href="../articles/determining-convergence.html">Determining Convergence</a>
   </div>
@@ -103,7 +103,14 @@ particular culture). We want to estimate the calendar ages of these
 samples <strong>and</strong> investigate changes/variations in the
 (calendar age) frequency at which the samples arose (as a potential
 proxy for activity, population size, …):</p>
-<p><img src="carbondate_files/figure-html/illustrate_set-1.png" width="100%"></p>
+<div class="figure">
+<img src="carbondate_files/figure-html/illustrate_set-1.png" alt="_Illustration of our challenge. We observe a set of related samples, each with a ^14^C determination (shown here as the red ticks on the radiocarbon age axis). Can we jointly calibrate the samples, and summarise the combined calendar age information that they provide?_" width="100%"><p class="caption">
+<em>Illustration of our challenge. We observe a set of related samples,
+each with a <sup>14</sup>C determination (shown here as the red ticks on
+the radiocarbon age axis). Can we jointly calibrate the samples, and
+summarise the combined calendar age information that they provide?</em>
+</p>
+</div>
 <p>Each sample has an unknown calendar age <span class="math inline">\(\theta_i\)</span> (for <span class="math inline">\(i = 1, \ldots, N\)</span>). Since they are
 related, the set of calendar ages <span class="math inline">\(\theta_1,
 \ldots, \theta_n\)</span> for the samples are assumed to arise from the

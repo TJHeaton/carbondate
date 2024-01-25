@@ -28,8 +28,8 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/Independent_calibration.html">Independent and Joint Radiocarbon Calibration</a>
-    <a class="dropdown-item" href="../articles/Against_SPDs.html">Why not to Use SPDs</a>
-    <a class="dropdown-item" href="../articles/Non-parametric-summed-density.html">Non-parametric Summed Density</a>
+    <a class="dropdown-item" href="../articles/Against_SPDs.html">Why Not to Use SPDs</a>
+    <a class="dropdown-item" href="../articles/Non-parametric-summed-density.html">Non-Parametric Joint Density Estimation</a>
     <a class="dropdown-item" href="../articles/Poisson-process-modelling.html">Poisson Process Modelling</a>
     <a class="dropdown-item" href="../articles/determining-convergence.html">Determining Convergence</a>
   </div>
@@ -115,6 +115,11 @@ DPMM Output</dd>
 in Bayesian Non-Parametric DPMM Output</dd>
       </dl><dl><dt>
           
+          <code><a href="PlotCalendarAgeDensityIndividualSample.html">PlotCalendarAgeDensityIndividualSample()</a></code> 
+        </dt>
+        <dd>Plot Posterior Calendar Age Estimate for an Individual Determination after Joint Calibration</dd>
+      </dl><dl><dt>
+          
           <code><a href="PlotConvergenceData.html">PlotConvergenceData()</a></code> 
         </dt>
         <dd>Plot KL Divergence of Predictive Density to Assess
@@ -162,9 +167,9 @@ Variable-Rate Poisson Process</dd>
         </dt>
         <dd>Plot Heights of Segments in Rate of Sample Occurrence for Poisson Process Model</dd>
       </dl></div><div class="section level2">
-      <h2 id="common-plotting-functions">Common plotting functions<a class="anchor" aria-label="anchor" href="#common-plotting-functions"></a></h2>
+      <h2 id="common-convergence-plotting-functions">Common convergence plotting functions<a class="anchor" aria-label="anchor" href="#common-convergence-plotting-functions"></a></h2>
       
-      <p class="section-desc"></p><p>Functions that can be used to plot the output from both the Bayesian non-parametric DPMM and the Poisson process approaches to calibration and summarisation.</p>
+      <p class="section-desc"></p><p>Functions that can be used to plot information on convergence of the MCMC for both the Bayesian non-parametric DPMM and the Poisson process approaches to calibration and summarisation.</p>
 
       
     </div><div id="" class="section level2">
@@ -173,11 +178,6 @@ Variable-Rate Poisson Process</dd>
       
 
       <dl><dt>
-          
-          <code><a href="PlotCalendarAgeDensityIndividualSample.html">PlotCalendarAgeDensityIndividualSample()</a></code> 
-        </dt>
-        <dd>Plot Posterior Calendar Age Estimate for an Individual Determination after Joint Calibration</dd>
-      </dl><dl><dt>
           
           <code><a href="PlotGelmanRubinDiagnosticSingleChain.html">PlotGelmanRubinDiagnosticSingleChain()</a></code> 
         </dt>

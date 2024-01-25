@@ -52,8 +52,8 @@ individual calibration.'><!-- mathjax --><script src="https://cdnjs.cloudflare.c
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/Independent_calibration.html">Independent and Joint Radiocarbon Calibration</a>
-    <a class="dropdown-item" href="../articles/Against_SPDs.html">Why not to Use SPDs</a>
-    <a class="dropdown-item" href="../articles/Non-parametric-summed-density.html">Non-parametric Summed Density</a>
+    <a class="dropdown-item" href="../articles/Against_SPDs.html">Why Not to Use SPDs</a>
+    <a class="dropdown-item" href="../articles/Non-parametric-summed-density.html">Non-Parametric Joint Density Estimation</a>
     <a class="dropdown-item" href="../articles/Poisson-process-modelling.html">Poisson Process Modelling</a>
     <a class="dropdown-item" href="../articles/determining-convergence.html">Determining Convergence</a>
   </div>
@@ -124,10 +124,7 @@ density estimate of the calendar age.</p></dd>
 
 <dt>output_data</dt>
 <dd><p>The return value either from one of the Bayesian non-parametric DPMM
-functions (<a href="PolyaUrnBivarDirichlet.html">PolyaUrnBivarDirichlet</a> or <a href="WalkerBivarDirichlet.html">WalkerBivarDirichlet</a>); or
-from the Poisson process modelling function (<a href="PPcalibrate.html">PPcalibrate</a>). Can also be a list, each
-item containing one of these return values. Optionally, the output data can have an extra list
-item named <code>label</code> which is used to set the label on the plot legend.</p></dd>
+functions (<a href="PolyaUrnBivarDirichlet.html">PolyaUrnBivarDirichlet</a> or <a href="WalkerBivarDirichlet.html">WalkerBivarDirichlet</a>).</p></dd>
 
 
 <dt>calibration_curve</dt>
@@ -146,8 +143,8 @@ F\({}^{14}\)C concentration instead.</p></dd>
 
 
 <dt>plot_cal_age_scale</dt>
-<dd><p>The scale to use for the x-axis. Allowed values are
-"BP" and "AD".</p></dd>
+<dd><p>The calendar scale to use for the x-axis. Allowed values are
+"BP", "AD" and "BC". The default is "BP" corresponding to plotting in cal yr BP.</p></dd>
 
 
 <dt>hist_resolution</dt>

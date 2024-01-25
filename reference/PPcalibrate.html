@@ -72,8 +72,8 @@ vignette("Poisson-process-modelling", package = "carbondate")'><!-- mathjax --><
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/Independent_calibration.html">Independent and Joint Radiocarbon Calibration</a>
-    <a class="dropdown-item" href="../articles/Against_SPDs.html">Why not to Use SPDs</a>
-    <a class="dropdown-item" href="../articles/Non-parametric-summed-density.html">Non-parametric Summed Density</a>
+    <a class="dropdown-item" href="../articles/Against_SPDs.html">Why Not to Use SPDs</a>
+    <a class="dropdown-item" href="../articles/Non-parametric-summed-density.html">Non-Parametric Joint Density Estimation</a>
     <a class="dropdown-item" href="../articles/Poisson-process-modelling.html">Poisson Process Modelling</a>
     <a class="dropdown-item" href="../articles/determining-convergence.html">Determining Convergence</a>
   </div>
@@ -226,7 +226,9 @@ larger resolution.</p></dd>
 <dt>prior_h_shape, prior_h_rate</dt>
 <dd><p>(Optional) Prior for the value of the Poisson Process rate (the height <code>rate_h</code>)
 in any specific interval:
-$$\textrm{rate_h} \sim \textrm{Gamma}(\textrm{shape = prior_h_shape}, \textrm{rate = prior_h_rate}).$$
+$$\textrm{rate}\_\textrm{h} \sim \textrm{Gamma}(
+\textrm{shape} = \textrm{prior}\_\textrm{h}\_\textrm{shape},
+\textrm{rate} = \textrm{prior}\_\textrm{h}\_\textrm{rate}).$$
 If they are both <code>NA</code> then <code>prior_h_shape</code> is selected to be 1 (so <code>rate_h</code> follows an Exponential
 distribution) and <code>prior_h_rate</code> chosen adaptively (internally) to match <code>n_observations</code>.</p></dd>
 
@@ -234,7 +236,8 @@ distribution) and <code>prior_h_rate</code> chosen adaptively (internally) to ma
 <dt>prior_n_internal_changepoints_lambda</dt>
 <dd><p>Prior mean for the number of internal changepoints
 in the rate \(\lambda(t)\).
-$$\textrm{n_internal_changepoints} \sim \textrm{Po}(\textrm{prior_n_internal_changepoints_lambda})$$</p></dd>
+$$\textrm{n}\_\textrm{internal}\_\textrm{changepoints} \sim
+\textrm{Po}(\textrm{prior}\_\textrm{n}\_\textrm{internal}\_\textrm{changepoints}\_\textrm{lambda})$$</p></dd>
 
 
 <dt>k_max_internal_changepoints</dt>

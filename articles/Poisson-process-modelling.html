@@ -45,8 +45,8 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/Independent_calibration.html">Independent and Joint Radiocarbon Calibration</a>
-    <a class="dropdown-item" href="../articles/Against_SPDs.html">Why not to Use SPDs</a>
-    <a class="dropdown-item" href="../articles/Non-parametric-summed-density.html">Non-parametric Summed Density</a>
+    <a class="dropdown-item" href="../articles/Against_SPDs.html">Why Not to Use SPDs</a>
+    <a class="dropdown-item" href="../articles/Non-parametric-summed-density.html">Non-Parametric Joint Density Estimation</a>
     <a class="dropdown-item" href="../articles/Poisson-process-modelling.html">Poisson Process Modelling</a>
     <a class="dropdown-item" href="../articles/determining-convergence.html">Determining Convergence</a>
   </div>
@@ -167,7 +167,7 @@ reconstruct the underlying Poisson process rate given only these
 </div>
 </div>
 <div class="section level3">
-<h3 id="a-inhomogeneous-poisson-process">A Inhomogeneous Poisson process<a class="anchor" aria-label="anchor" href="#a-inhomogeneous-poisson-process"></a>
+<h3 id="an-inhomogeneous-poisson-process">An Inhomogeneous Poisson process<a class="anchor" aria-label="anchor" href="#an-inhomogeneous-poisson-process"></a>
 </h3>
 <p>A Poisson process is a common statistical process used to model the
 occurrence of random events. It is described by specifying the random
@@ -291,7 +291,7 @@ between the bounding [700, 300] cal yr BP.</p>
 <p>This creates an object <code>PP_fit_output</code> which you can
 access directly or use the in-built plotting functions.</p>
 <div class="section level4">
-<h4 id="plotting-the-posterior-mean-estimate-of-lambdat">Plotting the posterior mean estimate of <span class="math inline">\(\lambda(t)\)</span><a class="anchor" aria-label="anchor" href="#plotting-the-posterior-mean-estimate-of-lambdat"></a>
+<h4 id="plotting-the-posterior-estimate-of-the-occurrence-rate">Plotting the posterior estimate of the occurrence rate<a class="anchor" aria-label="anchor" href="#plotting-the-posterior-estimate-of-the-occurrence-rate"></a>
 </h4>
 <p>To plot the posterior estimate of <span class="math inline">\(\lambda(t)\)</span> you should use the in-built
 function:</p>
@@ -314,7 +314,7 @@ non-zero, while for the other time periods the rate (correctly) drops to
 near zero.</p>
 </div>
 <div class="section level4">
-<h4 id="plotting-the-estimated-number-of-changepoint">Plotting the estimated number of changepoint<a class="anchor" aria-label="anchor" href="#plotting-the-estimated-number-of-changepoint"></a>
+<h4 id="plotting-the-estimated-number-of-changepoints">Plotting the estimated number of changepoints<a class="anchor" aria-label="anchor" href="#plotting-the-estimated-number-of-changepoints"></a>
 </h4>
 <p>You can plot the posterior estimate for the number of internal
 changes in the rate <span class="math inline">\(\lambda(t)\)</span>
@@ -330,12 +330,16 @@ yr BP, and then a step back down to return to a sample occurrence rate
 of zero at 500 cal yr BP.</p>
 </div>
 <div class="section level4">
-<h4 id="plotting-the-estimates-of-changepoint-locations">Plotting the estimates of changepoint locations<a class="anchor" aria-label="anchor" href="#plotting-the-estimates-of-changepoint-locations"></a>
+<h4 id="plotting-estimates-of-changepoint-locations">Plotting estimates of changepoint locations<a class="anchor" aria-label="anchor" href="#plotting-estimates-of-changepoint-locations"></a>
 </h4>
-<p>You can plot the locations of the changepoints, conditional on the
-number of changes currently estimated in the model. The default shows
-the locations when the model estimates <span class="math inline">\(n_{\textrm{internal changes}} = 1, 2,\)</span> and
-3.</p>
+<p>You can also plot density estimates for the locations (calendar
+times) of the changepoints in <span class="math inline">\(\lambda(t)\)</span>, conditional on the number of
+such changes. The default shows the density estimates for the calendar
+times at which there are changes in the occurrence rate, conditional on
+their being <span class="math inline">\(n_{\textrm{internal changes}} =
+1, 2,\)</span> and <span class="math inline">\(3\)</span> such changes
+in <span class="math inline">\(\lambda(t)\)</span> over the time period
+under study.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotPosteriorChangePoints.html">PlotPosteriorChangePoints</a></span><span class="op">(</span><span class="va">PP_fit_output</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in PlotPosteriorChangePoints(PP_fit_output): No posterior samples with</span></span>
@@ -350,17 +354,23 @@ rate, then these should be located according to the location shown by
 the dotted red densities (note that here these three locations overlay
 one another, effectively adding a double changepoint at either 500 or
 550 cal yr BP).</p>
-<p><strong>Note the R warning here:</strong> For this simulated data,
-the posterior model (correctly) never thinks there should be only one
+<p>The information contained in this plot should be combined with that
+in <code>PlotNumberOfInternalChanges</code> which indicates that the
+most likely number of changepoints is two. We may therefore wish to
+focus our interpretation on the locations/times of changepoints
+conditional on their being this number (i.e., when <span class="math inline">\(n_{\textrm{internal changes} = 2\)</span>).<br><strong>Note the R warning here:</strong> For this simulated data, the
+posterior model (correctly) never thinks there should be only one
 changepoint. This is indicated by the warning message returned by R and
 the absence of a solid blue density in the plot.</p>
 </div>
 <div class="section level4">
-<h4 id="plotting-the-rate-estimates-conditional-on-the-number-of-changes">Plotting the rate estimates conditional on the number of
-changes<a class="anchor" aria-label="anchor" href="#plotting-the-rate-estimates-conditional-on-the-number-of-changes"></a>
+<h4 id="plotting-estimates-of-occurrence-rate">Plotting estimates of occurrence rate<a class="anchor" aria-label="anchor" href="#plotting-estimates-of-occurrence-rate"></a>
 </h4>
-<p>Finally, you can plot the estimates of the rate of sample occurrence
-conditional on the number of changes estimate</p>
+<p>You can also plot, conditional on the number of changes in the rate
+step function <span class="math inline">\(\lambda(t)\)</span>, the
+posterior density estimates for the heights in each of the individual
+segments (i.e., the rates of sample occurrence in those constant
+periods)</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotPosteriorHeights.html">PlotPosteriorHeights</a></span><span class="op">(</span><span class="va">PP_fit_output</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in PlotPosteriorHeights(PP_fit_output): No posterior samples with 1</span></span>
@@ -370,8 +380,24 @@ conditional on the number of changes estimate</p>
 three different values for the rates) we have two rates of <em>ca.</em>
 0 events per cal yr (these correspond to the periods 700–550 and 500–300
 cal yr BP), and a period with rate <em>ca.</em> 0.6-0.8 events per cal
-yr (corresponding to the period from 550–500 cal yr BP)</p>
+yr (corresponding to the period from 550–500 cal yr BP).</p>
 </div>
+</div>
+<div class="section level3">
+<h3 id="changing-the-calendar-age-plotting-scale">Changing the calendar age plotting scale<a class="anchor" aria-label="anchor" href="#changing-the-calendar-age-plotting-scale"></a>
+</h3>
+<p>As elsewhere in the library, the calendar age scale (cal yr BP, cal
+AD, or cal BC) shown when plotting can be selected via the
+<code>plot_cal_age_scale</code> variable within the relevant functions.
+In the case of the Poisson process modelling, the calendar age scale can
+be set in <code>PlotPosteriorMeanRate</code> and
+<code>PlotPosteriorChangePoints</code>, e.g.,</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotPosteriorChangePoints.html">PlotPosteriorChangePoints</a></span><span class="op">(</span><span class="va">PP_fit_output</span>, </span>
+<span>                          plot_cal_age_scale <span class="op">=</span> <span class="st">"AD"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in PlotPosteriorChangePoints(PP_fit_output, plot_cal_age_scale = "AD"):</span></span>
+<span><span class="co">#&gt; No posterior samples with 1 internal changes</span></span></code></pre></div>
+<p><img src="Poisson-process-modelling_files/figure-html/changepoint_locations_AD-1.png" width="100%"></p>
 </div>
 <div class="section level3">
 <h3 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
