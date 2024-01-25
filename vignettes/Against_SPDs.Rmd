@@ -81,6 +81,7 @@ curve(truedens(
       col = "red", add = TRUE)
 
 ```
+
 Here we have manually overlain the true (known) shared calendar age density in red. As we can see, the SPD captures does capture some broad features but does not reconstruct the truth well, and is hard to interpret. In particular, the SPD is highly variable, showing multiple peaks, due to the wiggliness of the calibration curve. The SPD peak shown around 5300 cal yr BP is entirely spurious, yet almost of the same magnitude as its peak around 3500 cal yr BP (which is a part of the genuine density). 
 
 ### An improvement using our library approaches

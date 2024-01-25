@@ -234,7 +234,8 @@ This plots the posterior mean rate of sample occurrence (shown in purple). The $
 As you can see, the posterior estimate of $\lambda(t)$ identifies the calendar period from which the hypothetical samples have been created [550, 500] cal yr BP. Here, $\hat{\lambda}(t)$ is non-zero, while for the other time periods the rate (correctly) drops to near zero.
 
 ### Plotting the estimated number of changepoints
-You can plot the posterior estimate for the number of internal changes in the rate $\lambda(t)$ using the command:  
+You can plot the posterior estimate for the number of internal changes in the rate $\lambda(t)$ using the command:
+
 ```{r changepoint_number, out.width="100%"}
 PlotNumberOfInternalChanges(PP_fit_output)
 ```
@@ -242,14 +243,16 @@ PlotNumberOfInternalChanges(PP_fit_output)
 Here, we can see that the method estimates that there are most likely to be two changes. Again, this corresponds to the underlying (simulated) data, where there is a step up from a occurrence rate of zero samples/cal yr to a rate of *ca.* 0.8 samples/cal yr at 550 cal yr BP, and then a step back down to return to a sample occurrence rate of zero at 500 cal yr BP. 
 
 ### Plotting estimates of changepoint locations
-You can also plot density estimates for the locations (calendar times) of the changepoints in $\lambda(t)$, conditional on the number of such changes. The default shows the density estimates for the calendar times at which there are changes in the occurrence rate, conditional on their being $n_{\textrm{internal changes}} = 1, 2,$ and $3$ such changes in $\lambda(t)$ over the time period under study.    
+You can also plot density estimates for the locations (calendar times) of the changepoints in $\lambda(t)$, conditional on the number of such changes. The default shows the density estimates for the calendar times at which there are changes in the occurrence rate, conditional on their being $n_{\textrm{internal changes}} = 1, 2,$ and $3$ such changes in $\lambda(t)$ over the time period under study.
+
 ```{r changepoint_locations, out.width="100%"}
 PlotPosteriorChangePoints(PP_fit_output)
 ```
 
 This figure can be interpreted as follows. For example, if the model thinks there are only two changepoints in the underlying occurrence rate of the samples, then these changepoints should be located around 500 cal yr BP and 550 cal yr BP (the two distinct dashed density estimates shown in dark green). If the model thinks there are three changepoints in the rate, then these should be located according to the location shown by the dotted red densities (note that here these three locations overlay one another, effectively adding a double changepoint at either 500 or 550 cal yr BP). 
 
-The information contained in this plot should be combined with that in `PlotNumberOfInternalChanges` which indicates that the most likely number of changepoints is two. We may therefore wish to focus our interpretation on the locations/times of changepoints conditional on their being this number (i.e., when $n_{\textrm{internal changes} = 2$).   
+The information contained in this plot should be combined with that in `PlotNumberOfInternalChanges` which indicates that the most likely number of changepoints is two. We may therefore wish to focus our interpretation on the locations/times of changepoints conditional on their being this number (i.e., when $n_{\textrm{internal changes}} = 2$).
+
 **Note the R warning here:** For this simulated data, the posterior model (correctly) never thinks there should be only one changepoint. This is indicated by the warning message returned by R and the absence of a solid blue density in the plot.      
 
 ### Plotting estimates of occurrence rate
@@ -261,7 +264,8 @@ PlotPosteriorHeights(PP_fit_output)
 Here, conditional on there being two changes in $\lambda(t)$ between 700--300 cal yr BP (so three different values for the rates) we have two rates of *ca.*  0 events per cal yr (these correspond to the periods 700--550 and 500--300 cal yr BP), and a period with rate *ca.* 0.6-0.8 events per cal yr (corresponding to the period from 550--500 cal yr BP).   
 
 ## Changing the calendar age plotting scale
-As elsewhere in the library, the calendar age scale (cal yr BP, cal AD, or cal BC) shown when plotting can be selected via the `plot_cal_age_scale` variable within the relevant functions. In the case of the Poisson process modelling, the calendar age scale can be set in `PlotPosteriorMeanRate` and `PlotPosteriorChangePoints`, e.g., 
+As elsewhere in the library, the calendar age scale (cal yr BP, cal AD, or cal BC) shown when plotting can be selected via the `plot_cal_age_scale` variable within the relevant functions. In the case of the Poisson process modelling, the calendar age scale can be set in `PlotPosteriorMeanRate` and `PlotPosteriorChangePoints`, e.g.,
+
 ```{r changepoint_locations_AD, out.width="100%"}
 PlotPosteriorChangePoints(PP_fit_output, 
                           plot_cal_age_scale = "AD")

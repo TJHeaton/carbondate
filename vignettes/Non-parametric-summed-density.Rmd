@@ -207,6 +207,7 @@ PlotNumberOfClusters(output_data = polya_urn_output)
 
 ## Changing the calendar age plotting scale
 For those plotting functions which present calendar ages (i.e., `PlotCalendarAgeDensityIndividualSample` and `PlotPredictiveCalendarAgeDensity`) we can change the calendar age scale shown on the x-axis. The default is to plot on the _cal yr BP_ scale (as in the examples above). To instead plot in _cal AD_, set `plot_cal_age_scale = "AD"`; while for _cal BC_, set `plot_cal_age_scale = "AD"`, e.g., 
+
 ```{r plot_density_2_AD, out.width="100%"}
 densities <- PlotPredictiveCalendarAgeDensity(
   output_data = polya_urn_output,
