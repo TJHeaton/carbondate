@@ -72,9 +72,9 @@ navbar:
     menu:
     - text: Independent and Joint Radiocarbon Calibration
       href: articles/Independent_calibration.html
-    - text: Why not to Use SPDs
+    - text: Why Not to Use SPDs
       href: articles/Against_SPDs.html
-    - text: Non-parametric Summed Density
+    - text: Non-Parametric Joint Density Estimation
       href: articles/Non-parametric-summed-density.html
     - text: Poisson Process Modelling
       href: articles/Poisson-process-modelling.html

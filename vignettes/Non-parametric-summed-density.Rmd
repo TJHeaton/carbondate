@@ -1,8 +1,8 @@
 ---
-title: "Non-parametric Summed Density"
+title: "Non-Parametric Joint Density Estimation"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Non-parametric Summed Density}
+  %\VignetteIndexEntry{Non-Parametric Joint Density Estimation}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 bibliography: references.bib
@@ -146,7 +146,7 @@ Both of these methods will output a list containing the sampler outputs at every
 
 Our sampler provides three outputs of particular interest.
 
-#### Calendar Ages
+#### Posterior Calendar Age Estimates of Individual Samples
 
 As described above, the output data includes the calendar age estimate for each ^14^C sample. We can use this to determine the posterior distribution of the calendar age for each sample. Note that the calendar age estimates use the joint information provided by all the ^14^C determinations (as opposed to solely the ^14^C determination of the single object that would be found using `CalibrateSingleDetermination`) on the understanding the calendar ages of the objects are related.
 
@@ -200,6 +200,16 @@ The output data also contains information about the cluster allocation of each s
 ```{r plot_clusters, out.width="50%", fig.width=5, fig.height=6}
 PlotNumberOfClusters(output_data = polya_urn_output)
 ```
+
+## Changing the calendar age plotting scale
+For those plotting functions which present calendar ages (i.e., `PlotCalendarAgeDensityIndividualSample` and `PlotPredictiveCalendarAgeDensity`) we can change the calendar age scale shown on the x-axis. The default is to plot on the _cal yr BP_ scale (as in the examples above). To instead plot in _cal AD_, set `plot_cal_age_scale = "AD"`; while for _cal BC_, set `plot_cal_age_scale = "AD"`, e.g., 
+```{r plot_density_2_AD, out.width="100%", fig.width=10, fig.height=8}
+densities <- PlotPredictiveCalendarAgeDensity(
+  output_data = polya_urn_output,
+  n_posterior_samples = 500,
+  show_SPD = TRUE,
+  plot_cal_age_scale = "AD")
+```   
 
 ## When not to use this Bayesian non-parametric method 
 
