@@ -25,10 +25,7 @@ PlotCalendarAgeDensityIndividualSample(
 density estimate of the calendar age.}
 
 \item{output_data}{The return value either from one of the Bayesian non-parametric DPMM
-functions (\link{PolyaUrnBivarDirichlet} or \link{WalkerBivarDirichlet}); or
-from the Poisson process modelling function (\link{PPcalibrate}). Can also be a list, each
-item containing one of these return values. Optionally, the output data can have an extra list
-item named \code{label} which is used to set the label on the plot legend.}
+functions (\link{PolyaUrnBivarDirichlet} or \link{WalkerBivarDirichlet}).}
 
 \item{calibration_curve}{This is usually not required since the name of the
 calibration curve variable is saved in the output data. However, if the
