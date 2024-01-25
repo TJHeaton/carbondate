@@ -11,7 +11,11 @@ bibliography: references.bib
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  dev='png',
+  fig.width=7, 
+  fig.height=5.5,
+  dev.args=list(antialias = "none")
 )
 ```
 
@@ -29,7 +33,7 @@ However, our library also provides functions for calibrating a single ^14^C samp
 
 To calibrate a single independent determination using the provided IntCal20 calibration curve [@reimer2020], run the following:
 
-```{r single_calibration, out.width="100%", fig.width=10, fig.height=8}
+```{r single_calibration, out.width="100%"}
 calibration_result <- CalibrateSingleDetermination(
   rc_determination = 1413, 
   rc_sigma = 25, 
@@ -43,7 +47,7 @@ calibration_result <- CalibrateSingleDetermination(
 
 To change to using the Southern Hemisphere calibration curve SHCal20 [@hogg2020], we can modify the function arguments accordingly: 
 
-```{r single_calibration_SH, out.width="100%", fig.width=10, fig.height=8}
+```{r single_calibration_SH, out.width="100%"}
 calibration_result <- CalibrateSingleDetermination(
   rc_determination = 1413, 
   rc_sigma = 25, 
@@ -52,6 +56,19 @@ calibration_result <- CalibrateSingleDetermination(
   plot_output = TRUE)
 ```
 **Note:** This simulated SH calibration, of the same ^14^C determination as above, provides a slightly more recent estimate for the calendar due to the offset (the interhemispheric ^14^C gradient) between atmospheric ^14^C levels in the Southern and Northern Hemisphere. 
+
+## Selecting the calendar age scale when plotting
+
+All the calibration curves, and the outputs from our functions, are provided on the cal yr BP scale (where 0 cal yr BP = 1950 cal AD). However, for the plots, the user can alter the calendar age scale shown through the `plot_cal_age_scale` variable. The default is to plot the calendar ages on the _cal yr BP_ scale (e.g., see above). To instead plot in _cal AD_, set `plot_cal_age_scale = "AD"`; while for _cal BC_ set `plot_cal_age_scale = "AD"`. For example, 
+```{r single_calibration_AD, out.width="100%"}
+calibration_result <- CalibrateSingleDetermination(
+  rc_determination = 1413, 
+  rc_sigma = 25, 
+  F14C_inputs = FALSE, 
+  calibration_curve = intcal20,
+  plot_output = TRUE,
+  plot_cal_age_scale = "AD")
+``` 
 
 
 ## References

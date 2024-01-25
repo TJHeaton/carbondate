@@ -11,7 +11,11 @@ bibliography: references.bib
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  dev='png',
+  fig.width=7, 
+  fig.height=5.5,
+  dev.args=list(antialias = "none")
 )
 ```
 
@@ -28,7 +32,7 @@ Additionally, the SPDs approach fundamentally does not model the samples in the 
 
 The SPD function is **ONLY** provided here as a comparison with the other routines. To calculate the SPD for a set of radiocarbon determinations (here we use the example dataset `armit` [@armit2014]) see the example below, where we also plot the results.
 
-```{r find_spd, out.width="100%", fig.width=10, fig.height=8}
+```{r find_spd, out.width="100%"}
 spd <- FindSummedProbabilityDistribution(
   calendar_age_range_BP = c(1000, 4500), 
   rc_determinations = armit$c14_age, 
@@ -46,7 +50,7 @@ spd <- FindSummedProbabilityDistribution(
 
 Consider the simulated `two_normals` dataset. We know that the calendar age density that underlies these ^14^C value is a mixture of two normal densities - one centred at 3500 cal yr BP (with a 1$\sigma$ standard deviation of 200 cal yrs); and another (more concentrated) centred at 5000 cal yr BP (with a 1$\sigma$ standard deviation of 100 cal yrs). However, when we calculate the SPD we obtain:
 
-```{r two_normals_spd, echo = 1,  out.width="100%", fig.width=10, fig.height=8}
+```{r two_normals_spd, echo = 1,  out.width="100%"}
 FindSummedProbabilityDistribution(
   calendar_age_range_BP=c(2500, 7000),
   rc_determinations= two_normals$c14_age,
@@ -83,7 +87,7 @@ Here we have manually overlain the true (known) shared calendar age density in r
 
 While this is jumping forward somewhat, to evidence that our methods provide better reconstructions, we run the same example using our Bayesian non-parametric summarisation approach (shown in purple as _Polya Urn_) and obtain:
 
-```{r two_normals_compare, echo = FALSE,  out.width="100%", fig.width=10, fig.height=8}
+```{r two_normals_compare, echo = FALSE,  out.width="100%"}
 polya_urn_output <- PolyaUrnBivarDirichlet(
   rc_determinations = two_normals$c14_age,
   rc_sigmas = two_normals$c14_sig,

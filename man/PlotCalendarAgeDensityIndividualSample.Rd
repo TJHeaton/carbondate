@@ -25,10 +25,7 @@ PlotCalendarAgeDensityIndividualSample(
 density estimate of the calendar age.}
 
 \item{output_data}{The return value either from one of the Bayesian non-parametric DPMM
-functions (\link{PolyaUrnBivarDirichlet} or \link{WalkerBivarDirichlet}); or
-from the Poisson process modelling function (\link{PPcalibrate}). Can also be a list, each
-item containing one of these return values. Optionally, the output data can have an extra list
-item named \code{label} which is used to set the label on the plot legend.}
+functions (\link{PolyaUrnBivarDirichlet} or \link{WalkerBivarDirichlet}).}
 
 \item{calibration_curve}{This is usually not required since the name of the
 calibration curve variable is saved in the output data. However, if the
@@ -41,8 +38,8 @@ This format matches \link{intcal20}.}
 the units of the y-axis in the plot. Defaults to \code{TRUE}. If \code{FALSE} uses
 F\eqn{{}^{14}}C concentration instead.}
 
-\item{plot_cal_age_scale}{The scale to use for the x-axis. Allowed values are
-"BP" and "AD".}
+\item{plot_cal_age_scale}{The calendar scale to use for the x-axis. Allowed values are
+"BP", "AD" and "BC". The default is "BP" corresponding to plotting in cal yr BP.}
 
 \item{hist_resolution}{The distance between histogram breaks when plotting the individual
 posterior calendar age density. Default is 5.}

@@ -21,10 +21,7 @@
 #' @param ident The individual determination for which you want to plot the posterior
 #' density estimate of the calendar age.
 #' @param output_data The return value either from one of the Bayesian non-parametric DPMM
-#' functions ([carbondate::PolyaUrnBivarDirichlet] or [carbondate::WalkerBivarDirichlet]); or
-#' from the Poisson process modelling function ([carbondate::PPcalibrate]). Can also be a list, each
-#' item containing one of these return values. Optionally, the output data can have an extra list
-#' item named `label` which is used to set the label on the plot legend.
+#' functions ([carbondate::PolyaUrnBivarDirichlet] or [carbondate::WalkerBivarDirichlet]).
 #' @param hist_resolution The distance between histogram breaks when plotting the individual
 #' posterior calendar age density. Default is 5.
 #' @param density_resolution The distance between calendar ages for the returned smoothed calendar age
@@ -98,7 +95,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
 
   arg_check <- .InitializeErrorList()
   .CheckInteger(arg_check, ident)
-  .CheckOutputData(arg_check, output_data,  c("Polya Urn", "Walker", "RJPP"))
+  .CheckOutputData(arg_check, output_data,  c("Polya Urn", "Walker"))
   n_iter <- output_data$input_parameters$n_iter
   n_thin <- output_data$input_parameters$n_thin
 

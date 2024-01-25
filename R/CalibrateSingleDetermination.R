@@ -20,7 +20,8 @@
 #' @param plot_output `TRUE` if you wish to plot the determination, the calibration curve,
 #' and the posterior calibrated age estimate on the same plot. Defaults to `FALSE`
 #' @param plot_cal_age_scale Only for usage when `plot_output = TRUE`.
-#' The scale to use for the x-axis. Allowed values are "BP", "AD" and "BC".
+#' The calendar scale to use for the x-axis. Allowed values are "BP", "AD" and "BC". The default
+#' is "BP", corresponding to plotting in cal yr BP.
 #' @param interval_width Only for usage when `plot_output = TRUE`. The confidence intervals to show for the
 #' calibration curve and for the highest posterior density ranges.
 #' Choose from one of "1sigma" (68.3%), "2sigma" (95.4%) and "bespoke". Default is "2sigma".

@@ -27,7 +27,7 @@ For all functions, the radiocarbon determinations can be entered as F^14^C conce
 
 To change to using the Southern Hemisphere calibration curve SHCal20, we can modify the function arguments accordingly: 
 
-```{r single_calibration_SH, out.width="100%", fig.width=10, fig.height=8}
+```{r single_calibration_SH, out.width="100%"}
 calibration_result <- CalibrateSingleDetermination(
   rc_determination = 1413, 
   rc_sigma = 25, 
@@ -76,7 +76,7 @@ For full technical details of the models used, and explanation of the model para
 
 Although this package is concerned with the calibration of multiple related ^14^C determinations, it can also be useful to calibrate a single calibration independently, for example to estimate initial values for the sampler, or for comparison. To calibrate a single independent determination (using the provided IntCal20 calibration curve), run the following:
 
-```{r single_calibration, out.width="100%", fig.width=10, fig.height=8}
+```{r single_calibration, out.width="100%"}
 calibration_result <- CalibrateSingleDetermination(
   rc_determination = 1413, 
   rc_sigma = 25, 
@@ -101,7 +101,7 @@ Additionally, the SPDs approach fundamentally does not model the samples in the 
 
 The SPD function is **ONLY** provided here as a comparison with the other routines. To calculate the SPD for a set of radiocarbon determinations (here we use the example dataset `armit`) see the example below, where we also plot the results.
 
-```{r find_spd, out.width="100%", fig.width=10, fig.height=8}
+```{r find_spd, out.width="100%"}
 spd <- FindSummedProbabilityDistribution(
   calendar_age_range_BP = c(1000, 4500), 
   rc_determinations = armit$c14_age, 
@@ -137,5 +137,15 @@ model the posterior calendar ages are not suitable parameters to
 use - rather we are interested in the number and distribution of clusters. However, they cannot be easily
 compared using this diagnostic as the number and identity of clusters can change with each iteration. For this model,
 the predictive density is a much more useful indicator.
+
+
+### Plotting the posterior calendar age estimates of individual samples
+Finally,  it is again possible to plot the posterior calendar age estimates of and individual samples using the `PlotCalendarAgeDensityIndividualSample` function:
+```{r PP_plot_individual, out.width="100%"}
+PlotCalendarAgeDensityIndividualSample(
+  9, PP_fit_output, show_hpd_ranges = TRUE, show_unmodelled_density = TRUE)
+```
+
+
 
 ## References

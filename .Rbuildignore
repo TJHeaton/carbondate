@@ -13,3 +13,5 @@
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^vignettes/Temporary-Text\.Rmd-in-progress$
+^cran-comments\.md$

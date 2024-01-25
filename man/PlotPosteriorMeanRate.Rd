@@ -41,8 +41,8 @@ This format matches \link{intcal20}.}
 the units of the y-axis in the plot. Defaults to \code{TRUE}. If \code{FALSE} uses
 F\eqn{{}^{14}}C concentration instead.}
 
-\item{plot_cal_age_scale}{The scale to use for the x-axis. Allowed values are
-"BP" and "AD".}
+\item{plot_cal_age_scale}{(Optional) The calendar scale to use for the x-axis. Allowed values are
+"BP", "AD" and "BC". The default is "BP" corresponding to plotting in cal yr BP.}
 
 \item{show_individual_means}{(Optional) Whether to calculate and show the mean posterior
 calendar age estimated for each individual \eqn{{}^{14}}C sample on the plot as a rug on

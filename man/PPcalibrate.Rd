@@ -79,13 +79,16 @@ larger resolution.}
 
 \item{prior_h_shape, prior_h_rate}{(Optional) Prior for the value of the Poisson Process rate (the height \code{rate_h})
 in any specific interval:
-\deqn{\textrm{rate_h} \sim \textrm{Gamma}(\textrm{shape = prior_h_shape}, \textrm{rate = prior_h_rate}).}
+\deqn{\textrm{rate}\_\textrm{h} \sim \textrm{Gamma}(
+\textrm{shape} = \textrm{prior}\_\textrm{h}\_\textrm{shape},
+\textrm{rate} = \textrm{prior}\_\textrm{h}\_\textrm{rate}).}
 If they are both \code{NA} then \code{prior_h_shape} is selected to be 1 (so \code{rate_h} follows an Exponential
 distribution) and \code{prior_h_rate} chosen adaptively (internally) to match \code{n_observations}.}
 
 \item{prior_n_internal_changepoints_lambda}{Prior mean for the number of internal changepoints
 in the rate \eqn{\lambda(t)}.
-\deqn{\textrm{n_internal_changepoints} \sim \textrm{Po}(\textrm{prior_n_internal_changepoints_lambda})}}
+\deqn{\textrm{n}\_\textrm{internal}\_\textrm{changepoints} \sim
+\textrm{Po}(\textrm{prior}\_\textrm{n}\_\textrm{internal}\_\textrm{changepoints}\_\textrm{lambda})}}
 
 \item{k_max_internal_changepoints}{Maximum permitted number of internal changepoints}
 

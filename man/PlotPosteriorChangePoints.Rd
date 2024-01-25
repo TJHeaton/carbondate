@@ -7,6 +7,7 @@
 PlotPosteriorChangePoints(
   output_data,
   n_changes = c(1, 2, 3),
+  plot_cal_age_scale = "BP",
   n_burn = NA,
   n_end = NA,
   kernel_bandwidth = NA
@@ -20,6 +21,9 @@ named \code{label} which is used to set the label on the plot legend.}
 \item{n_changes}{Number of internal changepoints to condition on, and plot for. A vector
 which can contain at most 4 elements, with values in the range 1 to 6. If not given, then
 \code{c(1, 2, 3)} will be used.}
+
+\item{plot_cal_age_scale}{(Optional) The calendar scale to use for the x-axis. Allowed values are
+"BP", "AD" and "BC". The default is "BP" corresponding to plotting in cal yr BP.}
 
 \item{n_burn}{The number of MCMC iterations that should be discarded as burn-in (i.e.,
 considered to be occurring before the MCMC has converged). This relates to the number
@@ -69,4 +73,8 @@ pp_output <- PPcalibrate(
 
 # Plot the posterior change points for only 2 or 3 internal changes
 PlotPosteriorChangePoints(pp_output, n_changes = c(2, 3))
+
+# Changing the calendar age plotting scale to cal AD
+PlotPosteriorChangePoints(pp_output, n_changes = c(2, 3),
+    plot_cal_age_scale = "AD")
 }

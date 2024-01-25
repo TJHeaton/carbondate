@@ -39,7 +39,8 @@ Default is 1.}
 and the posterior calibrated age estimate on the same plot. Defaults to \code{FALSE}}
 
 \item{plot_cal_age_scale}{Only for usage when \code{plot_output = TRUE}.
-The scale to use for the x-axis. Allowed values are "BP" and "AD".}
+The calendar scale to use for the x-axis. Allowed values are "BP", "AD" and "BC". The default
+is "BP", corresponding to plotting in cal yr BP.}
 
 \item{interval_width}{Only for usage when \code{plot_output = TRUE}. The confidence intervals to show for the
 calibration curve and for the highest posterior density ranges.
@@ -85,12 +86,13 @@ plot(calib, type = "l", xlim = c(36500, 34500))
 # against SHCal20 (and creating an automated plot)
 CalibrateSingleDetermination(1413, 25, shcal20, plot_output = TRUE)
 
-# Implementing a bespoke confidence interval level
+# Implementing a bespoke confidence interval level and plot in AD
 CalibrateSingleDetermination(
     1413,
     25,
     shcal20,
     plot_output = TRUE,
+    plot_cal_age_scale = "AD",
     interval_width = "bespoke",
     bespoke_probability = 0.8)
 
