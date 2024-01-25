@@ -11,7 +11,11 @@ bibliography: references.bib
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  dev='png',
+  fig.width=7, 
+  fig.height=5.5,
+  dev.args=list(antialias = "none")
 )
 ```
 
@@ -152,13 +156,13 @@ As described above, the output data includes the calendar age estimate for each 
 
 You can calculate and plot this using `PlotCalendarAgeDensityIndividualSample` - for example to calculate the posterior calendar age distribution for the 21st ^14^C determination:
 
-```{r plot_individual, out.width="100%", fig.width=10, fig.height=8}
+```{r plot_individual, out.width="100%"}
 PlotCalendarAgeDensityIndividualSample(21, polya_urn_output)
 ```
 
 The highest posterior density range for a given probability and the unmodelled density (i.e. the result of `CalibrateSingleDetermination`) can also be shown on the plot by specifying this in the arguments, as shown below.
 
-```{r plot_individual_with_hpd, out.width="100%", fig.width=10, fig.height=8}
+```{r plot_individual_with_hpd, out.width="100%"}
 PlotCalendarAgeDensityIndividualSample(
   21, polya_urn_output, show_hpd_ranges = TRUE, show_unmodelled_density = TRUE)
 ```
@@ -169,7 +173,7 @@ The output data contains information to allow calculation of the predictive dist
 
 The function allows calculation using multiple outputs so that their results can be compared. For example below we compare the results from the two sampler methods above.
 
-```{r plot_density, out.width="100%", fig.width=10, fig.height=8}
+```{r plot_density, out.width="100%"}
 densities <- PlotPredictiveCalendarAgeDensity(
   output_data = list(walker_output, polya_urn_output),
   n_posterior_samples = 500,
@@ -178,7 +182,7 @@ densities <- PlotPredictiveCalendarAgeDensity(
 
 We also have the option to plot the SPD, to plot in the F^14^C scale, and to change the confidence intervals on the plot.
 
-```{r plot_density_2, out.width="100%", fig.width=10, fig.height=8}
+```{r plot_density_2, out.width="100%"}
 densities <- PlotPredictiveCalendarAgeDensity(
   output_data = polya_urn_output,
   n_posterior_samples = 500,
@@ -203,7 +207,7 @@ PlotNumberOfClusters(output_data = polya_urn_output)
 
 ## Changing the calendar age plotting scale
 For those plotting functions which present calendar ages (i.e., `PlotCalendarAgeDensityIndividualSample` and `PlotPredictiveCalendarAgeDensity`) we can change the calendar age scale shown on the x-axis. The default is to plot on the _cal yr BP_ scale (as in the examples above). To instead plot in _cal AD_, set `plot_cal_age_scale = "AD"`; while for _cal BC_, set `plot_cal_age_scale = "AD"`, e.g., 
-```{r plot_density_2_AD, out.width="100%", fig.width=10, fig.height=8}
+```{r plot_density_2_AD, out.width="100%"}
 densities <- PlotPredictiveCalendarAgeDensity(
   output_data = polya_urn_output,
   n_posterior_samples = 500,

@@ -11,7 +11,11 @@ bibliography: references.bib
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  dev='png',
+  fig.width=7, 
+  fig.height=5.5,
+  dev.args=list(antialias = "none")
 )
 ```
 
@@ -178,7 +182,7 @@ $$
 $$
 We will then investigate if we can reconstruct this underlying information, from just the $^{14}$C values, if we only knew that the calendar ages of the samples lay between the bounding [700, 300] cal yr BP. 
 
-```{r example, out.width="100%", fig.width=10, fig.height=8}
+```{r example, out.width="100%"}
 set.seed(15)
 
 # Set initial values 
@@ -221,7 +225,7 @@ This creates an object `PP_fit_output` which you can access directly or use the 
 
 ### Plotting the posterior estimate of the occurrence rate  
 To plot the posterior estimate of $\lambda(t)$ you should use the in-built function: 
-```{r meanrate, out.width="100%", fig.width=10, fig.height=8}
+```{r meanrate, out.width="100%"}
 PlotPosteriorMeanRate(PP_fit_output)
 ```
 
@@ -231,7 +235,7 @@ As you can see, the posterior estimate of $\lambda(t)$ identifies the calendar p
 
 ### Plotting the estimated number of changepoints
 You can plot the posterior estimate for the number of internal changes in the rate $\lambda(t)$ using the command:  
-```{r changepoint_number, out.width="100%", fig.width=10, fig.height=8}
+```{r changepoint_number, out.width="100%"}
 PlotNumberOfInternalChanges(PP_fit_output)
 ```
 
@@ -239,7 +243,7 @@ Here, we can see that the method estimates that there are most likely to be two 
 
 ### Plotting estimates of changepoint locations
 You can also plot density estimates for the locations (calendar times) of the changepoints in $\lambda(t)$, conditional on the number of such changes. The default shows the density estimates for the calendar times at which there are changes in the occurrence rate, conditional on their being $n_{\textrm{internal changes}} = 1, 2,$ and $3$ such changes in $\lambda(t)$ over the time period under study.    
-```{r changepoint_locations, out.width="100%", fig.width=10, fig.height=8}
+```{r changepoint_locations, out.width="100%"}
 PlotPosteriorChangePoints(PP_fit_output)
 ```
 
@@ -250,23 +254,15 @@ The information contained in this plot should be combined with that in `PlotNumb
 
 ### Plotting estimates of occurrence rate
 You can also plot, conditional on the number of changes in the rate step function $\lambda(t)$, the posterior density estimates for the heights in each of the individual segments (i.e., the rates of sample occurrence in those constant periods) 
-```{r changepoint_rates, out.width="100%", fig.width=10, fig.height=8}
+```{r changepoint_rates, out.width="100%"}
 PlotPosteriorHeights(PP_fit_output)
 ```
 
 Here, conditional on there being two changes in $\lambda(t)$ between 700--300 cal yr BP (so three different values for the rates) we have two rates of *ca.*  0 events per cal yr (these correspond to the periods 700--550 and 500--300 cal yr BP), and a period with rate *ca.* 0.6-0.8 events per cal yr (corresponding to the period from 550--500 cal yr BP).   
 
-### Plotting the posterior calendar age estimates of individual samples
-Finally,  it is again possible to plot the posterior calendar age estimates of and individual samples using the `PlotCalendarAgeDensityIndividualSample` function:
-```{r PP_plot_individual, out.width="100%", fig.width=10, fig.height=8}
-PlotCalendarAgeDensityIndividualSample(
-  9, PP_fit_output, show_hpd_ranges = TRUE, show_unmodelled_density = TRUE)
-```
-
-
 ## Changing the calendar age plotting scale
-As elsewhere in the library, the calendar age scale (cal yr BP, cal AD, or cal BC) shown when plotting can be selected via the `plot_cal_age_scale` variable within the relevant functions. In the case of the Poisson process modelling, the calendar age scale can be set in `PlotPosteriorMeanRate`, `PlotCalendarAgeDensityIndividualSample`, and `PlotPosteriorChangePoints`, e.g., 
-```{r changepoint_locations_AD, out.width="100%", fig.width=10, fig.height=8}
+As elsewhere in the library, the calendar age scale (cal yr BP, cal AD, or cal BC) shown when plotting can be selected via the `plot_cal_age_scale` variable within the relevant functions. In the case of the Poisson process modelling, the calendar age scale can be set in `PlotPosteriorMeanRate` and `PlotPosteriorChangePoints`, e.g., 
+```{r changepoint_locations_AD, out.width="100%"}
 PlotPosteriorChangePoints(PP_fit_output, 
                           plot_cal_age_scale = "AD")
 ```

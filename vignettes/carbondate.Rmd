@@ -11,7 +11,11 @@ bibliography: references.bib
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  dev='png',
+  fig.width=7, 
+  fig.height=5.5,
+  dev.args=list(antialias = "none")
 )
 ```
 
@@ -23,7 +27,7 @@ library(carbondate)
 
 The **carbondate** package contains functions for analysing sets of related radiocarbon (^14^C) determinations. Suppose we have a set of $N$ archaeological samples, each of which has a ^14^C determination $X_i$. Furthermore, suppose that these samples are known to be related to one another (for example, arising from a particular site, or set of sites, populated by a particular culture). We want to estimate the calendar ages of these samples **and** investigate changes/variations in the (calendar age) frequency at which the samples arose (as a potential proxy for activity, population size, ...):
 
-```{r illustrate_set, out.width="100%", fig.width=10, fig.height=8, echo = FALSE, fig.cap = paste("_Illustration of our challenge. We observe a set of related samples, each with a ^14^C determination (shown here as the red ticks on the radiocarbon age axis). Can we jointly calibrate the samples, and summarise the combined calendar age information that they provide?_")}
+```{r illustrate_set, out.width="100%", echo = FALSE, fig.cap = paste("_Illustration of our challenge. We observe a set of related samples, each with a ^14^C determination (shown here as the red ticks on the radiocarbon age axis). Can we jointly calibrate the samples, and summarise the combined calendar age information that they provide?_")}
 set.seed(13)
 calcurve <- intcal20
 
