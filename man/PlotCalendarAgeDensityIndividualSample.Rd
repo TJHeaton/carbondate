@@ -25,7 +25,8 @@ PlotCalendarAgeDensityIndividualSample(
 density estimate of the calendar age.}
 
 \item{output_data}{The return value either from one of the Bayesian non-parametric DPMM
-functions (\link{PolyaUrnBivarDirichlet} or \link{WalkerBivarDirichlet}).}
+functions (\link{PolyaUrnBivarDirichlet} or \link{WalkerBivarDirichlet}); or
+from the Poisson process modelling function (\link{PPcalibrate}).}
 
 \item{calibration_curve}{This is usually not required since the name of the
 calibration curve variable is saved in the output data. However, if the
@@ -97,8 +98,11 @@ using the library functions we are able to share the available calendar informat
 individual calibration.
 }
 \examples{
-# NOTE: These examples are shown with a small n_iter to speed up execution.
+# NOTE 1: These examples are shown with a small n_iter to speed up execution.
 # When you run ensure n_iter gives convergence (try function default).
+
+# NOTE 2: The examples only show application to  PolyaUrnBivarDirichlet output.
+# The function can also be used with WalkerBivarDirichlet and PPcalibrate output.
 
 polya_urn_output <- PolyaUrnBivarDirichlet(
     two_normals$c14_age,

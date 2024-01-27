@@ -261,7 +261,14 @@ You can also plot, conditional on the number of changes in the rate step functio
 PlotPosteriorHeights(PP_fit_output)
 ```
 
-Here, conditional on there being two changes in $\lambda(t)$ between 700--300 cal yr BP (so three different values for the rates) we have two rates of *ca.*  0 events per cal yr (these correspond to the periods 700--550 and 500--300 cal yr BP), and a period with rate *ca.* 0.6-0.8 events per cal yr (corresponding to the period from 550--500 cal yr BP).   
+Here, conditional on there being two changes in $\lambda(t)$ between 700--300 cal yr BP (so three different values for the rates) we have two rates of *ca.*  0 events per cal yr (these correspond to the periods 700--550 and 500--300 cal yr BP), and a period with rate *ca.* 0.6-0.8 events per cal yr (corresponding to the period from 550--500 cal yr BP). 
+
+### Plotting the posterior calendar age estimates of individual samples
+Finally,  it is again possible to plot the posterior calendar age estimates of and individual samples using the `PlotCalendarAgeDensityIndividualSample` function:
+```{r PP_plot_individual, out.width="100%"}
+PlotCalendarAgeDensityIndividualSample(
+  9, PP_fit_output, show_hpd_ranges = TRUE, show_unmodelled_density = TRUE)
+```
 
 ## Changing the calendar age plotting scale
 As elsewhere in the library, the calendar age scale (cal yr BP, cal AD, or cal BC) shown when plotting can be selected via the `plot_cal_age_scale` variable within the relevant functions. In the case of the Poisson process modelling, the calendar age scale can be set in `PlotPosteriorMeanRate` and `PlotPosteriorChangePoints`, e.g.,

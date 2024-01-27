@@ -21,7 +21,8 @@
 #' @param ident The individual determination for which you want to plot the posterior
 #' density estimate of the calendar age.
 #' @param output_data The return value either from one of the Bayesian non-parametric DPMM
-#' functions ([carbondate::PolyaUrnBivarDirichlet] or [carbondate::WalkerBivarDirichlet]).
+#' functions ([carbondate::PolyaUrnBivarDirichlet] or [carbondate::WalkerBivarDirichlet]); or
+#' from the Poisson process modelling function ([carbondate::PPcalibrate]).
 #' @param hist_resolution The distance between histogram breaks when plotting the individual
 #' posterior calendar age density. Default is 5.
 #' @param density_resolution The distance between calendar ages for the returned smoothed calendar age
@@ -50,8 +51,11 @@
 #' a calibration curve.
 #'
 #' @examples
-#' # NOTE: These examples are shown with a small n_iter to speed up execution.
+#' # NOTE 1: These examples are shown with a small n_iter to speed up execution.
 #' # When you run ensure n_iter gives convergence (try function default).
+#'
+#' # NOTE 2: The examples only show application to  PolyaUrnBivarDirichlet output.
+#' # The function can also be used with WalkerBivarDirichlet and PPcalibrate output.
 #'
 #' polya_urn_output <- PolyaUrnBivarDirichlet(
 #'     two_normals$c14_age,
@@ -95,7 +99,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
 
   arg_check <- .InitializeErrorList()
   .CheckInteger(arg_check, ident)
-  .CheckOutputData(arg_check, output_data,  c("Polya Urn", "Walker"))
+  .CheckOutputData(arg_check, output_data,  c("Polya Urn", "Walker", "RJPP"))
   n_iter <- output_data$input_parameters$n_iter
   n_thin <- output_data$input_parameters$n_thin
 
@@ -140,7 +144,14 @@ PlotCalendarAgeDensityIndividualSample <- function(
   rc_age <- rc_determinations[ident]
   rc_sig <- rc_sigmas[ident]
 
-  smoothed_density <- stats::density(calendar_age_BP, bw="SJ")
+  if(output_data$update_type == "RJPP") {
+    bandwidth_selector <- "nrd0" # As all calendar ages are integers
+  } else {
+    bandwidth_selector <- "SJ" # As continuous
+  }
+  browser()
+
+  smoothed_density <- stats::density(calendar_age_BP, bw = bandwidth_selector)
   xrange_BP <- range(calendar_age_BP)
 
   # Interpolate for the smoothed density to return
