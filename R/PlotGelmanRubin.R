@@ -92,7 +92,7 @@ PlotGelmanRubinDiagnosticSingleChain <- function(output_data, n_burn = NA, n_seg
 #' @examples
 #' # Plot results for the example data - n_iter is too small for convergence
 #' # Try increasing n_iter to see the values of the PSRF decrease
-#' po = list()
+#' po <- list()
 #' for (i in 1:3) {
 #'     set.seed(i)
 #'     po[[i]] <- PolyaUrnBivarDirichlet(
