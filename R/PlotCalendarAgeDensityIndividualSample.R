@@ -149,7 +149,6 @@ PlotCalendarAgeDensityIndividualSample <- function(
   } else {
     bandwidth_selector <- "SJ" # As continuous
   }
-  browser()
 
   smoothed_density <- stats::density(calendar_age_BP, bw = bandwidth_selector)
   xrange_BP <- range(calendar_age_BP)
