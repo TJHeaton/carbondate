@@ -162,7 +162,7 @@ Our sampler provides three outputs of particular interest.
 
 #### Density Estimate to Summarise Objects
 
-The output data contains information to allow calculation of the predictive distribution for the calendar age of a new, as yet undiscovered, object. This density estimate summarises the calendar ages of all objects. It is generated using the posterior sampled values of the DPMM component of our MCMC sampler. This calendar age density can be calculated and plotted using `PlotPredictiveCalendarAgeDensity`. The pointwise mean of $\hat{f}(\theta)$ will be plotted, together with a corresponding interval at (a user-specified) probability level.   
+The output data contains information to allow calculation of the predictive distribution for the calendar age of a new, as yet undiscovered, object. This density estimate summarises the calendar ages of all objects. It is generated using the posterior sampled values of the DPMM component of our MCMC sampler. This calendar age density can be calculated and plotted using `PlotPredictiveCalendarAgeDensity()`. The pointwise mean of $\hat{f}(\theta)$ will be plotted, together with a corresponding interval at (a user-specified) probability level.   
 
 The function allows calculation using multiple outputs so that their results can be compared. For example below we compare the results from the two sampler methods above.
 
@@ -184,7 +184,7 @@ densities <- PlotPredictiveCalendarAgeDensity(
   plot_14C_age = FALSE)
 ```
 
-**Note:** The fact that the two different MCMC samplers do not provide matching probability intervals should flag to us that we might not have reached convergence, and need to run the MCMC for longer. Our investigations generally showed that `PolyaUrnBivarDirichlet` is better at reaching convergence, and so we recommend its use over `WalkerBivarDirichlet`. A longer run of 1,000,000 iterations indicates that the plotted Polya Urn output (in green) above is an accurate representation of the predictive distribution. 
+**Note:** The fact that the two different MCMC samplers do not provide matching probability intervals should flag to us that we might not have reached convergence, and need to run the MCMC for longer. Our investigations generally showed that `PolyaUrnBivarDirichlet()` is better at reaching convergence, and so we recommend its use over `WalkerBivarDirichlet()`. A longer run of 1,000,000 iterations indicates that the plotted Polya Urn output (in green) above is an accurate representation of the predictive distribution. 
 
 Around 1176 cal yr BP, we see a substantial change between the 95% intervals for the summarised (predictive) estimate of the joint $f(\theta)$ (which have a large spike) and the 80% intervals (which do not and are smooth). This is not an error, but rather highlights a benefit of the DPMM method whereby the number of clusters needed to represent the data is allowed to vary. This feature occurs because the method is unsure if the observed data support an additional (highly-concentrated) cluster located around this time period. In some iterations of the MCMC, such a cluster will be included; but for the majority of iterations, the method believes it is not required. Since the plotted 80% interval does not contain the spike, but the 95% does, it is likely that the method thinks there is a 2.5--10% chance of such a distinct and highly-concentrated cluster (as this is the proportion of the MCMC iterations containing one). If more detailed inference is needed, one could look at the actual individual MCMC iterations to estimate how likely such a highly-concentrated cluster, resulting in a sudden spike in samples, is. 
 
@@ -192,15 +192,15 @@ _Aside:_ The sharp jump in the IntCal20 calibration curve at 1176 cal yr BP (774
 
 #### Posterior Calendar Age Estimates of Individual Samples
 
-The output data also includes the calendar age estimate for each ^14^C sample. We can use this to determine the posterior distribution of the calendar age for each sample. Note that the calendar age estimates use the joint information provided by all the ^14^C determinations (as opposed to solely the ^14^C determination of the single object that would be found using `CalibrateSingleDetermination`) on the understanding the calendar ages of the objects are related.
+The output data also includes the calendar age estimate for each ^14^C sample. We can use this to determine the posterior distribution of the calendar age for each sample. Note that the calendar age estimates use the joint information provided by all the ^14^C determinations (as opposed to solely the ^14^C determination of the single object that would be found using `CalibrateSingleDetermination()`) on the understanding the calendar ages of the objects are related.
 
-You can calculate and plot this using `PlotCalendarAgeDensityIndividualSample` - for example to calculate the posterior calendar age distribution for the 21st ^14^C determination:
+You can calculate and plot this using `PlotCalendarAgeDensityIndividualSample()` - for example to calculate the posterior calendar age distribution for the 21st ^14^C determination:
 
 ```{r plot_individual, out.width="100%"}
 PlotCalendarAgeDensityIndividualSample(21, polya_urn_output)
 ```
 
-The highest posterior density range for a given probability and the unmodelled density (i.e. the result of `CalibrateSingleDetermination`) can also be shown on the plot by specifying this in the arguments, as shown below.
+The highest posterior density range for a given probability and the unmodelled density (i.e., the result of `CalibrateSingleDetermination()`) can also be shown on the plot by specifying this in the arguments, as shown below.
 
 ```{r plot_individual_with_hpd, out.width="100%"}
 PlotCalendarAgeDensityIndividualSample(
@@ -217,7 +217,7 @@ PlotNumberOfClusters(output_data = polya_urn_output)
 ```
 
 ## Changing the calendar age plotting scale
-For those plotting functions which present calendar ages (i.e., `PlotCalendarAgeDensityIndividualSample` and `PlotPredictiveCalendarAgeDensity`) we can change the calendar age scale shown on the x-axis. The default is to plot on the _cal yr BP_ scale (as in the examples above). To instead plot in _cal AD_, set `plot_cal_age_scale = "AD"`; while for _cal BC_, set `plot_cal_age_scale = "AD"`, e.g., 
+For those plotting functions which present calendar ages (i.e., `PlotCalendarAgeDensityIndividualSample()` and `PlotPredictiveCalendarAgeDensity()`) we can change the calendar age scale shown on the x-axis. The default is to plot on the _cal yr BP_ scale (as in the examples above). To instead plot in _cal AD_, set `plot_cal_age_scale = "AD"`; while for _cal BC_, set `plot_cal_age_scale = "AD"`, e.g., 
 
 ```{r plot_density_2_AD, out.width="100%"}
 densities <- PlotPredictiveCalendarAgeDensity(
