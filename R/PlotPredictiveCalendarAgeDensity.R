@@ -64,6 +64,9 @@
 #' which would leave only 100 of the (thinned) values in `output_data`.
 #' @param n_end The last iteration in the original MCMC chain to use in the calculations. Assumed to be the
 #' total number of iterations performed, i.e. `n_iter`, if not given.
+#' @param plot_pretty logical, defaulting to `TRUE`. If set `TRUE` then will select pretty plotting
+#' margins (that create sufficient space for axis titles and rotates y-axis labels). If `FALSE` will
+#' implement current user values.
 #'
 #' @return A list, each item containing a data frame of the `calendar_age`, the
 #' `density_mean` and the confidence intervals for the density
@@ -121,7 +124,8 @@ PlotPredictiveCalendarAgeDensity <- function(
     denscale = 3,
     resolution = 1,
     n_burn = NA,
-    n_end = NA) {
+    n_end = NA,
+    plot_pretty = TRUE) {
 
   ##############################################################################
   # Check input parameters
@@ -150,8 +154,18 @@ PlotPredictiveCalendarAgeDensity <- function(
   .ReportErrors(arg_check)
 
   # Ensure revert to main environment par on exit of function
-  opar <- graphics::par()[c("mgp", "xaxs", "yaxs", "mar", "las")]
-  on.exit(graphics::par(opar))
+  oldpar <- graphics::par(no.readonly = TRUE)
+  on.exit(graphics::par(oldpar))
+
+  # Set nice plotting parameters
+  if(plot_pretty) {
+    graphics::par(
+      mgp = c(3, 0.7, 0),
+      xaxs = "i",
+      yaxs = "i",
+      mar = c(5, 4.5, 4, 2) + 0.1,
+      las = 1)
+  }
 
   if (is.null(calibration_curve)) {
     calibration_curve <- get(output_data[[1]]$input_data$calibration_curve_name)

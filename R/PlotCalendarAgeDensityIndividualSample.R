@@ -38,6 +38,9 @@
 #' @param show_unmodelled_density Set to `TRUE` to also show the unmodelled density (i.e., the
 #' result of independent calibration using [carbondate::CalibrateSingleDetermination]) on the plot.
 #' Default is `FALSE`.
+#' @param plot_pretty logical, defaulting to `TRUE`. If set `TRUE` then will select pretty plotting
+#' margins (that create sufficient space for axis titles and rotates y-axis labels). If `FALSE` will
+#' implement current user values.
 #' @param n_end The iteration number of the last sample in `output_data` to use in the calculations.
 #' Assumed to be the total number of (thinned) realisations stored if not given.
 #'
@@ -95,7 +98,8 @@ PlotCalendarAgeDensityIndividualSample <- function(
     n_burn = NA,
     n_end = NA,
     show_hpd_ranges = FALSE,
-    show_unmodelled_density = FALSE) {
+    show_unmodelled_density = FALSE,
+    plot_pretty = TRUE) {
 
   arg_check <- .InitializeErrorList()
   .CheckInteger(arg_check, ident)
@@ -111,8 +115,18 @@ PlotCalendarAgeDensityIndividualSample <- function(
   .ReportErrors(arg_check)
 
   # Ensure revert to main environment par on exit of function
-  opar <- graphics::par()[c("mgp", "xaxs", "yaxs", "mar", "las")]
-  on.exit(graphics::par(opar))
+  oldpar <- graphics::par(no.readonly = TRUE)
+  on.exit(graphics::par(oldpar))
+
+  # Set nice plotting parameters
+  if(plot_pretty) {
+    graphics::par(
+      mgp = c(3, 0.7, 0),
+      xaxs = "i",
+      yaxs = "i",
+      mar = c(5, 4.5, 4, 2) + 0.1,
+      las = 1)
+  }
 
   n_burn <- .SetNBurn(n_burn, n_iter, n_thin)
   n_end <- .SetNEnd(n_end, n_iter, n_thin)
@@ -193,14 +207,6 @@ PlotCalendarAgeDensityIndividualSample <- function(
       list(i = ident, c14_age = round(rc_age), c14_sig = round(rc_sig, 1)))
   }
 
-  # Set nice plotting parameters
-  graphics::par(
-    mgp = c(3, 0.7, 0),
-    xaxs = "i",
-    yaxs = "i",
-    mar = c(5, 4.5, 4, 2) + 0.1,
-    las = 1)
-
   .PlotCalibrationCurve(
     plot_cal_age_scale,
     xlim = rev(xrange_BP),
@@ -229,7 +235,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
   graphics::polygon(radpol, col = grDevices::rgb(1, 0, 0, .5))
 
   # Plot the posterior cal age on the x-axis
-  graphics::par(new = TRUE, las = 1)
+  graphics::par(new = TRUE)
   # Create hist but do not plot - works out sensible ylim
   if (plot_cal_age_scale == "AD") {
     breaks <-seq(xrange[2], xrange[1], by=hist_resolution)

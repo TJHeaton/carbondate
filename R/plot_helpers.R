@@ -11,12 +11,6 @@
     bespoke_probability,
     title = "Calendar age density estimate"){
 
-  # Set nice plotting parameters
-  graphics::par(
-    mgp = c(3, 0.7, 0),
-    mar = c(5, 4.5, 4, 2) + 0.1,
-    las = 1)
-
   .PlotCalibrationCurve(
     plot_cal_age_scale,
     xlim,
@@ -104,10 +98,10 @@
 
 
 .SetUpDensityPlot <- function(plot_cal_age_scale,  xlim, ylim) {
-  graphics::par(new = TRUE)
 
   xlim <- .ConvertCalendarAge(plot_cal_age_scale, xlim)
 
+  graphics::par(new = TRUE)
   graphics::plot.default(
     NULL,
     NULL,

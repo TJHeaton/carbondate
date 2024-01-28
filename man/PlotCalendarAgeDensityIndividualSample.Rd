@@ -17,7 +17,8 @@ PlotCalendarAgeDensityIndividualSample(
   n_burn = NA,
   n_end = NA,
   show_hpd_ranges = FALSE,
-  show_unmodelled_density = FALSE
+  show_unmodelled_density = FALSE,
+  plot_pretty = TRUE
 )
 }
 \arguments{
@@ -74,6 +75,10 @@ on the plot.}
 \item{show_unmodelled_density}{Set to \code{TRUE} to also show the unmodelled density (i.e., the
 result of independent calibration using \link{CalibrateSingleDetermination}) on the plot.
 Default is \code{FALSE}.}
+
+\item{plot_pretty}{logical, defaulting to \code{TRUE}. If set \code{TRUE} then will select pretty plotting
+margins (that create sufficient space for axis titles and rotates y-axis labels). If \code{FALSE} will
+implement current user values.}
 }
 \value{
 A data frame with one column \code{calendar_age_BP} containing the calendar ages, and the other

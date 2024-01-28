@@ -18,7 +18,8 @@ PlotPredictiveCalendarAgeDensity(
   denscale = 3,
   resolution = 1,
   n_burn = NA,
-  n_end = NA
+  n_end = NA,
+  plot_pretty = TRUE
 )
 }
 \arguments{
@@ -80,6 +81,10 @@ which would leave only 100 of the (thinned) values in \code{output_data}.}
 
 \item{n_end}{The last iteration in the original MCMC chain to use in the calculations. Assumed to be the
 total number of iterations performed, i.e. \code{n_iter}, if not given.}
+
+\item{plot_pretty}{logical, defaulting to \code{TRUE}. If set \code{TRUE} then will select pretty plotting
+margins (that create sufficient space for axis titles and rotates y-axis labels). If \code{FALSE} will
+implement current user values.}
 }
 \value{
 A list, each item containing a data frame of the \code{calendar_age}, the
