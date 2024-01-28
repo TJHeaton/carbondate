@@ -41,8 +41,17 @@ The probability that a particular sample is drawn from a particular cluster will
 
 ```{r illustrate_mixture, fig.cap = paste("_An illustration of building up a potentially complex distribution $f(\\theta)$ using mixtures of normals. Left Panel: A simple mixture of three (predominantly disjoint) normal clusters (blue dashed lines) results in an overall $f(\\theta)$ that is tri-modal (solid red). Right Panel: Overlapping normal clusters (blue dashed lines) can however create more complex $f(\\theta)$ distributions (solid red)._"), out.width="100%", fig.width=10, fig.height=4, echo = FALSE}
 
+oldpar <- par(no.readonly = TRUE)
+
+par(
+  mfrow = c(1,2),
+  mgp = c(3, 0.7, 0),
+  xaxs = "i",
+  yaxs = "i",
+  mar = c(5, 4.5, 2, 2) + 0.1,
+  las = 1)
+
 # Plots summed normal distributions
-graphics::par(mfrow = c(1,2))
 t <- 1:100
 wtrue <- c(0.3, 0.4, 0.3)
 phitrue <- c(40, 60, 80)
@@ -57,7 +66,6 @@ truedensv2 <- function(t, w, truemean, trueprec) {
   dens
 }
 
-par(mar = c(5, 4.5, 2, 2) + 0.1)
 curve(truedensv2(x, w = wtrue, truemean = phitrue, trueprec = tautrue), 
       from = min(t), to = max(t), n = 401, 
       ylim = c(0, 0.05), 
@@ -80,7 +88,6 @@ wtrue <- c(0.2, 0.3, 0.1, 0.2, 0.2)
 phitrue <- c(50, 60, 70, 40, 30)
 tautrue <- 1/c(5, 4, 8, 4, 7)^2
 
-par(mar = c(5, 4.5, 2, 2) + 0.1)
 curve(truedensv2(x, w = wtrue, truemean = phitrue, trueprec = tautrue), 
       from = min(t), to = max(t), n = 401, 
       ylim = c(0, 0.05), 
@@ -96,6 +103,9 @@ for(i in 1:length(wtrue)) {
         xlim = rev(c(min(t), max(t))),
         col = "blue", lty = 2)
 }
+
+# Reset plotting parameters
+par(oldpar)
 ```
 
 ## Estimation of the shared underlying density 

@@ -59,8 +59,16 @@ When the calendar ages of the events $\{\theta_i , i=1,\ldots,n\}$ are known exa
 
 ```{r illustrate_PP, fig.cap = paste("_Modelling sample occurence using a Poisson process with a latent occurence/activity rate.  Left Panel: An illustration of a Poisson process with two changepoints in the occurrence rate. The samples (shown as a rug in purple) occur at random calendar times, but proportional to the underlying occurrence rate. There are therefore more samples between (2700, 2300) cal yr BP  than other times. Right Panel: Each sample has a ^14^C age (shown as black ticks on the y-axis). We wish to reconstruct the underlying Poisson process rate given only these ^14^C determination._"), out.width="100%", fig.width=10, fig.height=4, echo = FALSE}
 
-par(mfrow = c(1,2))
-par(mar = c(4.5, 4, 2, 1) + 0.1, las = 1)
+oldpar <- par(no.readonly = TRUE)
+
+par(
+  mfrow = c(1,2),
+  mgp = c(3, 0.7, 0),
+  xaxs = "i",
+  yaxs = "i",
+  mar = c(5, 4.5, 4, 2) + 0.1,
+  las = 1)
+
 set.seed(16)
 
 # Artificial start and end dates 
@@ -133,10 +141,13 @@ polygon(c(rev(intcal20$calendar_age_BP), intcal20$calendar_age_BP),
 rug(rc_determinations, side = 2, quiet = TRUE)
 
 # Plot the true rate along the bottom
-par(new = TRUE, las = 1)
+par(new = TRUE)
 plot(c(min(t), t, max(t)), c(0,truerate,0), lty = 1, col = "red", type = "l", 
      ylim = c(0, 10 * max(truerate)), xlim = c(maxcal, mincal) + c(100, -100),
      axes = FALSE, xlab = NA, ylab = NA, yaxs = "i")
+
+# Reset plotting parameters
+par(oldpar)
 ```
 
     

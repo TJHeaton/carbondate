@@ -29,6 +29,15 @@ The **carbondate** package contains functions for analysing sets of related radi
 
 ```{r illustrate_set, out.width="100%", echo = FALSE, fig.cap = paste("_Illustration of our challenge. We observe a set of related samples, each with a ^14^C determination (shown here as the red ticks on the radiocarbon age axis). Can we jointly calibrate the samples, and summarise the combined calendar age information that they provide?_")}
 set.seed(13)
+oldpar <- par(no.readonly = TRUE)
+
+par(
+  mgp = c(3, 0.7, 0),
+  xaxs = "i",
+  yaxs = "i",
+  mar = c(5, 4.5, 4, 2) + 0.1,
+  las = 1)
+
 calcurve <- intcal20
 
 # Sample 14C determinations between artificial start and end dates 
@@ -42,7 +51,6 @@ xsig <- rep(25, nsamp)
 x <- rnorm(nsamp, mean = approx(calcurve$calendar_age_BP, calcurve$c14_age, theta_true)$y,
            sd = sqrt(xsig^2 + (approx(calcurve$calendar_age_BP, calcurve$c14_sig, theta_true)$y)^2) )
 
-graphics::par(mar = c(5, 4.5, 4, 2) + 0.1, las = 1)
 plot(calcurve$calendar_age_BP, calcurve$c14_age, col = "blue", 
      ylim = range(x) + c(-4,4) * max(xsig), xlim = c(maxcal, mincal) + c(100, -100),
      xlab = "Calendar Age (cal yr BP)", 
@@ -64,6 +72,9 @@ pch <- c(NA, NA, NA)
 col <- c(grDevices::rgb(1, 0, 0, .5), "blue", "blue")
 legend(
     "topright", legend = legend_labels, lty = lty, lwd=lwd, pch = pch, col = col)
+
+# Reset plotting parameters
+par(oldpar)
 
 ```
 

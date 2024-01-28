@@ -14,8 +14,8 @@ knitr::opts_chunk$set(
   comment = "#>",
   dev='png',
   fig.width=7, 
-  fig.height=5.5,
-  dev.args=list(antialias = "none")
+  fig.height=5.5 # ,
+  # dev.args=list(antialias = "none")
 )
 ```
 
@@ -50,14 +50,35 @@ spd <- FindSummedProbabilityDistribution(
 
 Consider the simulated `two_normals` dataset. We know that the calendar age density that underlies these ^14^C value is a mixture of two normal densities - one centred at 3500 cal yr BP (with a 1$\sigma$ standard deviation of 200 cal yrs); and another (more concentrated) centred at 5000 cal yr BP (with a 1$\sigma$ standard deviation of 100 cal yrs). However, when we calculate the SPD we obtain:
 
-```{r two_normals_spd, echo = 1,  out.width="100%"}
-FindSummedProbabilityDistribution(
+```{r two_normals_spd, echo = 2,  out.width="100%"}
+oldpar <- par(no.readonly = TRUE)
+
+two_normals_spd <- FindSummedProbabilityDistribution(
   calendar_age_range_BP=c(2500, 7000),
   rc_determinations= two_normals$c14_age,
   rc_sigmas = two_normals$c14_sig,
   calibration_curve=intcal20,
   plot_output = TRUE)
 
+par(new = TRUE, 
+    mgp = c(3, 0.7, 0),
+    xaxs = "i",
+    yaxs = "i",
+    mar = c(5, 4.5, 4, 2) + 0.1,
+    las = 1)
+xlim <- rev(range(two_normals_spd$calendar_age_BP))
+ylim <- 3 * range(two_normals_spd$probability)
+plot(
+    NULL,
+    NULL,
+    type = "n",
+    ylim = ylim,
+    xlim = xlim,
+    axes = FALSE,
+    xlab = NA,
+    ylab = NA,
+    xaxs = "i",
+    yaxs = "i")
 # Show true underlying calendar age density
 weights_true <- c(0.45, 0.55)
 cluster_means_true_calBP <- c(3500, 5000)
@@ -80,6 +101,8 @@ curve(truedens(
       lwd = 2,
       col = "red", add = TRUE)
 
+# Reset plotting parameters
+par(oldpar)
 ```
 
 Here we have manually overlain the true (known) shared calendar age density in red. As we can see, the SPD captures does capture some broad features but does not reconstruct the truth well, and is hard to interpret. In particular, the SPD is highly variable, showing multiple peaks, due to the wiggliness of the calibration curve. The SPD peak shown around 5300 cal yr BP is entirely spurious, yet almost of the same magnitude as its peak around 3500 cal yr BP (which is a part of the genuine density). 
@@ -89,6 +112,8 @@ Here we have manually overlain the true (known) shared calendar age density in r
 While this is jumping forward somewhat, to evidence that our methods provide better reconstructions, we run the same example using our Bayesian non-parametric summarisation approach (shown in purple as _Polya Urn_) and obtain:
 
 ```{r two_normals_compare, echo = FALSE,  out.width="100%"}
+oldpar <- par(no.readonly = TRUE)
+
 polya_urn_output <- PolyaUrnBivarDirichlet(
   rc_determinations = two_normals$c14_age,
   rc_sigmas = two_normals$c14_sig,
@@ -99,6 +124,25 @@ PlotPredictiveCalendarAgeDensity(
   output_data = polya_urn_output,
   show_SPD = TRUE)
 
+par(new = TRUE, 
+    mgp = c(3, 0.7, 0),
+    xaxs = "i",
+    yaxs = "i",
+    mar = c(5, 4.5, 4, 2) + 0.1,
+    las = 1)
+xlim <- rev(range(two_normals_spd$calendar_age_BP))
+ylim <- 3 * range(two_normals_spd$probability)
+plot(
+    NULL,
+    NULL,
+    type = "n",
+    ylim = ylim,
+    xlim = xlim,
+    axes = FALSE,
+    xlab = NA,
+    ylab = NA,
+    xaxs = "i",
+    yaxs = "i")
 # Show true underlying calendar age density
 weights_true <- c(0.45, 0.55)
 cluster_means_true_calBP <- c(3500, 5000)
@@ -120,6 +164,9 @@ curve(truedens(
       from = 2500, to = 7000, n = 401,
       lwd = 2,
       col = "red", add = TRUE)
+
+# Reset plotting parameters
+par(oldpar)
 ```
 
 
