@@ -600,7 +600,7 @@ plotindpost <- function(MCMCoutput, ident, y, er, calcurve, nburn = NA, resoluti
   polygon(radpol, col = rgb(1,0,0,.5))
 
   # Plot the posterior cal age on the x-axis
-  par(new = TRUE, las = 1)
+  par(new = TRUE)
   # Create hist but do not plot - works out senssible ylim and allows to work out nbreaks for desired resolution
   breaks <-seq(xrange[1], xrange[2], by=resolution)
   temphist <- hist(theta, breaks = breaks, plot = FALSE)
