@@ -5,6 +5,7 @@ vignette: >
   %\VignetteIndexEntry{Determining Convergence}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+bibliography: references.bib
 ---
 
 ```{r, include = FALSE}
@@ -117,4 +118,6 @@ PlotConvergenceData(output)
 ```
 
 It can give an idea of convergence as well as which iteration number to use for `n_burn` when calculating the predictive density (by default set to half the chain).
+
+# References
 
