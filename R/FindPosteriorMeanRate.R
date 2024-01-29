@@ -79,7 +79,7 @@ FindPosteriorMeanRate <- function(
     "bespoke" = (1 - bespoke_probability)/2
   )
   posterior_rate <- data.frame(
-    calendar_age = calendar_age_sequence,
+    calendar_age_BP = calendar_age_sequence,
     rate_mean = apply(rate, 2, mean),
     rate_ci_lower = apply(rate, 2, stats::quantile, probs = edge_width),
     rate_ci_upper = apply(rate, 2, stats::quantile, probs = 1 - edge_width)

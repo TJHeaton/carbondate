@@ -231,7 +231,7 @@ PlotPosteriorMeanRate <- function(
 .PlotRateEstimateOnCurrentPlot <- function(
   plot_cal_age_scale, posterior_rate, output_colour, show_confidence_intervals) {
 
-  cal_age <- .ConvertCalendarAge(plot_cal_age_scale, posterior_rate$calendar_age)
+  cal_age <- .ConvertCalendarAge(plot_cal_age_scale, posterior_rate$calendar_age_BP)
 
   graphics::lines(cal_age, posterior_rate$rate_mean, col = output_colour)
   if (show_confidence_intervals) {

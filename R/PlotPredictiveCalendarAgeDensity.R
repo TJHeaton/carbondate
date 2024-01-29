@@ -283,7 +283,7 @@ PlotPredictiveCalendarAgeDensity <- function(
 .PlotDensityEstimateOnCurrentPlot <- function(
     plot_cal_age_scale, predictive_density, output_colour, show_confidence_intervals) {
 
-  cal_age <- .ConvertCalendarAge(plot_cal_age_scale, predictive_density$calendar_age)
+  cal_age <- .ConvertCalendarAge(plot_cal_age_scale, predictive_density$calendar_age_BP)
 
   graphics::lines(cal_age, predictive_density$density_mean, col = output_colour)
   if (show_confidence_intervals) {

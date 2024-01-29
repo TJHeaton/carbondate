@@ -159,7 +159,7 @@ double PolyaUrnDensityForCalendarAge(
   }
 
   writable::data_frame retdata({
-    "calendar_age"_nm = calendar_ages,
+    "calendar_age_BP"_nm = calendar_ages,
     "density_mean"_nm = mean_density,
     "density_ci_lower"_nm = ci_lower,
     "density_ci_upper"_nm = ci_upper,
@@ -217,7 +217,7 @@ double PolyaUrnDensityForCalendarAge(
   }
 
   writable::data_frame retdata({
-    "calendar_age"_nm = calendar_ages,
+      "calendar_age_BP"_nm = calendar_ages,
       "density_mean"_nm = mean_density,
       "density_ci_lower"_nm = ci_lower,
       "density_ci_upper"_nm = ci_upper,
