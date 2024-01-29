@@ -84,13 +84,14 @@ margins (that create sufficient space for axis titles and rotates y-axis labels)
 implement current user values.}
 }
 \value{
-A list, each item containing a data frame of the \code{calendar_age}, the \code{rate_mean}
+A list, each item containing a data frame of the \code{calendar_age_BP}, the \code{rate_mean}
 and the confidence intervals for the rate - \code{rate_ci_lower} and \code{rate_ci_upper}.
 }
 \description{
 Given output from the Poisson process fitting function \link{PPcalibrate} calculate
 and plot the posterior mean rate of sample occurrence (i.e., the underlying Poisson process
-rate \eqn{\lambda(t)}) together with specified probability intervals, on a given calendar age grid.
+rate \eqn{\lambda(t)}) together with specified probability intervals, on a given calendar age grid
+(provided in cal yr BP).
 
 Will show the original set of radiocarbon determinations (those you are modelling/summarising),
 the chosen calibration curve, and the estimated posterior rate of occurrence \eqn{\lambda(t)} on the same plot.

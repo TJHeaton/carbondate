@@ -5,7 +5,7 @@
 #' Given output from one of the Bayesian non-parametric summarisation functions (either
 #' [carbondate::PolyaUrnBivarDirichlet] or [carbondate::WalkerBivarDirichlet]) calculate
 #' and plot the predictive (summarised/shared) calendar age density and probability intervals
-#' on a given calendar age grid.
+#' on a given calendar age grid (provided in cal yr BP).
 #'
 #' Will show the original set of radiocarbon determinations (those you are summarising),
 #' the chosen calibration curve, and the summarised predictive calendar age density on the
@@ -68,7 +68,7 @@
 #' margins (that create sufficient space for axis titles and rotates y-axis labels). If `FALSE` will
 #' implement current user values.
 #'
-#' @return A list, each item containing a data frame of the `calendar_age`, the
+#' @return A list, each item containing a data frame of the `calendar_age_BP`, the
 #' `density_mean` and the confidence intervals for the density
 #' `density_ci_lower` and `density_ci_upper` for each set of output data.
 #'

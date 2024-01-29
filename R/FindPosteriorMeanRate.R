@@ -3,7 +3,8 @@
 #' @description
 #' Given output from the Poisson process fitting function [carbondate::PPcalibrate] calculate
 #' the posterior mean rate of sample occurrence (i.e., the underlying Poisson process
-#' rate \eqn{\lambda(t)}) together with specified probability intervals, on a given calendar age grid.
+#' rate \eqn{\lambda(t)}) together with specified probability intervals, on a given calendar age
+#' grid (provided in cal yr BP).
 #'
 #' \strong{Note:} If you want to calculate and plot the result, use
 #' [carbondate::PlotPosteriorMeanRate] instead.
@@ -15,7 +16,7 @@
 #' @param calendar_age_sequence A vector containing the calendar age grid on which to
 #' calculate the posterior mean rate.
 #'
-#' @return A list, each item containing a data frame of the `calendar_age`, the `rate_mean`
+#' @return A list, each item containing a data frame of the `calendar_age_BP`, the `rate_mean`
 #' and the confidence intervals for the rate - `rate_ci_lower` and `rate_ci_upper`.
 #'
 #' @export

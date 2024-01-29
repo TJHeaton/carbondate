@@ -47,13 +47,14 @@ will allow is \code{n_iter - 100 * n_thin} (where \code{n_iter} and \code{n_thin
 total number of iterations performed, i.e. \code{n_iter}, if not given.}
 }
 \value{
-A list, each item containing a data frame of the \code{calendar_age}, the \code{rate_mean}
+A list, each item containing a data frame of the \code{calendar_age_BP}, the \code{rate_mean}
 and the confidence intervals for the rate - \code{rate_ci_lower} and \code{rate_ci_upper}.
 }
 \description{
 Given output from the Poisson process fitting function \link{PPcalibrate} calculate
 the posterior mean rate of sample occurrence (i.e., the underlying Poisson process
-rate \eqn{\lambda(t)}) together with specified probability intervals, on a given calendar age grid.
+rate \eqn{\lambda(t)}) together with specified probability intervals, on a given calendar age
+grid (provided in cal yr BP).
 
 \strong{Note:} If you want to calculate and plot the result, use
 \link{PlotPosteriorMeanRate} instead.

@@ -87,7 +87,7 @@ margins (that create sufficient space for axis titles and rotates y-axis labels)
 implement current user values.}
 }
 \value{
-A list, each item containing a data frame of the \code{calendar_age}, the
+A list, each item containing a data frame of the \code{calendar_age_BP}, the
 \code{density_mean} and the confidence intervals for the density
 \code{density_ci_lower} and \code{density_ci_upper} for each set of output data.
 }
@@ -95,7 +95,7 @@ A list, each item containing a data frame of the \code{calendar_age}, the
 Given output from one of the Bayesian non-parametric summarisation functions (either
 \link{PolyaUrnBivarDirichlet} or \link{WalkerBivarDirichlet}) calculate
 and plot the predictive (summarised/shared) calendar age density and probability intervals
-on a given calendar age grid.
+on a given calendar age grid (provided in cal yr BP).
 
 Will show the original set of radiocarbon determinations (those you are summarising),
 the chosen calibration curve, and the summarised predictive calendar age density on the

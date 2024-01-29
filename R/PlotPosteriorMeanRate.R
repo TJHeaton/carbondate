@@ -3,7 +3,8 @@
 #' @description
 #' Given output from the Poisson process fitting function [carbondate::PPcalibrate] calculate
 #' and plot the posterior mean rate of sample occurrence (i.e., the underlying Poisson process
-#' rate \eqn{\lambda(t)}) together with specified probability intervals, on a given calendar age grid.
+#' rate \eqn{\lambda(t)}) together with specified probability intervals, on a given calendar age grid
+#' (provided in cal yr BP).
 #'
 #' Will show the original set of radiocarbon determinations (those you are modelling/summarising),
 #' the chosen calibration curve, and the estimated posterior rate of occurrence \eqn{\lambda(t)} on the same plot.
@@ -65,7 +66,7 @@
 #' implement current user values.
 #'
 #'
-#' @return A list, each item containing a data frame of the `calendar_age`, the `rate_mean`
+#' @return A list, each item containing a data frame of the `calendar_age_BP`, the `rate_mean`
 #' and the confidence intervals for the rate - `rate_ci_lower` and `rate_ci_upper`.
 #'
 #' @export
