@@ -14,8 +14,8 @@ knitr::opts_chunk$set(
   comment = "#>",
   dev='png',
   fig.width=7, 
-  fig.height=5.5,
-  dev.args=list(antialias = "none")
+  fig.height=5.5 # ,
+  # dev.args=list(antialias = "none")
 )
 ```
 

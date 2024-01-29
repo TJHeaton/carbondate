@@ -1,5 +1,5 @@
 ## Resubmission
-This is a resubmission. In this version I have:
+This is a resubmission. In this versionm in response to your feedback, we have:
 
 * The writing, i.e., save(), commands in the tests/testthat/fixtures are in scripts that are not run as part of the tests. These were scripts to create static test fixtures where we aimed to follow the guidance on R packages (which said that the code should be available). We have commented out the save commands for safety.  
 
@@ -10,9 +10,13 @@ The only instance where we have not done this is in the function .SetUpDensityPl
 
 * Reset par back to user values in all vignettes/examples at end of each Rmarkdown chunk
 
+We have also:
+
 * Altered documentation of functions (and vignettes) to incorporate above plotting changes.
 
 * Fixed typos in vignettes and run MCMC in "Non-parametric-summed-density" for longer to show converged result
+
+* Switched antialiaising back to default on png on vignettes.
 
 
 ## R CMD check results
