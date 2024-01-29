@@ -13,7 +13,7 @@
 #' \code{vignette("Poisson-process-modelling", package = "carbondate")}
 #'
 #' @inheritParams PlotPosteriorMeanRate
-#' @param calendar_age_sequence A vector containing the calendar age grid on which to
+#' @param calendar_age_sequence A vector containing the calendar age grid (in cal yr BP) on which to
 #' calculate the posterior mean rate.
 #'
 #' @return A list, each item containing a data frame of the `calendar_age_BP`, the `rate_mean`
