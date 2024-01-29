@@ -11,7 +11,6 @@ bibliography: references.bib
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  eval = FALSE,
   comment = "#>",
   dev='png',
   fig.width=7, 
@@ -35,7 +34,7 @@ To assess convergence of our methods, we apply it to the individual posterior ca
 
 In the first case, the relevant MCMC function can be run multiple times. This generate different chains.
 
-```{r calculate_gr_multiple, results=FALSE}
+```{r calculate_gr_multiple, results=FALSE, eval=FALSE}
 all_outputs <- list()
 for (i in 1:3) {
   set.seed(i + 1)
@@ -44,12 +43,13 @@ for (i in 1:3) {
 }
 PlotGelmanRubinDiagnosticMultiChain(all_outputs)
 ```
-![](figures-convergence/calculate_gr_multiple-1.png)
-
+```{r, out.width= "100%", echo = FALSE}
+knitr::include_graphics("figures-convergence/calculate_gr_multiple-1.png")
+```
 
 It can also be calculated by taking a single MCMC run, and splitting it into multiple parts to compare the _within-segment_ variance with the _between-segment_ variance for each calendar age observation. 
 
-```{r calculate_gr, results=FALSE}
+```{r calculate_gr, results=FALSE, eval=FALSE}
 set.seed(3)
 output <- PolyaUrnBivarDirichlet(
     kerr$c14_age, kerr$c14_sig, intcal20, n_iter = 2e4)
@@ -72,7 +72,7 @@ Unfortunately, the chains storing these parameters are not suitable for the Gelm
 
 Running the functions a few time with different random number seeds can give an idea of how many iterations are needed for convergence. If the MCMC has converged, then each run should lead to a similar result for the predictive density (or the posterior occurrence rate in the case of the POisson process model). For example,
 
-```{r calculate_polya_kerr, results=FALSE}
+```{r calculate_polya_kerr, results=FALSE, eval=FALSE}
 outputs <- list()
 for (i in 1:3) {
   set.seed(i+1)
@@ -86,13 +86,15 @@ for (i in 1:3) {
 PlotPredictiveCalendarAgeDensity(
   outputs, n_posterior_samples = 500, denscale = 2, interval_width = "1sigma")
 ```
-![](figures-convergence/calculate_polya_kerr-1.png)
+```{r, out.width= "100%", echo = FALSE}
+knitr::include_graphics("figures-convergence/calculate_polya_kerr-1.png")
+```
 
 As you can see, in this case (255 determinations collated by Kerr and McCormick [@kerr2014]) the different runs do not have similar outputs, so more iterations would be needed to ensure convergence.
 
 In contrast, if we run a much simpler example (that of artificial data comprised of two normals), we can see that convergence appears to be achieved in a small number of iterations.
 
-```{r calculate_polya_normals, results=FALSE}
+```{r calculate_polya_normals, results=FALSE, eval=FALSE}
 outputs <- list()
 for (i in 1:3) {
   set.seed(i + 1)
@@ -106,7 +108,9 @@ for (i in 1:3) {
 PlotPredictiveCalendarAgeDensity(
   outputs, n_posterior_samples = 500, denscale = 2, interval_width = "1sigma")
 ```
-![](figures-convergence/calculate_polya_normals-1.png)
+```{r, out.width= "100%", echo = FALSE}
+knitr::include_graphics("figures-convergence/calculate_polya_normals-1.png")
+```
 
 This approach to assessing convergence can be taken with either the Bayesian non-parametric method, or the Poisson process modelling.
 
@@ -114,7 +118,7 @@ This approach to assessing convergence can be taken with either the Bayesian non
 
 We also provide a further diagnostic specifically for the Bayesian non-parametric approach (it is not applicable for the Poisson process model). This diagnostic gives a measure of the difference between an initial (baseline) predictive density and the predictive density as the MCMC progresses.
 
-```{r calculate_kld, results=FALSE}
+```{r calculate_kld, results=FALSE, eval=FALSE}
 set.seed(50)
 output <- WalkerBivarDirichlet(
     rc_determinations = kerr$c14_age,
@@ -124,7 +128,9 @@ output <- WalkerBivarDirichlet(
 
 PlotConvergenceData(output)
 ```
-![](figures-convergence/calculate_kld-1.png)
+```{r, out.width= "100%", echo = FALSE}
+knitr::include_graphics("figures-convergence/calculate_kld-1.png")
+```
 
 It can give an idea of convergence as well as which iteration number to use for `n_burn` when calculating the predictive density (by default set to half the chain).
 
