@@ -358,8 +358,9 @@ one another, effectively adding a double changepoint at either 500 or
 in <code>PlotNumberOfInternalChanges</code> which indicates that the
 most likely number of changepoints is two. We may therefore wish to
 focus our interpretation on the locations/times of changepoints
-conditional on their being this number (i.e., when <span class="math inline">\(n_{\textrm{internal changes} = 2\)</span>).<br><strong>Note the R warning here:</strong> For this simulated data, the
-posterior model (correctly) never thinks there should be only one
+conditional on their being this number (i.e., when <span class="math inline">\(n_{\textrm{internal changes}} = 2\)</span>).</p>
+<p><strong>Note the R warning here:</strong> For this simulated data,
+the posterior model (correctly) never thinks there should be only one
 changepoint. This is indicated by the warning message returned by R and
 the absence of a solid blue density in the plot.</p>
 </div>
@@ -382,6 +383,18 @@ three different values for the rates) we have two rates of <em>ca.</em>
 cal yr BP), and a period with rate <em>ca.</em> 0.6-0.8 events per cal
 yr (corresponding to the period from 550–500 cal yr BP).</p>
 </div>
+<div class="section level4">
+<h4 id="plotting-the-posterior-calendar-age-estimates-of-individual-samples">Plotting the posterior calendar age estimates of individual
+samples<a class="anchor" aria-label="anchor" href="#plotting-the-posterior-calendar-age-estimates-of-individual-samples"></a>
+</h4>
+<p>Finally, it is again possible to plot the posterior calendar age
+estimates of and individual samples using the
+<code>PlotCalendarAgeDensityIndividualSample</code> function:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotCalendarAgeDensityIndividualSample.html">PlotCalendarAgeDensityIndividualSample</a></span><span class="op">(</span></span>
+<span>  <span class="fl">9</span>, <span class="va">PP_fit_output</span>, show_hpd_ranges <span class="op">=</span> <span class="cn">TRUE</span>, show_unmodelled_density <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Poisson-process-modelling_files/figure-html/PP_plot_individual-1.png" width="100%"></p>
+</div>
 </div>
 <div class="section level3">
 <h3 id="changing-the-calendar-age-plotting-scale">Changing the calendar age plotting scale<a class="anchor" aria-label="anchor" href="#changing-the-calendar-age-plotting-scale"></a>
@@ -392,7 +405,7 @@ AD, or cal BC) shown when plotting can be selected via the
 In the case of the Poisson process modelling, the calendar age scale can
 be set in <code>PlotPosteriorMeanRate</code> and
 <code>PlotPosteriorChangePoints</code>, e.g.,</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotPosteriorChangePoints.html">PlotPosteriorChangePoints</a></span><span class="op">(</span><span class="va">PP_fit_output</span>, </span>
 <span>                          plot_cal_age_scale <span class="op">=</span> <span class="st">"AD"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in PlotPosteriorChangePoints(PP_fit_output, plot_cal_age_scale = "AD"):</span></span>

@@ -142,15 +142,8 @@ mixture of two normal densities - one centred at 3500 cal yr BP (with a
 cal yrs); and another (more concentrated) centred at 5000 cal yr BP
 (with a 1<span class="math inline">\(\sigma\)</span> standard deviation
 of 100 cal yrs). However, when we calculate the SPD we obtain:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/FindSummedProbabilityDistribution.html">FindSummedProbabilityDistribution</a></span><span class="op">(</span></span>
-<span>  calendar_age_range_BP<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2500</span>, <span class="fl">7000</span><span class="op">)</span>,</span>
-<span>  rc_determinations<span class="op">=</span> <span class="va">two_normals</span><span class="op">$</span><span class="va">c14_age</span>,</span>
-<span>  rc_sigmas <span class="op">=</span> <span class="va">two_normals</span><span class="op">$</span><span class="va">c14_sig</span>,</span>
-<span>  calibration_curve<span class="op">=</span><span class="va">intcal20</span>,</span>
-<span>  plot_output <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Against_SPDs_files/figure-html/two_normals_spd-1.png" width="100%">
-Here we have manually overlain the true (known) shared calendar age
+<p><img src="Against_SPDs_files/figure-html/two_normals_spd-1.png" width="100%"></p>
+<p>Here we have manually overlain the true (known) shared calendar age
 density in red. As we can see, the SPD captures does capture some broad
 features but does not reconstruct the truth well, and is hard to
 interpret. In particular, the SPD is highly variable, showing multiple

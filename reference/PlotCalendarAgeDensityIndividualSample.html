@@ -111,7 +111,8 @@ individual calibration.</p>
 <span>  n_burn <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  n_end <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  show_hpd_ranges <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  show_unmodelled_density <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  show_unmodelled_density <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  plot_pretty <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -124,7 +125,8 @@ density estimate of the calendar age.</p></dd>
 
 <dt>output_data</dt>
 <dd><p>The return value either from one of the Bayesian non-parametric DPMM
-functions (<a href="PolyaUrnBivarDirichlet.html">PolyaUrnBivarDirichlet</a> or <a href="WalkerBivarDirichlet.html">WalkerBivarDirichlet</a>).</p></dd>
+functions (<a href="PolyaUrnBivarDirichlet.html">PolyaUrnBivarDirichlet</a> or <a href="WalkerBivarDirichlet.html">WalkerBivarDirichlet</a>); or
+from the Poisson process modelling function (<a href="PPcalibrate.html">PPcalibrate</a>).</p></dd>
 
 
 <dt>calibration_curve</dt>
@@ -195,6 +197,12 @@ on the plot.</p></dd>
 result of independent calibration using <a href="CalibrateSingleDetermination.html">CalibrateSingleDetermination</a>) on the plot.
 Default is <code>FALSE</code>.</p></dd>
 
+
+<dt>plot_pretty</dt>
+<dd><p>logical, defaulting to <code>TRUE</code>. If set <code>TRUE</code> then will select pretty plotting
+margins (that create sufficient space for axis titles and rotates y-axis labels). If <code>FALSE</code> will
+implement current user values.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -212,8 +220,11 @@ a calibration curve.</p></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># NOTE: These examples are shown with a small n_iter to speed up execution.</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># NOTE 1: These examples are shown with a small n_iter to speed up execution.</span></span></span>
 <span class="r-in"><span><span class="co"># When you run ensure n_iter gives convergence (try function default).</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># NOTE 2: The examples only show application to  PolyaUrnBivarDirichlet output.</span></span></span>
+<span class="r-in"><span><span class="co"># The function can also be used with WalkerBivarDirichlet and PPcalibrate output.</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">polya_urn_output</span> <span class="op">&lt;-</span> <span class="fu"><a href="PolyaUrnBivarDirichlet.html">PolyaUrnBivarDirichlet</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="va">two_normals</span><span class="op">$</span><span class="va">c14_age</span>,</span></span>

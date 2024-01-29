@@ -83,7 +83,8 @@ density estimate.</p>
 <span>  plot_cal_age_scale <span class="op">=</span> <span class="st">"BP"</span>,</span>
 <span>  interval_width <span class="op">=</span> <span class="st">"2sigma"</span>,</span>
 <span>  bespoke_probability <span class="op">=</span> <span class="cn">NA</span>,</span>
-<span>  denscale <span class="op">=</span> <span class="fl">3</span></span>
+<span>  denscale <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  plot_pretty <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -143,6 +144,12 @@ interval is calculated. Ignored if "bespoke" is not chosen.</p></dd>
 <dd><p>Whether to scale the vertical range of the calendar age density plot
 relative to the calibration curve plot (optional). Default is 3 which means
 that the maximum calendar age density will be at 1/3 of the height of the plot.</p></dd>
+
+
+<dt>plot_pretty</dt>
+<dd><p>logical, defaulting to <code>TRUE</code>. If set <code>TRUE</code> then will select pretty plotting
+margins (that create sufficient space for axis titles and rotates y-axis labels). If <code>FALSE</code> will
+implement current user values.</p></dd>
 
 </dl></div>
     <div class="section level2">

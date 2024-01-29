@@ -92,7 +92,7 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>A few tools to determine how well the MCMC for the various aproaches
+<p>A few tools to determine how well the MCMC for the various approaches
 have converged.</p>
 <div class="section level3">
 <h3 id="examining-the-gelman-rubin-convergence-diagnostic">Examining the Gelman-Rubin convergence diagnostic<a class="anchor" aria-label="anchor" href="#examining-the-gelman-rubin-convergence-diagnostic"></a>
@@ -180,9 +180,9 @@ of the POisson process model). For example,</p>
 <span>  <span class="va">outputs</span>, n_posterior_samples <span class="op">=</span> <span class="fl">500</span>, denscale <span class="op">=</span> <span class="fl">2</span>, interval_width <span class="op">=</span> <span class="st">"1sigma"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="determining-convergence_files/figure-html/calculate_polya_kerr-1.png" width="672"></p>
 <p>As you can see, in this case (255 determinations collated by Kerr and
-McCormick <span class="citation">[@kerr2014]</span>) the different runs
-do not have similar outputs, so more iterations would be needed to
-ensure convergence.</p>
+McCormick <span class="citation">(Kerr and McCormick 2014)</span>) the
+different runs do not have similar outputs, so more iterations would be
+needed to ensure convergence.</p>
 <p>In contrast, if we run a much simpler example (that of artificial
 data comprised of two normals), we can see that convergence appears to
 be achieved in a small number of iterations.</p>
@@ -199,8 +199,8 @@ be achieved in a small number of iterations.</p>
 <span><span class="op">}</span></span>
 <span><span class="fu"><a href="../reference/PlotPredictiveCalendarAgeDensity.html">PlotPredictiveCalendarAgeDensity</a></span><span class="op">(</span></span>
 <span>  <span class="va">outputs</span>, n_posterior_samples <span class="op">=</span> <span class="fl">500</span>, denscale <span class="op">=</span> <span class="fl">2</span>, interval_width <span class="op">=</span> <span class="st">"1sigma"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="determining-convergence_files/figure-html/calculate_polya_normals-1.png" width="672">
-This approach to assessing convergence can be taken with either the
+<p><img src="determining-convergence_files/figure-html/calculate_polya_normals-1.png" width="672"></p>
+<p>This approach to assessing convergence can be taken with either the
 Bayesian non-parametric method, or the Poisson process modelling.</p>
 </div>
 <div class="section level4">
@@ -225,6 +225,17 @@ MCMC progresses.</p>
 <p>It can give an idea of convergence as well as which iteration number
 to use for <code>n_burn</code> when calculating the predictive density
 (by default set to half the chain).</p>
+</div>
+</div>
+</div>
+<div class="section level2">
+<h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-kerr2014" class="csl-entry">
+Kerr, T. R., and F. McCormick. 2014. <span>“Statistics, Sunspots and
+Settlement: Influences on Sum of Probability Curves.”</span> <em>Journal
+of Archaeological Science</em> 41 (January): 493–501. <a href="https://doi.org/10.1016/j.jas.2013.09.002" class="external-link">https://doi.org/10.1016/j.jas.2013.09.002</a>.
 </div>
 </div>
 </div>
