@@ -19,7 +19,7 @@ FindPosteriorMeanRate(
 \link{PPcalibrate}. Optionally, the output data can have an extra list item
 named \code{label} which is used to set the label on the plot legend.}
 
-\item{calendar_age_sequence}{A vector containing the calendar age grid on which to
+\item{calendar_age_sequence}{A vector containing the calendar age grid (in cal yr BP) on which to
 calculate the posterior mean rate.}
 
 \item{n_posterior_samples}{Number of samples it will draw, after having removed \code{n_burn},
