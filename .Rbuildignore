@@ -7,7 +7,6 @@
 ^codecov\.yml$
 ^doc$
 ^Meta$
-^profiling$
 ^experimenting
 ^.idea
 ^_pkgdown\.yml$
