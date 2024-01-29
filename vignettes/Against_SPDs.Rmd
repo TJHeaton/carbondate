@@ -131,7 +131,7 @@ par(new = TRUE,
     yaxs = "i",
     mar = c(5, 4.5, 4, 2) + 0.1,
     las = 1)
-xlim <- rev(range(two_normals_DPMM[[1]]$calendar_age))
+xlim <- rev(range(two_normals_DPMM[[1]]$calendar_age_BP))
 ylim <- c(0, 3 * max(two_normals_DPMM[[1]]$density_mean))
 plot(
     NULL,
