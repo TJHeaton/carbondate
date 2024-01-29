@@ -11,6 +11,7 @@ bibliography: references.bib
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
+  eval = FALSE,
   comment = "#>",
   dev='png',
   fig.width=7, 
@@ -43,6 +44,8 @@ for (i in 1:3) {
 }
 PlotGelmanRubinDiagnosticMultiChain(all_outputs)
 ```
+![](figures-convergence/calculate_gr_multiple-1.png)
+
 
 It can also be calculated by taking a single MCMC run, and splitting it into multiple parts to compare the _within-segment_ variance with the _between-segment_ variance for each calendar age observation. 
 
@@ -52,6 +55,9 @@ output <- PolyaUrnBivarDirichlet(
     kerr$c14_age, kerr$c14_sig, intcal20, n_iter = 2e4)
 
 PlotGelmanRubinDiagnosticSingleChain(output, n_burn = 5e3)
+```
+```{r, out.width= "100%", echo = FALSE}
+knitr::include_graphics("figures-convergence/calculate_gr-1.png")
 ```
 
 As you can see, even with a few iterations (where we would expect the result not to have converged yet) the PSRF values are close to one. 
@@ -80,6 +86,7 @@ for (i in 1:3) {
 PlotPredictiveCalendarAgeDensity(
   outputs, n_posterior_samples = 500, denscale = 2, interval_width = "1sigma")
 ```
+![](figures-convergence/calculate_polya_kerr-1.png)
 
 As you can see, in this case (255 determinations collated by Kerr and McCormick [@kerr2014]) the different runs do not have similar outputs, so more iterations would be needed to ensure convergence.
 
@@ -99,6 +106,7 @@ for (i in 1:3) {
 PlotPredictiveCalendarAgeDensity(
   outputs, n_posterior_samples = 500, denscale = 2, interval_width = "1sigma")
 ```
+![](figures-convergence/calculate_polya_normals-1.png)
 
 This approach to assessing convergence can be taken with either the Bayesian non-parametric method, or the Poisson process modelling.
 
@@ -116,6 +124,7 @@ output <- WalkerBivarDirichlet(
 
 PlotConvergenceData(output)
 ```
+![](figures-convergence/calculate_kld-1.png)
 
 It can give an idea of convergence as well as which iteration number to use for `n_burn` when calculating the predictive density (by default set to half the chain).
 

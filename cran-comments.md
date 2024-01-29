@@ -14,7 +14,9 @@ We have also:
 
 * Altered documentation of functions (and vignettes) to incorporate above plotting changes (and fix a few typos to ensure parameter naming consistency across outputs).
 
-* Fixed typos in vignettes and run MCMC in "Non-parametric-summed-density" for longer to show converged result
+* Fixed typos in vignettes
+
+* Run MCMC in "Non-parametric-summed-density" for longer to show converged result, shortened other vignettes to get under 10min runtime
 
 * Switched antialiaising back to default on png on vignettes.
 

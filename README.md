@@ -6,8 +6,8 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/TJHeaton/carbondate/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/TJHeaton/carbondate/actions/workflows/R-CMD-check.yaml)
-![CRAN
-status](https://www.r-pkg.org/badges/version/carbondate)\](<https://CRAN.R-project.org/package=carbondate>)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/carbondate)](https://CRAN.R-project.org/package=carbondate)
 <!-- badges: end -->
 
 An R package to analyse, and summarise, multiple radiocarbon

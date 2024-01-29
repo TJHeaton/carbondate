@@ -118,6 +118,7 @@ polya_urn_output <- PolyaUrnBivarDirichlet(
   rc_determinations = two_normals$c14_age,
   rc_sigmas = two_normals$c14_sig,
   calibration_curve=intcal20,
+  n_iter = 1e4,
   show_progress = FALSE)
 
 two_normals_DPMM <- PlotPredictiveCalendarAgeDensity(
