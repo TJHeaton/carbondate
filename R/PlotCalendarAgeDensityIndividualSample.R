@@ -21,7 +21,8 @@
 #' @param ident The individual determination for which you want to plot the posterior
 #' density estimate of the calendar age.
 #' @param output_data The return value either from one of the Bayesian non-parametric DPMM
-#' functions ([carbondate::PolyaUrnBivarDirichlet] or [carbondate::WalkerBivarDirichlet]).
+#' functions ([carbondate::PolyaUrnBivarDirichlet] or [carbondate::WalkerBivarDirichlet]); or
+#' from the Poisson process modelling function ([carbondate::PPcalibrate]).
 #' @param hist_resolution The distance between histogram breaks when plotting the individual
 #' posterior calendar age density. Default is 5.
 #' @param density_resolution The distance between calendar ages for the returned smoothed calendar age
@@ -37,6 +38,9 @@
 #' @param show_unmodelled_density Set to `TRUE` to also show the unmodelled density (i.e., the
 #' result of independent calibration using [carbondate::CalibrateSingleDetermination]) on the plot.
 #' Default is `FALSE`.
+#' @param plot_pretty logical, defaulting to `TRUE`. If set `TRUE` then will select pretty plotting
+#' margins (that create sufficient space for axis titles and rotates y-axis labels). If `FALSE` will
+#' implement current user values.
 #' @param n_end The iteration number of the last sample in `output_data` to use in the calculations.
 #' Assumed to be the total number of (thinned) realisations stored if not given.
 #'
@@ -50,8 +54,11 @@
 #' a calibration curve.
 #'
 #' @examples
-#' # NOTE: These examples are shown with a small n_iter to speed up execution.
+#' # NOTE 1: These examples are shown with a small n_iter to speed up execution.
 #' # When you run ensure n_iter gives convergence (try function default).
+#'
+#' # NOTE 2: The examples only show application to  PolyaUrnBivarDirichlet output.
+#' # The function can also be used with WalkerBivarDirichlet and PPcalibrate output.
 #'
 #' polya_urn_output <- PolyaUrnBivarDirichlet(
 #'     two_normals$c14_age,
@@ -91,11 +98,12 @@ PlotCalendarAgeDensityIndividualSample <- function(
     n_burn = NA,
     n_end = NA,
     show_hpd_ranges = FALSE,
-    show_unmodelled_density = FALSE) {
+    show_unmodelled_density = FALSE,
+    plot_pretty = TRUE) {
 
   arg_check <- .InitializeErrorList()
   .CheckInteger(arg_check, ident)
-  .CheckOutputData(arg_check, output_data,  c("Polya Urn", "Walker"))
+  .CheckOutputData(arg_check, output_data,  c("Polya Urn", "Walker", "RJPP"))
   n_iter <- output_data$input_parameters$n_iter
   n_thin <- output_data$input_parameters$n_thin
 
@@ -107,8 +115,18 @@ PlotCalendarAgeDensityIndividualSample <- function(
   .ReportErrors(arg_check)
 
   # Ensure revert to main environment par on exit of function
-  opar <- graphics::par()[c("mgp", "xaxs", "yaxs", "mar", "las")]
-  on.exit(graphics::par(opar))
+  oldpar <- graphics::par(no.readonly = TRUE)
+  on.exit(graphics::par(oldpar))
+
+  # Set nice plotting parameters
+  if(plot_pretty) {
+    graphics::par(
+      mgp = c(3, 0.7, 0),
+      xaxs = "i",
+      yaxs = "i",
+      mar = c(5, 4.5, 4, 2) + 0.1,
+      las = 1)
+  }
 
   n_burn <- .SetNBurn(n_burn, n_iter, n_thin)
   n_end <- .SetNEnd(n_end, n_iter, n_thin)
@@ -140,7 +158,13 @@ PlotCalendarAgeDensityIndividualSample <- function(
   rc_age <- rc_determinations[ident]
   rc_sig <- rc_sigmas[ident]
 
-  smoothed_density <- stats::density(calendar_age_BP, bw="SJ")
+  if(output_data$update_type == "RJPP") {
+    bandwidth_selector <- "nrd0" # As all calendar ages are integers
+  } else {
+    bandwidth_selector <- "SJ" # As continuous
+  }
+
+  smoothed_density <- stats::density(calendar_age_BP, bw = bandwidth_selector)
   xrange_BP <- range(calendar_age_BP)
 
   # Interpolate for the smoothed density to return
@@ -183,14 +207,6 @@ PlotCalendarAgeDensityIndividualSample <- function(
       list(i = ident, c14_age = round(rc_age), c14_sig = round(rc_sig, 1)))
   }
 
-  # Set nice plotting parameters
-  graphics::par(
-    mgp = c(3, 0.7, 0),
-    xaxs = "i",
-    yaxs = "i",
-    mar = c(5, 4.5, 4, 2) + 0.1,
-    las = 1)
-
   .PlotCalibrationCurve(
     plot_cal_age_scale,
     xlim = rev(xrange_BP),
@@ -219,7 +235,7 @@ PlotCalendarAgeDensityIndividualSample <- function(
   graphics::polygon(radpol, col = grDevices::rgb(1, 0, 0, .5))
 
   # Plot the posterior cal age on the x-axis
-  graphics::par(new = TRUE, las = 1)
+  graphics::par(new = TRUE)
   # Create hist but do not plot - works out sensible ylim
   if (plot_cal_age_scale == "AD") {
     breaks <-seq(xrange[2], xrange[1], by=hist_resolution)

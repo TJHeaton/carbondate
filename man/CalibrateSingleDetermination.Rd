@@ -14,7 +14,8 @@ CalibrateSingleDetermination(
   plot_cal_age_scale = "BP",
   interval_width = "2sigma",
   bespoke_probability = NA,
-  denscale = 3
+  denscale = 3,
+  plot_pretty = TRUE
 )
 }
 \arguments{
@@ -53,6 +54,10 @@ interval is calculated. Ignored if "bespoke" is not chosen.}
 \item{denscale}{Whether to scale the vertical range of the calendar age density plot
 relative to the calibration curve plot (optional). Default is 3 which means
 that the maximum calendar age density will be at 1/3 of the height of the plot.}
+
+\item{plot_pretty}{logical, defaulting to \code{TRUE}. If set \code{TRUE} then will select pretty plotting
+margins (that create sufficient space for axis titles and rotates y-axis labels). If \code{FALSE} will
+implement current user values.}
 }
 \value{
 A data frame with one column \code{calendar_age_BP} containing the calendar

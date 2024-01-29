@@ -35,6 +35,9 @@
 #' @param denscale Whether to scale the vertical range of the calendar age density plot
 #' relative to the calibration curve plot (optional). Default is 3 which means
 #' that the maximum SPD will be at 1/3 of the height of the plot.
+#' @param plot_pretty logical, defaulting to `TRUE`. If set `TRUE` then will select pretty plotting
+#' margins (that create sufficient space for axis titles and rotates y-axis labels). If `FALSE` will
+#' implement current user values.
 #'
 #' @return A data frame with one column `calendar_age_BP` containing the calendar
 #' ages, and the other column `probability` containing the probability at that
@@ -87,7 +90,8 @@ FindSummedProbabilityDistribution <- function(
     plot_cal_age_scale = "BP",
     interval_width = "2sigma",
     bespoke_probability = NA,
-    denscale = 3) {
+    denscale = 3,
+    plot_pretty = TRUE) {
 
   arg_check <- .InitializeErrorList()
   .CheckNumberVector(arg_check, calendar_age_range_BP, len = 2)
@@ -129,8 +133,18 @@ FindSummedProbabilityDistribution <- function(
 
   if(plot_output == TRUE) {
     # Ensure revert to main environment par on exit of function
-    opar <- graphics::par()[c("mgp", "xaxs", "yaxs", "mar", "las")]
-    on.exit(graphics::par(opar))
+    oldpar <- graphics::par(no.readonly = TRUE)
+    on.exit(graphics::par(oldpar))
+
+    # Set nice plotting parameters
+    if(plot_pretty) {
+      graphics::par(
+        mgp = c(3, 0.7, 0),
+        xaxs = "i",
+        yaxs = "i",
+        mar = c(5, 4.5, 4, 2) + 0.1,
+        las = 1)
+    }
 
     .PlotSPD(
       rc_determinations = rc_determinations,
@@ -178,14 +192,6 @@ FindSummedProbabilityDistribution <- function(
   xrange <- range(calibration_curve$calendar_age)
 
   title <- "Summed Probability Distribution \n(Do Not Use For Inference)"
-
-  # Set nice plotting parameters
-  graphics::par(
-    mgp = c(3, 0.7, 0),
-    xaxs = "i",
-    yaxs = "i",
-    mar = c(5, 4.5, 4, 2) + 0.1,
-    las = 1)
 
   .PlotCalibrationCurveAndInputData(
     plot_cal_age_scale,

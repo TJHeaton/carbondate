@@ -14,8 +14,8 @@ knitr::opts_chunk$set(
   comment = "#>",
   dev='png',
   fig.width=7, 
-  fig.height=5.5,
-  dev.args=list(antialias = "none")
+  fig.height=5.5 # ,
+  # dev.args=list(antialias = "none")
 )
 ```
 
@@ -41,8 +41,17 @@ The probability that a particular sample is drawn from a particular cluster will
 
 ```{r illustrate_mixture, fig.cap = paste("_An illustration of building up a potentially complex distribution $f(\\theta)$ using mixtures of normals. Left Panel: A simple mixture of three (predominantly disjoint) normal clusters (blue dashed lines) results in an overall $f(\\theta)$ that is tri-modal (solid red). Right Panel: Overlapping normal clusters (blue dashed lines) can however create more complex $f(\\theta)$ distributions (solid red)._"), out.width="100%", fig.width=10, fig.height=4, echo = FALSE}
 
+oldpar <- par(no.readonly = TRUE)
+
+par(
+  mfrow = c(1,2),
+  mgp = c(3, 0.7, 0),
+  xaxs = "i",
+  yaxs = "i",
+  mar = c(5, 4.5, 2, 2) + 0.1,
+  las = 1)
+
 # Plots summed normal distributions
-graphics::par(mfrow = c(1,2))
 t <- 1:100
 wtrue <- c(0.3, 0.4, 0.3)
 phitrue <- c(40, 60, 80)
@@ -57,7 +66,6 @@ truedensv2 <- function(t, w, truemean, trueprec) {
   dens
 }
 
-par(mar = c(5, 4.5, 2, 2) + 0.1)
 curve(truedensv2(x, w = wtrue, truemean = phitrue, trueprec = tautrue), 
       from = min(t), to = max(t), n = 401, 
       ylim = c(0, 0.05), 
@@ -80,7 +88,6 @@ wtrue <- c(0.2, 0.3, 0.1, 0.2, 0.2)
 phitrue <- c(50, 60, 70, 40, 30)
 tautrue <- 1/c(5, 4, 8, 4, 7)^2
 
-par(mar = c(5, 4.5, 2, 2) + 0.1)
 curve(truedensv2(x, w = wtrue, truemean = phitrue, trueprec = tautrue), 
       from = min(t), to = max(t), n = 401, 
       ylim = c(0, 0.05), 
@@ -96,6 +103,9 @@ for(i in 1:length(wtrue)) {
         xlim = rev(c(min(t), max(t))),
         col = "blue", lty = 2)
 }
+
+# Reset plotting parameters
+par(oldpar)
 ```
 
 ## Estimation of the shared underlying density 
@@ -127,7 +137,7 @@ polya_urn_output <- PolyaUrnBivarDirichlet(
   rc_determinations = kerr$c14_age,
   rc_sigmas = kerr$c14_sig,
   calibration_curve = intcal20,
-  n_iter = 1e4,
+  n_iter = 1e5,
   n_thin = 5)
 ```
 
@@ -138,11 +148,11 @@ walker_output <- WalkerBivarDirichlet(
   rc_determinations = kerr$c14_age,
   rc_sigmas = kerr$c14_sig,
   calibration_curve = intcal20,
-  n_iter = 1e4,
+  n_iter = 1e5,
   n_thin = 5)
 ```
 
-**Note:** This example only runs for 10,000 iterations - this is to keep the run time short, but is not enough to lead to a converged result. We suggest running for at least 100,000 iterations to arrive at the converged results, which are shown in @heaton2021. More detail on assessing convergence of the MCMC can be found in the [determining convergence vignette](determining-convergence.html) 
+**Note:** This example runs the MCMC for our default choice of 100,000 iterations. However, as we discuss below, for this challenging dataset we need a greater number of iterations to be confident of convergence. We always suggest running the MCMC for at least 100,000 iterations to arrive at the converged results. However, for some complex datasets, longer runs may be required. More detail on assessing convergence of the MCMC can be found in the [determining convergence vignette](determining-convergence.html) 
 
 Both of these methods will output a list containing the sampler outputs at every $n_{\textrm{thin}}$ iteration, with the values of the model parameters and the calendar ages.
 
@@ -150,33 +160,15 @@ Both of these methods will output a list containing the sampler outputs at every
 
 Our sampler provides three outputs of particular interest.
 
-#### Posterior Calendar Age Estimates of Individual Samples
-
-As described above, the output data includes the calendar age estimate for each ^14^C sample. We can use this to determine the posterior distribution of the calendar age for each sample. Note that the calendar age estimates use the joint information provided by all the ^14^C determinations (as opposed to solely the ^14^C determination of the single object that would be found using `CalibrateSingleDetermination`) on the understanding the calendar ages of the objects are related.
-
-You can calculate and plot this using `PlotCalendarAgeDensityIndividualSample` - for example to calculate the posterior calendar age distribution for the 21st ^14^C determination:
-
-```{r plot_individual, out.width="100%"}
-PlotCalendarAgeDensityIndividualSample(21, polya_urn_output)
-```
-
-The highest posterior density range for a given probability and the unmodelled density (i.e. the result of `CalibrateSingleDetermination`) can also be shown on the plot by specifying this in the arguments, as shown below.
-
-```{r plot_individual_with_hpd, out.width="100%"}
-PlotCalendarAgeDensityIndividualSample(
-  21, polya_urn_output, show_hpd_ranges = TRUE, show_unmodelled_density = TRUE)
-```
-
 #### Density Estimate to Summarise Objects
 
-The output data contains information to allow calculation of the predictive distribution for the calendar age of a new, as yet undiscovered, object. This density estimate summarises the calendar ages of all objects. It is generated using the posterior sampled values of the DPMM component of our MCMC sampler. This calendar age density can be calculated and plotted using `PlotPredictiveCalendarAgeDensity`. The pointwise mean of $\hat{f}(\theta)$ will be plotted, together with a corresponding interval at (a user-specified) probability level.   
+The output data contains information to allow calculation of the predictive distribution for the calendar age of a new, as yet undiscovered, object. This density estimate summarises the calendar ages of all objects. It is generated using the posterior sampled values of the DPMM component of our MCMC sampler. This calendar age density can be calculated and plotted using `PlotPredictiveCalendarAgeDensity()`. The pointwise mean of $\hat{f}(\theta)$ will be plotted, together with a corresponding interval at (a user-specified) probability level.   
 
 The function allows calculation using multiple outputs so that their results can be compared. For example below we compare the results from the two sampler methods above.
 
 ```{r plot_density, out.width="100%"}
 densities <- PlotPredictiveCalendarAgeDensity(
-  output_data = list(walker_output, polya_urn_output),
-  n_posterior_samples = 500,
+  output_data = list(polya_urn_output, walker_output),
   denscale = 2.5)
 ```
 
@@ -185,7 +177,6 @@ We also have the option to plot the SPD, to plot in the F^14^C scale, and to cha
 ```{r plot_density_2, out.width="100%"}
 densities <- PlotPredictiveCalendarAgeDensity(
   output_data = polya_urn_output,
-  n_posterior_samples = 500,
   denscale = 2.5,
   show_SPD = TRUE,
   interval_width = "bespoke",
@@ -193,9 +184,29 @@ densities <- PlotPredictiveCalendarAgeDensity(
   plot_14C_age = FALSE)
 ```
 
-**Note:** Around 1176 cal yr BP, when there appears to be a potential spike in the summarised estimate of the joint $f(\theta)$, we see that the 80% probability interval (dashed line) does not include the mean (solid line). This is not an error, but rather highlights a benefit of the DPMM method whereby the number of clusters needed to represent the data is allowed to vary. This feature occurs because the method is unsure if the observed data support an additional (highly-concentrated) cluster located around this period. In some iterations of the MCMC, such a cluster will be included; but for the majority of iterations, the method believes it is not required. In theory, one could look at the individual MCMC iterations to obtain an estimate of how likely such a highly-concentrated cluster (that results in a sudden spike in samples) is. Since the plotted 80% interval does not contain the mean, it is likely that the method thinks there is a less than 10% chance of such a distinct and highly-concentrated cluster (as fewer than 10% of the MCMC iterations contain one).   
+**Note:** The fact that the two different MCMC samplers do not provide matching probability intervals should flag to us that we might not have reached convergence, and need to run the MCMC for longer. Our investigations generally showed that `PolyaUrnBivarDirichlet()` is better at reaching convergence, and so we recommend its use over `WalkerBivarDirichlet()`. A longer run of 1,000,000 iterations indicates that the plotted Polya Urn output (in green) above is an accurate representation of the predictive distribution. 
+
+Around 1176 cal yr BP, we see a substantial change between the 95% intervals for the summarised (predictive) estimate of the joint $f(\theta)$ (which have a large spike) and the 80% intervals (which do not and are smooth). This is not an error, but rather highlights a benefit of the DPMM method whereby the number of clusters needed to represent the data is allowed to vary. This feature occurs because the method is unsure if the observed data support an additional (highly-concentrated) cluster located around this time period. In some iterations of the MCMC, such a cluster will be included; but for the majority of iterations, the method believes it is not required. Since the plotted 80% interval does not contain the spike, but the 95% does, it is likely that the method thinks there is a 2.5--10% chance of such a distinct and highly-concentrated cluster (as this is the proportion of the MCMC iterations containing one). If more detailed inference is needed, one could look at the actual individual MCMC iterations to estimate how likely such a highly-concentrated cluster, resulting in a sudden spike in samples, is. 
 
 _Aside:_ The sharp jump in the IntCal20 calibration curve at 1176 cal yr BP (774 cal AD) is due to an extreme solar particle event (ESPE) also known as a Miyake Event [@miyake2012].  
+
+#### Posterior Calendar Age Estimates of Individual Samples
+
+The output data also includes the calendar age estimate for each ^14^C sample. We can use this to determine the posterior distribution of the calendar age for each sample. Note that the calendar age estimates use the joint information provided by all the ^14^C determinations (as opposed to solely the ^14^C determination of the single object that would be found using `CalibrateSingleDetermination()`) on the understanding the calendar ages of the objects are related.
+
+You can calculate and plot this using `PlotCalendarAgeDensityIndividualSample()` - for example to calculate the posterior calendar age distribution for the 21st ^14^C determination:
+
+```{r plot_individual, out.width="100%"}
+PlotCalendarAgeDensityIndividualSample(21, polya_urn_output)
+```
+
+The highest posterior density range for a given probability and the unmodelled density (i.e., the result of `CalibrateSingleDetermination()`) can also be shown on the plot by specifying this in the arguments, as shown below.
+
+```{r plot_individual_with_hpd, out.width="100%"}
+PlotCalendarAgeDensityIndividualSample(
+  21, polya_urn_output, show_hpd_ranges = TRUE, show_unmodelled_density = TRUE)
+```
+
 
 #### Number of Clusters
 
@@ -206,11 +217,11 @@ PlotNumberOfClusters(output_data = polya_urn_output)
 ```
 
 ## Changing the calendar age plotting scale
-For those plotting functions which present calendar ages (i.e., `PlotCalendarAgeDensityIndividualSample` and `PlotPredictiveCalendarAgeDensity`) we can change the calendar age scale shown on the x-axis. The default is to plot on the _cal yr BP_ scale (as in the examples above). To instead plot in _cal AD_, set `plot_cal_age_scale = "AD"`; while for _cal BC_, set `plot_cal_age_scale = "AD"`, e.g., 
+For those plotting functions which present calendar ages (i.e., `PlotCalendarAgeDensityIndividualSample()` and `PlotPredictiveCalendarAgeDensity()`) we can change the calendar age scale shown on the x-axis. The default is to plot on the _cal yr BP_ scale (as in the examples above). To instead plot in _cal AD_, set `plot_cal_age_scale = "AD"`; while for _cal BC_, set `plot_cal_age_scale = "AD"`, e.g., 
+
 ```{r plot_density_2_AD, out.width="100%"}
 densities <- PlotPredictiveCalendarAgeDensity(
   output_data = polya_urn_output,
-  n_posterior_samples = 500,
   show_SPD = TRUE,
   plot_cal_age_scale = "AD")
 ```   

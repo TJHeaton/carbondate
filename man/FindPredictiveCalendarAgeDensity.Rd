@@ -22,7 +22,7 @@ FindPredictiveCalendarAgeDensity(
 one of these return values. Optionally, the output data can have an extra list item
 named \code{label} which is used to set the label on the plot legend.}
 
-\item{calendar_age_sequence}{A vector containing the calendar age grid on which to
+\item{calendar_age_sequence}{A vector containing the calendar age grid (in cal yr BP) on which to
 calculate the predictive (summarised/shared) density.}
 
 \item{n_posterior_samples}{Number of samples it will draw, after having removed \code{n_burn},
@@ -51,7 +51,7 @@ which would leave only 100 of the (thinned) values in \code{output_data}.}
 total number of iterations performed, i.e. \code{n_iter}, if not given.}
 }
 \value{
-A data frame of the \code{calendar_age}, the
+A data frame of the \code{calendar_age_BP}, the
 \code{density_mean} and the confidence intervals for the density
 \code{density_ci_lower} and \code{density_ci_upper}.
 }
@@ -59,7 +59,7 @@ A data frame of the \code{calendar_age}, the
 Given output from one of the Bayesian non-parametric summarisation functions (either
 \link{PolyaUrnBivarDirichlet} or \link{WalkerBivarDirichlet}) calculate the
 predictive (summarised/shared) calendar age density and probability intervals
-on a given calendar age grid.
+on a given calendar age grid (provided in cal yr BP).
 
 \strong{Note:} If you want to calculate and plot the result, use
 \link{PlotPredictiveCalendarAgeDensity} instead.

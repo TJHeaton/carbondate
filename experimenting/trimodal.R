@@ -56,5 +56,3 @@ PlotPredictiveCalendarAgeDensity(
   n_posterior_samples = 5000,
   show_SPD = TRUE)
 
-
-par(mfrow = c(1,1))

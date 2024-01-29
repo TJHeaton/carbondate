@@ -5,16 +5,16 @@
 #' Given output from one of the Bayesian non-parametric summarisation functions (either
 #' [carbondate::PolyaUrnBivarDirichlet] or [carbondate::WalkerBivarDirichlet]) calculate the
 #' predictive (summarised/shared) calendar age density and probability intervals
-#' on a given calendar age grid.
+#' on a given calendar age grid (provided in cal yr BP).
 #'
 #' \strong{Note:} If you want to calculate and plot the result, use
 #' [carbondate::PlotPredictiveCalendarAgeDensity] instead.
 #'
 #' @inheritParams PlotPredictiveCalendarAgeDensity
-#' @param calendar_age_sequence A vector containing the calendar age grid on which to
+#' @param calendar_age_sequence A vector containing the calendar age grid (in cal yr BP) on which to
 #' calculate the predictive (summarised/shared) density.
 #'
-#' @return A data frame of the `calendar_age`, the
+#' @return A data frame of the `calendar_age_BP`, the
 #' `density_mean` and the confidence intervals for the density
 #' `density_ci_lower` and `density_ci_upper`.
 #'

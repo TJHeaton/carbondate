@@ -76,8 +76,12 @@ w <- max(1000, diff(range(x))/2)
 m <- 10
 nclusinit <- 10
 
-save(x, xsig, lambda, nu1, nu2, A, B, mualpha, sigalpha, alphaprshape, alphaprrate, niter, nthin,
-     inittheta, w, m, nclusinit, seednum, file="tests/testthat/fixtures/polya_urn_input.rda")
+##################################
+# COMMENT OUT: This is to create the static fixtures
+# to compare inputs (legacy code input) which we then plug into both legacy and package code
+# save(x, xsig, lambda, nu1, nu2, A, B, mualpha, sigalpha, alphaprshape, alphaprrate, niter, nthin,
+#     inittheta, w, m, nclusinit, seednum, file="tests/testthat/fixtures/polya_urn_input.rda")
+##################################
 
 NealTemp <- BivarGibbsDirichletwithSlice(x = x, xsig = xsig,
                                          lambda = lambda, nu1 = nu1, nu2 = nu2,
@@ -110,13 +114,8 @@ seednum <- 14
 set.seed(seednum)
 source("tests/testthat/fixtures/helpers/NealPostProcessingFinal.R")
 
-save(x, xsig, postdenCI, postden, tempx, file = "tests/testthat/fixtures/polya_urn_output.rda")
-
-# To access the posterior calendar age estimate for individual determination then you can look at:
-# NealTemp$theta[,10] # MCMC chain for 10th determination (will need to remove burn in)
-
-# If we want to plot e.g. the posterior calendar age density against the curve then we can run the below
-# ident is the determination you want to calibrate
-ident <- 15
-resolution <- 10
-indpost <- plotindpost(NealTemp, ident = ident, y = x, er = xsig, calcurve = calcurve, resolution = resolution)
+##################################
+# COMMENT OUT: This is to create the static fixtures
+# to compare outputs (legacy code output) which we then compare with package code
+# save(x, xsig, postdenCI, postden, tempx, file = "tests/testthat/fixtures/polya_urn_output.rda")
+##################################

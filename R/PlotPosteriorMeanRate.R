@@ -3,7 +3,8 @@
 #' @description
 #' Given output from the Poisson process fitting function [carbondate::PPcalibrate] calculate
 #' and plot the posterior mean rate of sample occurrence (i.e., the underlying Poisson process
-#' rate \eqn{\lambda(t)}) together with specified probability intervals, on a given calendar age grid.
+#' rate \eqn{\lambda(t)}) together with specified probability intervals, on a given calendar age grid
+#' (provided in cal yr BP).
 #'
 #' Will show the original set of radiocarbon determinations (those you are modelling/summarising),
 #' the chosen calibration curve, and the estimated posterior rate of occurrence \eqn{\lambda(t)} on the same plot.
@@ -60,9 +61,12 @@
 #' [carbondate::PPcalibrate]) which would leave only 100 of the (thinned) values in `output_data`.
 #' @param n_end The last iteration in the original MCMC chain to use in the calculations. Assumed to be the
 #' total number of iterations performed, i.e. `n_iter`, if not given.
+#' @param plot_pretty logical, defaulting to `TRUE`. If set `TRUE` then will select pretty plotting
+#' margins (that create sufficient space for axis titles and rotates y-axis labels). If `FALSE` will
+#' implement current user values.
 #'
 #'
-#' @return A list, each item containing a data frame of the `calendar_age`, the `rate_mean`
+#' @return A list, each item containing a data frame of the `calendar_age_BP`, the `rate_mean`
 #' and the confidence intervals for the rate - `rate_ci_lower` and `rate_ci_upper`.
 #'
 #' @export
@@ -101,7 +105,8 @@ PlotPosteriorMeanRate <- function(
     denscale = 3,
     resolution = 1,
     n_burn = NA,
-    n_end = NA) {
+    n_end = NA,
+    plot_pretty = TRUE) {
 
   arg_check <- .InitializeErrorList()
   .CheckOutputData(arg_check, output_data, "RJPP")
@@ -117,8 +122,18 @@ PlotPosteriorMeanRate <- function(
   .ReportErrors(arg_check)
 
   # Ensure revert to main environment par on exit of function
-  opar <- graphics::par()[c("mgp", "xaxs", "yaxs", "mar", "las")]
-  on.exit(graphics::par(opar))
+  oldpar <- graphics::par(no.readonly = TRUE)
+  on.exit(graphics::par(oldpar))
+
+  # Set nice plotting parameters
+  if(plot_pretty) {
+    graphics::par(
+      mgp = c(3, 0.7, 0),
+      xaxs = "i",
+      yaxs = "i",
+      mar = c(5, 4.5, 4, 2) + 0.1,
+      las = 1)
+  }
 
   if (is.null(calibration_curve)) {
     calibration_curve <- get(output_data$input_data$calibration_curve_name)
@@ -216,7 +231,7 @@ PlotPosteriorMeanRate <- function(
 .PlotRateEstimateOnCurrentPlot <- function(
   plot_cal_age_scale, posterior_rate, output_colour, show_confidence_intervals) {
 
-  cal_age <- .ConvertCalendarAge(plot_cal_age_scale, posterior_rate$calendar_age)
+  cal_age <- .ConvertCalendarAge(plot_cal_age_scale, posterior_rate$calendar_age_BP)
 
   graphics::lines(cal_age, posterior_rate$rate_mean, col = output_colour)
   if (show_confidence_intervals) {

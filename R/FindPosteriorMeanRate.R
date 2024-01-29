@@ -3,7 +3,8 @@
 #' @description
 #' Given output from the Poisson process fitting function [carbondate::PPcalibrate] calculate
 #' the posterior mean rate of sample occurrence (i.e., the underlying Poisson process
-#' rate \eqn{\lambda(t)}) together with specified probability intervals, on a given calendar age grid.
+#' rate \eqn{\lambda(t)}) together with specified probability intervals, on a given calendar age
+#' grid (provided in cal yr BP).
 #'
 #' \strong{Note:} If you want to calculate and plot the result, use
 #' [carbondate::PlotPosteriorMeanRate] instead.
@@ -12,10 +13,10 @@
 #' \code{vignette("Poisson-process-modelling", package = "carbondate")}
 #'
 #' @inheritParams PlotPosteriorMeanRate
-#' @param calendar_age_sequence A vector containing the calendar age grid on which to
+#' @param calendar_age_sequence A vector containing the calendar age grid (in cal yr BP) on which to
 #' calculate the posterior mean rate.
 #'
-#' @return A list, each item containing a data frame of the `calendar_age`, the `rate_mean`
+#' @return A list, each item containing a data frame of the `calendar_age_BP`, the `rate_mean`
 #' and the confidence intervals for the rate - `rate_ci_lower` and `rate_ci_upper`.
 #'
 #' @export
@@ -78,7 +79,7 @@ FindPosteriorMeanRate <- function(
     "bespoke" = (1 - bespoke_probability)/2
   )
   posterior_rate <- data.frame(
-    calendar_age = calendar_age_sequence,
+    calendar_age_BP = calendar_age_sequence,
     rate_mean = apply(rate, 2, mean),
     rate_ci_lower = apply(rate, 2, stats::quantile, probs = edge_width),
     rate_ci_upper = apply(rate, 2, stats::quantile, probs = 1 - edge_width)

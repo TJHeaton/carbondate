@@ -52,7 +52,7 @@ legend("topright", legend = c("IntCal20", "NP Density Estimate - Neal", "95% Pro
        col = c("blue", "purple", "black", SPDcol), cex = 0.8, pt.cex = 2)
 
 # Plot the density along the bottom
-par(new = TRUE, las = 1)
+par(new = TRUE)
 plot(tempx, postden, lty = 1, col = "purple", type = "n",
      ylim = c(0, 2*max(postdenCI)), xlim = rev(range(tempx)),
      axes = FALSE, xlab = NA, ylab = NA)

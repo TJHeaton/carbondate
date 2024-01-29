@@ -18,7 +18,8 @@ PlotPredictiveCalendarAgeDensity(
   denscale = 3,
   resolution = 1,
   n_burn = NA,
-  n_end = NA
+  n_end = NA,
+  plot_pretty = TRUE
 )
 }
 \arguments{
@@ -80,9 +81,13 @@ which would leave only 100 of the (thinned) values in \code{output_data}.}
 
 \item{n_end}{The last iteration in the original MCMC chain to use in the calculations. Assumed to be the
 total number of iterations performed, i.e. \code{n_iter}, if not given.}
+
+\item{plot_pretty}{logical, defaulting to \code{TRUE}. If set \code{TRUE} then will select pretty plotting
+margins (that create sufficient space for axis titles and rotates y-axis labels). If \code{FALSE} will
+implement current user values.}
 }
 \value{
-A list, each item containing a data frame of the \code{calendar_age}, the
+A list, each item containing a data frame of the \code{calendar_age_BP}, the
 \code{density_mean} and the confidence intervals for the density
 \code{density_ci_lower} and \code{density_ci_upper} for each set of output data.
 }
@@ -90,7 +95,7 @@ A list, each item containing a data frame of the \code{calendar_age}, the
 Given output from one of the Bayesian non-parametric summarisation functions (either
 \link{PolyaUrnBivarDirichlet} or \link{WalkerBivarDirichlet}) calculate
 and plot the predictive (summarised/shared) calendar age density and probability intervals
-on a given calendar age grid.
+on a given calendar age grid (provided in cal yr BP).
 
 Will show the original set of radiocarbon determinations (those you are summarising),
 the chosen calibration curve, and the summarised predictive calendar age density on the
