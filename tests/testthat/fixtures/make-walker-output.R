@@ -68,7 +68,11 @@ slicew <- max(1000, diff(range(x))/2)
 m <- 10
 kstar <- 10
 
-save(x, xsig, lambda, nu1, nu2, A, B, cprshape, cprrate, niter, nthin, inittheta, slicew, m, kstar, seednum, file="tests/testthat/fixtures/walker_input.rda")
+##################################
+# COMMENT OUT: This is to create the static fixtures
+# to compare inputs (legacy code input) which we then plug into both legacy and package code
+# save(x, xsig, lambda, nu1, nu2, A, B, cprshape, cprrate, niter, nthin, inittheta, slicew, m, kstar, seednum, file="tests/testthat/fixtures/walker_input.rda")
+##################################
 
 WalkerTemp <- WalkerBivarDirichlet(x = x, xsig = xsig,
                                    lambda = lambda, nu1 = nu1, nu2 = nu2,
@@ -102,14 +106,8 @@ seednum <- 14
 set.seed(seednum)
 source("tests/testthat/fixtures/helpers/WalkerPostProcessingFinal.R")
 
-save(x, xsig, postdenCI, postden, tempx, file = "tests/testthat/fixtures/walker_output.rda")
-
-# To access the posterior calendar age estimate for individual determination then you can look at:
-# WalkerTemp$theta[,10] # MCMC chain for 10th determination (will need to remove burn in)
-
-# If we want to plot e.g. the posterior calendar age density against the curve then we can run the below
-# ident is the determination you want to calibrate
-ident <- 10
-resolution <- 10
-indpost <- plotindpost(WalkerTemp, ident = ident, y = x, er = xsig, calcurve = calcurve, resolution = resolution)
-
+##################################
+# COMMENT OUT: This is to create the static fixtures
+# to compare outputs (legacy code output) which we then compare with package code
+# save(x, xsig, postdenCI, postden, tempx, file = "tests/testthat/fixtures/walker_output.rda")
+##################################
