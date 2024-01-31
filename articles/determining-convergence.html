@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">carbondate</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -120,7 +120,7 @@ times. This generate different chains.</p>
 <span>      <span class="va">kerr</span><span class="op">$</span><span class="va">c14_age</span>, <span class="va">kerr</span><span class="op">$</span><span class="va">c14_sig</span>, <span class="va">intcal20</span>, n_iter <span class="op">=</span> <span class="fl">1e4</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="fu"><a href="../reference/PlotGelmanRubinDiagnosticMultiChain.html">PlotGelmanRubinDiagnosticMultiChain</a></span><span class="op">(</span><span class="va">all_outputs</span><span class="op">)</span></span></code></pre></div>
-<p><img src="determining-convergence_files/figure-html/calculate_gr_multiple-1.png" width="672"></p>
+<p><img src="figures-convergence/calculate_gr_multiple-1.png" width="100%"></p>
 <p>It can also be calculated by taking a single MCMC run, and splitting
 it into multiple parts to compare the <em>within-segment</em> variance
 with the <em>between-segment</em> variance for each calendar age
@@ -131,7 +131,7 @@ observation.</p>
 <span>    <span class="va">kerr</span><span class="op">$</span><span class="va">c14_age</span>, <span class="va">kerr</span><span class="op">$</span><span class="va">c14_sig</span>, <span class="va">intcal20</span>, n_iter <span class="op">=</span> <span class="fl">2e4</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/PlotGelmanRubinDiagnosticSingleChain.html">PlotGelmanRubinDiagnosticSingleChain</a></span><span class="op">(</span><span class="va">output</span>, n_burn <span class="op">=</span> <span class="fl">5e3</span><span class="op">)</span></span></code></pre></div>
-<p><img src="determining-convergence_files/figure-html/calculate_gr-1.png" width="672"></p>
+<p><img src="figures-convergence/calculate_gr-1.png" width="100%"></p>
 <p>As you can see, even with a few iterations (where we would expect the
 result not to have converged yet) the PSRF values are close to one.</p>
 </div>
@@ -178,7 +178,7 @@ of the POisson process model). For example,</p>
 <span><span class="op">}</span></span>
 <span><span class="fu"><a href="../reference/PlotPredictiveCalendarAgeDensity.html">PlotPredictiveCalendarAgeDensity</a></span><span class="op">(</span></span>
 <span>  <span class="va">outputs</span>, n_posterior_samples <span class="op">=</span> <span class="fl">500</span>, denscale <span class="op">=</span> <span class="fl">2</span>, interval_width <span class="op">=</span> <span class="st">"1sigma"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="determining-convergence_files/figure-html/calculate_polya_kerr-1.png" width="672"></p>
+<p><img src="figures-convergence/calculate_polya_kerr-1.png" width="100%"></p>
 <p>As you can see, in this case (255 determinations collated by Kerr and
 McCormick <span class="citation">(Kerr and McCormick 2014)</span>) the
 different runs do not have similar outputs, so more iterations would be
@@ -199,7 +199,7 @@ be achieved in a small number of iterations.</p>
 <span><span class="op">}</span></span>
 <span><span class="fu"><a href="../reference/PlotPredictiveCalendarAgeDensity.html">PlotPredictiveCalendarAgeDensity</a></span><span class="op">(</span></span>
 <span>  <span class="va">outputs</span>, n_posterior_samples <span class="op">=</span> <span class="fl">500</span>, denscale <span class="op">=</span> <span class="fl">2</span>, interval_width <span class="op">=</span> <span class="st">"1sigma"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="determining-convergence_files/figure-html/calculate_polya_normals-1.png" width="672"></p>
+<p><img src="figures-convergence/calculate_polya_normals-1.png" width="100%"></p>
 <p>This approach to assessing convergence can be taken with either the
 Bayesian non-parametric method, or the Poisson process modelling.</p>
 </div>
@@ -221,7 +221,7 @@ MCMC progresses.</p>
 <span>    n_iter <span class="op">=</span> <span class="fl">1e5</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/PlotConvergenceData.html">PlotConvergenceData</a></span><span class="op">(</span><span class="va">output</span><span class="op">)</span></span></code></pre></div>
-<p><img src="determining-convergence_files/figure-html/calculate_kld-1.png" width="672"></p>
+<p><img src="figures-convergence/calculate_kld-1.png" width="100%"></p>
 <p>It can give an idea of convergence as well as which iteration number
 to use for <code>n_burn</code> when calculating the predictive density
 (by default set to half the chain).</p>
