@@ -20,8 +20,9 @@ if(length(remove_obs_id) != 0) {
 
 # Remove row with spurious/false precision on c14sig (values less than 2)
 remove_spurious_id <- which(Scotland_Data$lab_error < 2)
-Scotland_Data <- Scotland_Data[-remove_spurious_id,]
-
+if(length(remove_spurious_id) != 0) {
+  Scotland_Data <- Scotland_Data[-remove_spurious_id,]
+}
 
 # Make c14ages positive
 Scotland_c14_ages <- as.numeric(Scotland_Data$lab_age)
@@ -35,9 +36,9 @@ Temp_Scotland_Output <- PPcalibrateLargeSets(
   n_iter = 100000,
   show_progress = TRUE)
 
-PlotPosteriorMeanRate(Temp_Scotland_Output,
-                      show_individual_means = FALSE,
-                      denscale = 2)
+ScotlandPostMeanRate <- PlotPosteriorMeanRate(Temp_Scotland_Output,
+                                              show_individual_means = FALSE,
+                                              denscale = 2)
 
 save.image("../SerenGriffithsData/RWorkspaces/ScotlandAnalysis.RData")
 

@@ -3,14 +3,12 @@ set.seed(9)
 Republic_Ireland_Data <- read.csv("../SerenGriffithsData/Ireland_14C_Big_Data_191223.csv",
                                   header = TRUE)
 
-
 if(!is.numeric(Republic_Ireland_Data$Conventional.Radiocarbon.age..year.BP...radiocarbon_age.)) {
   Republic_Ireland_Data$Conventional.Radiocarbon.age..year.BP...radiocarbon_age. <- as.numeric(Republic_Ireland_Data$Conventional.Radiocarbon.age..year.BP...radiocarbon_age.)
 }
 if(!is.numeric(Republic_Ireland_Data$Radiocarbon.age.error..radiocarbon_age_error.)) {
   Republic_Ireland_Data$Radiocarbon.age.error..radiocarbon_age_error. <- as.numeric(Republic_Ireland_Data$Radiocarbon.age.error..radiocarbon_age_error.)
 }
-
 
 # Remove those rows lacking c14 information
 remove_obs_id <- which(
@@ -38,9 +36,9 @@ Temp_RoI_Output <- PPcalibrateLargeSets(
   n_iter = 100000,
   show_progress = TRUE)
 
-PlotPosteriorMeanRate(Temp_RoI_Output,
-                      show_individual_means = FALSE,
-                      denscale = 2)
+IrelandPostMeanRate <- PlotPosteriorMeanRate(Temp_RoI_Output,
+                                             show_individual_means = FALSE,
+                                             denscale = 2)
 
 save.image("../SerenGriffithsData/RWorkspaces/IrelandAnalysis.RData")
 

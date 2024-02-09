@@ -37,7 +37,7 @@ Temp_Wales_Output <- PPcalibrateLargeSets(
   show_progress = TRUE)
 
 WalesPostMeanRate <- PlotPosteriorMeanRate(Temp_Wales_Output,
-                      show_individual_means = FALSE,
-                      denscale = 2)
+                                           show_individual_means = FALSE,
+                                           denscale = 2)
 
 save.image("../SerenGriffithsData/RWorkspaces/WalesAnalysis.RData")

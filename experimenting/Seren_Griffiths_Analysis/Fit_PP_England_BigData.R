@@ -1,6 +1,5 @@
 set.seed(16)
 
-
 England_Data <- read.csv("../SerenGriffithsData/England_14C_Big_Data_191223.csv",
                          header = TRUE)
 
@@ -38,7 +37,8 @@ Temp_England_Output <- PPcalibrateLargeSets(
   show_progress = TRUE)
 
 EnglandPostMeanRate <- PlotPosteriorMeanRate(Temp_England_Output,
-                      denscale = 2)
+                                             show_individual_means = FALSE,
+                                             denscale = 2)
 
 save.image("../SerenGriffithsData/RWorkspaces/EnglandAnalysis.RData")
 
