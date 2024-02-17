@@ -19,8 +19,7 @@ if(length(remove_obs_id) != 0) {
 }
 
 # Remove row with spurious/false precision on c14sig
-remove_spurious_id <- which(Republic_Ireland_Data$Radiocarbon.age.error..radiocarbon_age_error. == 0.486
-)
+remove_spurious_id <- which(Republic_Ireland_Data$Radiocarbon.age.error..radiocarbon_age_error. < 2)
 Republic_Ireland_Data <- Republic_Ireland_Data[-remove_spurious_id,]
 
 

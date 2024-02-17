@@ -1,4 +1,4 @@
-set.seed(18)
+set.seed(26)
 
 England_Data <- read.csv("../SerenGriffithsData/England_14C_Big_Data_191223.csv",
                          header = TRUE)
@@ -28,19 +28,22 @@ if(length(remove_spurious_id) != 0) {
 England_c14_ages <- as.numeric(England_Data$DateResult)
 England_c14_sigs <- as.numeric(England_Data$DateError)
 
+recent_England <- which(England_c14_ages < 7000)
+Reduced_England_c14_ages <- England_c14_ages[recent_England]
+Reduced_England_c14_sigs <- England_c14_sigs[recent_England]
 
 Temp_England_Output <- PPcalibrateLargeSets(
-  rc_determinations = England_c14_ages,
-  rc_sigmas = England_c14_sigs,
+  rc_determinations = Reduced_England_c14_ages,
+  rc_sigmas = Reduced_England_c14_sigs,
   calibration_curve = intcal20,
   n_iter = 100000,
   show_progress = TRUE)
 
-EnglandPostMeanRate <- PlotPosteriorMeanRate(Temp_England_Output,
-                                             show_individual_means = FALSE,
-                                             denscale = 2)
+EnglandPostMeanRate_Reduced_7000BP <- PlotPosteriorMeanRate(Temp_England_Output,
+                                                            show_individual_means = FALSE,
+                                                            denscale = 2)
 
-save.image("../SerenGriffithsData/RWorkspaces/EnglandAnalysis.RData")
+save.image("../SerenGriffithsData/RWorkspaces/EnglandAnalysis_Reduced_7000BP.RData")
 
 # Test against SPD
 recent_England <- which(England_c14_ages < 7000)
