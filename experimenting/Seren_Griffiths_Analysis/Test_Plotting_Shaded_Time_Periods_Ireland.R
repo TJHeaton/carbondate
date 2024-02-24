@@ -1,10 +1,10 @@
-load("../SerenGriffithsData/RWorkspaces/PriorMean10Changes/Holocene_Wales_Analysis_ChangeMean10_seed12.RData")
+load("../SerenGriffithsData/RWorkspaces/Holocene_Republic_Ireland_Analysis_seed9.RData")
 
 
-pdf("../SerenGriffithsData/OutputPlots/PriorMean_10_Internal_Changes/Wales_PP_Rate_Output_Holocene_ChangeMean10_seed12.pdf",
+pdf("../SerenGriffithsData/OutputPlots/Republic_Ireland_PP_Rate_Output_Holocene_seed28.pdf",
     width = 12,
     height = 8)
-Holocene_Wales_PostMeanRate <- PlotPosteriorMeanRate(Holocene_Wales_Output,
+Holocene_Republic_Ireland_PostMeanRate <- PlotPosteriorMeanRate(Holocene_Republic_Ireland_Output,
                                            show_individual_means = FALSE,
                                            denscale = 2,
                                            plot_cal_age_scale = "AD")
@@ -17,8 +17,7 @@ par(new = TRUE,
     yaxs = "i",
     mar = c(5, 4.5, 4, 2) + 0.1,
     las = 1)
-
-xlim <- 1950 - rev(range(Holocene_Wales_PostMeanRate$calendar_age_BP))
+xlim <- 1950 - rev(range(Holocene_Republic_Ireland_PostMeanRate$calendar_age_BP))
 ylim <- c(0, 1)
 plot(
   NULL,
@@ -37,10 +36,10 @@ axis(1, xticks_minor, labels = FALSE, tcl = -0.2)
 xticks_major <- seq(-11000, 2000, by = 1000)
 axis(1, xticks_major, labels = FALSE, tcl = -0.5)
 
-Time_Periods <- read.csv("../SerenGriffithsData/TimePeriods/Wales_Time_Periods.csv",
+Time_Periods <- read.csv("../SerenGriffithsData/TimePeriods/Ireland_Time_Periods.csv",
                          header = TRUE)
-Period_Start <- Time_Periods$Wales.start.dates.BC.AD
-Period_End <- Time_Periods$Wales.end.dates..BC.AD
+Period_Start <- Time_Periods$Island.of.Ireland.start.dates..BC.AD
+Period_End <- Time_Periods$Island.of.Ireland.end.dates..BC.AD
 
 n_period <- length(Period_End)
 
@@ -56,8 +55,7 @@ for(i in 1:n_period) {
           col = cols[i])
 }
 
-mtext("Wales", side = 3, cex = 1.2)
-
+mtext("Republic of Ireland", side = 3, cex = 1.2)
 
 dev.off()
 

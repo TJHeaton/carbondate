@@ -1,5 +1,5 @@
 # set.seed(57)
-set.seed(63)
+set.seed(12)
 
 radiocarbon_age_cutoff <- 10000
 
@@ -41,6 +41,7 @@ Holocene_Wales_Output <- PPcalibrateLargeSets(
   rc_sigmas = Holocene_Wales_c14_sigs,
   calibration_curve = intcal20,
   n_iter = 100000,
+  prior_n_internal_changepoints_lambda = 10,
   calendar_age_range = c(0, 11650),
   show_progress = TRUE)
 
@@ -50,4 +51,4 @@ Holocene_Wales_PostMeanRate <- PlotPosteriorMeanRate(
   plot_cal_age_scale = "AD",
   denscale = 2)
 
-save.image("../SerenGriffithsData/RWorkspaces/Holocene_WalesAnalysis_seed63.RData")
+save.image("../SerenGriffithsData/RWorkspaces/PriorMean10Changes/Holocene_Wales_Analysis_ChangeMean10_seed12.RData")
