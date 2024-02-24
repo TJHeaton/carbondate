@@ -1,7 +1,7 @@
-load("../SerenGriffithsData/RWorkspaces/PriorMean10Changes/")
+load("../SerenGriffithsData/RWorkspaces/PriorMean10Changes/Holocene_Republic_Ireland_Analysis_seed58.RData")
 
 
-pdf("../SerenGriffithsData/OutputPlots/PriorMean_10_Internal_Changes/Republic_Ireland_PP_Rate_Output_Holocene_seed.pdf",
+pdf("../SerenGriffithsData/OutputPlots/PriorMean_10_Internal_Changes/Republic_Ireland_PP_Rate_Output_Holocene_seed58.pdf",
     width = 12,
     height = 8)
 Holocene_Republic_Ireland_PostMeanRate <- PlotPosteriorMeanRate(Holocene_Republic_Ireland_Output,

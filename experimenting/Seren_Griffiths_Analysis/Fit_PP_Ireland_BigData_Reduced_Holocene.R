@@ -1,5 +1,5 @@
 #set.seed(9)
-set.seed(58)
+set.seed(85)
 
 radiocarbon_age_cutoff <- 10000
 
@@ -51,6 +51,6 @@ Holocene_Republic_Ireland_PostMeanRate <- PlotPosteriorMeanRate(
   plot_cal_age_scale = "AD",
   denscale = 2)
 
-save.image("../SerenGriffithsData/RWorkspaces/PriorMean10Changes/Holocene_Republic_Ireland_Analysis_seed58.RData")
+save.image("../SerenGriffithsData/RWorkspaces/PriorMean10Changes/Holocene_Republic_Ireland_Analysis_seed85.RData")
 
 

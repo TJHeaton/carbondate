@@ -1,4 +1,4 @@
-set.seed(28)
+set.seed(2)
 
 radiocarbon_age_cutoff <- 10000
 
@@ -41,6 +41,7 @@ Holocene_Scotland_Output <- PPcalibrateLargeSets(
   rc_sigmas = Holocene_Scotland_c14_sigs,
   calibration_curve = intcal20,
   n_iter = 100000,
+  prior_n_internal_changepoints_lambda = 10,
   calendar_age_range = c(0, 11650),
   show_progress = TRUE)
 
@@ -51,6 +52,6 @@ Holocene_Scotland_PostMeanRate <- PlotPosteriorMeanRate(
   denscale = 2)
 
 
-save.image("../SerenGriffithsData/RWorkspaces/Holocene_Scotland_Analysis_seed28.RData")
+save.image("../SerenGriffithsData/RWorkspaces/PriorMean10Changes/Holocene_Scotland_Analysis_seed2.RData")
 
 
