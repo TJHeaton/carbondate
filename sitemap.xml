@@ -1,156 +1,54 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/404.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/articles/Against_SPDs.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/articles/Independent_calibration.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/articles/Non-parametric-summed-density.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/articles/Poisson-process-modelling.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/articles/carbondate.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/articles/determining-convergence.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/index.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/CalibrateSingleDetermination.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/FindPosteriorMeanRate.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/FindPredictiveCalendarAgeDensity.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/FindSummedProbabilityDistribution.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/GenerateOxcalCode.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/InterpolateCalibrationCurve.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/PPcalibrate.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/PlotCalendarAgeDensityIndividualSample.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/PlotConvergenceData.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/PlotGelmanRubinDiagnosticMultiChain.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/PlotGelmanRubinDiagnosticSingleChain.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/PlotNumberOfClusters.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/PlotNumberOfInternalChanges.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/PlotPosteriorChangePoints.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/PlotPosteriorHeights.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/PlotPosteriorMeanRate.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/PlotPredictiveCalendarAgeDensity.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/PolyaUrnBivarDirichlet.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/WalkerBivarDirichlet.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/alces.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/armit.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/bison.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/buchanan.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/cervus.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/equus.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/human.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/intcal04.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/intcal09.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/intcal13.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/intcal20.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/intcal98.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/kerr.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/mammuthus.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/pp_uniform_phase.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/shcal04.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/shcal13.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/shcal20.html</loc>
-  </url>
-  <url>
-    <loc>https://tjheaton.github.io/carbondate/reference/two_normals.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://tjheaton.github.io/carbondate/404.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/LICENSE.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/articles/Against_SPDs.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/articles/Independent_calibration.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/articles/Non-parametric-summed-density.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/articles/Poisson-process-modelling.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/articles/carbondate.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/articles/determining-convergence.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/articles/index.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/authors.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/index.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/news/index.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/CalibrateSingleDetermination.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/FindPosteriorMeanRate.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/FindPredictiveCalendarAgeDensity.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/FindSummedProbabilityDistribution.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/GenerateOxcalCode.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/InterpolateCalibrationCurve.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/PPcalibrate.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/PlotCalendarAgeDensityIndividualSample.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/PlotConvergenceData.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/PlotGelmanRubinDiagnosticMultiChain.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/PlotGelmanRubinDiagnosticSingleChain.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/PlotNumberOfClusters.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/PlotNumberOfInternalChanges.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/PlotPosteriorChangePoints.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/PlotPosteriorHeights.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/PlotPosteriorMeanRate.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/PlotPredictiveCalendarAgeDensity.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/PolyaUrnBivarDirichlet.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/WalkerBivarDirichlet.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/alces.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/armit.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/bison.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/buchanan.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/cervus.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/equus.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/human.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/index.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/intcal04.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/intcal09.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/intcal13.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/intcal20.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/intcal98.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/kerr.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/mammuthus.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/pp_uniform_phase.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/shcal04.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/shcal13.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/shcal20.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/two_normals.html</loc></url>
 </urlset>
+

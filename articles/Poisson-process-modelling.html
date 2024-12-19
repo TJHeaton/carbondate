@@ -5,71 +5,53 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="carbondate">
 <title>Poisson Process Modelling • carbondate</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Poisson Process Modelling">
-<meta property="og:description" content="carbondate">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Poisson Process Modelling">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">carbondate</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9000</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="../articles/carbondate.html">Get started</a>
-</li>
-<li class="nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../articles/carbondate.html">Get started</a></li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/Independent_calibration.html">Independent and Joint Radiocarbon Calibration</a>
-    <a class="dropdown-item" href="../articles/Against_SPDs.html">Why Not to Use SPDs</a>
-    <a class="dropdown-item" href="../articles/Non-parametric-summed-density.html">Non-Parametric Joint Density Estimation</a>
-    <a class="dropdown-item" href="../articles/Poisson-process-modelling.html">Poisson Process Modelling</a>
-    <a class="dropdown-item" href="../articles/determining-convergence.html">Determining Convergence</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/Independent_calibration.html">Independent and Joint Radiocarbon Calibration</a></li>
+    <li><a class="dropdown-item" href="../articles/Against_SPDs.html">Why Not to Use SPDs</a></li>
+    <li><a class="dropdown-item" href="../articles/Non-parametric-summed-density.html">Non-Parametric Joint Density Estimation</a></li>
+    <li><a class="dropdown-item" href="../articles/Poisson-process-modelling.html">Poisson Process Modelling</a></li>
+    <li><a class="dropdown-item" href="../articles/determining-convergence.html">Determining Convergence</a></li>
+  </ul>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav">
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/TJHeaton/carbondate/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/TJHeaton/carbondate/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-article">
 
@@ -78,10 +60,11 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="" class="logo" alt=""><h1>Poisson Process Modelling</h1>
+
+      <h1>Poisson Process Modelling</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/TJHeaton/carbondate/blob/HEAD/vignettes/Poisson-process-modelling.Rmd" class="external-link"><code>vignettes/Poisson-process-modelling.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/TJHeaton/carbondate/blob/main/vignettes/Poisson-process-modelling.Rmd" class="external-link"><code>vignettes/Poisson-process-modelling.Rmd</code></a></small>
       <div class="d-none name"><code>Poisson-process-modelling.Rmd</code></div>
     </div>
 
@@ -97,10 +80,10 @@
 <p>This component of the library allows you to model (and estimate) the
 occurrence of radiocarbon samples as a variable-rate (inhomogeneous)
 Poisson process. This is done using the function
-<code>PPcalibrate</code>. The aim of this function is primarily to allow
-a user to estimate the variable (calendar year) rate at which a set of
-radiocarbon samples are observed, and identify changepoints in that
-rate.</p>
+<code><a href="../reference/PPcalibrate.html">PPcalibrate()</a></code>. The aim of this function is primarily to
+allow a user to estimate the variable (calendar year) rate at which a
+set of radiocarbon samples are observed, and identify changepoints in
+that rate.</p>
 <p>This Poisson process model can also be used in a
 <em>“dates-as-data”</em> approach <span class="citation">(Rick
 1987)</span> to provide a proxy for changes in population or activity,
@@ -118,10 +101,13 @@ approach can be used via a _"dates-as-data"_ approach [@rick1987] to provide a p
 <div class="section level3">
 <h3 id="modelling-ideas">Modelling Ideas<a class="anchor" aria-label="anchor" href="#modelling-ideas"></a>
 </h3>
-<p>Suppose we have a series of <span class="math inline">\(n\)</span>
-events, which occur at calendar times <span class="math inline">\(\{\theta_i, i= 1,\ldots,n \}\)</span> cal yr BP.
-Each event is assumed to result in the generation of a radiocarbon
-sample, <span class="math inline">\(\{ X_i, i= 1,\ldots,n \}\)</span>.
+<p>Suppose we have a series of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
+events, which occur at calendar times
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><msub><mi>θ</mi><mi>i</mi></msub><mo>,</mo><mi>i</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>n</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{\theta_i, i= 1,\ldots,n \}</annotation></semantics></math>
+cal yr BP. Each event is assumed to result in the generation of a
+radiocarbon sample,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><msub><mi>X</mi><mi>i</mi></msub><mo>,</mo><mi>i</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>n</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{ X_i, i= 1,\ldots,n \}</annotation></semantics></math>.
 Examples of events might be:</p>
 <ul>
 <li>death of an animal (which leaves a bone)</li>
@@ -133,25 +119,41 @@ Examples of events might be:</p>
 investigate whether, and how, the rate at which they occur varies over
 calendar time.</p>
 <p>Specifically, we assume that the events occur according to a Poisson
-Process with a variable rate <span class="math inline">\(\lambda(t)\)</span>. This rate <span class="math inline">\(\lambda(t)\)</span> is considered
-piecewise-constant, but changes an unknown number of times and at
-unknown calendar ages. We aim to estimate <span class="math inline">\(\lambda(t)\)</span> and hence infer how the rate
-at which the events occur changes over calendar time. Time periods where
-the rate <span class="math inline">\(\lambda(t)\)</span> is high will
-typically be expected to generate a greater number of events (perhaps
-since there is more activity, or a greater population, at the
-site/sites); while periods when the rate <span class="math inline">\(\lambda(t)\)</span> is lower (perhaps due to lower
-activity at the site/sites) will be expected to have fewer events.</p>
-<p>When the calendar ages of the events <span class="math inline">\(\{\theta_i , i=1,\ldots,n\}\)</span> are known
-exactly, estimation of the variable rate <span class="math inline">\(\lambda(t)\)</span> can be tackled directly via
-reversible jump Markov Chain Monte Carlo (RJ-MCMC) <span class="citation">(Green 1995)</span>. However, when we only observe the
-radiocarbon ages of the samples (<span class="math inline">\(\{ X_i, i=
-1,\ldots,n \}\)</span>) the underlying calendar ages <span class="math inline">\(\theta_i\)</span> are uncertain and must be
-estimated via radiocarbon calibration. This complicates the process of
-estimating <span class="math inline">\(\lambda(t)\)</span> especially as
-the calibration must be done simultaneously to its estimation (as the
-modelling will influence the set of <span class="math inline">\(\theta_i\)</span> and vice versa). In this
-library, we provide a rigorous approach to the estimation of <span class="math inline">\(\lambda(t)\)</span>.</p>
+Process with a variable rate
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>.
+This rate
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+is considered piecewise-constant, but changes an unknown number of times
+and at unknown calendar ages. We aim to estimate
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+and hence infer how the rate at which the events occur changes over
+calendar time. Time periods where the rate
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+is high will typically be expected to generate a greater number of
+events (perhaps since there is more activity, or a greater population,
+at the site/sites); while periods when the rate
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+is lower (perhaps due to lower activity at the site/sites) will be
+expected to have fewer events.</p>
+<p>When the calendar ages of the events
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><msub><mi>θ</mi><mi>i</mi></msub><mo>,</mo><mi>i</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>n</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{\theta_i , i=1,\ldots,n\}</annotation></semantics></math>
+are known exactly, estimation of the variable rate
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+can be tackled directly via reversible jump Markov Chain Monte Carlo
+(RJ-MCMC) <span class="citation">(Green 1995)</span>. However, when we
+only observe the radiocarbon ages of the samples
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><msub><mi>X</mi><mi>i</mi></msub><mo>,</mo><mi>i</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>n</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{ X_i, i= 1,\ldots,n \}</annotation></semantics></math>)
+the underlying calendar ages
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>θ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\theta_i</annotation></semantics></math>
+are uncertain and must be estimated via radiocarbon calibration. This
+complicates the process of estimating
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+especially as the calibration must be done simultaneously to its
+estimation (as the modelling will influence the set of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>θ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\theta_i</annotation></semantics></math>
+and vice versa). In this library, we provide a rigorous approach to the
+estimation of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>.</p>
 <div class="figure">
 <img src="Poisson-process-modelling_files/figure-html/illustrate_PP-1.png" alt="_Modelling sample occurence using a Poisson process with a latent occurence/activity rate.  Left Panel: An illustration of a Poisson process with two changepoints in the occurrence rate. The samples (shown as a rug in purple) occur at random calendar times, but proportional to the underlying occurrence rate. There are therefore more samples between (2700, 2300) cal yr BP  than other times. Right Panel: Each sample has a ^14^C age (shown as black ticks on the y-axis). We wish to reconstruct the underlying Poisson process rate given only these ^14^C determination._" width="100%"><p class="caption">
 <em>Modelling sample occurence using a Poisson process with a latent
@@ -171,34 +173,50 @@ reconstruct the underlying Poisson process rate given only these
 </h3>
 <p>A Poisson process is a common statistical process used to model the
 occurrence of random events. It is described by specifying the random
-variables <span class="math inline">\(N(s,t)\)</span> for <span class="math inline">\(0 \leq s \leq t\)</span>, where <span class="math inline">\(N(s,t)\)</span> represents the number of events
-that have occurred in the time interval <span class="math inline">\((s,t]\)</span>. Any Poisson process has a
-parameter <span class="math inline">\(\lambda(t)\)</span>, known as the
-rate of the process. This controls the expected number of events in a
-particular time interval.</p>
-<p>In the case of an inhomogeneous Poisson process, the rate <span class="math inline">\(\lambda(t)\)</span> varies over time so that some
-time periods are expected to have a greater number of event than others.
-An (inhomogeneous) Poisson process is then defined by the following two
-properties:</p>
+variables
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">N(s,t)</annotation></semantics></math>
+for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>≤</mo><mi>s</mi><mo>≤</mo><mi>t</mi></mrow><annotation encoding="application/x-tex">0 \leq s \leq t</annotation></semantics></math>,
+where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">N(s,t)</annotation></semantics></math>
+represents the number of events that have occurred in the time interval
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>s</mi><mo>,</mo><mi>t</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">(s,t]</annotation></semantics></math>.
+Any Poisson process has a parameter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>,
+known as the rate of the process. This controls the expected number of
+events in a particular time interval.</p>
+<p>In the case of an inhomogeneous Poisson process, the rate
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+varies over time so that some time periods are expected to have a
+greater number of event than others. An (inhomogeneous) Poisson process
+is then defined by the following two properties:</p>
 <ul>
-<li>For any <span class="math inline">\(0 \leq s \leq t\)</span>, the
-distribution of <span class="math inline">\(N(s,t)\)</span> is Poisson
-with parameter <span class="math inline">\(\int_{\theta = s}^t
-\lambda(\theta) d\theta\)</span>.</li>
-<li>If <span class="math inline">\((s_1,t_1] , (s_2,t_2 ], \ldots
-,(s_n,t_n]\)</span> are disjoint intervals (i.e., non-overlapping) then
-<span class="math inline">\(N(s_1,t_1),N(s_2,t_2 ),\ldots
-,N(s_n,t_n)\)</span> are independent random variables.</li>
+<li>For any
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>≤</mo><mi>s</mi><mo>≤</mo><mi>t</mi></mrow><annotation encoding="application/x-tex">0 \leq s \leq t</annotation></semantics></math>,
+the distribution of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">N(s,t)</annotation></semantics></math>
+is Poisson with parameter
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mo>∫</mo><mrow><mi>θ</mi><mo>=</mo><mi>s</mi></mrow><mi>t</mi></msubsup><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>d</mi><mi>θ</mi></mrow><annotation encoding="application/x-tex">\int_{\theta = s}^t \lambda(\theta) d\theta</annotation></semantics></math>.</li>
+<li>If
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>s</mi><mn>1</mn></msub><mo>,</mo><msub><mi>t</mi><mn>1</mn></msub><mo stretchy="false" form="postfix">]</mo><mo>,</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>s</mi><mn>2</mn></msub><mo>,</mo><msub><mi>t</mi><mn>2</mn></msub><mo stretchy="false" form="postfix">]</mo><mo>,</mo><mi>…</mi><mo>,</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>s</mi><mi>n</mi></msub><mo>,</mo><msub><mi>t</mi><mi>n</mi></msub><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">(s_1,t_1] , (s_2,t_2 ], \ldots ,(s_n,t_n]</annotation></semantics></math>
+are disjoint intervals (i.e., non-overlapping) then
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>s</mi><mn>1</mn></msub><mo>,</mo><msub><mi>t</mi><mn>1</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>s</mi><mn>2</mn></msub><mo>,</mo><msub><mi>t</mi><mn>2</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mi>…</mi><mo>,</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>s</mi><mi>n</mi></msub><mo>,</mo><msub><mi>t</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">N(s_1,t_1),N(s_2,t_2 ),\ldots ,N(s_n,t_n)</annotation></semantics></math>
+are independent random variables.</li>
 </ul>
 <p>In particular, the first of these properties implies that the
-expected number of events in a specific time interval <span class="math inline">\((s,t]\)</span> is <span class="math inline">\(\int_{\theta = s}^t \lambda(\theta)
-d\theta\)</span>. Hence time periods with higher rates <span class="math inline">\(\lambda(t)\)</span> will be expected to have
-greater number of events. The second implies that, conditional on the
-rate <span class="math inline">\(\lambda(t)\)</span>, the number of
-events that have occurred in one time period is not affected by the
-number of events in a different, and non-overlapping time period. It
-also implies that events are not clustered beyond the effect of the
-variable rate, e.g., the occurrence of one event does not
+expected number of events in a specific time interval
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>s</mi><mo>,</mo><mi>t</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">(s,t]</annotation></semantics></math>
+is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mo>∫</mo><mrow><mi>θ</mi><mo>=</mo><mi>s</mi></mrow><mi>t</mi></msubsup><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>d</mi><mi>θ</mi></mrow><annotation encoding="application/x-tex">\int_{\theta = s}^t \lambda(\theta) d\theta</annotation></semantics></math>.
+Hence time periods with higher rates
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+will be expected to have greater number of events. The second implies
+that, conditional on the rate
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>,
+the number of events that have occurred in one time period is not
+affected by the number of events in a different, and non-overlapping
+time period. It also implies that events are not clustered beyond the
+effect of the variable rate, e.g., the occurrence of one event does not
 increase/decrease the probability that another event occurs shortly
 afterwards. Note that this last assumption is quite strong as clustering
 might occur in many instances, for example if the animal bones you date
@@ -208,29 +226,45 @@ individuals, or you date multiple buildings in a settlement.</p>
 <div class="section level3">
 <h3 id="final-radiocarbon-model">Final Radiocarbon Model<a class="anchor" aria-label="anchor" href="#final-radiocarbon-model"></a>
 </h3>
-<p>Given a set of multiple <span class="math inline">\(^{14}\)</span>C
-samples, <span class="math display">\[X_1, \ldots, X_n\]</span> the
-function <code>PPcalibrate</code> will simultaneously:</p>
+<p>Given a set of multiple
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi></mi><mn>14</mn></msup><annotation encoding="application/x-tex">^{14}</annotation></semantics></math>C
+samples,
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>X</mi><mi>n</mi></msub></mrow><annotation encoding="application/x-tex">X_1, \ldots, X_n</annotation></semantics></math>
+the function <code><a href="../reference/PPcalibrate.html">PPcalibrate()</a></code> will simultaneously:</p>
 <ul>
-<li>calibrate them to provide posterior calendar ages estimates <span class="math inline">\(\theta_1, \ldots, \theta_n\)</span>
+<li>calibrate them to provide posterior calendar ages estimates
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>θ</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>θ</mi><mi>n</mi></msub></mrow><annotation encoding="application/x-tex">\theta_1, \ldots, \theta_n</annotation></semantics></math>
 </li>
-<li>estimate the rate <span class="math inline">\(\lambda(t)\)</span> of
-the underlying process. This estimate <span class="math inline">\(\hat{\lambda}(t)\)</span> may provide a useful
-proxy to make archaeological and/or environmental inference, e.g., to
-model changes in culture, or useage, or population size over time.</li>
+<li>estimate the rate
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+of the underlying process. This estimate
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>λ</mi><mo accent="true">̂</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\hat{\lambda}(t)</annotation></semantics></math>
+may provide a useful proxy to make archaeological and/or environmental
+inference, e.g., to model changes in culture, or useage, or population
+size over time.</li>
 </ul>
 <p>The (calendar) rate at which the samples occur is modelled as a
-Poisson process with a variable rate <span class="math inline">\(\lambda(t)\)</span>. Specifically, <span class="math inline">\(\lambda(t)\)</span> is modelled as a piecewise
-constant function with an unknown number of changepoints: <span class="math display">\[
-\lambda(t) = \left\{ \begin{array}{ll}
+Poisson process with a variable rate
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>.
+Specifically,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+is modelled as a piecewise constant function with an unknown number of
+changepoints:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><msub><mi>h</mi><mi>i</mi></msub><mspace width="1.0em"></mspace></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><msub><mi>s</mi><mi>i</mi></msub><mo>≤</mo><mi>t</mi><mo>&lt;</mo><msub><mi>s</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mn>0</mn></mtd><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">otherwise</mtext></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
+\lambda(t) = \left\{ \begin{array}{ll} 
   h_i \quad &amp; \textrm{if } s_i \leq t &lt; s_{i+1} \\
   0 &amp; \textrm{otherwise}
   \end{array} \right.
-\]</span> where <span class="math inline">\(T_A &lt; s_1 &lt; s_2 &lt;
-\ldots &lt; s_k &lt; T_B\)</span> are the calendar ages at which there
-are changes in the Poisson process rate, and <span class="math inline">\(T_A\)</span> and <span class="math inline">\(T_B\)</span> are bounding calendar ages. We use
-reversible jump MCMC (RJMCMC) to alternate between calibrating the
-samples and updating the estimate of the underlying rate lambda.</p>
+</annotation></semantics></math> where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mi>A</mi></msub><mo>&lt;</mo><msub><mi>s</mi><mn>1</mn></msub><mo>&lt;</mo><msub><mi>s</mi><mn>2</mn></msub><mo>&lt;</mo><mi>…</mi><mo>&lt;</mo><msub><mi>s</mi><mi>k</mi></msub><mo>&lt;</mo><msub><mi>T</mi><mi>B</mi></msub></mrow><annotation encoding="application/x-tex">T_A &lt; s_1 &lt; s_2 &lt; \ldots &lt; s_k &lt; T_B</annotation></semantics></math>
+are the calendar ages at which there are changes in the Poisson process
+rate, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>A</mi></msub><annotation encoding="application/x-tex">T_A</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>T</mi><mi>B</mi></msub><annotation encoding="application/x-tex">T_B</annotation></semantics></math>
+are bounding calendar ages. We use reversible jump MCMC (RJMCMC) to
+alternate between calibrating the samples and updating the estimate of
+the underlying rate lambda.</p>
 </div>
 <div class="section level3">
 <h3 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
@@ -238,17 +272,20 @@ samples and updating the estimate of the underlying rate lambda.</p>
 <p>This is a basic example which shows you how to solve a common
 problem. In this simulated example, we will assume that the events
 (samples) can must lie within the calendar period from [700, 300] cal yr
-BP. Within this period, we will create 40 artificial samples with <span class="math inline">\(^{14}\)</span>C determinations corresponding to
-the (narrower) calendar period from [550, 500] cal yr BP. Effectively,
-the underlying model is a Poisson process with a rate <span class="math display">\[
+BP. Within this period, we will create 40 artificial samples with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi></mi><mn>14</mn></msup><annotation encoding="application/x-tex">^{14}</annotation></semantics></math>C
+determinations corresponding to the (narrower) calendar period from
+[550, 500] cal yr BP. Effectively, the underlying model is a Poisson
+process with a rate
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><msub><mi>h</mi><mn>1</mn></msub><mo>=</mo><mn>0</mn></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mn>300</mn><mo>≤</mo><mi>t</mi><mo>&lt;</mo><mn>500</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> cal yr BP</mtext></mrow></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><msub><mi>h</mi><mn>2</mn></msub><mspace width="2.0em"></mspace></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mn>500</mn><mo>≤</mo><mi>t</mi><mo>&lt;</mo><mn>550</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> cal yr BP</mtext></mrow></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><msub><mi>h</mi><mn>3</mn></msub><mo>=</mo><mn>0</mn></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mn>550</mn><mo>≤</mo><mi>t</mi><mo>&lt;</mo><mn>700</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> cal yr BP</mtext></mrow></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
 \lambda(t)  \left\{ \begin{array}{ll}
   h_1 = 0 &amp; \textrm{if } 300 \leq t &lt; 500 \textrm{ cal yr BP} \\
-  h_2 \qquad &amp; \textrm{if } 500 \leq t &lt; 550 \textrm{ cal yr
-BP}\\
-  h_3 = 0 &amp; \textrm{if } 550 \leq t &lt; 700 \textrm{ cal yr BP}
+  h_2 \qquad &amp; \textrm{if } 500 \leq t &lt; 550 \textrm{ cal yr BP}\\
+  h_3 = 0 &amp; \textrm{if } 550 \leq t &lt; 700 \textrm{ cal yr BP} 
   \end{array} \right.
-\]</span> We will then investigate if we can reconstruct this underlying
-information, from just the <span class="math inline">\(^{14}\)</span>C
+</annotation></semantics></math> We will then investigate if we can
+reconstruct this underlying information, from just the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi></mi><mn>14</mn></msup><annotation encoding="application/x-tex">^{14}</annotation></semantics></math>C
 values, if we only knew that the calendar ages of the samples lay
 between the bounding [700, 300] cal yr BP.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -291,35 +328,83 @@ between the bounding [700, 300] cal yr BP.</p>
 <p>This creates an object <code>PP_fit_output</code> which you can
 access directly or use the in-built plotting functions.</p>
 <div class="section level4">
-<h4 id="plotting-the-posterior-estimate-of-the-occurrence-rate">Plotting the posterior estimate of the occurrence rate<a class="anchor" aria-label="anchor" href="#plotting-the-posterior-estimate-of-the-occurrence-rate"></a>
+<h4 id="calculating-and-plotting-the-posterior-estimate-of-the-occurrence-rate">Calculating and plotting the posterior estimate of the occurrence
+rate<a class="anchor" aria-label="anchor" href="#calculating-and-plotting-the-posterior-estimate-of-the-occurrence-rate"></a>
 </h4>
-<p>To plot the posterior estimate of <span class="math inline">\(\lambda(t)\)</span> you should use the in-built
-function:</p>
+<p>To calculate and plot the posterior estimate of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+you should use the in-built <code><a href="../reference/PlotPosteriorMeanRate.html">PlotPosteriorMeanRate()</a></code>
+function. We recommend that you assign the function to a variable (as
+shown below). This means that it will not only create the plot, but also
+store the posterior mean rate (with associated probability intervals) on
+a regular calendar grid should you wish to access it:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotPosteriorMeanRate.html">PlotPosteriorMeanRate</a></span><span class="op">(</span><span class="va">PP_fit_output</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Run plotting function and assign output to PP_posterior_mean_rate_2sigma</span></span>
+<span><span class="va">PP_posterior_mean_rate_2sigma</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PlotPosteriorMeanRate.html">PlotPosteriorMeanRate</a></span><span class="op">(</span><span class="va">PP_fit_output</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Poisson-process-modelling_files/figure-html/meanrate-1.png" width="100%"></p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># Look at PP_posterior_mean_rate_2sigma (posterior mean and 2 sigma intervals) </span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">PP_posterior_mean_rate_2sigma</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   calendar_age_BP   rate_mean rate_ci_lower rate_ci_upper</span></span>
+<span><span class="co">#&gt; 1             300 0.008011871  0.0001862987    0.04248661</span></span>
+<span><span class="co">#&gt; 2             301 0.007986965  0.0001862987    0.04232088</span></span>
+<span><span class="co">#&gt; 3             302 0.007963215  0.0001862987    0.04211068</span></span>
+<span><span class="co">#&gt; 4             303 0.007914135  0.0001862987    0.04164114</span></span>
+<span><span class="co">#&gt; 5             304 0.007861676  0.0001862987    0.04094373</span></span>
+<span><span class="co">#&gt; 6             305 0.007703460  0.0001862987    0.03952506</span></span></code></pre></div>
 <p>This plots the posterior mean rate of sample occurrence (shown in
-purple). The <span class="math inline">\(^{14}\)</span>C determinations
-(<span class="math inline">\(X_1, \ldots, X_n\)</span>) are shown on the
-y-axis as a rug. The rug on the x-axis plots the posterior mean of the
-corresponding calendar ages (i.e., <span class="math inline">\(\theta_1,
-\ldots, \theta_n\)</span>) after calibration for illustration purposes.
-<strong>Note</strong>: In some cases (in particular when an individual
-calibrated age estimates <span class="math inline">\(\theta_i\)</span>
+purple). The
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi></mi><mn>14</mn></msup><annotation encoding="application/x-tex">^{14}</annotation></semantics></math>C
+determinations
+(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>X</mi><mi>n</mi></msub></mrow><annotation encoding="application/x-tex">X_1, \ldots, X_n</annotation></semantics></math>)
+are shown on the y-axis as a rug. The rug on the x-axis plots the
+posterior mean of the corresponding calendar ages (i.e.,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>θ</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>θ</mi><mi>n</mi></msub></mrow><annotation encoding="application/x-tex">\theta_1, \ldots, \theta_n</annotation></semantics></math>)
+after calibration for illustration purposes. <strong>Note</strong>: In
+some cases (in particular when an individual calibrated age estimates
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>θ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\theta_i</annotation></semantics></math>
 is bimodal) the posterior calendar mean will not be a good summary.</p>
-<p>As you can see, the posterior estimate of <span class="math inline">\(\lambda(t)\)</span> identifies the calendar period
-from which the hypothetical samples have been created [550, 500] cal yr
-BP. Here, <span class="math inline">\(\hat{\lambda}(t)\)</span> is
-non-zero, while for the other time periods the rate (correctly) drops to
-near zero.</p>
+<p>As you can see, the posterior estimate of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+identifies the calendar period from which the hypothetical samples have
+been created [550, 500] cal yr BP. Here,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>λ</mi><mo accent="true">̂</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\hat{\lambda}(t)</annotation></semantics></math>
+is non-zero, while for the other time periods the rate (correctly) drops
+to near zero.</p>
+<p><em>Aside:</em> You can also run the function without assigning the
+output, this will just create the plot, without storing the mean:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Run plotting function</span></span>
+<span><span class="fu"><a href="../reference/PlotPosteriorMeanRate.html">PlotPosteriorMeanRate</a></span><span class="op">(</span><span class="va">PP_fit_output</span><span class="op">)</span></span></code></pre></div>
+<!---
+**Obtaining the mean rate directly**: Assigning the output of `PlotPosteriorMeanRate()` to a variable, as shown below, will not only create the plot, but also allow you to store the posterior mean rate (with associated probability intervals) on a regular calendar grid:
+
+``` r
+# Run plotting function and assign output to PP_posterior_mean_rate_2sigma
+PP_posterior_mean_rate_2sigma <- PlotPosteriorMeanRate(PP_fit_output)
+# Will also recreate plot above (but not shown in vignette)
+
+# Look at PP_posterior_mean_rate_2sigma (posterior mean and 2 sigma intervals) 
+head(PP_posterior_mean_rate_2sigma)
+#>   calendar_age_BP   rate_mean rate_ci_lower rate_ci_upper
+#> 1             300 0.008010208  0.0001862987    0.04248661
+#> 2             301 0.007985302  0.0001862987    0.04232088
+#> 3             302 0.007961553  0.0001862987    0.04211068
+#> 4             303 0.007912473  0.0001862987    0.04164114
+#> 5             304 0.007860014  0.0001862987    0.04094373
+#> 6             305 0.007701797  0.0001862987    0.03952506
+```
+--->
 </div>
 <div class="section level4">
 <h4 id="plotting-the-estimated-number-of-changepoints">Plotting the estimated number of changepoints<a class="anchor" aria-label="anchor" href="#plotting-the-estimated-number-of-changepoints"></a>
 </h4>
 <p>You can plot the posterior estimate for the number of internal
-changes in the rate <span class="math inline">\(\lambda(t)\)</span>
+changes in the rate
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
 using the command:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotNumberOfInternalChanges.html">PlotNumberOfInternalChanges</a></span><span class="op">(</span><span class="va">PP_fit_output</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Poisson-process-modelling_files/figure-html/changepoint_number-1.png" width="100%"></p>
 <p>Here, we can see that the method estimates that there are most likely
@@ -333,14 +418,18 @@ of zero at 500 cal yr BP.</p>
 <h4 id="plotting-estimates-of-changepoint-locations">Plotting estimates of changepoint locations<a class="anchor" aria-label="anchor" href="#plotting-estimates-of-changepoint-locations"></a>
 </h4>
 <p>You can also plot density estimates for the locations (calendar
-times) of the changepoints in <span class="math inline">\(\lambda(t)\)</span>, conditional on the number of
-such changes. The default shows the density estimates for the calendar
-times at which there are changes in the occurrence rate, conditional on
-their being <span class="math inline">\(n_{\textrm{internal changes}} =
-1, 2,\)</span> and <span class="math inline">\(3\)</span> such changes
-in <span class="math inline">\(\lambda(t)\)</span> over the time period
-under study.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+times) of the changepoints in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>,
+conditional on the number of such changes. The default shows the density
+estimates for the calendar times at which there are changes in the
+occurrence rate, conditional on their being
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>n</mi><mtext mathvariant="normal">internal changes</mtext></msub><mo>=</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo></mrow><annotation encoding="application/x-tex">n_{\textrm{internal changes}} = 1, 2,</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+such changes in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+over the time period under study.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotPosteriorChangePoints.html">PlotPosteriorChangePoints</a></span><span class="op">(</span><span class="va">PP_fit_output</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in PlotPosteriorChangePoints(PP_fit_output): No posterior samples with</span></span>
 <span><span class="co">#&gt; 1 internal changes</span></span></code></pre></div>
@@ -355,10 +444,11 @@ the dotted red densities (note that here these three locations overlay
 one another, effectively adding a double changepoint at either 500 or
 550 cal yr BP).</p>
 <p>The information contained in this plot should be combined with that
-in <code>PlotNumberOfInternalChanges</code> which indicates that the
+in <code><a href="../reference/PlotNumberOfInternalChanges.html">PlotNumberOfInternalChanges()</a></code> which indicates that the
 most likely number of changepoints is two. We may therefore wish to
 focus our interpretation on the locations/times of changepoints
-conditional on their being this number (i.e., when <span class="math inline">\(n_{\textrm{internal changes}} = 2\)</span>).</p>
+conditional on their being this number (i.e., when
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>n</mi><mtext mathvariant="normal">internal changes</mtext></msub><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">n_{\textrm{internal changes}} = 2</annotation></semantics></math>).</p>
 <p><strong>Note the R warning here:</strong> For this simulated data,
 the posterior model (correctly) never thinks there should be only one
 changepoint. This is indicated by the warning message returned by R and
@@ -368,20 +458,23 @@ the absence of a solid blue density in the plot.</p>
 <h4 id="plotting-estimates-of-occurrence-rate">Plotting estimates of occurrence rate<a class="anchor" aria-label="anchor" href="#plotting-estimates-of-occurrence-rate"></a>
 </h4>
 <p>You can also plot, conditional on the number of changes in the rate
-step function <span class="math inline">\(\lambda(t)\)</span>, the
-posterior density estimates for the heights in each of the individual
-segments (i.e., the rates of sample occurrence in those constant
-periods)</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+step function
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>,
+the posterior density estimates for the heights in each of the
+individual segments (i.e., the rates of sample occurrence in those
+constant periods)</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotPosteriorHeights.html">PlotPosteriorHeights</a></span><span class="op">(</span><span class="va">PP_fit_output</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in PlotPosteriorHeights(PP_fit_output): No posterior samples with 1</span></span>
 <span><span class="co">#&gt; internal changes</span></span></code></pre></div>
 <p><img src="Poisson-process-modelling_files/figure-html/changepoint_rates-1.png" width="100%"></p>
-<p>Here, conditional on there being two changes in <span class="math inline">\(\lambda(t)\)</span> between 700–300 cal yr BP (so
-three different values for the rates) we have two rates of <em>ca.</em>
-0 events per cal yr (these correspond to the periods 700–550 and 500–300
-cal yr BP), and a period with rate <em>ca.</em> 0.6-0.8 events per cal
-yr (corresponding to the period from 550–500 cal yr BP).</p>
+<p>Here, conditional on there being two changes in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+between 700–300 cal yr BP (so three different values for the rates) we
+have two rates of <em>ca.</em> 0 events per cal yr (these correspond to
+the periods 700–550 and 500–300 cal yr BP), and a period with rate
+<em>ca.</em> 0.6-0.8 events per cal yr (corresponding to the period from
+550–500 cal yr BP).</p>
 </div>
 <div class="section level4">
 <h4 id="plotting-the-posterior-calendar-age-estimates-of-individual-samples">Plotting the posterior calendar age estimates of individual
@@ -389,8 +482,8 @@ samples<a class="anchor" aria-label="anchor" href="#plotting-the-posterior-calen
 </h4>
 <p>Finally, it is again possible to plot the posterior calendar age
 estimates of and individual samples using the
-<code>PlotCalendarAgeDensityIndividualSample</code> function:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code><a href="../reference/PlotCalendarAgeDensityIndividualSample.html">PlotCalendarAgeDensityIndividualSample()</a></code> function:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotCalendarAgeDensityIndividualSample.html">PlotCalendarAgeDensityIndividualSample</a></span><span class="op">(</span></span>
 <span>  <span class="fl">9</span>, <span class="va">PP_fit_output</span>, show_hpd_ranges <span class="op">=</span> <span class="cn">TRUE</span>, show_unmodelled_density <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Poisson-process-modelling_files/figure-html/PP_plot_individual-1.png" width="100%"></p>
@@ -403,19 +496,47 @@ estimates of and individual samples using the
 AD, or cal BC) shown when plotting can be selected via the
 <code>plot_cal_age_scale</code> variable within the relevant functions.
 In the case of the Poisson process modelling, the calendar age scale can
-be set in <code>PlotPosteriorMeanRate</code> and
-<code>PlotPosteriorChangePoints</code>, e.g.,</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+be set in <code><a href="../reference/PlotPosteriorMeanRate.html">PlotPosteriorMeanRate()</a></code> and
+<code><a href="../reference/PlotPosteriorChangePoints.html">PlotPosteriorChangePoints()</a></code>, e.g.,</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotPosteriorChangePoints.html">PlotPosteriorChangePoints</a></span><span class="op">(</span><span class="va">PP_fit_output</span>, </span>
 <span>                          plot_cal_age_scale <span class="op">=</span> <span class="st">"AD"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in PlotPosteriorChangePoints(PP_fit_output, plot_cal_age_scale = "AD"):</span></span>
 <span><span class="co">#&gt; No posterior samples with 1 internal changes</span></span></code></pre></div>
 <p><img src="Poisson-process-modelling_files/figure-html/changepoint_locations_AD-1.png" width="100%"></p>
+<div class="section level4">
+<h4 id="calculating-the-posterior-estimate-of-the-occurrence-rate-on-a-bespoke-grid">Calculating the posterior estimate of the occurrence rate on a
+bespoke grid<a class="anchor" aria-label="anchor" href="#calculating-the-posterior-estimate-of-the-occurrence-rate-on-a-bespoke-grid"></a>
+</h4>
+<p>To calculate the posterior estimate of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+on a user-specified calendar age grid and with user-specified
+probability intervals (the default is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>σ</mi></mrow><annotation encoding="application/x-tex">2\sigma</annotation></semantics></math>)
+you can also use the in-built <code><a href="../reference/FindPosteriorMeanRate.html">FindPosteriorMeanRate()</a></code>
+function:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Calculating 2 sigma (95.4%) intervals on posterior mean occurrence rate </span></span>
+<span><span class="va">PP_posterior_mean_rate_2sigma</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/FindPosteriorMeanRate.html">FindPosteriorMeanRate</a></span><span class="op">(</span></span>
+<span>  <span class="va">PP_fit_output</span>,</span>
+<span>  calendar_age_sequence <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">300</span>, <span class="fl">500</span>, by <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  interval_width <span class="op">=</span> <span class="st">"2sigma"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Look at posterior mean with 2 sigma probability interval</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">PP_posterior_mean_rate_2sigma</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   calendar_age_BP   rate_mean rate_ci_lower rate_ci_upper</span></span>
+<span><span class="co">#&gt; 1             300 0.008010096  0.0001862987    0.04248661</span></span>
+<span><span class="co">#&gt; 2             301 0.007985190  0.0001862987    0.04232088</span></span>
+<span><span class="co">#&gt; 3             302 0.007961441  0.0001862987    0.04211068</span></span>
+<span><span class="co">#&gt; 4             303 0.007912361  0.0001862987    0.04164114</span></span>
+<span><span class="co">#&gt; 5             304 0.007859902  0.0001862987    0.04094373</span></span>
+<span><span class="co">#&gt; 6             305 0.007701685  0.0001862987    0.03952506</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level3">
 <h3 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h3>
-<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
 <div id="ref-green1995" class="csl-entry">
 Green, Peter J. 1995. <span>“Reversible Jump Markov Chain Monte Carlo
 Computation and Bayesian Model Determination.”</span>
@@ -429,28 +550,26 @@ Preceramic Radiocarbon Record.”</span> <em>American Antiquity</em> 52
 </div>
 </div>
 </div>
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p>
-<p>Developed by Timothy J Heaton, Sara Al-assam.</p>
+  <p>Developed by Timothy J Heaton, Sara Al-assam.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>

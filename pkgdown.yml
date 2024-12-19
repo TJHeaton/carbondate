@@ -1,15 +1,14 @@
-pandoc: 2.19.2
-pkgdown: 2.0.7
+pandoc: 3.1.11
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   Against_SPDs: Against_SPDs.html
+  carbondate: carbondate.html
+  determining-convergence: determining-convergence.html
   Independent_calibration: Independent_calibration.html
   Non-parametric-summed-density: Non-parametric-summed-density.html
   Poisson-process-modelling: Poisson-process-modelling.html
-  carbondate: carbondate.html
-  determining-convergence: determining-convergence.html
-last_built: 2024-01-31T20:25Z
+last_built: 2024-12-19T16:46Z
 urls:
   reference: https://tjheaton.github.io/carbondate/reference
   article: https://tjheaton.github.io/carbondate/articles
-
