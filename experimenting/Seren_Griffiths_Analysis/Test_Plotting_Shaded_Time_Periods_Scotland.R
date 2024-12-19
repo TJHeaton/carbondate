@@ -1,7 +1,7 @@
-load("../SerenGriffithsData/RWorkspaces/Holocene_Scotland_Analysis_seed28.RData")
+load("../SerenGriffithsData/RWorkspaces/PriorMean10Changes/Holocene_Scotland_Analysis_seed47.RData")
 
 
-pdf("../SerenGriffithsData/OutputPlots/Scotland_PP_Rate_Output_Holocene_seed28.pdf",
+pdf("../SerenGriffithsData/OutputPlots/PriorMean_10_Internal_Changes/Scotland_PP_Rate_Output_Holocene_seed47.pdf",
     width = 12,
     height = 8)
 Holocene_Scotland_PostMeanRate <- PlotPosteriorMeanRate(Holocene_Scotland_Output,

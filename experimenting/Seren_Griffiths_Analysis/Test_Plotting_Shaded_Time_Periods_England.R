@@ -1,15 +1,15 @@
-load("../SerenGriffithsData/RWorkspaces/EnglandAnalysis_Reduced_7000BP.RData")
+load("../SerenGriffithsData/RWorkspaces/PriorMean10Changes/Holocene_England_Analysis_seed95_kmax_40.RData")
 
 
-pdf("../SerenGriffithsData/OutputPlots/Wales_PP_Rate_Output_Holocene.pdf",
+pdf("../SerenGriffithsData/OutputPlots/PriorMean_10_Internal_Changes/England_PP_Rate_Output_Holocene_seed55.pdf",
     width = 12,
     height = 8)
 
 
-England_PostMeanRate <- PlotPosteriorMeanRate(Temp_England_Output,
-                                           show_individual_means = FALSE,
-                                           denscale = 2,
-                                           plot_cal_age_scale = "AD")
+Holocene_England_PostMeanRate <- PlotPosteriorMeanRate(Holocene_England_Output,
+                                                       show_individual_means = FALSE,
+                                                       denscale = 2,
+                                                       plot_cal_age_scale = "AD")
 
 
 
@@ -19,8 +19,8 @@ par(new = TRUE,
     yaxs = "i",
     mar = c(5, 4.5, 4, 2) + 0.1,
     las = 1)
-# xlim <- 1950 - rev(range(WalesPostMeanRate$calendar_age_BP))
-xlim <- 1950 - rev(range(England_PostMeanRate$calendar_age_BP))
+
+xlim <- 1950 - rev(range(Holocene_England_PostMeanRate$calendar_age_BP))
 ylim <- c(0, 1)
 plot(
   NULL,
@@ -54,9 +54,12 @@ cols <- add.alpha(cols, alpha = 0.4)
 
 for(i in 1:n_period) {
   polygon(x = c(rep(Period_Start[i], 2), rep(Period_End[i], 2)),
-          y = c(0, 0.63, 0.63, 0), border = NA,
+          y = c(0, 0.82, 0.82, 0), border = NA,
           col = cols[i])
 }
+
+mtext("England", side = 3, cex = 1.2)
+
 
 dev.off()
 

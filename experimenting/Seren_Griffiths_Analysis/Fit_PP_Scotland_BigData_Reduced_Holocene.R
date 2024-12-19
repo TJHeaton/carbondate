@@ -1,4 +1,4 @@
-set.seed(2)
+set.seed(47)
 
 radiocarbon_age_cutoff <- 10000
 
@@ -52,6 +52,6 @@ Holocene_Scotland_PostMeanRate <- PlotPosteriorMeanRate(
   denscale = 2)
 
 
-save.image("../SerenGriffithsData/RWorkspaces/PriorMean10Changes/Holocene_Scotland_Analysis_seed2.RData")
+save.image("../SerenGriffithsData/RWorkspaces/PriorMean10Changes/Holocene_Scotland_Analysis_seed47.RData")
 
 

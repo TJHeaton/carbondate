@@ -18,7 +18,8 @@ PlotPosteriorMeanRate(
   resolution = 1,
   n_burn = NA,
   n_end = NA,
-  plot_pretty = TRUE
+  plot_pretty = TRUE,
+  max_rate_scale = NA
 )
 }
 \arguments{
@@ -82,6 +83,10 @@ total number of iterations performed, i.e. \code{n_iter}, if not given.}
 \item{plot_pretty}{logical, defaulting to \code{TRUE}. If set \code{TRUE} then will select pretty plotting
 margins (that create sufficient space for axis titles and rotates y-axis labels). If \code{FALSE} will
 implement current user values.}
+
+\item{max_scale_rate}{select if you want a fixed scale for the overlain posterior rate parameter (e.g.,
+to compare absolute values across datasets). Default is \code{NA} which will not set this value (and instead
+uses denscale to adaptively choose a scale for this plot)}
 }
 \value{
 A list, each item containing a data frame of the \code{calendar_age_BP}, the \code{rate_mean}

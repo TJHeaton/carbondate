@@ -1,4 +1,4 @@
-set.seed(26)
+set.seed(27)
 
 radiocarbon_age_cutoff <- 10000
 
@@ -41,6 +41,8 @@ Holocene_England_Output <- PPcalibrateLargeSets(
   rc_sigmas = Holocene_England_c14_sigs,
   calibration_curve = intcal20,
   n_iter = 100000,
+  prior_n_internal_changepoints_lambda = 10,
+  k_max_internal_changepoints = 40,
   calendar_age_range = c(0, 11650),
   show_progress = TRUE)
 
@@ -50,7 +52,7 @@ Holocene_England_PostMeanRate <- PlotPosteriorMeanRate(
   plot_cal_age_scale = "AD",
   denscale = 2)
 
-save.image("../SerenGriffithsData/RWorkspaces/Holocene_England_Analysis_seed26.RData")
+save.image("../SerenGriffithsData/RWorkspaces/PriorMean10Changes/Holocene_England_Analysis_seed27_kmax_40.RData")
 
 
 # Test against SPD

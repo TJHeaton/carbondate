@@ -1,5 +1,5 @@
-#' TODO: Change output type to be large sets (rather than current fudge or returning NAs)Model Occurrence of Multiple Radiocarbon Samples as a
-#' Variable-Rate Poisson Process when Very Large Sets
+#' TODO: Change output type to be large sets (rather than current fudge or returning NAs)
+#' Model Occurrence of Multiple Radiocarbon Samples as a Variable-Rate Poisson Process when Very Large Sets
 #'
 #' @description
 #' This function calibrates a set of radiocarbon (\eqn{{}^{14}}C) samples, and provides an estimate
@@ -17,7 +17,7 @@
 #' \emph{Important: This function is identical to PPcalibrate other than targeted to work for very large
 #' datasets. It does not store the posterior calendar ages of the individual samples (only the information
 #' on the latent Poisson rate) so that the return value is small and does not take up too much memory. It
-#' returns a vector of NAs for the calendar ages (so as to still work with the other functions)
+#' returns a vector of NAs for the calendar ages (so as to still work with the other functions)}
 #'
 #' @inheritParams WalkerBivarDirichlet
 #'
@@ -427,31 +427,4 @@ PPcalibrateLargeSets <- function(
 
   if (show_progress) close(progress_bar)
   return(return_list)
-}
-
-
-.UpdateCalendarAges <- function(
-  likelihood_calendar_ages_from_calibration_curve,
-  likelihood_values,
-  likelihood_offsets,
-  calendar_age_grid,
-  rate_s,
-  rate_h,
-  use_fast) {
-  if (use_fast) {
-    calendar_ages <- .TrimmedUpdateCalendarAgesGibbs(
-      calendar_age_grid = calendar_age_grid,
-      rate_s = rate_s,
-      rate_h = rate_h,
-      likelihood_values = likelihood_values,
-      likelihood_offsets = likelihood_offsets)
-  } else {
-    calendar_ages <- .UpdateCalendarAgesGibbs(
-      likelihood_calendar_ages_from_calibration_curve = likelihood_calendar_ages_from_calibration_curve,
-      calendar_age_grid = calendar_age_grid,
-      rate_s = rate_s,
-      rate_h = rate_h
-    )
-  }
-  return(calendar_ages)
 }

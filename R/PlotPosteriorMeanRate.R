@@ -64,6 +64,9 @@
 #' @param plot_pretty logical, defaulting to `TRUE`. If set `TRUE` then will select pretty plotting
 #' margins (that create sufficient space for axis titles and rotates y-axis labels). If `FALSE` will
 #' implement current user values.
+#' @param max_scale_rate select if you want a fixed scale for the overlain posterior rate parameter (e.g.,
+#' to compare absolute values across datasets). Default is `NA` which will not set this value (and instead
+#' uses denscale to adaptively choose a scale for this plot)
 #'
 #'
 #' @return A list, each item containing a data frame of the `calendar_age_BP`, the `rate_mean`
@@ -106,7 +109,8 @@ PlotPosteriorMeanRate <- function(
     resolution = 1,
     n_burn = NA,
     n_end = NA,
-    plot_pretty = TRUE) {
+    plot_pretty = TRUE,
+    max_rate_scale = NA) {
 
   arg_check <- .InitializeErrorList()
   .CheckOutputData(arg_check, output_data, "RJPP")
@@ -191,7 +195,11 @@ PlotPosteriorMeanRate <- function(
     calendar_age_means <- apply(output_data$calendar_ages[(n_burn + 1):n_end, ], 2, mean)
   }
 
-  ylim_rate <- c(0, denscale * max(posterior_rate$rate_mean))
+  if(is.na(max_rate_scale)) {
+    ylim_rate <- c(0, denscale * max(posterior_rate$rate_mean))
+  } else {
+    ylim_rate <- c(0, max_rate_scale)
+  }
 
   ##############################################################################
   # Plot curves
