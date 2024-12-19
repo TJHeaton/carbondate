@@ -28,7 +28,7 @@ library(carbondate)
 <!-- badges: start -->
 <!-- badges: end -->
 
-This component  of the library allows you to model (and estimate) the occurrence of radiocarbon samples as a variable-rate (inhomogeneous) Poisson process. This is done using the function `PPcalibrate`. The aim of this function is primarily to allow a user to estimate the variable (calendar year) rate at which a set of radiocarbon samples are observed, and identify changepoints in that rate. 
+This component  of the library allows you to model (and estimate) the occurrence of radiocarbon samples as a variable-rate (inhomogeneous) Poisson process. This is done using the function `PPcalibrate()`. The aim of this function is primarily to allow a user to estimate the variable (calendar year) rate at which a set of radiocarbon samples are observed, and identify changepoints in that rate. 
 
 This Poisson process model can also be used in a _"dates-as-data"_ approach [@rick1987] to provide a proxy for changes in population or activity, dependent upon the representativeness of the underlying sampling. For this method, the estimated rate of the Poisson process provides the proxy.       
 
@@ -165,7 +165,7 @@ In particular, the first of these properties implies that the expected number of
 ## Final Radiocarbon Model
 Given a set of multiple $^{14}$C samples, 
 $$X_1, \ldots, X_n$$
-the function `PPcalibrate` will simultaneously:
+the function `PPcalibrate()` will simultaneously:
 
 - calibrate them to provide posterior calendar ages estimates $\theta_1, \ldots, \theta_n$ 
 - estimate the rate $\lambda(t)$ of the underlying process. This estimate $\hat{\lambda}(t)$ may provide a useful proxy to make archaeological and/or environmental inference, e.g., to model changes in culture, or useage, or population size over time. 
@@ -234,15 +234,39 @@ PP_fit_output <- PPcalibrate(
 
 This creates an object `PP_fit_output` which you can access directly or use the in-built plotting functions.
 
-### Plotting the posterior estimate of the occurrence rate  
-To plot the posterior estimate of $\lambda(t)$ you should use the in-built function: 
+
+### Calculating and plotting the posterior estimate of the occurrence rate  
+To calculate and plot the posterior estimate of $\lambda(t)$ you should use the in-built `PlotPosteriorMeanRate()` function. We recommend that you assign the function to a variable (as shown below). This means that it will not only create the plot, but also store the posterior mean rate (with associated probability intervals) on a regular calendar grid should you wish to access it:
 ```{r meanrate, out.width="100%"}
-PlotPosteriorMeanRate(PP_fit_output)
+# Run plotting function and assign output to PP_posterior_mean_rate_2sigma
+PP_posterior_mean_rate_2sigma <- PlotPosteriorMeanRate(PP_fit_output)
+
+# Look at PP_posterior_mean_rate_2sigma (posterior mean and 2 sigma intervals) 
+head(PP_posterior_mean_rate_2sigma)
 ```
 
 This plots the posterior mean rate of sample occurrence (shown in purple). The $^{14}$C determinations ($X_1, \ldots, X_n$) are shown on the y-axis as a rug. The rug on the x-axis plots the posterior mean of the corresponding calendar ages (i.e., $\theta_1, \ldots, \theta_n$) after calibration for illustration purposes. **Note**: In some cases (in particular when an individual calibrated age estimates $\theta_i$ is bimodal) the posterior calendar mean will not be a good summary.  
 
 As you can see, the posterior estimate of $\lambda(t)$ identifies the calendar period from which the hypothetical samples have been created [550, 500] cal yr BP. Here, $\hat{\lambda}(t)$ is non-zero, while for the other time periods the rate (correctly) drops to near zero.
+
+_Aside:_ You can also run the function without assigning the output, this will just create the plot, without storing the mean: 
+```{r no_assign_meanrate, eval = FALSE}
+# Run plotting function
+PlotPosteriorMeanRate(PP_fit_output)
+```
+
+<!---
+**Obtaining the mean rate directly**: Assigning the output of `PlotPosteriorMeanRate()` to a variable, as shown below, will not only create the plot, but also allow you to store the posterior mean rate (with associated probability intervals) on a regular calendar grid:
+```{r assign_meanrate, out.width="100%", fig.show='hide'}
+# Run plotting function and assign output to PP_posterior_mean_rate_2sigma
+PP_posterior_mean_rate_2sigma <- PlotPosteriorMeanRate(PP_fit_output)
+# Will also recreate plot above (but not shown in vignette)
+
+# Look at PP_posterior_mean_rate_2sigma (posterior mean and 2 sigma intervals) 
+head(PP_posterior_mean_rate_2sigma)
+```
+--->
+
 
 ### Plotting the estimated number of changepoints
 You can plot the posterior estimate for the number of internal changes in the rate $\lambda(t)$ using the command:
@@ -262,7 +286,7 @@ PlotPosteriorChangePoints(PP_fit_output)
 
 This figure can be interpreted as follows. For example, if the model thinks there are only two changepoints in the underlying occurrence rate of the samples, then these changepoints should be located around 500 cal yr BP and 550 cal yr BP (the two distinct dashed density estimates shown in dark green). If the model thinks there are three changepoints in the rate, then these should be located according to the location shown by the dotted red densities (note that here these three locations overlay one another, effectively adding a double changepoint at either 500 or 550 cal yr BP). 
 
-The information contained in this plot should be combined with that in `PlotNumberOfInternalChanges` which indicates that the most likely number of changepoints is two. We may therefore wish to focus our interpretation on the locations/times of changepoints conditional on their being this number (i.e., when $n_{\textrm{internal changes}} = 2$).
+The information contained in this plot should be combined with that in `PlotNumberOfInternalChanges()` which indicates that the most likely number of changepoints is two. We may therefore wish to focus our interpretation on the locations/times of changepoints conditional on their being this number (i.e., when $n_{\textrm{internal changes}} = 2$).
 
 **Note the R warning here:** For this simulated data, the posterior model (correctly) never thinks there should be only one changepoint. This is indicated by the warning message returned by R and the absence of a solid blue density in the plot.      
 
@@ -275,18 +299,31 @@ PlotPosteriorHeights(PP_fit_output)
 Here, conditional on there being two changes in $\lambda(t)$ between 700--300 cal yr BP (so three different values for the rates) we have two rates of *ca.*  0 events per cal yr (these correspond to the periods 700--550 and 500--300 cal yr BP), and a period with rate *ca.* 0.6-0.8 events per cal yr (corresponding to the period from 550--500 cal yr BP). 
 
 ### Plotting the posterior calendar age estimates of individual samples
-Finally,  it is again possible to plot the posterior calendar age estimates of and individual samples using the `PlotCalendarAgeDensityIndividualSample` function:
+Finally,  it is again possible to plot the posterior calendar age estimates of and individual samples using the `PlotCalendarAgeDensityIndividualSample()` function:
 ```{r PP_plot_individual, out.width="100%"}
 PlotCalendarAgeDensityIndividualSample(
   9, PP_fit_output, show_hpd_ranges = TRUE, show_unmodelled_density = TRUE)
 ```
 
 ## Changing the calendar age plotting scale
-As elsewhere in the library, the calendar age scale (cal yr BP, cal AD, or cal BC) shown when plotting can be selected via the `plot_cal_age_scale` variable within the relevant functions. In the case of the Poisson process modelling, the calendar age scale can be set in `PlotPosteriorMeanRate` and `PlotPosteriorChangePoints`, e.g.,
+As elsewhere in the library, the calendar age scale (cal yr BP, cal AD, or cal BC) shown when plotting can be selected via the `plot_cal_age_scale` variable within the relevant functions. In the case of the Poisson process modelling, the calendar age scale can be set in `PlotPosteriorMeanRate()` and `PlotPosteriorChangePoints()`, e.g.,
 
 ```{r changepoint_locations_AD, out.width="100%"}
 PlotPosteriorChangePoints(PP_fit_output, 
                           plot_cal_age_scale = "AD")
+```
+
+### Calculating the posterior estimate of the occurrence rate on a bespoke grid
+To calculate the posterior estimate of $\lambda(t)$ on a user-specified calendar age grid and with user-specified probability intervals (the default is $2\sigma$) you can also use the in-built `FindPosteriorMeanRate()` function:
+```{r find_meanrate, out.width="100%"}
+# Calculating 2 sigma (95.4%) intervals on posterior mean occurrence rate 
+PP_posterior_mean_rate_2sigma <- FindPosteriorMeanRate(
+  PP_fit_output,
+  calendar_age_sequence = seq(300, 500, by = 1),
+  interval_width = "2sigma")
+
+# Look at posterior mean with 2 sigma probability interval
+head(PP_posterior_mean_rate_2sigma)
 ```
 
 

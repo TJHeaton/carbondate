@@ -162,7 +162,7 @@ Our sampler provides three outputs of particular interest.
 
 #### Density Estimate to Summarise Objects
 
-The output data contains information to allow calculation of the predictive distribution for the calendar age of a new, as yet undiscovered, object. This density estimate summarises the calendar ages of all objects. It is generated using the posterior sampled values of the DPMM component of our MCMC sampler. This calendar age density can be calculated and plotted using `PlotPredictiveCalendarAgeDensity()`. The pointwise mean of $\hat{f}(\theta)$ will be plotted, together with a corresponding interval at (a user-specified) probability level.   
+The output data contains information to allow calculation of the predictive distribution for the calendar age of a new, as yet undiscovered, object. This density estimate summarises the calendar ages of all objects. It is generated using the posterior sampled values of the DPMM component of our MCMC sampler. This calendar age density can be calculated and plotted using `PlotPredictiveCalendarAgeDensity()`. The pointwise mean of $\hat{f}(\theta)$ will be plotted, together with a corresponding interval at (a user-specified) probability level. If you assign the function to a variable (as shown below) then the pointwise mean and corresponding interval will also be stored and can be accessed.   
 
 The function allows calculation using multiple outputs so that their results can be compared. For example below we compare the results from the two sampler methods above.
 
@@ -170,6 +170,11 @@ The function allows calculation using multiple outputs so that their results can
 densities <- PlotPredictiveCalendarAgeDensity(
   output_data = list(polya_urn_output, walker_output),
   denscale = 2.5)
+
+# The mean (and default 2sigma intervals) are stored in densities
+head(densities[[1]]) # The Polya Urn estimate
+
+head(densities[[2]]) # The Walker estimate
 ```
 
 We also have the option to plot the SPD, to plot in the F^14^C scale, and to change the confidence intervals on the plot.
@@ -182,6 +187,8 @@ densities <- PlotPredictiveCalendarAgeDensity(
   interval_width = "bespoke",
   bespoke_probability = 0.8,
   plot_14C_age = FALSE)
+
+head(densities[[1]])
 ```
 
 **Note:** The fact that the two different MCMC samplers do not provide matching probability intervals should flag to us that we might not have reached convergence, and need to run the MCMC for longer. Our investigations generally showed that `PolyaUrnBivarDirichlet()` is better at reaching convergence, and so we recommend its use over `WalkerBivarDirichlet()`. A longer run of 1,000,000 iterations indicates that the plotted Polya Urn output (in green) above is an accurate representation of the predictive distribution. 
