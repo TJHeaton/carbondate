@@ -33,6 +33,7 @@ reference:
   - PlotPosteriorChangePoints
   - PlotPosteriorHeights
   - PlotCalendarAgeDensityIndividualSample
+  - PlotRateIndividualRealisation
 - title: Common convergence plotting functions
   desc: Functions that can be used to plot information on convergence of the MCMC for both the Bayesian
     non-parametric DPMM and the Poisson process approaches to calibration and summarisation.
