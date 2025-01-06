@@ -6,6 +6,10 @@
 #' rate \eqn{\lambda(t)}) together with specified probability intervals, on a given calendar age
 #' grid (provided in cal yr BP).
 #'
+#' An option is also provided to calculate the posterior mean rate \emph{conditional}
+#' upon the number of internal changepoints within the period under study (if this is specified as an input
+#' to the function).
+#'
 #' \strong{Note:} If you want to calculate and plot the result, use
 #' [carbondate::PlotPosteriorMeanRate] instead.
 #'
@@ -41,6 +45,7 @@ FindPosteriorMeanRate <- function(
     output_data,
     calendar_age_sequence,
     n_posterior_samples = 5000,
+    n_changes = NULL,
     interval_width = "2sigma",
     bespoke_probability = NA,
     n_burn = NA,
@@ -56,13 +61,42 @@ FindPosteriorMeanRate <- function(
   .CheckNumber(arg_check, min(calendar_age_sequence), lower = min(output_data$rate_s[[1]]))
   .CheckNumber(arg_check, max(calendar_age_sequence), upper = max(output_data$rate_s[[1]]))
   .CheckInteger(arg_check, n_posterior_samples, lower = 10)
+  .CheckSingleNChanges(arg_check, n_changes)
   .CheckNBurnAndNEnd(arg_check, n_burn, n_end, n_iter, n_thin)
   .ReportErrors(arg_check)
 
   n_burn <- .SetNBurn(n_burn, n_iter, n_thin)
   n_end <- .SetNEnd(n_end, n_iter, n_thin)
 
-  indices <- sample((n_burn + 1):n_end, n_posterior_samples, replace = ((n_end - n_burn) < n_posterior_samples))
+  if(!is.null(n_changes)) {
+    posterior_n_internal_changes <- output_data$n_internal_changes[(n_burn + 1):n_end]
+    index <- which(posterior_n_internal_changes == n_changes)
+    if(length(index) == 0) {
+      stop(paste("No posterior samples with",
+                  n_changes,
+                  "internal changes"),
+           call. = FALSE)
+    }
+    if (length(index) < 1000) {
+      warning(paste("Only",
+                    length(index),
+                    "posterior samples with",
+                    n_changes,
+                    "internal changes, so results may not be robust.",
+                    "Try running the original MCMC for longer, or increasing n_posterior_samples"),
+              call. = FALSE)
+    }
+    # Have to deal with possibility that index could have length 1
+    # and avoid unwanted sampling behaviour
+    indices <- index[sample(length(index),
+                      n_posterior_samples,
+                      replace = (length(index) < n_posterior_samples))]
+  } else {
+    indices <- sample((n_burn + 1):n_end,
+                      n_posterior_samples,
+                      replace = ((n_end - n_burn) < n_posterior_samples))
+  }
+
   rate <- matrix(NA, nrow = n_posterior_samples, ncol = length(calendar_age_sequence))
   for (i in 1:n_posterior_samples) {
     ind <- indices[i]
@@ -78,6 +112,7 @@ FindPosteriorMeanRate <- function(
     "2sigma"  = 1 - stats::pnorm(2),
     "bespoke" = (1 - bespoke_probability)/2
   )
+
   posterior_rate <- data.frame(
     calendar_age_BP = calendar_age_sequence,
     rate_mean = apply(rate, 2, mean),

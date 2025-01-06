@@ -10,6 +10,10 @@
 #' the chosen calibration curve, and the estimated posterior rate of occurrence \eqn{\lambda(t)} on the same plot.
 #' Can also optionally show the posterior mean of each individual sample's calendar age estimate.
 #'
+#' An option is also provided to calculate the posterior mean rate \emph{conditional}
+#' upon the number of internal changepoints within the period under study (if this is specified as an input
+#' to the function).
+#'
 #' \strong{Note:} If all you are interested in is the value of the posterior mean rate
 #' on a grid, without an accompanying plot, you can use
 #' [carbondate::FindPosteriorMeanRate] instead.
@@ -24,6 +28,9 @@
 #' from the (thinned) MCMC realisations stored in `output_data` to estimate the
 #' rate \eqn{\lambda(t)}. These samples may be repeats if the number of, post burn-in,
 #' realisations is less than `n_posterior_samples`. If not given, 5000 is used.
+#' @param n_changes (Optional) If wish to condition calculation of the posterior mean on
+#' the number of internal changepoints. In this function, if specified, `n_changes` must
+#' be a single integer.
 #' @param calibration_curve This is usually not required since the name of the
 #' calibration curve variable is saved in the output data. However, if the
 #' variable with this name is no longer in your environment then you should pass
@@ -92,9 +99,18 @@
 #'     interval_width = "bespoke",
 #'     bespoke_probability = 0.8,
 #'     n_posterior_samples = 100)
+#'
+#' # Plot the posterior rate conditional on 2 internal changes
+#' PlotPosteriorMeanRate(
+#'     pp_output,
+#'     n_changes = 2,
+#'     interval_width = "bespoke",
+#'     bespoke_probability = 0.8,
+#'     n_posterior_samples = 100)
 PlotPosteriorMeanRate <- function(
     output_data,
     n_posterior_samples = 5000,
+    n_changes = NULL,
     calibration_curve = NULL,
     plot_14C_age = TRUE,
     plot_cal_age_scale = "BP",
@@ -111,6 +127,7 @@ PlotPosteriorMeanRate <- function(
   arg_check <- .InitializeErrorList()
   .CheckOutputData(arg_check, output_data, "RJPP")
   .CheckInteger(arg_check, n_posterior_samples, lower = 10)
+  .CheckSingleNChanges(arg_check, n_changes)
   .CheckCalibrationCurveFromOutput(arg_check, output_data, calibration_curve)
   .CheckFlag(arg_check, plot_14C_age)
   .CheckChoice(arg_check, plot_cal_age_scale, c("BP", "AD", "BC"))
@@ -178,6 +195,7 @@ PlotPosteriorMeanRate <- function(
     output_data,
     calendar_age_sequence,
     n_posterior_samples,
+    n_changes,
     interval_width,
     bespoke_probability,
     n_burn,
@@ -196,6 +214,16 @@ PlotPosteriorMeanRate <- function(
   ##############################################################################
   # Plot curves
 
+  if(!is.null(n_changes)) {
+    plot_title <- bquote(paste("Estimate of ",
+                               lambda,
+                               "(t) conditioned on ",
+                               .(n_changes),
+                               " internal changes"))
+  } else {
+    plot_title <- expression(paste("Estimate of Poisson process rate ", lambda, "(t)"))
+  }
+
   .PlotCalibrationCurveAndInputData(
     plot_cal_age_scale,
     xlim,
@@ -206,7 +234,7 @@ PlotPosteriorMeanRate <- function(
     calibration_curve_bg,
     interval_width,
     bespoke_probability,
-    title = expression(paste("Estimate of Poisson process rate ", lambda, "(t)")))
+    title = plot_title)
 
   .SetUpDensityPlot(plot_cal_age_scale, xlim, ylim_rate)
 
@@ -229,7 +257,7 @@ PlotPosteriorMeanRate <- function(
 
 
 .PlotRateEstimateOnCurrentPlot <- function(
-  plot_cal_age_scale, posterior_rate, output_colour, show_confidence_intervals) {
+    plot_cal_age_scale, posterior_rate, output_colour, show_confidence_intervals) {
 
   cal_age <- .ConvertCalendarAge(plot_cal_age_scale, posterior_rate$calendar_age_BP)
 

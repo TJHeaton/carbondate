@@ -367,3 +367,20 @@
       "prior_h_shape and prior_h_rate must either both be positive numbers or must both be NA")
   }
 }
+
+.CheckSingleNChanges <- function(arg_check, n_changes) {
+  if (length(n_changes) > 1) {
+    arg_check$push("n_changes must be of length 1 in this function")
+    return()
+  }
+  if (!is.null(n_changes)) {
+    .CheckInteger(arg_check, n_changes, lower = 1)
+  }
+}
+
+.CheckRealisations <- function(arg_check, realisations, lower = NA, upper = NA) {
+  if (!is.null(realisations)) {
+    .CheckIntegerVector(arg_check, realisations, lower = lower, upper = upper)
+  }
+}
+
