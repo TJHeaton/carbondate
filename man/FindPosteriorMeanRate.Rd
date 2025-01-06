@@ -8,6 +8,7 @@ FindPosteriorMeanRate(
   output_data,
   calendar_age_sequence,
   n_posterior_samples = 5000,
+  n_changes = NA,
   interval_width = "2sigma",
   bespoke_probability = NA,
   n_burn = NA,
@@ -26,6 +27,10 @@ calculate the posterior mean rate.}
 from the (thinned) MCMC realisations stored in \code{output_data} to estimate the
 rate \eqn{\lambda(t)}. These samples may be repeats if the number of, post burn-in,
 realisations is less than \code{n_posterior_samples}. If not given, 5000 is used.}
+
+\item{n_changes}{(Optional) If wish to condition calculation of the posterior mean on
+the number of internal changepoints. In this function, if specified, \code{n_changes} must
+be a single integer.}
 
 \item{interval_width}{The confidence intervals to show for both the
 calibration curve and the predictive density. Choose from one of \code{"1sigma"} (68.3\%),
@@ -55,6 +60,10 @@ Given output from the Poisson process fitting function \link{PPcalibrate} calcul
 the posterior mean rate of sample occurrence (i.e., the underlying Poisson process
 rate \eqn{\lambda(t)}) together with specified probability intervals, on a given calendar age
 grid (provided in cal yr BP).
+
+An option is also provided to calculate the posterior mean rate \emph{conditional}
+upon the number of internal changepoints within the period under study (if this is specified as an input
+to the function).
 
 \strong{Note:} If you want to calculate and plot the result, use
 \link{PlotPosteriorMeanRate} instead.
