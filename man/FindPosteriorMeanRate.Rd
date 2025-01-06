@@ -8,7 +8,7 @@ FindPosteriorMeanRate(
   output_data,
   calendar_age_sequence,
   n_posterior_samples = 5000,
-  n_changes = NA,
+  n_changes = NULL,
   interval_width = "2sigma",
   bespoke_probability = NA,
   n_burn = NA,

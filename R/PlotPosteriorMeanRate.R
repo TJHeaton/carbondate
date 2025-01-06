@@ -110,7 +110,7 @@
 PlotPosteriorMeanRate <- function(
     output_data,
     n_posterior_samples = 5000,
-    n_changes = NA,
+    n_changes = NULL,
     calibration_curve = NULL,
     plot_14C_age = TRUE,
     plot_cal_age_scale = "BP",
@@ -214,7 +214,7 @@ PlotPosteriorMeanRate <- function(
   ##############################################################################
   # Plot curves
 
-  if(!is.na(n_changes)) {
+  if(!is.null(n_changes)) {
     plot_title <- bquote(paste("Estimate of ",
                                lambda,
                                "(t) conditioned on ",

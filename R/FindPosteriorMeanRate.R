@@ -45,7 +45,7 @@ FindPosteriorMeanRate <- function(
     output_data,
     calendar_age_sequence,
     n_posterior_samples = 5000,
-    n_changes = NA,
+    n_changes = NULL,
     interval_width = "2sigma",
     bespoke_probability = NA,
     n_burn = NA,
@@ -68,7 +68,7 @@ FindPosteriorMeanRate <- function(
   n_burn <- .SetNBurn(n_burn, n_iter, n_thin)
   n_end <- .SetNEnd(n_end, n_iter, n_thin)
 
-  if(!is.na(n_changes)) {
+  if(!is.null(n_changes)) {
     posterior_n_internal_changes <- output_data$n_internal_changes[(n_burn + 1):n_end]
     index <- which(posterior_n_internal_changes == n_changes)
     if(length(index) == 0) {

@@ -373,8 +373,14 @@
     arg_check$push("n_changes must be of length 1 in this function")
     return()
   }
-  if (!is.na(n_changes)) {
+  if (!is.null(n_changes)) {
     .CheckInteger(arg_check, n_changes, lower = 1)
+  }
+}
+
+.CheckRealisations <- function(arg_check, realisations, lower = NA, upper = NA) {
+  if (!is.null(realisations)) {
+    .CheckIntegerVector(arg_check, realisations, lower = lower, upper = upper)
   }
 }
 
