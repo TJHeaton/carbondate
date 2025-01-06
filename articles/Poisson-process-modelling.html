@@ -417,23 +417,28 @@ of zero at 500 cal yr BP.</p>
 <div class="section level4">
 <h4 id="plotting-estimates-of-changepoint-locations">Plotting estimates of changepoint locations<a class="anchor" aria-label="anchor" href="#plotting-estimates-of-changepoint-locations"></a>
 </h4>
-<p>You can also plot density estimates for the locations (calendar
-times) of the changepoints in
+<p>You can plot density estimates for the locations (calendar times) of
+the changepoints in
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>,
-conditional on the number of such changes. The default shows the density
-estimates for the calendar times at which there are changes in the
-occurrence rate, conditional on their being
+conditional on the number of such changes, using the
+<code><a href="../reference/PlotPosteriorChangePoints.html">PlotPosteriorChangePoints()</a></code> function. The default shows the
+density estimates for the calendar times at which there are changes in
+the occurrence rate, conditional on their being
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>n</mi><mtext mathvariant="normal">internal changes</mtext></msub><mo>=</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo>,</mo></mrow><annotation encoding="application/x-tex">n_{\textrm{internal changes}} = 1, 2,</annotation></semantics></math>
 and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
 such changes in
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
-over the time period under study.</p>
+over the time period under study. This can however be changed by
+specifying <code>n_changes</code> in the function:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotPosteriorChangePoints.html">PlotPosteriorChangePoints</a></span><span class="op">(</span><span class="va">PP_fit_output</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in PlotPosteriorChangePoints(PP_fit_output): No posterior samples with</span></span>
 <span><span class="co">#&gt; 1 internal changes</span></span></code></pre></div>
 <p><img src="Poisson-process-modelling_files/figure-html/changepoint_locations-1.png" width="100%"></p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Can add an n_changes argument, e.g., n_changes = c(2, 3, 4)</span></span>
+<span><span class="co"># if want to condition on a different number of changes </span></span></code></pre></div>
 <p>This figure can be interpreted as follows. For example, if the model
 thinks there are only two changepoints in the underlying occurrence rate
 of the samples, then these changepoints should be located around 500 cal
@@ -463,11 +468,14 @@ step function
 the posterior density estimates for the heights in each of the
 individual segments (i.e., the rates of sample occurrence in those
 constant periods)</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotPosteriorHeights.html">PlotPosteriorHeights</a></span><span class="op">(</span><span class="va">PP_fit_output</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in PlotPosteriorHeights(PP_fit_output): No posterior samples with 1</span></span>
 <span><span class="co">#&gt; internal changes</span></span></code></pre></div>
 <p><img src="Poisson-process-modelling_files/figure-html/changepoint_rates-1.png" width="100%"></p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># As above can add an n_changes argument, e.g., n_changes = c(2, 3, 4)</span></span>
+<span><span class="co"># if want to condition on a different number of changes </span></span></code></pre></div>
 <p>Here, conditional on there being two changes in
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
 between 700–300 cal yr BP (so three different values for the rates) we
@@ -483,7 +491,7 @@ samples<a class="anchor" aria-label="anchor" href="#plotting-the-posterior-calen
 <p>Finally, it is again possible to plot the posterior calendar age
 estimates of and individual samples using the
 <code><a href="../reference/PlotCalendarAgeDensityIndividualSample.html">PlotCalendarAgeDensityIndividualSample()</a></code> function:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotCalendarAgeDensityIndividualSample.html">PlotCalendarAgeDensityIndividualSample</a></span><span class="op">(</span></span>
 <span>  <span class="fl">9</span>, <span class="va">PP_fit_output</span>, show_hpd_ranges <span class="op">=</span> <span class="cn">TRUE</span>, show_unmodelled_density <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Poisson-process-modelling_files/figure-html/PP_plot_individual-1.png" width="100%"></p>
@@ -498,7 +506,7 @@ AD, or cal BC) shown when plotting can be selected via the
 In the case of the Poisson process modelling, the calendar age scale can
 be set in <code><a href="../reference/PlotPosteriorMeanRate.html">PlotPosteriorMeanRate()</a></code> and
 <code><a href="../reference/PlotPosteriorChangePoints.html">PlotPosteriorChangePoints()</a></code>, e.g.,</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotPosteriorChangePoints.html">PlotPosteriorChangePoints</a></span><span class="op">(</span><span class="va">PP_fit_output</span>, </span>
 <span>                          plot_cal_age_scale <span class="op">=</span> <span class="st">"AD"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in PlotPosteriorChangePoints(PP_fit_output, plot_cal_age_scale = "AD"):</span></span>
@@ -515,7 +523,7 @@ probability intervals (the default is
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>σ</mi></mrow><annotation encoding="application/x-tex">2\sigma</annotation></semantics></math>)
 you can also use the in-built <code><a href="../reference/FindPosteriorMeanRate.html">FindPosteriorMeanRate()</a></code>
 function:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Calculating 2 sigma (95.4%) intervals on posterior mean occurrence rate </span></span>
 <span><span class="va">PP_posterior_mean_rate_2sigma</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/FindPosteriorMeanRate.html">FindPosteriorMeanRate</a></span><span class="op">(</span></span>
 <span>  <span class="va">PP_fit_output</span>,</span>
@@ -531,6 +539,71 @@ function:</p>
 <span><span class="co">#&gt; 4             303 0.007912361  0.0001862987    0.04164114</span></span>
 <span><span class="co">#&gt; 5             304 0.007859902  0.0001862987    0.04094373</span></span>
 <span><span class="co">#&gt; 6             305 0.007701685  0.0001862987    0.03952506</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level3">
+<h3 id="additional-plotting-features">Additional Plotting Features<a class="anchor" aria-label="anchor" href="#additional-plotting-features"></a>
+</h3>
+<div class="section level4">
+<h4 id="calculating-and-plotting-the-posterior-estimate-of-the-occurrence-rate-over-time-conditioned-on-a-specific-number-of-changes">Calculating and plotting the posterior estimate of the occurrence
+rate over time conditioned on a specific number of changes<a class="anchor" aria-label="anchor" href="#calculating-and-plotting-the-posterior-estimate-of-the-occurrence-rate-over-time-conditioned-on-a-specific-number-of-changes"></a>
+</h4>
+<p>Should the user wish, it is possible to calculate and plot the
+posterior mean estimate of the occurrence rate over time
+<em>conditioned</em> on a user-specified number of changes. This can be
+done by specifying the optional <code>n_changes</code> argument in
+either the <code><a href="../reference/PlotPosteriorMeanRate.html">PlotPosteriorMeanRate()</a></code> or
+<code><a href="../reference/FindPosteriorMeanRate.html">FindPosteriorMeanRate()</a></code> functions:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Conditional on TWO internal changes in the occurrence rate, </span></span>
+<span><span class="co"># Calculate and plot the posterior mean rate over time </span></span>
+<span><span class="co"># (with its 2 sigma intervals)</span></span>
+<span><span class="va">conditional_2_changes_posterior_mean_rate</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PlotPosteriorMeanRate.html">PlotPosteriorMeanRate</a></span><span class="op">(</span></span>
+<span>  <span class="va">PP_fit_output</span>,</span>
+<span>  n_changes <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="co"># here n_changes must have length one (i.e., a single number)</span></span></code></pre></div>
+<p><img src="Poisson-process-modelling_files/figure-html/plot_conditionalmeanrate-1.png" width="100%"></p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># Look at conditional posterior mean with 2 sigma probability interval</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">conditional_2_changes_posterior_mean_rate</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   calendar_age_BP   rate_mean rate_ci_lower rate_ci_upper</span></span>
+<span><span class="co">#&gt; 1             300 0.007879740  1.942084e-05    0.04850640</span></span>
+<span><span class="co">#&gt; 2             301 0.007879740  1.942084e-05    0.04850640</span></span>
+<span><span class="co">#&gt; 3             302 0.007879740  1.942084e-05    0.04850640</span></span>
+<span><span class="co">#&gt; 4             303 0.007774786  1.942084e-05    0.04810404</span></span>
+<span><span class="co">#&gt; 5             304 0.007692820  1.942084e-05    0.04684532</span></span>
+<span><span class="co">#&gt; 6             305 0.007679320  1.942084e-05    0.04684532</span></span></code></pre></div>
+<p><strong>Note:</strong> We do not expect this functionality will be
+particularly relevant for most users unless they known, in advance, how
+many changes in the rate there are in the time period. We instead advise
+users to consider the number of changes in the rate as unknown and allow
+the MCMC to determine the appropriate number of rate changes itself
+(averaging over the possible values). Even when one conditions on a
+specific number of rate changes, since the locations of those changes
+remain unknown and are different for each realisation, the conditioned
+posterior mean will not necessarily reflect that number of sharp
+discontinuities (as we can see above where the jumps in the posterior
+mean remain somewhat smoothed).</p>
+</div>
+<div class="section level4">
+<h4 id="plotting-individual-posterior-mcmc-realistions-of-the-occurrence-rate">Plotting individual posterior MCMC realistions of the occurrence
+rate<a class="anchor" aria-label="anchor" href="#plotting-individual-posterior-mcmc-realistions-of-the-occurrence-rate"></a>
+</h4>
+<p>Finally, the <code><a href="../reference/PlotRateIndividualRealisation.html">PlotRateIndividualRealisation()</a></code> function
+allows users to plot individual realisations of the occurrence rate
+drawn from the MCMC. One can specify the number of realisations to plot,
+whether those realisations should be randomly chosen or correspond to
+specific iterations of the MCMC, as well as the plotting colours:</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Choose some nice plotting colours (from Okabe-Ito)</span></span>
+<span><span class="va">realisation_colours</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#000000"</span>, <span class="st">"#E69F00"</span>, <span class="st">"#56B4E9"</span>, <span class="st">"#009E73"</span>, <span class="st">"#F0E442"</span> <span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Plot 5 random realisations from posterior</span></span>
+<span><span class="fu"><a href="../reference/PlotRateIndividualRealisation.html">PlotRateIndividualRealisation</a></span><span class="op">(</span></span>
+<span>     <span class="va">PP_fit_output</span>,</span>
+<span>     n_realisations <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>     plot_realisations_colour <span class="op">=</span> <span class="va">realisation_colours</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Poisson-process-modelling_files/figure-html/plot_ind_realisation-1.png" width="100%"></p>
 </div>
 </div>
 <div class="section level3">

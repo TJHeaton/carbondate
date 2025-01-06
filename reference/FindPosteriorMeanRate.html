@@ -3,6 +3,9 @@
 the posterior mean rate of sample occurrence (i.e., the underlying Poisson process
 rate \(\lambda(t)\)) together with specified probability intervals, on a given calendar age
 grid (provided in cal yr BP).
+An option is also provided to calculate the posterior mean rate conditional
+upon the number of internal changepoints within the period under study (if this is specified as an input
+to the function).
 Note: If you want to calculate and plot the result, use
 PlotPosteriorMeanRate instead.
 For more information read the vignette:
@@ -10,6 +13,9 @@ vignette("Poisson-process-modelling", package = "carbondate")'><meta property="o
 the posterior mean rate of sample occurrence (i.e., the underlying Poisson process
 rate \(\lambda(t)\)) together with specified probability intervals, on a given calendar age
 grid (provided in cal yr BP).
+An option is also provided to calculate the posterior mean rate conditional
+upon the number of internal changepoints within the period under study (if this is specified as an input
+to the function).
 Note: If you want to calculate and plot the result, use
 PlotPosteriorMeanRate instead.
 For more information read the vignette:
@@ -61,6 +67,9 @@ vignette("Poisson-process-modelling", package = "carbondate")'></head><body>
 the posterior mean rate of sample occurrence (i.e., the underlying Poisson process
 rate \(\lambda(t)\)) together with specified probability intervals, on a given calendar age
 grid (provided in cal yr BP).</p>
+<p>An option is also provided to calculate the posterior mean rate <em>conditional</em>
+upon the number of internal changepoints within the period under study (if this is specified as an input
+to the function).</p>
 <p><strong>Note:</strong> If you want to calculate and plot the result, use
 <a href="PlotPosteriorMeanRate.html">PlotPosteriorMeanRate</a> instead.</p>
 <p>For more information read the vignette: <br><code><a href="../articles/Poisson-process-modelling.html">vignette("Poisson-process-modelling", package = "carbondate")</a></code></p>
@@ -72,6 +81,7 @@ grid (provided in cal yr BP).</p>
 <span>  <span class="va">output_data</span>,</span>
 <span>  <span class="va">calendar_age_sequence</span>,</span>
 <span>  n_posterior_samples <span class="op">=</span> <span class="fl">5000</span>,</span>
+<span>  n_changes <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  interval_width <span class="op">=</span> <span class="st">"2sigma"</span>,</span>
 <span>  bespoke_probability <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  n_burn <span class="op">=</span> <span class="cn">NA</span>,</span>
@@ -99,6 +109,12 @@ calculate the posterior mean rate.</p></dd>
 from the (thinned) MCMC realisations stored in <code>output_data</code> to estimate the
 rate \(\lambda(t)\). These samples may be repeats if the number of, post burn-in,
 realisations is less than <code>n_posterior_samples</code>. If not given, 5000 is used.</p></dd>
+
+
+<dt id="arg-n-changes">n_changes<a class="anchor" aria-label="anchor" href="#arg-n-changes"></a></dt>
+<dd><p>(Optional) If wish to condition calculation of the posterior mean on
+the number of internal changepoints. In this function, if specified, <code>n_changes</code> must
+be a single integer.</p></dd>
 
 
 <dt id="arg-interval-width">interval_width<a class="anchor" aria-label="anchor" href="#arg-interval-width"></a></dt>
