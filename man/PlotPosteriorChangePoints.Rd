@@ -10,7 +10,8 @@ PlotPosteriorChangePoints(
   plot_cal_age_scale = "BP",
   n_burn = NA,
   n_end = NA,
-  kernel_bandwidth = NA
+  kernel_bandwidth = NA,
+  plot_lwd = 2
 )
 }
 \arguments{
@@ -38,6 +39,9 @@ total number of iterations performed, i.e. \code{n_iter}, if not given.}
 
 \item{kernel_bandwidth}{(Optional) The bandwidth used for the (Gaussian) kernel smoothing of
 the calendar age densities. If not given, then 1/50th of the overall calendar age range will be used.}
+
+\item{plot_lwd}{The line width to use when plotting the posterior mean (and confidence intervals).
+Default is 2 (to add emphasis).}
 }
 \value{
 None

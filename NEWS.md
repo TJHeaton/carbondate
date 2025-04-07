@@ -1,5 +1,6 @@
 # carbondate (development version)
 
+* Adding `plot_lwd` argument to alter width of lines when plotting PP and DPMM  
 * Adding functionality to plot individual realisations
 * Adding function to plot posterior mean over time conditioned on a specified number of changes
 * Updating website to explain can access posterior directly 

@@ -71,6 +71,8 @@
 #' @param plot_pretty logical, defaulting to `TRUE`. If set `TRUE` then will select pretty plotting
 #' margins (that create sufficient space for axis titles and rotates y-axis labels). If `FALSE` will
 #' implement current user values.
+#' @param plot_lwd The line width to use when plotting the posterior mean (and confidence intervals).
+#' Default is 2 (to add emphasis).
 #'
 #'
 #' @return A list, each item containing a data frame of the `calendar_age_BP`, the `rate_mean`
@@ -92,6 +94,9 @@
 #'
 #' # Default plot with 2 sigma interval
 #' PlotPosteriorMeanRate(pp_output, n_posterior_samples = 100)
+#'
+#' # Decrease the line width of the posterior mean
+#' PlotPosteriorMeanRate(pp_output, n_posterior_samples = 100, plot_lwd = 1)
 #'
 #' # Specify an 80% confidence interval
 #' PlotPosteriorMeanRate(
@@ -122,7 +127,8 @@ PlotPosteriorMeanRate <- function(
     resolution = 1,
     n_burn = NA,
     n_end = NA,
-    plot_pretty = TRUE) {
+    plot_pretty = TRUE,
+    plot_lwd = 2) {
 
   arg_check <- .InitializeErrorList()
   .CheckOutputData(arg_check, output_data, "RJPP")
@@ -242,7 +248,7 @@ PlotPosteriorMeanRate <- function(
     calendar_age_means <- .ConvertCalendarAge(plot_cal_age_scale, calendar_age_means)
     graphics::rug(calendar_age_means, side = 1, quiet = TRUE)
   }
-  .PlotRateEstimateOnCurrentPlot(plot_cal_age_scale, posterior_rate, output_colour, show_confidence_intervals)
+  .PlotRateEstimateOnCurrentPlot(plot_cal_age_scale, posterior_rate, output_colour, plot_lwd, show_confidence_intervals)
 
   .AddLegendToRatePlot(
     output_data,
@@ -257,14 +263,14 @@ PlotPosteriorMeanRate <- function(
 
 
 .PlotRateEstimateOnCurrentPlot <- function(
-    plot_cal_age_scale, posterior_rate, output_colour, show_confidence_intervals) {
+    plot_cal_age_scale, posterior_rate, output_colour, plot_lwd, show_confidence_intervals) {
 
   cal_age <- .ConvertCalendarAge(plot_cal_age_scale, posterior_rate$calendar_age_BP)
 
-  graphics::lines(cal_age, posterior_rate$rate_mean, col = output_colour)
+  graphics::lines(cal_age, posterior_rate$rate_mean, col = output_colour, lwd = plot_lwd)
   if (show_confidence_intervals) {
-    graphics::lines(cal_age, posterior_rate$rate_ci_lower, col = output_colour, lty = 2)
-    graphics::lines(cal_age, posterior_rate$rate_ci_upper, col = output_colour, lty = 2)
+    graphics::lines(cal_age, posterior_rate$rate_ci_lower, col = output_colour, lwd = plot_lwd, lty = 2)
+    graphics::lines(cal_age, posterior_rate$rate_ci_upper, col = output_colour, lwd = plot_lwd, lty = 2)
   }
 }
 

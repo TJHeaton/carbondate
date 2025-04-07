@@ -53,7 +53,8 @@ PlotPosteriorChangePoints <- function(
     plot_cal_age_scale = "BP",
     n_burn = NA,
     n_end = NA,
-    kernel_bandwidth = NA) {
+    kernel_bandwidth = NA,
+    plot_lwd = 2) {
 
   n_iter <- output_data$input_parameters$n_iter
   n_thin <- output_data$input_parameters$n_thin
@@ -126,7 +127,7 @@ PlotPosteriorChangePoints <- function(
   )
   for (line in all_densities) {
     cal_age_line_x <- .ConvertCalendarAge(plot_cal_age_scale, line$x)
-    graphics::lines(cal_age_line_x, line$y, lty = line$n_change, col = colors[line$n_change], lwd = 2)
+    graphics::lines(cal_age_line_x, line$y, lty = line$n_change, col = colors[line$n_change], lwd = plot_lwd)
   }
   graphics::legend("topright", legend = legend, lty = n_changes, col = colors[n_changes])
 }

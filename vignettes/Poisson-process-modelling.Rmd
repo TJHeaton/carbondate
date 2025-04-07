@@ -240,9 +240,11 @@ To calculate and plot the posterior estimate of $\lambda(t)$ you should use the 
 ```{r meanrate, out.width="100%"}
 # Run plotting function and assign output to PP_posterior_mean_rate_2sigma
 PP_posterior_mean_rate_2sigma <- PlotPosteriorMeanRate(PP_fit_output)
+# Note: You can change the PP line widths using the plot_lwd argument 
 
 # Look at PP_posterior_mean_rate_2sigma (posterior mean and 2 sigma intervals) 
 head(PP_posterior_mean_rate_2sigma)
+
 ```
 
 This plots the posterior mean rate of sample occurrence (shown in purple). The $^{14}$C determinations ($X_1, \ldots, X_n$) are shown on the y-axis as a rug. The rug on the x-axis plots the posterior mean of the corresponding calendar ages (i.e., $\theta_1, \ldots, \theta_n$) after calibration for illustration purposes. **Note**: In some cases (in particular when an individual calibrated age estimates $\theta_i$ is bimodal) the posterior calendar mean will not be a good summary.  

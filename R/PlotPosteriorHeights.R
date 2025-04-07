@@ -45,7 +45,8 @@ PlotPosteriorHeights <- function(
     n_changes = c(1, 2, 3),
     n_burn = NA,
     n_end = NA,
-    kernel_bandwidth = NA) {
+    kernel_bandwidth = NA,
+    plot_lwd = 2) {
 
   n_iter <- output_data$input_parameters$n_iter
   n_thin <- output_data$input_parameters$n_thin
@@ -113,7 +114,7 @@ PlotPosteriorHeights <- function(
     type = "n"
   )
   for (line in all_densities) {
-    graphics::lines(line$x, line$y, lty = line$n_change, col = colors[line$n_change], lwd = 2)
+    graphics::lines(line$x, line$y, lty = line$n_change, col = colors[line$n_change], lwd = plot_lwd)
   }
   graphics::legend("topright", legend = legend, lty = n_changes, col = colors[n_changes])
 }
