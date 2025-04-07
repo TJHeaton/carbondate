@@ -18,7 +18,8 @@ PlotRateIndividualRealisation(
   resolution = 1,
   n_burn = NA,
   n_end = NA,
-  plot_pretty = TRUE
+  plot_pretty = TRUE,
+  plot_lwd = 2
 )
 }
 \arguments{
@@ -79,6 +80,9 @@ total number of iterations performed, i.e. \code{n_iter}, if not given.}
 \item{plot_pretty}{logical, defaulting to \code{TRUE}. If set \code{TRUE} then will select pretty plotting
 margins (that create sufficient space for axis titles and rotates y-axis labels). If \code{FALSE} will
 implement current user values.}
+
+\item{plot_lwd}{The line width to use when plotting the posterior mean (and confidence intervals).
+Default is 2 (to add emphasis).}
 }
 \value{
 None

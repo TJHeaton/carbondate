@@ -67,6 +67,8 @@
 #' @param plot_pretty logical, defaulting to `TRUE`. If set `TRUE` then will select pretty plotting
 #' margins (that create sufficient space for axis titles and rotates y-axis labels). If `FALSE` will
 #' implement current user values.
+#' @param plot_lwd The line width to use when plotting the posterior mean (and confidence intervals).
+#' Default is 2 (to add emphasis).
 #'
 #' @return A list, each item containing a data frame of the `calendar_age_BP`, the
 #' `density_mean` and the confidence intervals for the density
@@ -125,7 +127,8 @@ PlotPredictiveCalendarAgeDensity <- function(
     resolution = 1,
     n_burn = NA,
     n_end = NA,
-    plot_pretty = TRUE) {
+    plot_pretty = TRUE,
+    plot_lwd = 2) {
 
   ##############################################################################
   # Check input parameters
@@ -252,7 +255,7 @@ PlotPredictiveCalendarAgeDensity <- function(
 
   for (i in 1:num_data) {
     .PlotDensityEstimateOnCurrentPlot(
-      plot_cal_age_scale, predictive_density[[i]], output_colours[[i]], show_confidence_intervals)
+      plot_cal_age_scale, predictive_density[[i]], output_colours[[i]], plot_lwd, show_confidence_intervals)
   }
 
   .AddLegendToDensityPlot(
@@ -281,14 +284,14 @@ PlotPredictiveCalendarAgeDensity <- function(
 
 
 .PlotDensityEstimateOnCurrentPlot <- function(
-    plot_cal_age_scale, predictive_density, output_colour, show_confidence_intervals) {
+    plot_cal_age_scale, predictive_density, output_colour, plot_lwd, show_confidence_intervals) {
 
   cal_age <- .ConvertCalendarAge(plot_cal_age_scale, predictive_density$calendar_age_BP)
 
-  graphics::lines(cal_age, predictive_density$density_mean, col = output_colour)
+  graphics::lines(cal_age, predictive_density$density_mean, col = output_colour, lwd = plot_lwd)
   if (show_confidence_intervals) {
-    graphics::lines(cal_age, predictive_density$density_ci_lower, col = output_colour, lty = 2)
-    graphics::lines(cal_age, predictive_density$density_ci_upper, col = output_colour, lty = 2)
+    graphics::lines(cal_age, predictive_density$density_ci_lower, col = output_colour, lwd = plot_lwd, lty = 2)
+    graphics::lines(cal_age, predictive_density$density_ci_upper, col = output_colour, lwd = plot_lwd, lty = 2)
   }
 }
 

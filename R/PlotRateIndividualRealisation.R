@@ -67,7 +67,8 @@ PlotRateIndividualRealisation <- function(
     resolution = 1,
     n_burn = NA,
     n_end = NA,
-    plot_pretty = TRUE) {
+    plot_pretty = TRUE,
+    plot_lwd = 2) {
 
 
   n_iter <- output_data$input_parameters$n_iter
@@ -194,7 +195,7 @@ PlotRateIndividualRealisation <- function(
   # Plot realisations
   cal_age <- .ConvertCalendarAge(plot_cal_age_scale, calendar_age_sequence)
   for(i in 1:n_realisations) {
-    graphics::lines(cal_age, rate[i,], col = plot_realisations_colour[i])
+    graphics::lines(cal_age, rate[i,], col = plot_realisations_colour[i], lwd = plot_lwd)
   }
 
   .AddRealisationLegendToRatePlot(
