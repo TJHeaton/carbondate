@@ -236,7 +236,7 @@ PPcalibrate <- function(
       warning("The minimum of your selected calendar age range may not cover the age range of the samples. Consider reducing the minimum age range." , immediate. = TRUE)
     }
     if(max_potential_calendar_age < max(bounds_calendar_range)) {
-      warning("The maximum of your selected calendar age range may not cover the age range of the samples. COnsider increasing the maximum age range." , immediate. = TRUE)
+      warning("The maximum of your selected calendar age range may not cover the age range of the samples. Consider increasing the maximum age range." , immediate. = TRUE)
     }
   }
 
