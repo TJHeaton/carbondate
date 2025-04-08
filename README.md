@@ -17,16 +17,17 @@ and robust alternatives to summed probability distributions (SPDs):
 
 - Bayesian Non-Parametric Density Estimation (Modelling the joint,
   summary, calendar distribution as an unknown mixture of calendar age
-  clusters)
+  clusters) — see “Non-parametric calibration of multiple related
+  radiocarbon determinations and their calendar age summarisation”
+  [(Heaton, 2022)](http://doi.org/10.1111/rssc.12599).
 - Variable-Rate Poisson Process Estimation (Modelling changes in the
-  occurrence rate of the <sup>14</sup>C samples over calendar time)
+  occurrence rate of the <sup>14</sup>C samples over calendar time) —
+  see “A New Approach to Radiocarbon Summarisation: Rigorous
+  Identification of Variations/Changepoints in the Occurrence Rate of
+  Radiocarbon Samples using a Poisson Process” [(Heaton et al., to
+  appear)](https://arxiv.org/abs/2501.15980)
 
-Both methods are implemented using Markov Chain Monte Carlo (MCMC). The
-package is based partly on the original functions available
-[here](https://github.com/TJHeaton/NonparametricCalibration) which were
-used for “Non-parametric calibration of multiple related radiocarbon
-determinations and their calendar age summarisation” [(Heaton
-2022)](https://academic.oup.com/jrsssc/article/71/5/1918/7073284).
+Both methods are implemented using Markov Chain Monte Carlo (MCMC).
 
 ## Installation
 

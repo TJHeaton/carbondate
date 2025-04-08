@@ -157,7 +157,7 @@ PlotRateIndividualRealisation <- function(
   }
 
   if(is.null(plot_realisations_colour) || length(plot_realisations_colour) != n_realisations) {
-    plot_realisations_colour <- rep(grey(0.4, alpha = 0.6), n_realisations)
+    plot_realisations_colour <- rep(grDevices::grey(0.4, alpha = 0.6), n_realisations)
   }
 
   # Calculate rate for each realisation

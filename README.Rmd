@@ -22,13 +22,10 @@ knitr::opts_chunk$set(
 
 An R package to analyse, and summarise, multiple radiocarbon (^14^C) determinations. The package provides two linked (but distinct) Bayesian approaches that can both be used to obtain rigorous and robust alternatives to summed probability distributions (SPDs):
 
-- Bayesian Non-Parametric Density Estimation (Modelling the joint, summary, calendar distribution as an unknown mixture of calendar age clusters)
-- Variable-Rate Poisson Process Estimation (Modelling changes in the occurrence rate of the ^14^C samples over calendar time)    
+- Bayesian Non-Parametric Density Estimation (Modelling the joint, summary, calendar distribution as an unknown mixture of calendar age clusters) --- see "Non-parametric calibration of multiple related radiocarbon determinations and their calendar age summarisation" [(Heaton, 2022)](http://doi.org/10.1111/rssc.12599).
+- Variable-Rate Poisson Process Estimation (Modelling changes in the occurrence rate of the ^14^C samples over calendar time) --- see "A New Approach to Radiocarbon Summarisation: Rigorous Identification of Variations/Changepoints in the Occurrence Rate of Radiocarbon Samples using a Poisson Process" [(Heaton et al., to appear)](https://arxiv.org/abs/2501.15980)      
 
-Both methods are implemented using Markov Chain Monte Carlo (MCMC). The package is based partly on the original functions available 
-[here](https://github.com/TJHeaton/NonparametricCalibration) which were used for 
-"Non-parametric calibration of multiple related radiocarbon determinations and 
-their calendar age summarisation" [(Heaton 2022)](https://academic.oup.com/jrsssc/article/71/5/1918/7073284).
+Both methods are implemented using Markov Chain Monte Carlo (MCMC). 
 
 ## Installation
 
