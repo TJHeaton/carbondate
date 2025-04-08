@@ -165,7 +165,7 @@ double PolyaUrnDensityForCalendarAge(
     "density_ci_upper"_nm = ci_upper,
   });
 
-  return retdata;
+  return std::move(retdata);
 }
 
 // Finds mean predictive density and confidence intervals, sampling over a given number of points
@@ -223,7 +223,7 @@ double PolyaUrnDensityForCalendarAge(
       "density_ci_upper"_nm = ci_upper,
   });
 
-  return retdata;
+  return std::move(retdata);
 }
 
 // Finds predictive density at a single data point

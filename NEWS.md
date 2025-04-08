@@ -1,5 +1,7 @@
 # carbondate (development version)
 
+* Fixed warning in cpp using return std::move(retdata) where retdata is just named value
+
 # carbondate 1.1.0
 
 * Added `plot_lwd` argument to alter width of lines when plotting PP and DPMM. 
