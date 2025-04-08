@@ -1,5 +1,20 @@
-## Resubmission
-This is a resubmission. In this versionm in response to your feedback, we have:
+## ── R CMD check results ─────────────────────────────────────────── carbondate 1.0.1.9000 ────
+Duration: 9m 34.9s
+
+0 errors | 0 warnings | 1 note
+
+❯ checking CRAN incoming feasibility ... [14s] NOTE
+  Maintainer: 'Timothy J Heaton <T.Heaton@leeds.ac.uk>'
+  
+  Version contains large components (1.0.1.9000)
+
+* This is default naming for development version
+
+
+# Old versions
+
+## Resubmission 1.0.1
+This is a resubmission. In this version in response to your feedback, we have:
 
 * The writing, i.e., save(), commands in the tests/testthat/fixtures are in scripts that are not run as part of the tests. These were scripts to create static test fixtures where we aimed to follow the guidance on R packages (which said that the code should be available). We have commented out the save commands for safety.  
 
