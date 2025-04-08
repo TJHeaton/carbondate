@@ -1,6 +1,6 @@
 Package: carbondate
 Title: Calibration and Summarisation of Radiocarbon Dates
-Version: 1.0.1.9000
+Version: 1.1.0
 Authors@R: c(
     person("Timothy J", "Heaton", , "T.Heaton@leeds.ac.uk", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0002-9994-142X")),
