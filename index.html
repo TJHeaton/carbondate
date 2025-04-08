@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">carbondate</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,10 +64,11 @@
 
 <p>An R package to analyse, and summarise, multiple radiocarbon (<sup>14</sup>C) determinations. The package provides two linked (but distinct) Bayesian approaches that can both be used to obtain rigorous and robust alternatives to summed probability distributions (SPDs):</p>
 <ul>
-<li>Bayesian Non-Parametric Density Estimation (Modelling the joint, summary, calendar distribution as an unknown mixture of calendar age clusters)</li>
-<li>Variable-Rate Poisson Process Estimation (Modelling changes in the occurrence rate of the <sup>14</sup>C samples over calendar time)</li>
+<li>Bayesian Non-Parametric Density Estimation (Modelling the joint, summary, calendar distribution as an unknown mixture of calendar age clusters) — see “Non-parametric calibration of multiple related radiocarbon determinations and their calendar age summarisation” <a href="http://doi.org/10.1111/rssc.12599" class="external-link">(Heaton, 2022)</a>.</li>
+<li>Variable-Rate Poisson Process Estimation (Modelling changes in the occurrence rate of the <sup>14</sup>C samples over calendar time) — see “A New Approach to Radiocarbon Summarisation: Rigorous Identification of Variations/Changepoints in the Occurrence Rate of Radiocarbon Samples using a Poisson Process” <a href="https://arxiv.org/abs/2501.15980" class="external-link">(Heaton et al., to appear)</a>
+</li>
 </ul>
-<p>Both methods are implemented using Markov Chain Monte Carlo (MCMC). The package is based partly on the original functions available <a href="https://github.com/TJHeaton/NonparametricCalibration" class="external-link">here</a> which were used for “Non-parametric calibration of multiple related radiocarbon determinations and their calendar age summarisation” <a href="https://academic.oup.com/jrsssc/article/71/5/1918/7073284" class="external-link">(Heaton 2022)</a>.</p>
+<p>Both methods are implemented using Markov Chain Monte Carlo (MCMC).</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
