@@ -1,3 +1,5 @@
+# carbondate (development version)
+
 # carbondate 1.1.0
 
 * Added `plot_lwd` argument to alter width of lines when plotting PP and DPMM. 
