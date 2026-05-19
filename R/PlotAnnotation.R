@@ -1,3 +1,29 @@
+add_text_plot <- function(
+    output_data,
+    text,
+    cal_age,
+    height,
+    plot_pretty = TRUE) {
+
+  # Ensure revert to main environment par on exit of function
+  oldpar <- graphics::par(no.readonly = TRUE)
+  on.exit(graphics::par(oldpar))
+
+  # Set nice plotting parameters
+  if(plot_pretty) {
+    graphics::par(
+      new = TRUE,
+      mgp = c(3, 0.7, 0),
+      xaxs = "i",
+      yaxs = "i",
+      mar = c(5, 4.5, 4, 2) + 0.1,
+      las = 1)
+  }
+
+  xlim <- rev(range(two_normals_DPMM[[1]]$calendar_age_BP))
+  ylim <- c(0, 3 * max(two_normals_DPMM[[1]]$density_mean))
+
+}
 
 
 # Store the old plotting parameters so you can change them back at the end
