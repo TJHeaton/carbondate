@@ -1,6 +1,7 @@
 # carbondate (development version)
 
 * Fixed warning in find_predictive_density.cpp by using return std::move(retdata) where retdata was just named local variable
+* Added function to create text at a specific point on the plots  
 
 # carbondate 1.1.0
 
