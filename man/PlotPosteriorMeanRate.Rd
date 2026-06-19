@@ -93,8 +93,7 @@ implement current user values.}
 Default is 2 (to add emphasis).}
 }
 \value{
-A list, each item containing a data frame of the \code{calendar_age_BP}, the \code{rate_mean}
-and the confidence intervals for the rate - \code{rate_ci_lower} and \code{rate_ci_upper}.
+A list, the first list element, \code{posterior_rate}, containing a data frame of the \code{calendar_age_BP}, the \code{rate_mean} and the confidence intervals for the rate - \code{rate_ci_lower} and \code{rate_ci_upper}. The second list element, \code{plot_par}, contains the plotting/graphical parameters of the plot to allow for editing/annotation.
 }
 \description{
 Given output from the Poisson process fitting function \link{PPcalibrate} calculate
@@ -149,4 +148,7 @@ PlotPosteriorMeanRate(
     interval_width = "bespoke",
     bespoke_probability = 0.8,
     n_posterior_samples = 100)
+}
+\seealso{
+For annotating the plot, see \link{AddTextPlot} and \link{AddShadingPlot}
 }
