@@ -384,3 +384,9 @@
   }
 }
 
+.CheckTextAnnotation <- function(arg_check, text_annotation) {
+  if (is.null(calibration_curve)) {
+    .CheckText(arg_check, text_annotation)
+  }
+}
+

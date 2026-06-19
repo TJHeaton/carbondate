@@ -1,5 +1,6 @@
 # carbondate (development version)
 
+* Added functions AddTextPlot() and AddShadingPlot() to enable users to overlay text and shading onto summary plots - currently only for PlotPosteriorMeanRate.R  
 * Fixed warning in find_predictive_density.cpp by using return std::move(retdata) where retdata was just named local variable
 * Added function to create text at a specific point on the plots  
 

@@ -73,13 +73,13 @@
 #' implement current user values.
 #' @param plot_lwd The line width to use when plotting the posterior mean (and confidence intervals).
 #' Default is 2 (to add emphasis).
-#' @param add_text_labels A character vector or expression specifying the `text` to be written.
 #'
 #'
-#' @return A list, each item containing a data frame of the `calendar_age_BP`, the `rate_mean`
-#' and the confidence intervals for the rate - `rate_ci_lower` and `rate_ci_upper`.
+#' @return A list, the first list element, `posterior_rate`, containing a data frame of the `calendar_age_BP`, the `rate_mean` and the confidence intervals for the rate - `rate_ci_lower` and `rate_ci_upper`. The second list element, `plot_par`, contains the plotting/graphical parameters of the plot to allow for editing/annotation.
 #'
 #' @export
+#'
+#' @seealso For annotating the plot, see [carbondate::AddTextPlot] and [carbondate::AddShadingPlot]
 #'
 #' @examples
 #' # NOTE: All these examples are shown with a small n_iter and n_posterior_samples
@@ -129,8 +129,7 @@ PlotPosteriorMeanRate <- function(
     n_burn = NA,
     n_end = NA,
     plot_pretty = TRUE,
-    plot_lwd = 2,
-    add_text_labels = NULL) {
+    plot_lwd = 2) {
 
   arg_check <- .InitializeErrorList()
   .CheckOutputData(arg_check, output_data, "RJPP")
@@ -244,24 +243,7 @@ PlotPosteriorMeanRate <- function(
     bespoke_probability,
     title = plot_title)
 
-  # TODO
-  add_text_x_loc <- 1350
-  add_text_y_loc <- 500
-  add_text_labels <- c("a")
-  add_text_cex <- 0.7
-  add_text_col <- "red"
-
-
-  if (!is.null(add_text_labels)) {
-    text(x = add_text_x_loc,
-         y = add_text_y_loc,
-         labels = add_text_labels,
-         cex = add_text_cex,
-         col = add_text_col,
-    )
-  }
-  # END TODO
-
+  plot_par <- graphics::par(no.readonly = TRUE)
 
   .SetUpDensityPlot(plot_cal_age_scale, xlim, ylim_rate)
 
@@ -281,7 +263,9 @@ PlotPosteriorMeanRate <- function(
 
 
 
-  invisible(posterior_rate)
+  return_list <- list(posterior_rate = posterior_rate, plot_par = plot_par )
+
+  invisible(return_list)
 }
 
 
