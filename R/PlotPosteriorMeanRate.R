@@ -261,8 +261,6 @@ PlotPosteriorMeanRate <- function(
     calibration_curve_colour,
     output_colour)
 
-
-
   return_list <- list(posterior_rate = posterior_rate, plot_par = plot_par )
 
   invisible(return_list)
