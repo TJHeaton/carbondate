@@ -174,6 +174,43 @@
 }
 
 
+# Check that if marine calibration curve then have specified delta_r and delta_r_sig
+.CheckMarineDeltaR <- function(arg_check, calibration_curve_name, rc_determinations, delta_r, delta_r_sig) {
+
+  marine_calibration <- (substr(calibration_curve_name, 1, 6) == "marine")
+
+  if(marine_calibration) { # Performing Marine calibration
+
+    if (is.null(delta_r) || is.null(delta_r_sig)) {
+      arg_check$push(paste("As you have chosen marine calibration you must specify both delta_r and delta_r_sig"))
+      return()
+    }
+
+    if(length(rc_determinations) == 1) {
+      .CheckNumber(arg_check, delta_r)
+      .CheckNumber(arg_check, delta_r_sig, lower = 0)
+    } else {
+      .CheckNumberVector(arg_check, delta_r, lower = 0, len = length(rc_determinations))
+      .CheckNumberVector(arg_check, delta_r_sig, len = length(rc_determinations), lower = 0)
+    }
+
+  } else { # Not marine calibration but may still wish to have a DeltaR
+
+    if(!is.null(delta_r) || !is.null(delta_r_sig)) {
+      warning(
+        "You have specified delta_r and/or delta_r_sig to model an offset to the calibration curve, but it looks like you are doing atmospheric calibration.", immediate. = TRUE, call. = FALSE)
+      if(length(rc_determinations) == 1) {
+        .CheckNumber(arg_check, delta_r)
+        .CheckNumber(arg_check, delta_r_sig, lower = 0)
+      } else {
+        .CheckNumberVector(arg_check, delta_r, len = length(rc_determinations))
+        .CheckNumberVector(arg_check, delta_r_sig, len = length(rc_determinations), lower = 0)
+      }
+    }
+  }
+}
+
+
 .CheckNBurnAndNEnd <- function(arg_check, n_burn, n_end, n_iter, n_thin) {
   if (!is.na(n_burn)) {
     .CheckInteger(arg_check, n_burn, lower = 0, upper = n_iter - 100 * n_thin)

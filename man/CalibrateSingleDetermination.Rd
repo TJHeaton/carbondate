@@ -8,6 +8,8 @@ CalibrateSingleDetermination(
   rc_determination,
   rc_sigma,
   calibration_curve,
+  delta_r = NULL,
+  delta_r_sig = NULL,
   F14C_inputs = FALSE,
   resolution = 1,
   plot_output = FALSE,
@@ -29,6 +31,8 @@ provided either as the radiocarbon age (in \eqn{{}^{14}}C yr BP) or the F\eqn{{}
 columns \code{c14_age} and \code{c14_sig} or \code{f14c} and \code{f14c_sig} (or both sets).
 This format matches the curves supplied with this package, e.g., \link{intcal20},
 \link{intcal13}, which contain all 5 columns.}
+
+\item{delta_r, delta_r_sig}{For marine curve calibration only. The \eqn{\Delta R} offset and associated 1\eqn{\sigma} uncertainty on the regional offset to the marine calibration curve (must be given in \eqn{{}^{14}}C yrs)}
 
 \item{F14C_inputs}{\code{TRUE} if the provided \code{rc_determination} is an F\eqn{{}^{14}}C
 concentration and \code{FALSE} if it is a radiocarbon age. Defaults to \code{FALSE}.}

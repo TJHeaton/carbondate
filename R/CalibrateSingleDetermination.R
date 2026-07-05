@@ -13,6 +13,7 @@
 #' columns `c14_age` and `c14_sig` or `f14c` and `f14c_sig` (or both sets).
 #' This format matches the curves supplied with this package, e.g., [carbondate::intcal20],
 #' [carbondate::intcal13], which contain all 5 columns.
+#' @param delta_r,delta_r_sig For marine curve calibration only. The \eqn{\Delta R} offset and associated 1\eqn{\sigma} uncertainty on the regional offset to the marine calibration curve (must be given in \eqn{{}^{14}}C yrs)
 #' @param F14C_inputs `TRUE` if the provided `rc_determination` is an F\eqn{{}^{14}}C
 #' concentration and `FALSE` if it is a radiocarbon age. Defaults to `FALSE`.
 #' @param resolution The distance between the calendar ages at which to calculate the calendar age probability.
@@ -106,6 +107,8 @@ CalibrateSingleDetermination <- function(
     rc_determination,
     rc_sigma,
     calibration_curve,
+    delta_r = NULL,
+    delta_r_sig = NULL,
     F14C_inputs = FALSE,
     resolution = 1,
     plot_output = FALSE,
@@ -115,6 +118,8 @@ CalibrateSingleDetermination <- function(
     denscale = 3,
     plot_pretty = TRUE) {
 
+  calibration_curve_name <- deparse(substitute(calibration_curve))
+
   arg_check <- .InitializeErrorList()
   .CheckNumber(arg_check, rc_determination)
   .CheckNumber(arg_check, rc_sigma)
@@ -122,18 +127,44 @@ CalibrateSingleDetermination <- function(
   .CheckFlag(arg_check, plot_output)
   .CheckChoice(arg_check, plot_cal_age_scale, c("BP", "AD", "BC"))
   .CheckCalibrationCurve(arg_check, calibration_curve, NA)
+  .CheckMarineDeltaR(arg_check,
+                     calibration_curve_name,
+                     rc_determination,
+                     delta_r,
+                     delta_r_sig)
   .CheckNumber(arg_check, denscale, lower = 0)
   .CheckNumber(arg_check, resolution, lower = 0.01)
   .ReportErrors(arg_check)
 
-  calibration_curve_name <- deparse(substitute(calibration_curve))
+  # Adjust if delta_r offset is given
+  is_offset_needed <- !is.null(delta_r)
+
+  if(is_offset_needed) {
+    if(!F14C_inputs) {
+      rc_determination_adj <- rc_determination - delta_r
+      rc_sigma_adj <- sqrt(rc_sigma^2 + delta_r_sig^2)
+    } else{
+      rc_age_info <- .ConvertF14cTo14Cage(rc_determination, rc_sigmas)
+      rc_age_info$c14_age <- rc_age_info$c14age - delta_r
+      rc_age_info$c14_sig <- sqrt(rc_age_info$c14_sig^2 - delta_r_sig^2)
+      f14c_info_adj <- .Convert14CageToF14c(rc_age_info$c14_age, rc_age_info$c14_sig)
+      rc_determination_adj <- f14c_info_adj$f14c
+      rc_sigma_adj <- f14c_info_adj$f14c_sig
+    }
+    rc_determination_post_offset <- rc_determination_adj
+    rc_sigma_post_offset <- rc_sigma_adj
+  } else {
+    rc_determination_post_offset <- rc_determination
+    rc_sigma_post_offset <- rc_sigma
+  }
+
   calendar_age_range <- range(calibration_curve$calendar_age_BP)
   calibration_curve <- InterpolateCalibrationCurve(
     seq(from = calendar_age_range[1], to = calendar_age_range[2], by = resolution),
     calibration_curve,
     F14C_outputs = F14C_inputs)
 
-  probabilities <- .ProbabilitiesForSingleDetermination(rc_determination, rc_sigma, F14C_inputs, calibration_curve)
+  probabilities <- .ProbabilitiesForSingleDetermination(rc_determination_post_offset, rc_sigma_post_offset, F14C_inputs, calibration_curve)
 
   if(plot_output == TRUE) {
     # Ensure revert to main environment par on exit of function
@@ -161,7 +192,12 @@ CalibrateSingleDetermination <- function(
       interval_width = interval_width,
       bespoke_probability = bespoke_probability,
       F14C_inputs = F14C_inputs,
-      denscale = denscale)
+      denscale = denscale,
+      offset = is_offset_needed,
+      rc_determination_post_offset = rc_determination_post_offset,
+      rc_sigma_post_offset = rc_sigma_post_offset,
+      delta_r = delta_r,
+      delta_r_sig = delta_r_sig)
   }
 
   return_data <- data.frame(calendar_age_BP=calibration_curve$calendar_age_BP, probability=probabilities)
@@ -208,6 +244,11 @@ CalibrateSingleDetermination <- function(
     bespoke_probability = NA,
     denscale = NA,
     show_hpd_ranges = TRUE,
+    offset = FALSE,
+    rc_determination_post_offset = NULL,
+    rc_sigma_post_offset = NULL,
+    delta_r = NULL,
+    delta_r_sig = NULL,
     prob_cutoff = 0.00001) {
 
   # What domain to plot in
@@ -268,6 +309,16 @@ CalibrateSingleDetermination <- function(
   calendar_ages <- .ConvertCalendarAge(plot_cal_age_scale, calendar_ages)
   xrange <- .ConvertCalendarAge(plot_cal_age_scale, xrange_BP)
 
+  # Add extra 14C histogram if original determination offset with delta_r
+  if(offset){
+    mtext(bquote(paste("(applying a " , Delta, "R of ", .(delta_r), "\u00B1", .(delta_r_sig), ""^14,
+                       "C yr BP)")),side=3,line=0)
+    .AddExtra14CAgeHist(rc_determination_post_offset,
+                        rc_sigma_post_offset,
+                        xrange,
+                        col = grDevices::rgb(0, 1, 0, .3))
+  }
+
   # Plot the 14C determination on the y-axis
   yfromto <- seq(rc_age - 4 * rc_sig, rc_age + 4 * rc_sig, length.out = 100)
   radpol <- cbind(
@@ -280,11 +331,14 @@ CalibrateSingleDetermination <- function(
   radpol[, 1] <- xrange[2] - radpol[, 1]
   graphics::polygon(radpol, col = grDevices::rgb(1, 0, 0, .5))
 
+
+
+
+
   # Save the plotting parameters for return
   plot_par <- graphics::par(no.readonly = TRUE)
 
   # Plot the posterior cal age on the x-axis
-
   .SetUpDensityPlot(
     plot_cal_age_scale,
     xlim = rev(xrange_BP),
@@ -319,6 +373,22 @@ CalibrateSingleDetermination <- function(
 
    return(plot_par)
 
+}
+
+
+.AddExtra14CAgeHist <- function(rc_age, rc_sig, xrange, col) {
+
+    # Plot the 14C determination on the y-axis
+  yfromto <- seq(rc_age - 4 * rc_sig, rc_age + 4 * rc_sig, length.out = 100)
+  radpol <- cbind(
+    c(0, stats::dnorm(yfromto, mean =rc_age, sd = rc_sig), 0),
+    c(min(yfromto), yfromto, max(yfromto))
+  )
+  relative_height <- 0.1
+  radpol[, 1] <- radpol[, 1] * (xrange[2] - xrange[1]) / max(radpol[, 1])
+  radpol[, 1] <- radpol[, 1] * relative_height
+  radpol[, 1] <- xrange[2] - radpol[, 1]
+  graphics::polygon(radpol, col = col)
 }
 
 
