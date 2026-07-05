@@ -79,7 +79,7 @@
 #'
 #' @export
 #'
-#' @seealso For annotating the plot, see [carbondate::AddTextPlot] and [carbondate::AddShadingPlot]
+#' @seealso For annotating the plot, see [carbondate::AddTextPlot], [carbondate::AddLinePlot] and [carbondate::AddShadingPlot]
 #'
 #' @examples
 #' # NOTE: All these examples are shown with a small n_iter and n_posterior_samples
@@ -99,12 +99,31 @@
 #' # Decrease the line width of the posterior mean
 #' PlotPosteriorMeanRate(pp_output, n_posterior_samples = 100, plot_lwd = 1)
 #'
-#' # Specify an 80% confidence interval
-#' PlotPosteriorMeanRate(
+#' # Specify an 80% confidence interval and add annotations
+#' posterior_mean_plot <- PlotPosteriorMeanRate(
 #'     pp_output,
 #'     interval_width = "bespoke",
 #'     bespoke_probability = 0.8,
 #'     n_posterior_samples = 100)
+#'
+#' AddShadingPlot(posterior_mean_plot,
+#'     x_start = 620, x_end = 600,
+#'     col = "red")
+#'
+#' AddLinePlot(
+#'      posterior_mean_plot,
+#'      h = 500,
+#'      col = "darkgreen",
+#'      lwd = 1,
+#'      lty = 2)
+#'
+#' AddTextPlot(posterior_mean_plot,
+#'     x = 575, y = 500,
+#'     labels = expression(paste("500", " "^14, "C ", "yrs BP")),
+#'     cex = 0.7,
+#'     pos = 3,
+#'     offset = 0.2,
+#'     col = "darkgreen")
 #'
 #' # Plot the posterior rate conditional on 2 internal changes
 #' PlotPosteriorMeanRate(
@@ -261,7 +280,7 @@ PlotPosteriorMeanRate <- function(
     calibration_curve_colour,
     output_colour)
 
-  return_list <- list(posterior_rate = posterior_rate, plot_par = plot_par )
+  return_list <- list(posterior_rate = posterior_rate, plot_par = plot_par)
 
   invisible(return_list)
 }

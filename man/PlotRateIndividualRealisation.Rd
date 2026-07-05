@@ -85,7 +85,7 @@ implement current user values.}
 Default is 2 (to add emphasis).}
 }
 \value{
-None
+A list with single element \code{plot_par} that contains the plotting/graphical parameters of the plot to allow for editing/annotation.
 }
 \description{
 Given output from the Poisson process fitting function \link{PPcalibrate} plot
@@ -122,4 +122,34 @@ PlotRateIndividualRealisation(
     pp_output,
     realisations = c(60, 73, 92),
     plot_realisations_colour = c("red", "green", "purple"))
+
+# Creating a plot and then adding annotations
+posterior_individual_rate_plot <- PlotRateIndividualRealisation(
+    pp_output,
+    n_realisations = 10)
+# Note: Assigning plot to a variable (with <-) is only needed for annotation.
+
+# Add annotations to a plot
+AddShadingPlot(posterior_individual_rate_plot,
+    x_start = 640, x_end = 620,
+    col = "red")
+
+AddLinePlot(
+     posterior_individual_rate_plot,
+     v = 600,
+     col = "purple",
+     lwd = 1,
+     lty = 2)
+
+AddTextPlot(posterior_individual_rate_plot,
+    x = 600, y = 480,
+    labels = expression(paste("600 cal yrs BP")),
+    cex = 0.7,
+    pos = 4,
+    offset = 0.2,
+    col = "purple")
+
+}
+\seealso{
+For annotating the plot, see \link{AddTextPlot}, \link{AddLinePlot} and \link{AddShadingPlot}
 }

@@ -39,7 +39,7 @@ None
 \description{
 Having plotted the output of the various modelling approaches, add one or more straight lines to the current plot. It is based on the base \link{abline} function
 
-This function/annotation can be applied after having called any of \link{PlotPosteriorMean}
+This function/annotation can be applied after having called any of \link{PlotPosteriorMeanRate}, \link{PlotPosteriorChangePoints}, \link{CalibrateSingleDetermination}, \link{PlotPredictiveCalendarAgeDensity}, \link{PlotCalendarAgeDensityIndividualSample}, or \link{PlotRateIndividualRealisation}.
 }
 \examples{
 # NOTE: This example is shown with a small n_iter and n_posterior_samples
@@ -66,13 +66,22 @@ AddLinePlot(
      lwd = 2,
      lty = 3)
 
-# Add narrow horizontal green solid line
+# Add narrow horizontal green dashed line
 AddLinePlot(
      posterior_mean_plot,
      h = 500,
-     col = "green",
+     col = "darkgreen",
      lwd = 1,
-     lty = 1)
+     lty = 2)
+
+# Add text to annotate line
+AddTextPlot(posterior_mean_plot,
+    x = 575, y = 500,
+    labels = expression(paste("500", " "^14, "C ", "yrs BP")),
+    cex = 0.7,
+    pos = 3,
+    offset = 0.2,
+    col = "darkgreen")
 
 # Add light gray grid lines
 AddLinePlot(posterior_mean_plot,

@@ -29,7 +29,7 @@ AddShadingPlot(
 None
 }
 \description{
-Having plotted the output of the various modelling approaches, add a shaded interval or box to the plot. This function/annotation can be applied after having called any of \link{PlotPosteriorMean}
+Having plotted the output of the various modelling approaches, add a shaded interval or box to the plot. This function/annotation can be applied after having called any of \link{PlotPosteriorMeanRate}, \link{PlotPosteriorChangePoints}, \link{CalibrateSingleDetermination}, \link{PlotPredictiveCalendarAgeDensity}, \link{PlotCalendarAgeDensityIndividualSample}, or \link{PlotRateIndividualRealisation}.
 }
 \examples{
 # NOTE: This example is shown with a small n_iter and n_posterior_samples

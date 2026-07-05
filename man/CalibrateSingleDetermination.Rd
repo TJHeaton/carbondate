@@ -60,9 +60,9 @@ margins (that create sufficient space for axis titles and rotates y-axis labels)
 implement current user values.}
 }
 \value{
-A data frame with one column \code{calendar_age_BP} containing the calendar
-ages, and the other column \code{probability} containing the probability at that
-calendar age.
+If \code{plot = FALSE} then a dataframe with with one column \code{calendar_age_BP} containing the calendar ages, and the other column \code{probability} containing the probability at that calendar age.
+
+If \code{plot = TRUE} then returns a list, the first element \code{posterior_cal_age} is as above. The second list element, \code{plot_par}, contains the plotting/graphical parameters of the plot to allow for editing/annotation.
 }
 \description{
 Uses the supplied calibration curve to calibrate a single radiocarbon
@@ -110,4 +110,25 @@ CalibrateSingleDetermination(
     interval_width = "bespoke",
     bespoke_probability = 0.8,
     denscale = 5)
+
+# Annotating a plot
+# Assign plot to a variable (with <-):
+individual_calibration_plot <- CalibrateSingleDetermination(860, 35, intcal20, plot_output = TRUE)
+
+AddLinePlot(individual_calibration_plot,
+    v = 850,
+    col = "purple",
+    lwd = 1,
+    lty = 2)
+
+AddTextPlot(individual_calibration_plot,
+    x = 850, y = 750,
+    labels = expression(paste("850 cal yrs BP")),
+    cex = 0.7,
+    pos = 2,
+    offset = 0.2,
+    col = "purple")
+}
+\seealso{
+For annotating the plot, see \link{AddTextPlot}, \link{AddLinePlot} and \link{AddShadingPlot}
 }

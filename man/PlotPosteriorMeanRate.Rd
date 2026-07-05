@@ -134,12 +134,31 @@ PlotPosteriorMeanRate(pp_output, n_posterior_samples = 100)
 # Decrease the line width of the posterior mean
 PlotPosteriorMeanRate(pp_output, n_posterior_samples = 100, plot_lwd = 1)
 
-# Specify an 80\% confidence interval
-PlotPosteriorMeanRate(
+# Specify an 80\% confidence interval and add annotations
+posterior_mean_plot <- PlotPosteriorMeanRate(
     pp_output,
     interval_width = "bespoke",
     bespoke_probability = 0.8,
     n_posterior_samples = 100)
+
+AddShadingPlot(posterior_mean_plot,
+    x_start = 620, x_end = 600,
+    col = "red")
+
+AddLinePlot(
+     posterior_mean_plot,
+     h = 500,
+     col = "darkgreen",
+     lwd = 1,
+     lty = 2)
+
+AddTextPlot(posterior_mean_plot,
+    x = 575, y = 500,
+    labels = expression(paste("500", " "^14, "C ", "yrs BP")),
+    cex = 0.7,
+    pos = 3,
+    offset = 0.2,
+    col = "darkgreen")
 
 # Plot the posterior rate conditional on 2 internal changes
 PlotPosteriorMeanRate(
@@ -150,5 +169,5 @@ PlotPosteriorMeanRate(
     n_posterior_samples = 100)
 }
 \seealso{
-For annotating the plot, see \link{AddTextPlot} and \link{AddShadingPlot}
+For annotating the plot, see \link{AddTextPlot}, \link{AddLinePlot} and \link{AddShadingPlot}
 }

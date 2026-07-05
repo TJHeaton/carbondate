@@ -70,15 +70,19 @@
 #' @param plot_lwd The line width to use when plotting the posterior mean (and confidence intervals).
 #' Default is 2 (to add emphasis).
 #'
-#' @return A list, each item containing a data frame of the `calendar_age_BP`, the
+#' @return A list, the first list element, `predictive_density`, is a data frame of the `calendar_age_BP`, the
 #' `density_mean` and the confidence intervals for the density
 #' `density_ci_lower` and `density_ci_upper` for each set of output data.
+#'
+#' The second list element, `plot_par`, contains the plotting/graphical parameters of the plot to allow for editing/annotation.
 #'
 #' @export
 #'
 #' @seealso [carbondate::FindPredictiveCalendarAgeDensity] if only interested in the estimated value of
 #' the predictive density on a grid; [carbondate::PlotNumberOfClusters] and
 #' [carbondate::PlotCalendarAgeDensityIndividualSample] for more plotting functions using DPMM output.
+#'
+#' Also, to annotate the plot, see [carbondate::AddTextPlot], [carbondate::AddLinePlot] and [carbondate::AddShadingPlot]
 #'
 #' @examples
 #' # NOTE: All these examples are shown with a small n_iter and n_posterior_samples
@@ -113,6 +117,25 @@
 #'     interval_width = "bespoke",
 #'     bespoke_probability = 0.8,
 #'     show_SPD = TRUE)
+#'
+#' # Annotating a plot
+#' # Assign plot to a variable (with <-):
+#' predictive_cal_age_plot <- PlotPredictiveCalendarAgeDensity(polya_urn_output, n_posterior_samples = 50)
+#'
+#' AddLinePlot(predictive_cal_age_plot,
+#'     v = 5000,
+#'     col = "darkorange",
+#'     lwd = 2,
+#'     lty = 2)
+#'
+#' AddTextPlot(predictive_cal_age_plot,
+#'     x = 5000, y = 3700,
+#'     labels = expression(paste("5000 cal yrs BP")),
+#'     cex = 0.7,
+#'     pos = 4,
+#'     offset = 0.2,
+#'     col = "darkorange")
+#'
 PlotPredictiveCalendarAgeDensity <- function(
     output_data,
     n_posterior_samples = 5000,
@@ -247,6 +270,8 @@ PlotPredictiveCalendarAgeDensity <- function(
     interval_width,
     bespoke_probability)
 
+  plot_par <- graphics::par(no.readonly = TRUE)
+
   .SetUpDensityPlot(plot_cal_age_scale, xlim, ylim_density)
 
   if (show_SPD) {
@@ -267,7 +292,10 @@ PlotPredictiveCalendarAgeDensity <- function(
     calibration_curve_colour,
     output_colours)
 
-  invisible(predictive_density)
+  return_list <- list(predictive_density = predictive_density,
+                      plot_par = plot_par )
+
+  invisible(return_list)
 }
 
 

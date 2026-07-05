@@ -3,7 +3,7 @@
 #' @description
 #' Having plotted the output of the various modelling approaches, add text annotation at a given location on the plot. It is based on the base [text] function
 #'
-#' This function/annotation can be applied after having called any of [carbondate::PlotPosteriorMean]
+#' This function/annotation can be applied after having called any of [carbondate::PlotPosteriorMeanRate], [carbondate::PlotPosteriorChangePoints], [carbondate::CalibrateSingleDetermination], [carbondate::PlotPredictiveCalendarAgeDensity], [carbondate::PlotCalendarAgeDensityIndividualSample], or [carbondate::PlotRateIndividualRealisation].
 #'
 #' @inheritParams graphics::text
 #'
@@ -30,12 +30,22 @@
 #'     pp_output,
 #'     n_posterior_samples = 100)
 #'
-#' # Add text to plot
+#' # Add horizontal green dashed line
+#' AddLinePlot(
+#'      posterior_mean_plot,
+#'      h = 500,
+#'      col = "darkgreen",
+#'      lwd = 1,
+#'      lty = 2)
+#'
+#' # Add text to annotate line
 #' AddTextPlot(posterior_mean_plot,
-#'     x = 600, y = 500,
-#'     labels = expression(paste("600", ""^14, "C ", "yrs BP")),
+#'     x = 575, y = 500,
+#'     labels = expression(paste("500", " "^14, "C ", "yrs BP")),
 #'     cex = 0.7,
-#'     col = "red")
+#'     pos = 3,
+#'     offset = 0.2,
+#'     col = "darkgreen")
 #'
 AddTextPlot <- function(
     output_plot,
@@ -62,7 +72,7 @@ AddTextPlot <- function(
 #' Add Shading to Various Summary Plots
 #'
 #' @description
-#' Having plotted the output of the various modelling approaches, add a shaded interval or box to the plot. This function/annotation can be applied after having called any of [carbondate::PlotPosteriorMean]
+#' Having plotted the output of the various modelling approaches, add a shaded interval or box to the plot. This function/annotation can be applied after having called any of [carbondate::PlotPosteriorMeanRate], [carbondate::PlotPosteriorChangePoints], [carbondate::CalibrateSingleDetermination], [carbondate::PlotPredictiveCalendarAgeDensity], [carbondate::PlotCalendarAgeDensityIndividualSample], or [carbondate::PlotRateIndividualRealisation].
 #'
 #' @param output_plot The plot onto which you wish to add text
 #' @param x_start,x_end The values on the x-axis (calendar age) at which you want the shading to start and end
@@ -141,8 +151,7 @@ AddShadingPlot <- function(
 #' @description
 #' Having plotted the output of the various modelling approaches, add one or more straight lines to the current plot. It is based on the base [abline] function
 #'
-#'
-#' This function/annotation can be applied after having called any of [carbondate::PlotPosteriorMean]
+#' This function/annotation can be applied after having called any of [carbondate::PlotPosteriorMeanRate], [carbondate::PlotPosteriorChangePoints], [carbondate::CalibrateSingleDetermination], [carbondate::PlotPredictiveCalendarAgeDensity], [carbondate::PlotCalendarAgeDensityIndividualSample], or [carbondate::PlotRateIndividualRealisation].
 #'
 #' @inheritParams graphics::abline
 #'
@@ -178,13 +187,22 @@ AddShadingPlot <- function(
 #'      lwd = 2,
 #'      lty = 3)
 #'
-#' # Add narrow horizontal green solid line
+#' # Add narrow horizontal green dashed line
 #' AddLinePlot(
 #'      posterior_mean_plot,
 #'      h = 500,
-#'      col = "green",
+#'      col = "darkgreen",
 #'      lwd = 1,
-#'      lty = 1)
+#'      lty = 2)
+#'
+#' # Add text to annotate line
+#' AddTextPlot(posterior_mean_plot,
+#'     x = 575, y = 500,
+#'     labels = expression(paste("500", " "^14, "C ", "yrs BP")),
+#'     cex = 0.7,
+#'     pos = 3,
+#'     offset = 0.2,
+#'     col = "darkgreen")
 #'
 #' # Add light gray grid lines
 #' AddLinePlot(posterior_mean_plot,

@@ -21,9 +21,11 @@
 #' if `"bespoke"` is chosen above. E.g., if 0.95 is chosen, then the 95% confidence
 #' interval is calculated. Ignored if `"bespoke"` is not chosen.
 #'
-#' @return None
+#' @return A list with single element `plot_par` that contains the plotting/graphical parameters of the plot to allow for editing/annotation.
 #'
 #' @export
+#'
+#' @seealso For annotating the plot, see [carbondate::AddTextPlot], [carbondate::AddLinePlot] and [carbondate::AddShadingPlot]
 #'
 #' @examples
 #' #' # NOTE: All these examples are shown with a small n_iter and n_posterior_samples
@@ -53,6 +55,33 @@
 #'     pp_output,
 #'     realisations = c(60, 73, 92),
 #'     plot_realisations_colour = c("red", "green", "purple"))
+#'
+#' # Creating a plot and then adding annotations
+#' posterior_individual_rate_plot <- PlotRateIndividualRealisation(
+#'     pp_output,
+#'     n_realisations = 10)
+#' # Note: Assigning plot to a variable (with <-) is only needed for annotation.
+#'
+#' # Add annotations to a plot
+#' AddShadingPlot(posterior_individual_rate_plot,
+#'     x_start = 640, x_end = 620,
+#'     col = "red")
+#'
+#' AddLinePlot(
+#'      posterior_individual_rate_plot,
+#'      v = 600,
+#'      col = "purple",
+#'      lwd = 1,
+#'      lty = 2)
+#'
+#' AddTextPlot(posterior_individual_rate_plot,
+#'     x = 600, y = 480,
+#'     labels = expression(paste("600 cal yrs BP")),
+#'     cex = 0.7,
+#'     pos = 4,
+#'     offset = 0.2,
+#'     col = "purple")
+#'
 PlotRateIndividualRealisation <- function(
     output_data,
     n_realisations = 10,
@@ -178,7 +207,7 @@ PlotRateIndividualRealisation <- function(
   # Plot curves
   plot_title <- expression(paste("Posterior realisations of rate ", lambda, "(t)"))
 
-  .PlotCalibrationCurveAndInputData(
+   .PlotCalibrationCurveAndInputData(
     plot_cal_age_scale,
     xlim,
     calibration_curve,
@@ -189,6 +218,9 @@ PlotRateIndividualRealisation <- function(
     interval_width,
     bespoke_probability,
     title = plot_title)
+
+   # Save plotting par for return
+   plot_par <- graphics::par(no.readonly = TRUE)
 
   .SetUpDensityPlot(plot_cal_age_scale, xlim, ylim_rate)
 
@@ -205,6 +237,8 @@ PlotRateIndividualRealisation <- function(
     calibration_curve_colour,
     output_colour = plot_realisations_colour[1])
 
+  return_list <- list(plot_par = plot_par )
+  invisible(return_list)
 }
 
 

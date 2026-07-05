@@ -37,9 +37,12 @@
 #'
 #' @export
 #'
-#' @return A data frame with one column `calendar_age_BP` containing the calendar
-#' ages, and the other column `probability` containing the probability at that
-#' calendar age.
+#' @seealso For annotating the plot, see [carbondate::AddTextPlot], [carbondate::AddLinePlot] and [carbondate::AddShadingPlot]
+#'
+#'
+#' @return If `plot = FALSE` then a dataframe with with one column `calendar_age_BP` containing the calendar ages, and the other column `probability` containing the probability at that calendar age.
+#'
+#' If `plot = TRUE` then returns a list, the first element `posterior_cal_age` is as above. The second list element, `plot_par`, contains the plotting/graphical parameters of the plot to allow for editing/annotation.
 #'
 #' @examples
 #' # Calibration of a single determination expressed as 14C age BP
@@ -81,6 +84,24 @@
 #'     interval_width = "bespoke",
 #'     bespoke_probability = 0.8,
 #'     denscale = 5)
+#'
+#' # Annotating a plot
+#' # Assign plot to a variable (with <-):
+#' individual_calibration_plot <- CalibrateSingleDetermination(860, 35, intcal20, plot_output = TRUE)
+#'
+#' AddLinePlot(individual_calibration_plot,
+#'     v = 850,
+#'     col = "purple",
+#'     lwd = 1,
+#'     lty = 2)
+#'
+#' AddTextPlot(individual_calibration_plot,
+#'     x = 850, y = 750,
+#'     labels = expression(paste("850 cal yrs BP")),
+#'     cex = 0.7,
+#'     pos = 2,
+#'     offset = 0.2,
+#'     col = "purple")
 CalibrateSingleDetermination <- function(
     rc_determination,
     rc_sigma,
@@ -129,7 +150,7 @@ CalibrateSingleDetermination <- function(
         las = 1)
     }
 
-    .PlotIndependentCalibration(
+    plot_par <- .PlotIndependentCalibration(
       rc_determination = rc_determination,
       rc_sigma = rc_sigma,
       calendar_ages = calibration_curve$calendar_age_BP,
@@ -145,7 +166,9 @@ CalibrateSingleDetermination <- function(
 
   return_data <- data.frame(calendar_age_BP=calibration_curve$calendar_age_BP, probability=probabilities)
   if (plot_output == TRUE) {
-    invisible(return_data)
+    return_list <- list(posterior_cal_age = return_data,
+                    plot_par = plot_par )
+    invisible(return_list)
   } else {
     return(return_data)
   }
@@ -257,6 +280,9 @@ CalibrateSingleDetermination <- function(
   radpol[, 1] <- xrange[2] - radpol[, 1]
   graphics::polygon(radpol, col = grDevices::rgb(1, 0, 0, .5))
 
+  # Save the plotting parameters for return
+  plot_par <- graphics::par(no.readonly = TRUE)
+
   # Plot the posterior cal age on the x-axis
 
   .SetUpDensityPlot(
@@ -290,6 +316,8 @@ CalibrateSingleDetermination <- function(
     calcurve_name = calibration_curve_name,
     show_hpd_ranges = TRUE,
     hpd)
+
+   return(plot_par)
 
 }
 

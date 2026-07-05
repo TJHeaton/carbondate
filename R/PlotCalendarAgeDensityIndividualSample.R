@@ -46,12 +46,17 @@
 #'
 #' @export
 #'
-#' @return A data frame with one column `calendar_age_BP` containing the calendar ages, and the other
+#' @return A list, the first list element, `posterior_density`, with one column `calendar_age_BP` containing the calendar ages, and the other
 #' column `probability` containing the (smoothed) kernel density estimate of the probability at that
 #' calendar age.
 #'
+#' The second list element, `plot_par`, contains the plotting/graphical parameters of the plot to allow for editing/annotation.
+#'
+#'
 #' @seealso [carbondate::CalibrateSingleDetermination] for independent calibration of a sample against
 #' a calibration curve.
+#'
+#' Also, to annotate the plot, see [carbondate::AddTextPlot], [carbondate::AddLinePlot] and [carbondate::AddShadingPlot]
 #'
 #' @examples
 #' # NOTE 1: These examples are shown with a small n_iter to speed up execution.
@@ -82,9 +87,27 @@
 #'     show_unmodelled_density = TRUE)
 #'
 #' # Plot and then assign the returned probability
-#' posterior_dens <- PlotCalendarAgeDensityIndividualSample(15, polya_urn_output)
+#' individual_post_density_plot <- PlotCalendarAgeDensityIndividualSample(15, polya_urn_output)
+#' posterior_dens <-  individual_post_density_plot$posterior_density
+#'
 #' # Use this to find the mean posterior calendar age
 #' weighted.mean(posterior_dens$calendar_age_BP, posterior_dens$probability)
+#'
+#' # Add annotation to the plot
+#' AddLinePlot(individual_post_density_plot,
+#'     v = 5050,
+#'     col = "darkorange",
+#'     lwd = 2,
+#'     lty = 2)
+#'
+#' AddTextPlot(individual_post_density_plot,
+#'     x = 5050, y = 4370,
+#'     labels = expression(paste("5050 cal yrs BP")),
+#'     cex = 0.7,
+#'     pos = 4,
+#'     offset = 0.2,
+#'     col = "darkorange")
+#'
 PlotCalendarAgeDensityIndividualSample <- function(
     ident,
     output_data,
@@ -218,6 +241,9 @@ PlotCalendarAgeDensityIndividualSample <- function(
     bespoke_probability = bespoke_probability,
     title = title)
 
+  # Save plotting par for return
+  plot_par <- graphics::par(no.readonly = TRUE)
+
   calendar_age <- .ConvertCalendarAge(plot_cal_age_scale, calendar_age_BP)
   xrange <- .ConvertCalendarAge(plot_cal_age_scale, xrange_BP)
   smoothed_density$x <- .ConvertCalendarAge(plot_cal_age_scale, smoothed_density$x)
@@ -288,7 +314,9 @@ PlotCalendarAgeDensityIndividualSample <- function(
     show_unmodelled_density,
     hpd)
 
-  invisible(returned_density)
+  return_list <- list(posterior_density = returned_density, plot_par = plot_par)
+
+  invisible(return_list)
 }
 
 .AddLegendToDensitySamplePlot <- function(
