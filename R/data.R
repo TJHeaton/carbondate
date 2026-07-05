@@ -4,8 +4,8 @@
 #' on a calendar grid spanning from 55,000--0 cal yr BP
 #' (Before Present, 0 cal yr BP corresponds to 1950 CE). \cr \cr
 #' \emph{Note:} This dataset provides \eqn{{}^{14}}C ages and F\eqn{{}^{14}}C values
-#' on a calendar age grid. This is different from the \eqn{{}^{14}}C ages
-#' and \eqn{{\Delta}^{14}}C values provided in oxcal .14c files.\cr \cr
+#' on a calendar age grid. This is a different format from oxcal/calib .14c files
+#' which give the \eqn{{}^{14}}C ages and \eqn{{\Delta}^{14}}C values.\cr \cr
 #' \strong{Reference:} \cr Reimer PJ, Austin WEN, Bard E, Bayliss A, Blackwell PG, Bronk Ramsey C,
 #' Butzin M, Cheng H, Edwards RL, Friedrich M, Grootes PM, Guilderson TP,
 #' Hajdas I, Heaton TJ, Hogg AG, Hughen KA, Kromer B, Manning SW, Muscheler R,
@@ -22,9 +22,9 @@
 #' \describe{
 #'   \item{calendar_age}{The calendar age (in cal yr BP)}
 #'   \item{c14_age}{The \eqn{{}^{14}}C age (in \eqn{{}^{14}}C yr BP)}
-#'   \item{c14_sig}{The (1-\eqn{\sigma}) uncertainty in the \eqn{{}^{14}}C age}
+#'   \item{c14_sig}{The (1\eqn{\sigma}) uncertainty in the \eqn{{}^{14}}C age}
 #'   \item{f14c}{The \eqn{{}^{14}}C age expressed as F\eqn{{}^{14}}C concentration}
-#'   \item{f14c_sig}{The (1-\eqn{\sigma}) uncertainty in the F\eqn{{}^{14}}C concentration}
+#'   \item{f14c_sig}{The (1\eqn{\sigma}) uncertainty in the F\eqn{{}^{14}}C concentration}
 #' }
 #' @source http://doi.org/10.1017/RDC.2020.41
 "intcal20"
@@ -35,8 +35,8 @@
 #' on a calendar grid spanning from 50,000--0 cal yr BP
 #' (Before Present, 0 cal yr BP corresponds to 1950 CE). \cr \cr
 #' \emph{Note:} This dataset provides \eqn{{}^{14}}C ages and F\eqn{{}^{14}}C values
-#' on a calendar age grid. This is different from the \eqn{{}^{14}}C ages
-#' and \eqn{{\Delta}^{14}}C values provided in oxcal .14c files.\cr \cr
+#' on a calendar age grid. This is a different format from oxcal/calib .14c files
+#' which give the \eqn{{}^{14}}C ages and \eqn{{\Delta}^{14}}C values.\cr \cr
 #' \strong{Reference:} \cr Reimer PJ, Bard E, Bayliss A, Beck JW, Blackwell PG, Bronk Ramsey C, Buck CE,
 #' Cheng H, Edwards RL, Friedrich M, Grootes PM, Guilderson TP, Haflidason H,
 #' Hajdas I, Hatt? C, Heaton TJ, Hogg AG, Hughen KA, Kaiser KF, Kromer B,
@@ -51,9 +51,9 @@
 #' \describe{
 #'   \item{calendar_age}{The calendar age (in cal yr BP)}
 #'   \item{c14_age}{The \eqn{{}^{14}}C age (in \eqn{{}^{14}}C yr BP)}
-#'   \item{c14_sig}{The (1-\eqn{\sigma}) uncertainty in the \eqn{{}^{14}}C age}
+#'   \item{c14_sig}{The (1\eqn{\sigma}) uncertainty in the \eqn{{}^{14}}C age}
 #'   \item{f14c}{The \eqn{{}^{14}}C age expressed as F\eqn{{}^{14}}C concentration}
-#'   \item{f14c_sig}{The (1-\eqn{\sigma}) uncertainty in the F\eqn{{}^{14}}C concentration}
+#'   \item{f14c_sig}{The (1\eqn{\sigma}) uncertainty in the F\eqn{{}^{14}}C concentration}
 #' }
 #' @source http://doi.org/10.2458/azu_js_rc.55.16947
 "intcal13"
@@ -64,8 +64,8 @@
 #' on a calendar grid spanning from 50,000--0 cal yr BP
 #' (Before Present, 0 cal yr BP corresponds to 1950 CE). \cr \cr
 #' \emph{Note:} This dataset provides \eqn{{}^{14}}C ages and F\eqn{{}^{14}}C values
-#' on a calendar age grid. This is different from the \eqn{{}^{14}}C ages
-#' and \eqn{{\Delta}^{14}}C values provided in oxcal .14c files.\cr \cr
+#' on a calendar age grid. This is a different format from oxcal/calib .14c files
+#' which give the \eqn{{}^{14}}C ages and \eqn{{\Delta}^{14}}C values.\cr \cr
 #' \strong{Reference:} \cr PJ Reimer, MGL Baillie, E Bard, A Bayliss, JW Beck, PG Blackwell,
 #' C Bronk Ramsey, CE Buck, GS Burr, RL Edwards, M Friedrich, PM Grootes,
 #' TP Guilderson, I Hajdas, TJ Heaton, AG Hogg, KA Hughen, KF Kaiser, B Kromer,
@@ -80,9 +80,9 @@
 #' \describe{
 #'   \item{calendar_age}{The calendar age (in cal yr BP)}
 #'   \item{c14_age}{The \eqn{{}^{14}}C age (in \eqn{{}^{14}}C yr BP)}
-#'   \item{c14_sig}{The (1-\eqn{\sigma}) uncertainty in the \eqn{{}^{14}}C age}
+#'   \item{c14_sig}{The (1\eqn{\sigma}) uncertainty in the \eqn{{}^{14}}C age}
 #'   \item{f14c}{The \eqn{{}^{14}}C age expressed as F\eqn{{}^{14}}C concentration}
-#'   \item{f14c_sig}{The (1-\eqn{\sigma}) uncertainty in the F\eqn{{}^{14}}C concentration}
+#'   \item{f14c_sig}{The (1\eqn{\sigma}) uncertainty in the F\eqn{{}^{14}}C concentration}
 #' }
 #' @source http://doi.org/10.1017/S0033822200034202
 "intcal09"
@@ -93,8 +93,8 @@
 #' on a calendar grid spanning from 26,000--0 cal yr BP
 #' (Before Present, 0 cal yr BP corresponds to 1950 CE). \cr \cr
 #' \emph{Note:} This dataset provides \eqn{{}^{14}}C ages and F\eqn{{}^{14}}C values
-#' on a calendar age grid. This is different from the \eqn{{}^{14}}C ages
-#' and \eqn{{\Delta}^{14}}C values provided in oxcal .14c files.\cr \cr
+#' on a calendar age grid. This is a different format from oxcal/calib .14c files
+#' which give the \eqn{{}^{14}}C ages and \eqn{{\Delta}^{14}}C values.\cr \cr
 #' \strong{Reference:} \cr PJ Reimer, MGL Baillie, E Bard, A Bayliss, JW Beck, C Bertrand, PG Blackwell,
 #' CE Buck, G Burr, KB Cutler, PE Damon, RL Edwards, RG Fairbanks, M Friedrich,
 #' TP Guilderson, KA Hughen, B Kromer, FG McCormac, S Manning, C Bronk Ramsey,
@@ -109,9 +109,9 @@
 #' \describe{
 #'   \item{calendar_age}{The calendar age (in cal yr BP)}
 #'   \item{c14_age}{The \eqn{{}^{14}}C age (in \eqn{{}^{14}}C yr BP)}
-#'   \item{c14_sig}{The (1-\eqn{\sigma}) uncertainty in the \eqn{{}^{14}}C age}
+#'   \item{c14_sig}{The (1\eqn{\sigma}) uncertainty in the \eqn{{}^{14}}C age}
 #'   \item{f14c}{The \eqn{{}^{14}}C age expressed as F\eqn{{}^{14}}C concentration}
-#'   \item{f14c_sig}{The (1-\eqn{\sigma}) uncertainty in the F\eqn{{}^{14}}C concentration}
+#'   \item{f14c_sig}{The (1\eqn{\sigma}) uncertainty in the F\eqn{{}^{14}}C concentration}
 #' }
 #' @source https://doi.org/10.1017/S0033822200032999
 "intcal04"
@@ -122,8 +122,8 @@
 #' on a calendar grid spanning from 24,000--0 cal yr BP
 #' (Before Present, 0 cal yr BP corresponds to 1950 CE). \cr \cr
 #' \emph{Note:} This dataset provides \eqn{{}^{14}}C ages and F\eqn{{}^{14}}C values
-#' on a calendar age grid. This is different from the \eqn{{}^{14}}C ages
-#' and \eqn{{\Delta}^{14}}C values provided in oxcal .14c files.\cr \cr
+#' on a calendar age grid. This is a different format from oxcal/calib .14c files
+#' which give the \eqn{{}^{14}}C ages and \eqn{{\Delta}^{14}}C values.\cr \cr
 #' \strong{Reference:} \cr M. Stuiver, P. J. Reimer, E. Bard, J. W. Beck, G. S. Burr, K. A. Hughen,
 #' B. Kromer, F. G. McCormac, J. v. d. Plicht and M. Spurk. 1998.
 #' INTCAL98 Radiocarbon Age Calibration, 24,000--0 cal BP.
@@ -135,9 +135,9 @@
 #' \describe{
 #'   \item{calendar_age}{The calendar age (in cal yr BP)}
 #'   \item{c14_age}{The \eqn{{}^{14}}C age (in \eqn{{}^{14}}C yr BP)}
-#'   \item{c14_sig}{The (1-\eqn{\sigma}) uncertainty in the \eqn{{}^{14}}C age}
+#'   \item{c14_sig}{The (1\eqn{\sigma}) uncertainty in the \eqn{{}^{14}}C age}
 #'   \item{f14c}{The \eqn{{}^{14}}C age expressed as F\eqn{{}^{14}}C concentration}
-#'   \item{f14c_sig}{The (1-\eqn{\sigma}) uncertainty in the F\eqn{{}^{14}}C concentration}
+#'   \item{f14c_sig}{The (1\eqn{\sigma}) uncertainty in the F\eqn{{}^{14}}C concentration}
 #' }
 #' @source https://doi.org/10.1017/S0033822200019123
 "intcal98"
@@ -148,8 +148,8 @@
 #' on a calendar grid spanning from 55,000--0 cal yr BP
 #' (Before Present, 0 cal yr BP corresponds to 1950 CE). \cr \cr
 #' \emph{Note:} This dataset provides \eqn{{}^{14}}C ages and F\eqn{{}^{14}}C values
-#' on a calendar age grid. This is different from the \eqn{{}^{14}}C ages
-#' and \eqn{{\Delta}^{14}}C values provided in oxcal .14c files.\cr \cr
+#' on a calendar age grid. This is a different format from oxcal/calib .14c files
+#' which give the \eqn{{}^{14}}C ages and \eqn{{\Delta}^{14}}C values.\cr \cr
 #' \strong{Reference:} \cr Hogg AG, Heaton TJ, Hua Q, Palmer JG, Turney CSM, Southon J, Bayliss A, Blackwell PG,
 #' Boswijk G, Bronk Ramsey C, Pearson C, Petchey F, Reimer P, Reimer R, Wacker L.
 #' 2020.
@@ -162,9 +162,9 @@
 #' \describe{
 #'   \item{calendar_age}{The calendar age (in cal yr BP)}
 #'   \item{c14_age}{The \eqn{{}^{14}}C age (in \eqn{{}^{14}}C yr BP)}
-#'   \item{c14_sig}{The (1-\eqn{\sigma}) uncertainty in the \eqn{{}^{14}}C age}
+#'   \item{c14_sig}{The (1\eqn{\sigma}) uncertainty in the \eqn{{}^{14}}C age}
 #'   \item{f14c}{The \eqn{{}^{14}}C age expressed as F\eqn{{}^{14}}C concentration}
-#'   \item{f14c_sig}{The (1-\eqn{\sigma}) uncertainty in the F\eqn{{}^{14}}C concentration}
+#'   \item{f14c_sig}{The (1\eqn{\sigma}) uncertainty in the F\eqn{{}^{14}}C concentration}
 #' }
 #' @source http://doi.org/10.1017/RDC.2020.59
 "shcal20"
@@ -176,8 +176,8 @@
 #' on a calendar grid spanning from 50,000--0 cal yr BP
 #' (Before Present, 0 cal yr BP corresponds to 1950 CE). \cr \cr
 #' \emph{Note:} This dataset provides \eqn{{}^{14}}C ages and F\eqn{{}^{14}}C values
-#' on a calendar age grid. This is different from the \eqn{{}^{14}}C ages
-#' and \eqn{{\Delta}^{14}}C values provided in oxcal .14c files.\cr \cr
+#' on a calendar age grid. This is a different format from oxcal/calib .14c files
+#' which give the \eqn{{}^{14}}C ages and \eqn{{\Delta}^{14}}C values.\cr \cr
 #' \strong{Reference:} \cr Alan G Hogg, Quan Hua, Paul G Blackwell, Caitlin E Buck, Thomas P Guilderson,
 #' Timothy J  Heaton, Mu Niu, Jonathan G Palmer, Paula J Reimer, Ron W Reimer,
 #' Christian S M Turney, Susan R H Zimmerman. 2013.
@@ -190,9 +190,9 @@
 #' \describe{
 #'   \item{calendar_age}{The calendar age (in cal yr BP)}
 #'   \item{c14_age}{The \eqn{{}^{14}}C age (in \eqn{{}^{14}}C yr BP)}
-#'   \item{c14_sig}{The (1-\eqn{\sigma}) uncertainty in the \eqn{{}^{14}}C age}
+#'   \item{c14_sig}{The (1\eqn{\sigma}) uncertainty in the \eqn{{}^{14}}C age}
 #'   \item{f14c}{The \eqn{{}^{14}}C age expressed as F\eqn{{}^{14}}C concentration}
-#'   \item{f14c_sig}{The (1-\eqn{\sigma}) uncertainty in the F\eqn{{}^{14}}C concentration}
+#'   \item{f14c_sig}{The (1\eqn{\sigma}) uncertainty in the F\eqn{{}^{14}}C concentration}
 #' }
 #' @source http://doi.org/10.2458/azu_js_rc.55.16783
 "shcal13"
@@ -204,8 +204,8 @@
 #' on a calendar grid spanning from 11,000--0 cal yr BP
 #' (Before Present, 0 cal yr BP corresponds to 1950 CE). \cr \cr
 #' \emph{Note:} This dataset provides \eqn{{}^{14}}C ages and F\eqn{{}^{14}}C values
-#' on a calendar age grid. This is different from the \eqn{{}^{14}}C ages
-#' and \eqn{{\Delta}^{14}}C values provided in oxcal .14c files.\cr \cr
+#' on a calendar age grid. This is a different format from oxcal/calib .14c files
+#' which give the \eqn{{}^{14}}C ages and \eqn{{\Delta}^{14}}C values.\cr \cr
 #' \strong{Reference:} \cr FG McCormac, AG Hogg, PG Blackwell, CE Buck, TFG Higham, and PJ Reimer
 #' 2004.
 #' SHCal04 Southern Hemisphere Calibration 0--11.0 cal kyr BP.
@@ -217,12 +217,130 @@
 #' \describe{
 #'   \item{calendar_age}{The calendar age (in cal yr BP)}
 #'   \item{c14_age}{The \eqn{{}^{14}}C age (in \eqn{{}^{14}}C yr BP)}
-#'   \item{c14_sig}{The (1-\eqn{\sigma}) uncertainty in the \eqn{{}^{14}}C age}
+#'   \item{c14_sig}{The (1\eqn{\sigma}) uncertainty in the \eqn{{}^{14}}C age}
 #'   \item{f14c}{The \eqn{{}^{14}}C age expressed as F\eqn{{}^{14}}C concentration}
-#'   \item{f14c_sig}{The (1-\eqn{\sigma}) uncertainty in the F\eqn{{}^{14}}C concentration}
+#'   \item{f14c_sig}{The (1\eqn{\sigma}) uncertainty in the F\eqn{{}^{14}}C concentration}
 #' }
 #' @source http://doi.org/10.1017/S0033822200033014
 "shcal04"
+
+
+#' Marine20 calibration curve
+#'
+#' The Marine20 marine radiocarbon age calibration curve
+#' on a calendar grid spanning from 55,000--0 cal yr BP
+#' (Before Present, 0 cal yr BP corresponds to 1950 CE). \cr \cr
+#' \emph{Note:} This dataset provides \eqn{{}^{14}}C ages and F\eqn{{}^{14}}C values
+#' on a calendar age grid. This is a different format from oxcal/calib .14c files
+#' which give the \eqn{{}^{14}}C ages and \eqn{{\Delta}^{14}}C values.\cr \cr
+#' \strong{Reference:} \cr Heaton TJ, Köhler P, Butzin M, Bard E, Reimer RW,
+#'  Austin WEN, Bronk Ramsey C, Grootes PM, Hughen KA, Kromer B, Reimer PJ,
+#'  Adkins J, Burke A, Cook MA, Olsen J, Skinner L. 2020 Marine20 - the marine radiocarbon age calibration curve (0–55,000 cal BP).
+#' \emph{Radiocarbon} \strong{62} https://doi.org/10.1017/RDC.2020.68. \cr \cr
+#'
+#' @format ## `marine20`
+#' A data frame with 5,501 rows and 5 columns providing the Marine20 radiocarbon age
+#' calibration curve on a calendar grid spanning from 55,000--0 cal yr BP:
+#' \describe{
+#'   \item{calendar_age}{The calendar age (in cal yr BP)}
+#'   \item{c14_age}{The \eqn{{}^{14}}C age (in \eqn{{}^{14}}C yr BP)}
+#'   \item{c14_sig}{The (1\eqn{\sigma}) uncertainty in the \eqn{{}^{14}}C age}
+#'   \item{f14c}{The \eqn{{}^{14}}C age expressed as F\eqn{{}^{14}}C concentration}
+#'   \item{f14c_sig}{The (1\eqn{\sigma}) uncertainty in the F\eqn{{}^{14}}C concentration}
+#' }
+#' @source http://doi.org/10.1017/RDC.2020.68
+"marine20"
+
+
+#' Marine13 calibration curve
+#'
+#' The Marine13 marine radiocarbon age calibration curve
+#' on a calendar grid spanning from 55,000--0 cal yr BP
+#' (Before Present, 0 cal yr BP corresponds to 1950 CE). \cr \cr
+#' \emph{Note:} This dataset provides \eqn{{}^{14}}C ages and F\eqn{{}^{14}}C values
+#' on a calendar age grid. This is a different format from oxcal/calib .14c files
+#' which give the \eqn{{}^{14}}C ages and \eqn{{\Delta}^{14}}C values.\cr \cr
+#' \strong{Reference:} \cr Reimer PJ, Bard E, Bayliss A, Beck JW, Blackwell PG, Bronk Ramsey C, Buck CE,
+#' Cheng H, Edwards RL, Friedrich M, Grootes PM, Guilderson TP, Haflidason H,
+#' Hajdas I, Hatt? C, Heaton TJ, Hogg AG, Hughen KA, Kaiser KF, Kromer B,
+#' Manning SW, Niu M, Reimer RW, Richards DA, Scott EM, Southon JR, Turney CSM,
+#' van der Plicht J. 2013.
+#' IntCal13 and Marine13 radiocarbon age calibration curves 0--50000 years calBP.
+#' \emph{Radiocarbon} \strong{55}(4) https://doi.org/10.2458/azu_js_rc.55.16947. \cr \cr
+#'
+#' @format ## `marine13`
+#' A data frame with 4,801 rows and 5 columns providing the Marine13 radiocarbon age
+#' calibration curve on a calendar grid spanning from 50,000--0 cal yr BP:
+#' \describe{
+#'   \item{calendar_age}{The calendar age (in cal yr BP)}
+#'   \item{c14_age}{The \eqn{{}^{14}}C age (in \eqn{{}^{14}}C yr BP)}
+#'   \item{c14_sig}{The (1\eqn{\sigma}) uncertainty in the \eqn{{}^{14}}C age}
+#'   \item{f14c}{The \eqn{{}^{14}}C age expressed as F\eqn{{}^{14}}C concentration}
+#'   \item{f14c_sig}{The (1\eqn{\sigma}) uncertainty in the F\eqn{{}^{14}}C concentration}
+#' }
+#' @source http://doi.org/10.2458/azu_js_rc.55.16947
+"marine13"
+
+
+#' Marine09 calibration curve
+#'
+#' The Marine09 marine radiocarbon age calibration curve
+#' on a calendar grid spanning from 50,000--0 cal yr BP
+#' (Before Present, 0 cal yr BP corresponds to 1950 CE). \cr \cr
+#' \emph{Note:} This dataset provides \eqn{{}^{14}}C ages and F\eqn{{}^{14}}C values
+#' on a calendar age grid. This is a different format from oxcal/calib .14c files
+#' which give the \eqn{{}^{14}}C ages and \eqn{{\Delta}^{14}}C values.\cr \cr
+#' \strong{Reference:} \cr PJ Reimer, MGL Baillie, E Bard, A Bayliss, JW Beck, PG Blackwell,
+#' C Bronk Ramsey, CE Buck, GS Burr, RL Edwards, M Friedrich, PM Grootes,
+#' TP Guilderson, I Hajdas, TJ Heaton, AG Hogg, KA Hughen, KF Kaiser, B Kromer,
+#' FG McCormac, SW Manning, RW Reimer, DA Richards, JR Southon, S Talamo,
+#' CSM Turney, J van der Plicht, CE Weyhenmeyer. 2009.
+#' IntCal09 and Marine09 Radiocarbon Age Calibration Curves, 0--50,000 Years cal BP
+#' \emph{Radiocarbon} \strong{51}(4):1111-1150 https://doi.org/10.1017/S0033822200034202. \cr \cr
+#'
+#' @format ## `marine09`
+#' A data frame with 3,651 rows and 5 columns providing the Marine09 radiocarbon age
+#' calibration curve on a calendar grid spanning from 50,000--0 cal yr BP:
+#' \describe{
+#'   \item{calendar_age}{The calendar age (in cal yr BP)}
+#'   \item{c14_age}{The \eqn{{}^{14}}C age (in \eqn{{}^{14}}C yr BP)}
+#'   \item{c14_sig}{The (1\eqn{\sigma}) uncertainty in the \eqn{{}^{14}}C age}
+#'   \item{f14c}{The \eqn{{}^{14}}C age expressed as F\eqn{{}^{14}}C concentration}
+#'   \item{f14c_sig}{The (1\eqn{\sigma}) uncertainty in the F\eqn{{}^{14}}C concentration}
+#' }
+#' @source http://doi.org/10.1017/S0033822200034202
+"marine09"
+
+
+#' Marine04 calibration curve
+#'
+#' The Marine04 marine radiocarbon age calibration curve
+#' on a calendar grid spanning from 50,000--0 cal yr BP
+#' (Before Present, 0 cal yr BP corresponds to 1950 CE). \cr \cr
+#' \emph{Note:} This dataset provides \eqn{{}^{14}}C ages and F\eqn{{}^{14}}C values
+#' on a calendar age grid. This is a different format from oxcal/calib .14c files
+#' which give the \eqn{{}^{14}}C ages and \eqn{{\Delta}^{14}}C values.\cr \cr
+#' \strong{Reference:} \cr Hughen KA, Baillie MGL, Bard E, Beck JW,
+#'  Bertrand CJH, Blackwell PG, Buck CE, Burr GS, Cutler KB, Damon PE,
+#'  Edwards RL, Fairbanks RG, Friedrich M, Guilderson TP, Kromer B,
+#'  McCormac G, Manning S, Bronk Ramsey C, Reimer PJ, Reimer RW,
+#'  Remmele S, Southon JR, Stuiver M, Talamo S, Taylor FW,
+#'  van der Plicht J, Weyhenmeyer CE. 2004. Marine04 marine radiocarbon age calibration, 0-26 cal kyr BP.
+#' \emph{Radiocarbon} \strong{46}(3):1059-1086 https://doi.org/10.1017/s0033822200033002. \cr \cr
+#'
+#' @format ## `marine04`
+#' A data frame with 3,301 rows and 5 columns providing the Marine04 radiocarbon age
+#' calibration curve on a calendar grid spanning from 50,000--0 cal yr BP:
+#' \describe{
+#'   \item{calendar_age}{The calendar age (in cal yr BP)}
+#'   \item{c14_age}{The \eqn{{}^{14}}C age (in \eqn{{}^{14}}C yr BP)}
+#'   \item{c14_sig}{The (1\eqn{\sigma}) uncertainty in the \eqn{{}^{14}}C age}
+#'   \item{f14c}{The \eqn{{}^{14}}C age expressed as F\eqn{{}^{14}}C concentration}
+#'   \item{f14c_sig}{The (1\eqn{\sigma}) uncertainty in the F\eqn{{}^{14}}C concentration}
+#' }
+#' @source http://doi.org/10.1017/s0033822200033002
+"marine04"
+
 
 #' Example artificial data - Mixture of Normal Phases
 #'
