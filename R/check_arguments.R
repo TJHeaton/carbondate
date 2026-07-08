@@ -116,6 +116,14 @@
   }
 }
 
+.CheckChoiceVector <- function(arg_check, x, allowed_choices) {
+    varname <- deparse(substitute(x))
+    if (any(!(x %in% allowed_choices))) {
+      arg_check$push(paste(varname, "must only contain values that are one of:", paste(allowed_choices, collapse=", ")))
+    }
+}
+
+
 
 .CheckCalibrationCurve <- function(arg_check, calibration_curve, F14C_inputs){
   if (!is.data.frame(calibration_curve)) {
@@ -173,42 +181,6 @@
   }
 }
 
-
-# Check that if marine calibration curve then have specified delta_r and delta_r_sig
-.CheckMarineDeltaR <- function(arg_check, calibration_curve_name, rc_determinations, delta_r, delta_r_sig) {
-
-  marine_calibration <- (substr(calibration_curve_name, 1, 6) == "marine")
-
-  if(marine_calibration) { # Performing Marine calibration
-
-    if (is.null(delta_r) || is.null(delta_r_sig)) {
-      arg_check$push(paste("As you have chosen marine calibration you must specify both delta_r and delta_r_sig"))
-      return()
-    }
-
-    if(length(rc_determinations) == 1) {
-      .CheckNumber(arg_check, delta_r)
-      .CheckNumber(arg_check, delta_r_sig, lower = 0)
-    } else {
-      .CheckNumberVector(arg_check, delta_r, lower = 0, len = length(rc_determinations))
-      .CheckNumberVector(arg_check, delta_r_sig, len = length(rc_determinations), lower = 0)
-    }
-
-  } else { # Not marine calibration but may still wish to have a DeltaR
-
-    if(!is.null(delta_r) || !is.null(delta_r_sig)) {
-      warning(
-        "You have specified delta_r and/or delta_r_sig to model an offset to the calibration curve, but it looks like you are doing atmospheric calibration.", immediate. = TRUE, call. = FALSE)
-      if(length(rc_determinations) == 1) {
-        .CheckNumber(arg_check, delta_r)
-        .CheckNumber(arg_check, delta_r_sig, lower = 0)
-      } else {
-        .CheckNumberVector(arg_check, delta_r, len = length(rc_determinations))
-        .CheckNumberVector(arg_check, delta_r_sig, len = length(rc_determinations), lower = 0)
-      }
-    }
-  }
-}
 
 
 .CheckNBurnAndNEnd <- function(arg_check, n_burn, n_end, n_iter, n_thin) {
@@ -421,9 +393,56 @@
   }
 }
 
-.CheckTextAnnotation <- function(arg_check, text_annotation) {
-  if (is.null(calibration_curve)) {
-    .CheckText(arg_check, text_annotation)
+
+
+.CheckMarineDeltaR <- function(arg_check, calibration_curve_name, rc_determinations, delta_r, delta_r_sig) {
+
+  marine_calibration <- (substr(calibration_curve_name, 1, 6) == "marine")
+
+  if(marine_calibration) { # Performing Marine calibration
+
+    if (is.null(delta_r) || is.null(delta_r_sig)) {
+      arg_check$push(paste("As you have chosen marine calibration you must specify both delta_r and delta_r_sig"))
+      return()
+    }
+
+    if(length(rc_determinations) == 1) {
+      .CheckNumber(arg_check, delta_r)
+      .CheckNumber(arg_check, delta_r_sig, lower = 0)
+    } else {
+      .CheckNumberVector(arg_check, delta_r, lower = 0, len = length(rc_determinations))
+      .CheckNumberVector(arg_check, delta_r_sig, len = length(rc_determinations), lower = 0)
+    }
+
+  } else { # Not marine calibration but may still wish to have a DeltaR
+
+    if(!is.null(delta_r) || !is.null(delta_r_sig)) {
+      warning(
+        "You have specified delta_r and/or delta_r_sig to model an offset to the calibration curve, but it looks like you are doing atmospheric calibration.", immediate. = TRUE, call. = FALSE)
+      if(length(rc_determinations) == 1) {
+        .CheckNumber(arg_check, delta_r)
+        .CheckNumber(arg_check, delta_r_sig, lower = 0)
+      } else {
+        .CheckNumberVector(arg_check, delta_r, len = length(rc_determinations))
+        .CheckNumberVector(arg_check, delta_r_sig, len = length(rc_determinations), lower = 0)
+      }
+    }
+  }
+}
+
+
+
+.CheckAtmosphericDeltaR <- function(arg_check, sample_source, delta_r, delta_r_sig) {
+  # Values where sample source is atmospheric
+  atmospheric_samples <- which(sample_source != "Marine")
+
+  if(any(delta_r[atmospheric_samples] != 0)) {
+    warning(
+      "You have specified a non-zero delta_r to model a sample that is atmospheric.", immediate. = TRUE, call. = FALSE)
+  }
+  if(any(delta_r_sig[atmospheric_samples] != 0)) {
+    warning(
+      "You have specified a non-zero delta_r_sig to model a sample that is atmospheric.", immediate. = TRUE, call. = FALSE)
   }
 }
 
