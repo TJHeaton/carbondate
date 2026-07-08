@@ -140,19 +140,14 @@ CalibrateSingleDetermination <- function(
   is_offset_needed <- !is.null(delta_r)
 
   if(is_offset_needed) {
-    if(!F14C_inputs) {
-      rc_determination_adj <- rc_determination - delta_r
-      rc_sigma_adj <- sqrt(rc_sigma^2 + delta_r_sig^2)
-    } else{
-      rc_age_info <- .ConvertF14cTo14Cage(rc_determination, rc_sigmas)
-      rc_age_info$c14_age <- rc_age_info$c14age - delta_r
-      rc_age_info$c14_sig <- sqrt(rc_age_info$c14_sig^2 - delta_r_sig^2)
-      f14c_info_adj <- .Convert14CageToF14c(rc_age_info$c14_age, rc_age_info$c14_sig)
-      rc_determination_adj <- f14c_info_adj$f14c
-      rc_sigma_adj <- f14c_info_adj$f14c_sig
-    }
-    rc_determination_post_offset <- rc_determination_adj
-    rc_sigma_post_offset <- rc_sigma_adj
+    adjusted_values <- .AddOffset(
+      rc_determination,
+      rc_sigma,
+      delta_r,
+      delta_r_sig,
+      F14C_inputs)
+    rc_determination_post_offset <- adjusted_values$rc_determination
+    rc_sigma_post_offset <- adjusted_values$rc_sigma
   } else {
     rc_determination_post_offset <- rc_determination
     rc_sigma_post_offset <- rc_sigma
