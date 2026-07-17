@@ -120,7 +120,8 @@
 #'
 #' # Annotating a plot
 #' # Assign plot to a variable (with <-):
-#' predictive_cal_age_plot <- PlotPredictiveCalendarAgeDensity(polya_urn_output, n_posterior_samples = 50)
+#' predictive_cal_age_plot <- PlotPredictiveCalendarAgeDensity(polya_urn_output,
+#'     n_posterior_samples = 50)
 #'
 #' AddLinePlot(predictive_cal_age_plot,
 #'     v = 5000,
