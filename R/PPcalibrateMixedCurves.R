@@ -128,6 +128,12 @@
 #' }
 #' @export
 #'
+#' @seealso See [carbondate::PPcalibrate] for summarisation of samples against a single calibration curve.
+#'
+#' Also [carbondate::PlotPosteriorMeanRate], [carbondate::PlotNumberOfInternalChanges], [carbondate::PlotPosteriorChangePoints] and
+#' [carbondate::PlotPosteriorHeights] for plotting of the results; and [carbondate::FindPosteriorMeanRate] if you just want the posterior mean rate without a plot.
+#'
+#'
 #' @examples
 #' # NOTE: This example is shown with a small n_iter to speed up execution.
 #' # When you run ensure n_iter gives convergence (try function default).

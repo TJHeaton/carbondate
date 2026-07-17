@@ -31,7 +31,7 @@
 #'
 #' @inheritParams WalkerBivarDirichlet
 #'
-#' @param delta_r,delta_r_sig (Optional) the \eqn{\Delta R} offset and associated 1\eqn{\sigma} uncertainty
+#' @param delta_r,delta_r_sig (Optional) The \eqn{\Delta R} offset and associated 1\eqn{\sigma} uncertainty
 #' if calibrating a set of marine samples. This offset must be a single value that is shared by all the samples.
 #' If there are multiple different offsets then use [carbondate::PPcalibrateMixedCurves]
 #'
@@ -118,7 +118,7 @@
 #' @seealso See [carbondate::PPcalibrateMixedCurves] for summarisation of a set of samples that need to
 #' be calibrated against multiple calibration curves (i.e., come from different environments).
 #'
-#' Also [carbondate::PlotPosteriorMeanRate], [carbondate::PlotNumberOfInternalChanges] and
+#' Also [carbondate::PlotPosteriorMeanRate], [carbondate::PlotNumberOfInternalChanges], [carbondate::PlotPosteriorChangePoints] and
 #' [carbondate::PlotPosteriorHeights] for plotting of the results; and [carbondate::FindPosteriorMeanRate] if you just want the posterior mean rate without a plot.
 #'
 #' @examples

@@ -201,3 +201,9 @@ pp_output_mixed <- PPcalibrateMixedCurves(
     n_iter = 100,
     show_progress = FALSE)
 }
+\seealso{
+See \link{PPcalibrate} for summarisation of samples against a single calibration curve.
+
+Also \link{PlotPosteriorMeanRate}, \link{PlotNumberOfInternalChanges}, \link{PlotPosteriorChangePoints} and
+\link{PlotPosteriorHeights} for plotting of the results; and \link{FindPosteriorMeanRate} if you just want the posterior mean rate without a plot.
+}
