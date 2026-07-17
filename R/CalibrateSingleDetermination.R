@@ -306,7 +306,7 @@ CalibrateSingleDetermination <- function(
 
   # Add extra 14C histogram if original determination offset with delta_r
   if(offset){
-    mtext(bquote(paste("(applying a " , Delta, "R of ", .(delta_r), "\u00B1", .(delta_r_sig), " "^14,
+    graphics::mtext(bquote(paste("(applying a " , Delta, "R of ", .(delta_r), "\u00B1", .(delta_r_sig), " "^14,
                        "C yrs)")),side=3,line=0)
     .AddExtra14CAgeHist(rc_determination_post_offset,
                         rc_sigma_post_offset,

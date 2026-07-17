@@ -109,7 +109,7 @@
     rc_determination_adj <- rc_determination - delta_r
     rc_sigma_adj <- sqrt(rc_sigma^2 + delta_r_sig^2)
   } else{
-    rc_age_info <- .ConvertF14cTo14Cage(rc_determination, rc_sigmas)
+    rc_age_info <- .ConvertF14cTo14Cage(rc_determination, rc_sigma)
     rc_age_info$c14_age <- rc_age_info$c14age - delta_r
     rc_age_info$c14_sig <- sqrt(rc_age_info$c14_sig^2 - delta_r_sig^2)
     f14c_info_adj <- .Convert14CageToF14c(rc_age_info$c14_age, rc_age_info$c14_sig)
@@ -133,7 +133,7 @@
                      Marine = get(paste("marine", substr(curve_year, 3, 4), sep = "")))
   } else { # No new SHCal curve in 2009 so use SHCal04
     cal_curves <- list(NH = get(paste("intcal", substr(curve_year, 3, 4), sep = "")),
-                       SH = shcal04,
+                       SH = get("shcal04"),
                        Marine = get(paste("marine", substr(curve_year, 3, 4), sep = "")))
   }
   return(cal_curves)

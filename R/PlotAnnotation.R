@@ -65,7 +65,7 @@ AddTextPlot <- function(
   on.exit(graphics::par(oldpar))
 
   graphics::par(output_plot$plot_par)
-  text(x, y, labels, adj, pos, offset, vfont, cex, col, font)
+  graphics::text(x, y, labels, adj, pos, offset, vfont, cex, col, font)
 }
 
 
@@ -227,7 +227,7 @@ AddLinePlot <- function(
   on.exit(graphics::par(oldpar))
 
   graphics::par(output_plot$plot_par)
-  abline(a = a, b = b, h = h, v = v, reg = reg, coef = coef, untf = FALSE, ...)
+  graphics::abline(a = a, b = b, h = h, v = v, reg = reg, coef = coef, untf = FALSE, ...)
 }
 
 
