@@ -192,7 +192,7 @@ For more information read the vignette: \cr
 # NOTE: This example is shown with a small n_iter to speed up execution.
 # When you run ensure n_iter gives convergence (try function default).
 
-pp_output <- PPcalibrateMixedCurves(
+pp_output_mixed <- PPcalibrateMixedCurves(
     pp_uniform_phase_mixed_samples$c14_age,
     pp_uniform_phase_mixed_samples$c14_sig,
     pp_uniform_phase_mixed_samples$sample_source,

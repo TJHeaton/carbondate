@@ -194,7 +194,9 @@ PPcalibrateMixedCurves <- function(
     rc_determinations = rc_determinations,
     rc_sigmas = rc_sigmas,
     F14C_inputs = F14C_inputs,
-    calibration_curve_name = "intcal20")
+    calibration_curve_name = "intcal20",
+    delta_r = delta_r,
+    delta_r_sig = delta_r_sig)
 
   ##############################################################################
   # Adjust rc_determinations and rc_sigmas by delta_r if needed
