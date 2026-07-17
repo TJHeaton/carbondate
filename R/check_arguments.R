@@ -117,10 +117,10 @@
 }
 
 .CheckChoiceVector <- function(arg_check, x, allowed_choices) {
-    varname <- deparse(substitute(x))
-    if (any(!(x %in% allowed_choices))) {
-      arg_check$push(paste(varname, "must only contain values that are one of:", paste(allowed_choices, collapse=", ")))
-    }
+  varname <- deparse(substitute(x))
+  if (any(!(x %in% allowed_choices))) {
+    arg_check$push(paste(varname, "must only contain values that are one of:", paste(allowed_choices, collapse=", ")))
+  }
 }
 
 
@@ -400,7 +400,6 @@
   marine_calibration <- (substr(calibration_curve_name, 1, 6) == "marine")
 
   if(marine_calibration) { # Performing Marine calibration
-
     if (is.null(delta_r) || is.null(delta_r_sig)) {
       arg_check$push(paste("As you have chosen marine calibration you must specify both delta_r and delta_r_sig"))
       return()
@@ -413,7 +412,6 @@
       .CheckNumberVector(arg_check, delta_r, lower = 0, len = length(rc_determinations))
       .CheckNumberVector(arg_check, delta_r_sig, len = length(rc_determinations), lower = 0)
     }
-
   } else { # Not marine calibration but may still wish to have a DeltaR
 
     if(!is.null(delta_r) || !is.null(delta_r_sig)) {
@@ -445,4 +443,16 @@
       "You have specified a non-zero delta_r_sig to model a sample that is atmospheric.", immediate. = TRUE, call. = FALSE)
   }
 }
+
+.CheckSingleDeltaR <- function(arg_check, calibration_curve_name, delta_r, delta_r_sig) {
+
+  if(substr(calibration_curve_name, 1, 6) == "marine") {
+    .CheckNumber(arg_check, delta_r)
+    .CheckNumber(arg_check, delta_r_sig, lower = 0)
+  } else if(!is.null(delta_r)) {
+    .CheckNumber(arg_check, delta_r)
+    .CheckNumber(arg_check, delta_r_sig, lower = 0)
+  }
+}
+
 

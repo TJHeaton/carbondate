@@ -178,12 +178,24 @@ PlotPosteriorMeanRate <- function(
       las = 1)
   }
 
+
   if (is.null(calibration_curve)) {
     calibration_curve <- get(output_data$input_data$calibration_curve_name)
   }
+
   rc_determinations <- output_data$input_data$rc_determinations
   rc_sigmas <- output_data$input_data$rc_sigmas
   F14C_inputs <-output_data$input_data$F14C_inputs
+
+  delta_r_present <- !is.null(output_data$input_data$delta_r)
+  if(delta_r_present) {
+    adjusted_values <- .AddOffset(
+      rc_determinations,
+      rc_sigmas,
+      output_data$input_data$delta_r,
+      output_data$input_data$delta_r_sig,
+      F14C_inputs)
+  }
 
   if (plot_14C_age == TRUE) {
     calibration_curve <- .AddC14ageColumns(calibration_curve)
@@ -204,6 +216,7 @@ PlotPosteriorMeanRate <- function(
   calibration_curve_colour <- "blue"
   calibration_curve_bg <- grDevices::rgb(0, 0, 1, .3)
   output_colour <- "purple"
+  delta_r_adjusted_colour <- "red"
 
   start_age <- ceiling(min(output_data$rate_s[[1]]) / resolution) * resolution
   end_age <- floor(max(output_data$rate_s[[1]]) / resolution) * resolution
@@ -262,6 +275,12 @@ PlotPosteriorMeanRate <- function(
     bespoke_probability,
     title = plot_title)
 
+  if(delta_r_present) {
+    graphics::rug(adjusted_values$rc_determination,
+                  side = 2,
+                  col = delta_r_adjusted_colour)
+  }
+
   plot_par <- graphics::par(no.readonly = TRUE)
 
   .SetUpDensityPlot(plot_cal_age_scale, xlim, ylim_rate)
@@ -316,21 +335,22 @@ PlotPosteriorMeanRate <- function(
   legend_labels <- c(
     gsub("intcal", "IntCal",
          gsub("shcal", "SHCal",
-              output_data$input_data$calibration_curve_name)), # Both IntCal and SHCal
-    ci_label,
-    "Posterior mean rate")
-  lty <- c(1, 2, 1)
-  pch <- c(NA, NA, NA)
-  col <- c(calibration_curve_colour, calibration_curve_colour, output_colour)
+              gsub("marine", "Marine",
+                   output_data$input_data$calibration_curve_name))), # Capitalise IntCal, SHCal and Marine
+         ci_label,
+         "Posterior mean rate")
+    lty <- c(1, 2, 1)
+    pch <- c(NA, NA, NA)
+    col <- c(calibration_curve_colour, calibration_curve_colour, output_colour)
 
-  if (show_confidence_intervals) {
-    legend_labels <- c(legend_labels, ci_label)
-    lty <- c(lty, 2)
-    pch <- c(pch, NA)
-    col <- c(col, output_colour)
-  }
+    if (show_confidence_intervals) {
+      legend_labels <- c(legend_labels, ci_label)
+      lty <- c(lty, 2)
+      pch <- c(pch, NA)
+      col <- c(col, output_colour)
+    }
 
-  graphics::legend(
-    "topright", legend = legend_labels, lty = lty, pch = pch, col = col)
+    graphics::legend(
+      "topright", legend = legend_labels, lty = lty, pch = pch, col = col)
 }
 
