@@ -10,6 +10,8 @@ FindSummedProbabilityDistribution(
   rc_sigmas,
   calibration_curve,
   F14C_inputs = FALSE,
+  delta_r = NULL,
+  delta_r_sig = NULL,
   resolution = 1,
   plot_output = FALSE,
   plot_cal_age_scale = "BP",
@@ -39,6 +41,9 @@ This format matches the curves supplied with this package, e.g., \link{intcal20}
 
 \item{F14C_inputs}{\code{TRUE} if the provided \code{rc_determinations} are F\eqn{{}^{14}}C
 concentrations and \code{FALSE} if they are radiocarbon ages. Defaults to \code{FALSE}.}
+
+\item{delta_r, delta_r_sig}{(Optional) The \eqn{\Delta R} offset and associated 1\eqn{\sigma} uncertainty
+if calibrating a set of marine samples.}
 
 \item{resolution}{The distance between the calendar ages at which to calculate the calendar age probability.
 Default is 1.}
