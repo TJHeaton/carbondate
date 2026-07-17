@@ -132,7 +132,7 @@ The MCMC updating is performed within an overall Gibbs MCMC scheme. There are tw
 
 Run using the Polya Urn method (our recommended approach based upon testing):
 
-```{r calculate_walker, results=FALSE}
+```{r calculate_polya, results=FALSE}
 polya_urn_output <- PolyaUrnBivarDirichlet(
   rc_determinations = kerr$c14_age,
   rc_sigmas = kerr$c14_sig,
@@ -143,7 +143,7 @@ polya_urn_output <- PolyaUrnBivarDirichlet(
 
 or the Walker method as follows:
 
-```{r calculate_neal, results=FALSE}
+```{r calculate_walker, results=FALSE}
 walker_output <- WalkerBivarDirichlet(
   rc_determinations = kerr$c14_age,
   rc_sigmas = kerr$c14_sig,
@@ -167,20 +167,28 @@ The output data contains information to allow calculation of the predictive dist
 The function allows calculation using multiple outputs so that their results can be compared. For example below we compare the results from the two sampler methods above.
 
 ```{r plot_density, out.width="100%"}
-densities <- PlotPredictiveCalendarAgeDensity(
+# Run plotting function and assign output to DPMM_density_plot
+DPMM_density_plot <- PlotPredictiveCalendarAgeDensity(
   output_data = list(polya_urn_output, walker_output),
   denscale = 2.5)
 
-# The mean (and default 2sigma intervals) are stored in densities
-head(densities[[1]]) # The Polya Urn estimate
+# DPMM_density_plot creates a list containing:
+# 1 - predictive_density which stores the mean (and default 2 sigma intervals) 
+# 2 - the plotting parameters (so you can edit/annotate the plot)
 
-head(densities[[2]]) # The Walker estimate
+# To access the predictive density mean (and default 2 sigma intervals) for the two methods
+DPMM_densities <- DPMM_density_plot$predictive_density
+
+head(DPMM_densities[[1]]) # The Polya Urn estimate
+
+head(DPMM_densities[[2]]) # The Walker estimate
 ```
 
 We also have the option to plot the SPD, to plot in the F^14^C scale, and to change the confidence intervals on the plot.
 
 ```{r plot_density_2, out.width="100%"}
-densities <- PlotPredictiveCalendarAgeDensity(
+# Run plotting function and assign output to DPMM_density_plot
+DPMM_density_plot <- PlotPredictiveCalendarAgeDensity(
   output_data = polya_urn_output,
   denscale = 2.5,
   show_SPD = TRUE,
@@ -188,7 +196,9 @@ densities <- PlotPredictiveCalendarAgeDensity(
   bespoke_probability = 0.8,
   plot_14C_age = FALSE)
 
-head(densities[[1]])
+# Again we can access the actual predictive density
+DPMM_densities <- DPMM_density_plot$predictive_density
+head(DPMM_densities[[1]])
 ```
 
 **Note:** The fact that the two different MCMC samplers do not provide matching probability intervals should flag to us that we might not have reached convergence, and need to run the MCMC for longer. Our investigations generally showed that `PolyaUrnBivarDirichlet()` is better at reaching convergence, and so we recommend its use over `WalkerBivarDirichlet()`. A longer run of 1,000,000 iterations indicates that the plotted Polya Urn output (in green) above is an accurate representation of the predictive distribution. 
@@ -227,7 +237,7 @@ PlotNumberOfClusters(output_data = polya_urn_output)
 For those plotting functions which present calendar ages (i.e., `PlotCalendarAgeDensityIndividualSample()` and `PlotPredictiveCalendarAgeDensity()`) we can change the calendar age scale shown on the x-axis. The default is to plot on the _cal yr BP_ scale (as in the examples above). To instead plot in _cal AD_, set `plot_cal_age_scale = "AD"`; while for _cal BC_, set `plot_cal_age_scale = "AD"`, e.g., 
 
 ```{r plot_density_2_AD, out.width="100%"}
-densities <- PlotPredictiveCalendarAgeDensity(
+DPMM_density_plot <- PlotPredictiveCalendarAgeDensity(
   output_data = polya_urn_output,
   show_SPD = TRUE,
   plot_cal_age_scale = "AD")

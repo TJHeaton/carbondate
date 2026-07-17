@@ -238,9 +238,12 @@ This creates an object `PP_fit_output` which you can access directly or use the 
 ### Calculating and plotting the posterior estimate of the occurrence rate  
 To calculate and plot the posterior estimate of $\lambda(t)$ you should use the in-built `PlotPosteriorMeanRate()` function. We recommend that you assign the function to a variable (as shown below). This means that it will not only create the plot, but also store the posterior mean rate (with associated probability intervals) on a regular calendar grid should you wish to access it:
 ```{r meanrate, out.width="100%"}
-# Run plotting function and assign output to PP_posterior_mean_rate_2sigma
-PP_posterior_mean_rate_2sigma <- PlotPosteriorMeanRate(PP_fit_output)
+# Run plotting function and assign output to posterior_mean_plot
+posterior_mean_plot <- PlotPosteriorMeanRate(PP_fit_output)
 # Note: You can change the PP line widths using the plot_lwd argument 
+
+# The posterior mean rate is stored in the posterior_rate component of the plot
+PP_posterior_mean_rate_2sigma <- posterior_mean_plot$posterior_rate
 
 # Look at PP_posterior_mean_rate_2sigma (posterior mean and 2 sigma intervals) 
 head(PP_posterior_mean_rate_2sigma)
@@ -322,13 +325,13 @@ PlotPosteriorChangePoints(PP_fit_output,
 To calculate the posterior estimate of $\lambda(t)$ on a user-specified calendar age grid and with user-specified probability intervals (the default is $2\sigma$) you can also use the in-built `FindPosteriorMeanRate()` function:
 ```{r find_meanrate, out.width="100%"}
 # Calculating 2 sigma (95.4%) intervals on posterior mean occurrence rate 
-PP_posterior_mean_rate_2sigma <- FindPosteriorMeanRate(
+PP_posterior_mean_rate_1sigma <- FindPosteriorMeanRate(
   PP_fit_output,
   calendar_age_sequence = seq(300, 500, by = 1),
-  interval_width = "2sigma")
+  interval_width = "1sigma")
 
-# Look at posterior mean with 2 sigma probability interval
-head(PP_posterior_mean_rate_2sigma)
+# Look at posterior mean with 1 sigma probability interval
+head(PP_posterior_mean_rate_1sigma)
 ```
 
 ## Additional Plotting Features
@@ -340,11 +343,12 @@ Should the user wish, it is possible to calculate and plot the posterior mean es
 # Conditional on TWO internal changes in the occurrence rate, 
 # Calculate and plot the posterior mean rate over time 
 # (with its 2 sigma intervals)
-conditional_2_changes_posterior_mean_rate <- PlotPosteriorMeanRate(
+conditional_2_changes_mean_plot <- PlotPosteriorMeanRate(
   PP_fit_output,
   n_changes = 2) # here n_changes must have length one (i.e., a single number)
 
 # Look at conditional posterior mean with 2 sigma probability interval
+conditional_2_changes_posterior_mean_rate <- conditional_2_changes_mean_plot$posterior_rate
 head(conditional_2_changes_posterior_mean_rate)
 ```
 

@@ -125,14 +125,16 @@ two_normals_DPMM <- PlotPredictiveCalendarAgeDensity(
   output_data = polya_urn_output,
   show_SPD = TRUE)
 
+predictive_density <- two_normals_DPMM$predictive_density
+
 par(new = TRUE, 
     mgp = c(3, 0.7, 0),
     xaxs = "i",
     yaxs = "i",
     mar = c(5, 4.5, 4, 2) + 0.1,
     las = 1)
-xlim <- rev(range(two_normals_DPMM[[1]]$calendar_age_BP))
-ylim <- c(0, 3 * max(two_normals_DPMM[[1]]$density_mean))
+xlim <- rev(range(predictive_density[[1]]$calendar_age_BP))
+ylim <- c(0, 3 * max(predictive_density[[1]]$density_mean))
 plot(
     NULL,
     NULL,
