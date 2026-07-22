@@ -64,10 +64,14 @@ Non-Parametric Density calibration functions. `pp_uniform_phase` is
 another small simulated dataset, for which the underlying calendar ages
 were drawn uniformly at random from a short calendar interval
 (equivalent to a single uniform phase). This is included to give a
-quick-to-run example for the Poisson Process modelling functions. The
-remaining datasets are from real-life data. The Northern Hemisphere
-IntCal calibration curves and Southern Hemisphere SHCal calibration
-curves are also provided.
+quick-to-run example for the Poisson Process modelling functions. There
+are analogous simulated datasets from marine environments
+`pp_uniform_phase_marine` and mixed environments
+`pp_uniform_phase)mixed`. The remaining datasets are from real-life
+data. The Northern Hemisphere IntCalXX calibration curves, Southern
+Hemisphere SHCalXX calibration curves, and surface-ocean MarineXX
+calibration curves are also provided (the most recent curves, published
+in 2020, are `intcal20`,`shcal20`, and `marine20`).
 
 ## Bayesian Non-Parametric Calibration: Quick-Start Example
 
@@ -111,7 +115,7 @@ using the simulated `pp_uniform_phase` data and the IntCal20 curve.
 pp_output <- PPcalibrate(
   rc_determinations = pp_uniform_phase$c14_age,
   rc_sigmas = pp_uniform_phase$c14_sig,
-  calibration_curve=intcal20)
+  calibration_curve = intcal20)
 ```
 
 Once the calibration has been run, the posterior estimate for the

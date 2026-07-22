@@ -1,6 +1,7 @@
 # carbondate (development version)
 
-* Added PPcalibrateMixedCurves to allow Poisson process summarisation of sets of sampels from a range of NH, SH and Marine environments
+* Added PPcalibrateMixedCurves() to allow Poisson process summarisation of sets of 14C samples from a range of NH, SH and Marine environments
+* Updated PPcalibrate(), PolyaUrnBivarDirichlet(), WalkerBivarDirichlet(), and CalibrateSingleDetermination() to allow marine calibration with a single DeltaR  
 * Added marine calibration curves to data (Marine20, Marine13, Marine09, and Marine04)
 * Added functions AddTextPlot(), AddLinePlot(), and AddShadingPlot() to enable users to overlay text and shading onto summary plots. This required edits to the summary plotting functions so they returned a list, with plotting par being the 2nd list component.  
 * Fixed warning in find_predictive_density.cpp by using return std::move(retdata) where retdata was just named local variable

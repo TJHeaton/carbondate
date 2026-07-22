@@ -334,6 +334,79 @@ PP_posterior_mean_rate_1sigma <- FindPosteriorMeanRate(
 head(PP_posterior_mean_rate_1sigma)
 ```
 
+## Annotating the various summary plots with text, lines and shading
+We have created three functions:
+
+* `AddLinePlot()` - adds lines (vertical or horizontal)
+* `AddTextPlot()` - adds text
+* `AddShadingPlot()` - adds shading
+
+that allow you to annotate the summary plots showing the posterior mean rate and the changepoint locations. Suppose for our simulated example we want to highlight the underlying [550, 500] cal yr BP interval in the plots:
+
+```{r annotate_plot_mean_rate, out.width="100%"}
+# Run plotting function and assign output to posterior_mean_plot
+posterior_mean_plot <- PlotPosteriorMeanRate(PP_fit_output)
+
+# This creates the base plot that we can then annotate
+
+# Adding shading to highlight the time period from 500 to 550 cal yr BP
+AddShadingPlot(posterior_mean_plot,
+    x_start = 550, x_end = 500,
+    col = "red")
+
+# Add text to the plot
+AddTextPlot(posterior_mean_plot,
+    x = 550, y = 750,
+    labels = expression(paste("550 cal yrs BP")),
+    cex = 0.7,
+    pos = 2, # This places the text to the left
+    offset = 0.2,
+    col = "black")
+
+```
+We can similarly annotate the plot showing the posterior location of the changepoints: 
+
+```{r annotate_plot_changepoints, out.width="100%"}
+# Run changepoint plotting function and assign output to posterior_changepoint_plot
+posterior_changepoint_plot <- PlotPosteriorChangePoints(PP_fit_output, 
+                                                        n_changes = c(2,3))
+# Note: Assigning plot to a variable (with <-) is only needed for annotation.
+
+# Add lines at 550 and 500 cal yr BP that indicate the ends of 
+# the true underlying distribution used to simulate the data  
+AddLinePlot(
+     posterior_changepoint_plot,
+     v = 550, # v = gives vertical, h = gives horizontal
+     col = "purple",
+     lwd = 2,
+     lty = 2)
+
+AddLinePlot(
+     posterior_changepoint_plot,
+     v = 500,
+     col = "purple",
+     lwd = 2,
+     lty = 2)
+
+AddTextPlot(posterior_changepoint_plot,
+    x = 550, y = 0.05,
+    labels = expression(paste("550 cal yrs BP")),
+    cex = 0.7,
+    pos = 2, # places text to the left
+    offset = 0.2,
+    col = "purple")
+
+AddTextPlot(posterior_changepoint_plot,
+    x = 500, y = 0.05,
+    labels = expression(paste("500 cal yrs BP")),
+    cex = 0.7,
+    pos = 4, # places text to right 
+    offset = 0.2,
+    col = "purple")
+```
+
+
+
 ## Additional Plotting Features
 
 

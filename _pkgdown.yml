@@ -72,6 +72,7 @@ reference:
   - pp_uniform_phase_marine
   - pp_uniform_phase_mixed_samples
   - two_normals
+  - two_normals_marine
 - title: Calibration curves
   contents:
     - starts_with("intcal")

@@ -37,7 +37,7 @@ To summarise sets of $^{14}$C determinations from multiple environments (i.e. ca
 * `delta_r` A vector of the $\Delta R$ offset for each specific ^14^C sample. For atmospheric samples (i.e. `"NH"` or `"SH"` samples) select `0` unless you want to model them as offset from the relevant IntCal or SHCal curve. 
 * `delta_r_sig` A vector of the and associated $1\sigma$ uncertainty on $\Delta R$ for each sample. Again, for atmospheric samples, select `0` unless you have modelled them as offset from the relevant curve.
 
-See @reimer2020 for more information on the IntCal20 curve, @hogg2020 fo the SHCal20 curve, and @heaton2020 for the Marine20 curve.
+See @reimer2020 for more information on the IntCal20 curve, @hogg2020 for the SHCal20 curve, and @heaton2020 for the Marine20 curve.
 
 ### Example - Uniform Phase Mixed Data 
 The dataset `pp_uniform_phase_mixed_samples` contains 40 simulated ^14^C samples from a range of environments. All the samples have underlying calendar ages that have been sampled uniformly from the calendar period from [550, 500] cal yr BP but some are assumed to come from the Northern Hemisphere (NH - 14 samples), others from the Southern Hemisphere (SH - 14 samples) and others from a range of Marine surface-ocean environments (Marine - 12 samples).    
@@ -67,7 +67,7 @@ AddShadingPlot(posterior_mean_mixed_plot,
 
 ```
 
-Here, on the radiocarbon age axis, we show the observed $^{14}$C determinations in black, and the $\Delta R$ adjusted determinations in green. For many samples (i.e. those from the SH or NH they are the same and so only the green is shown). To keep the plot tidy, we only show the IntCal curve (even though some of the samples are calibrated against the SHCal or Marine curve).
+Here, on the radiocarbon age axis, we show as the observed $^{14}$C determinations as black ticks, and the $\Delta R$ adjusted determinations as green ticks. For many samples (i.e. those from the SH or NH) they are the same and so only the green ticks are visible. To keep the plot tidy, we show just the IntCal curve (even though some of the samples are calibrated against the SHCal or Marine curve).
 
 We can see that the Poisson process summarisation provides a posterior estimate for the sample occurrence rate that accurately reconstructs the true (simulated) uniform phase [550, 500] cal yr BP calendar age distribution. 
 

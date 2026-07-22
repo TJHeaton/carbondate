@@ -53,9 +53,96 @@ Here the radiocarbon age axis shows the analytical ^14^C determination in red, w
 
 **Note:** One can also use the `delta_r` and `delta_r_sig` arguments to specify a general offset to a calibration curve (i.e., these arguments can also be used when using the IntCal and SHCal curves if the samples is thought to be offset).    
 
+## Non-Parametric Joint Density Estimation from a set of marine ^14^C samples
+If we have a set of marine ^14^C samples which share a common $\Delta R$ then we can use the `PolyaUrnBivarDirichlet()` or `WalkerBivarDirichlet()` functions to obtain a non-parametric DPMM summary of the joint (predictive) calendar age distribution. To do this we specify the value of $\Delta R$ and uncertainty as additional arguments, and state that we wish to use the marine radiocarbon calibration curve. 
 
-## Poisson process rate estimation from a set of marine ^14^C sample
-If we have a set of ^14^C samples which share a common $\Delta R$ then we can use the `PPcalibrate()` function, specifying the value of $\Delta R$ and uncertainty as an additional argument, and stating we wish to use the marine radiocarbon calibration curve. 
+### Example - Two Normals Marine Data 
+We consider the artificial `two_normals_marine` dataset which contains 50 simulated ^14^C samples. This dataset was created by drawing 50 calendar ages from a mixture of two normal densities - one centred at 3500 cal yr BP (with a 1$\sigma$ standard deviation of 200 cal yrs); and another (more concentrated) centred at 5000 cal yr BP (with a 1$\sigma$ standard deviation of 100 cal yrs). 
+
+The corresponding 50 $^{14}$C determinations are then simulated based upon the Marine20 calibration curve [@heaton2020] with an assumed $\Delta R_{20}$ of $-50 \pm 30$ $^{14}$C yrs. The analytical uncertainty of each determination is set to be 25 $^{14}$C yrs. Effectively, this example is analogous to the atmospheric dataset `two_normals` but the determinations are instead sampled from the marine environment.   
+
+We wish to investigate if we can reconstruct the underlying mixture of two normals calendar age distribution, from just the $^{14}$C values. For example, if we use the recommended Polya Urn approach:
+
+```{r example_two_normals_code, eval = FALSE}
+polya_urn_output <- PolyaUrnBivarDirichlet(
+  rc_determinations = two_normals_marine$c14_age, 
+  rc_sigmas = two_normals_marine$c14_sig, 
+  calibration_curve = marine20, 
+  delta_r = -50, 
+  delta_r_sig = 30)
+
+polya_DPMM_plot <- PlotPredictiveCalendarAgeDensity(
+  output_data = polya_urn_output,
+  show_SPD = TRUE)
+```
+```{r example_two_normals_marine, echo = FALSE, out.width="100%"}
+oldpar <- par(no.readonly = TRUE)
+
+# Fit the Polya urn mode to two_normals_marine 14C data
+polya_urn_output <- PolyaUrnBivarDirichlet(
+  rc_determinations = two_normals_marine$c14_age, 
+  rc_sigmas = two_normals_marine$c14_sig, 
+  calibration_curve = marine20, 
+  delta_r = -50, 
+  delta_r_sig = 30,
+  show_progress = FALSE)
+
+polya_DPMM_plot <- PlotPredictiveCalendarAgeDensity(
+  output_data = polya_urn_output,
+  show_SPD = TRUE)
+
+
+predictive_density <- polya_DPMM_plot$predictive_density
+
+par(new = TRUE, 
+    mgp = c(3, 0.7, 0),
+    xaxs = "i",
+    yaxs = "i",
+    mar = c(5, 4.5, 4, 2) + 0.1,
+    las = 1)
+xlim <- rev(range(predictive_density[[1]]$calendar_age_BP))
+ylim <- c(0, 3 * max(predictive_density[[1]]$density_mean))
+plot(
+  NULL,
+  NULL,
+  type = "n",
+  ylim = ylim,
+  xlim = xlim,
+  axes = FALSE,
+  xlab = NA,
+  ylab = NA,
+  xaxs = "i",
+  yaxs = "i")
+# Show true underlying calendar age density
+weights_true <- c(0.45, 0.55)
+cluster_means_true_calBP <- c(3500, 5000)
+cluster_precisions_true <- 1 / c(200, 100)^2
+
+# Find and plot true exact density
+truedens <- function(t, w, truemean, trueprec) {
+  dens <- 0
+  for(i in 1:length(w)) {
+    dens <- dens + w[i] * dnorm(t, mean = truemean[i], sd = 1/sqrt(trueprec[i]))
+  }
+  dens
+}
+curve(truedens(
+  x,
+  w = weights_true,
+  truemean = cluster_means_true_calBP,
+  trueprec = cluster_precisions_true),
+  from = 2500, to = 7000, n = 401,
+  lwd = 2,
+  col = "red", add = TRUE)
+
+# Reset plotting parameters
+par(oldpar)
+```
+*Note:* Here we have also shown the underlying calendar age distribution, consisting of a mixture of two normals, that was used for simulating the data in red. 
+
+
+## Poisson process rate estimation from a set of marine ^14^C samples
+If we have a set of marine ^14^C samples which share a common $\Delta R$ then we can use the `PPcalibrate()` function, specifying the value of $\Delta R$ and its corresponding uncertainty as additional arguments, and stating we wish to use the marine radiocarbon calibration curve. 
 
 ### Example - Uniform Phase Marine Data 
 The dataset `pp_uniform_phase_marine` contains 40 simulated marine ^14^C samples with underlying calendar ages that have been sampled uniformly from the calendar period from [550, 500] cal yr BP. The corresponding $^{14}$C determinations are then simulated based upon the Marine20 calibration curve with an assumed $\Delta R_{20}$ of $100 \pm 20$ $^{14}$C yrs. The analytical uncertainty of each determination is set to be 15 $^{14}$C yrs. Effectively, this example is analogous to the amospheric dataset `pp_uniform_phase` but the determinations are instead sampled from the marine environment.   

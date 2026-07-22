@@ -243,6 +243,61 @@ DPMM_density_plot <- PlotPredictiveCalendarAgeDensity(
   plot_cal_age_scale = "AD")
 ```   
 
+## Annotating the summary density plots with text, lines and shading
+We have created three functions:
+
+* `AddLinePlot()` - adds lines (vertical or horizontal)
+* `AddTextPlot()` - adds text
+* `AddShadingPlot()` - adds shading
+
+that allow you to annotate the summary plots showing the posterior mean rate and the changepoint locations. For example:
+
+```{r annotate_plot_mean_rate, out.width="100%"}
+# Run the plotting function and assign output to DPMM_density_plot
+DPMM_density_plot <- PlotPredictiveCalendarAgeDensity(
+  output_data = polya_urn_output,
+  show_SPD = TRUE)
+
+# Add solid vertical line at 1550 cal yr BP
+AddLinePlot(DPMM_density_plot,
+  v = 1550,
+  col = "darkgreen",
+  lwd = 2,
+  lty = 1)
+
+AddTextPlot(DPMM_density_plot,
+  x = 1550, y = 1200,
+  labels = expression(paste("1550 cal yrs BP")),
+  cex = 0.7,
+  pos = 4, # Places the text to the right
+  offset = 0.2,
+  col = "darkgreen")
+
+# Add a dashed horizontal line at 720 14C yrs BP
+AddLinePlot(DPMM_density_plot,
+  h = 720,
+  col = "darkorange",
+  lwd = 2,
+  lty = 4)
+    
+AddTextPlot(DPMM_density_plot,
+  x = 950, y = 720,
+  labels = expression(paste("720", " "^14, "C ", "yrs BP")),
+  cex = 0.9,
+  pos = 3, # Places text above 
+  offset = 0.2,
+  col = "darkorange")
+
+# Add light gray grid lines to entire plot
+AddLinePlot(DPMM_density_plot,
+  h = seq(400, 2000, by = 100),
+  v = seq(200, 2000, by = 100),
+  col = "lightgray",
+  lty = 3)
+
+```
+
+
 ## When not to use this Bayesian non-parametric method 
 
 The current implementation of our Bayesian non-parametric approach **only** supports normally-distributed clusters as the components in the overall calendar age mixture distribution $f(\theta)$. While this still allows a great deal of flexibility in the modelling, as many distributions can be well approximated by normals, there are certain distributions $f(\theta)$ for which they will struggle. In particular, you cannot approximate a uniform phase well with a mixture of normal distributions. 

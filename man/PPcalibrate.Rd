@@ -143,8 +143,8 @@ those calculated) and update_type
 
 \describe{
 \item{\code{update_type}}{A string that always has the value "RJPP".}
-\item{\code{input_data}}{A list containing the \eqn{{}^{14}}C data used, and the name of
-the calibration curve used.}
+\item{\code{input_data}}{A list containing the \eqn{{}^{14}}C data used, the name of
+the calibration curve used, and \code{delta_r} information (if specified).}
 \item{\code{input_parameters}}{A list containing the values of the fixed
 parameters \code{pp_cal_age_range}, \code{prior_n_internal_changepoints_lambda},
 \code{k_max_internal_changepoints}, \code{prior_h_shape}, \code{prior_h_rate}, \code{rescale_factor_rev_jump},

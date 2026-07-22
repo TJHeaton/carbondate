@@ -55,7 +55,7 @@ The remaining datasets are from real-life data. The Northern Hemisphere IntCalXX
 
 ## Bayesian Non-Parametric Calibration: Quick-Start Example
 
-The below example implements the Bayesian non-parametric calibration and summarisation approach on the simulated `two_normal` data using the IntCal20 curve via two (slightly) different MCMC methods.
+The below example implements the Bayesian non-parametric calibration and summarisation approach on the simulated `two_normals` data using the IntCal20 curve via two (slightly) different MCMC methods.
 
 ```{r, results=FALSE}
 polya_urn_output <- PolyaUrnBivarDirichlet(

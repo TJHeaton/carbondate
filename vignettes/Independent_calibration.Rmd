@@ -92,6 +92,70 @@ calibration_result <- CalibrateSingleDetermination(
   plot_cal_age_scale = "AD")
 ``` 
 
+## Annotating the plots with text, lines and shading
+We have created three functions:
+
+* `AddLinePlot()` - adds lines (vertical or horizontal)
+* `AddTextPlot()` - adds text
+* `AddShadingPlot()` - adds shading
+
+that allow you to annotate the posterior calendar age density plot. For example:
+
+```{r annotate_posterior_plot, out.width="100%"}
+# Create initial plot
+calibration_result_plot <- CalibrateSingleDetermination(
+  rc_determination = 1413, 
+  rc_sigma = 25, 
+  F14C_inputs = FALSE, 
+  calibration_curve = intcal20,
+  plot_output = TRUE)
+
+# Add solid vertical line at 1370 cal yr BP
+AddLinePlot(calibration_result_plot,
+  v = 1370,
+  col = "darkgreen",
+  lwd = 2,
+  lty = 1)
+
+AddTextPlot(calibration_result_plot,
+  x = 1370, y = 1300,
+  labels = expression(paste("1370 cal yrs BP")),
+  cex = 0.7,
+  pos = 4, # Places the text to the right
+  offset = 0.2,
+  col = "darkgreen")
+
+# Add a dot-dashed horizontal line at 1220 14C yrs BP
+AddLinePlot(calibration_result_plot,
+  h = 1220,
+  col = "darkorange",
+  lwd = 2,
+  lty = 4)
+    
+AddTextPlot(calibration_result_plot,
+  x = 1250, y = 1220,
+  labels = expression(paste("1220", " "^14, "C ", "yrs BP")),
+  cex = 0.9,
+  pos = 3, # Places text above 
+  offset = 0.2,
+  col = "darkorange")
+
+# Add light gray grid lines to entire plot
+AddLinePlot(calibration_result_plot,
+  h = seq(1000, 1700, by = 50),
+  v = seq(1100, 1600, by = 50),
+  col = "lightgray",
+  lty = 3)
+
+# Add a shaded box to cover a period
+AddShadingPlot(calibration_result_plot,
+  x_start = 1250, x_end = 1200,
+  y_start = 1300, y_end = 1400,
+  col = "green", alpha = 0.2)
+
+```
+
+
 
 ## References
 
