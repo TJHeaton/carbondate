@@ -402,7 +402,10 @@ CalibrateSingleDetermination <- function(
 
   legend_labels <- c(
     substitute(paste(""^14, "C determination ")),
-    gsub("intcal", "IntCal", gsub("shcal", "SHCal", calcurve_name)), # Both IntCal and SHCal
+    gsub("intcal", "IntCal",
+         gsub("shcal", "SHCal",
+              gsub("marine", "Marine",
+                   calcurve_name))), # Capitalise IntCal, SHCal and Marine
     ci_label)
   lty <- c(-1, 1, 2, -1)
   lwd <- c(-1, 1, 1, -1)
