@@ -139,11 +139,11 @@
 #' # When you run ensure n_iter gives convergence (try function default).
 #'
 #' pp_output_mixed <- PPcalibrateMixedCurves(
-#'     pp_uniform_phase_mixed_samples$c14_age,
-#'     pp_uniform_phase_mixed_samples$c14_sig,
-#'     pp_uniform_phase_mixed_samples$sample_source,
-#'     pp_uniform_phase_mixed_samples$delta_r,
-#'     pp_uniform_phase_mixed_samples$delta_r_sig,
+#'     pp_uniform_phase_mixed$c14_age,
+#'     pp_uniform_phase_mixed$c14_sig,
+#'     pp_uniform_phase_mixed$sample_source,
+#'     pp_uniform_phase_mixed$delta_r,
+#'     pp_uniform_phase_mixed$delta_r_sig,
 #'     n_iter = 100,
 #'     show_progress = FALSE)
 PPcalibrateMixedCurves <- function(
