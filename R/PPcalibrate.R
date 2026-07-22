@@ -106,8 +106,8 @@
 #'
 #' \describe{
 #'  \item{`update_type`}{A string that always has the value "RJPP".}
-#'  \item{`input_data`}{A list containing the \eqn{{}^{14}}C data used, and the name of
-#'  the calibration curve used.}
+#'  \item{`input_data`}{A list containing the \eqn{{}^{14}}C data used, the name of
+#'  the calibration curve used, and `delta_r` information (if specified).}
 #'  \item{`input_parameters`}{A list containing the values of the fixed
 #'  parameters `pp_cal_age_range`, `prior_n_internal_changepoints_lambda`,
 #'  `k_max_internal_changepoints`, `prior_h_shape`, `prior_h_rate`, `rescale_factor_rev_jump`,
