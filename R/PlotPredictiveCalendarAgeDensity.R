@@ -201,6 +201,19 @@ PlotPredictiveCalendarAgeDensity <- function(
   rc_sigmas <- output_data[[1]]$input_data$rc_sigmas
   F14C_inputs <-output_data[[1]]$input_data$F14C_inputs
 
+  ##################################################
+  # Adjust if delta_r
+  delta_r_present <- !is.null(output_data[[1]]$input_data$delta_r)
+  if(delta_r_present) {
+    adjusted_values <- .AddOffset(
+      rc_determinations,
+      rc_sigmas,
+      output_data[[1]]$input_data$delta_r,
+      output_data[[1]]$input_data$delta_r_sig,
+      F14C_inputs)
+  }
+  ##################################################
+
   if (plot_14C_age == TRUE) {
     calibration_curve <- .AddC14ageColumns(calibration_curve)
     if (F14C_inputs == TRUE) {
@@ -223,6 +236,8 @@ PlotPredictiveCalendarAgeDensity <- function(
   calibration_curve_colour <- "blue"
   calibration_curve_bg <- grDevices::rgb(0, 0, 1, .3)
   output_colours <- c("purple", "darkgreen", "darkorange2", "deeppink3")
+  delta_r_adjusted_colour <- "green"
+
   if (num_data > 4) {
     output_colours <- c(output_colours, grDevices::hcl.colors(n=num_data-4, "Roma"))
   }
@@ -270,6 +285,15 @@ PlotPredictiveCalendarAgeDensity <- function(
     calibration_curve_bg,
     interval_width,
     bespoke_probability)
+
+  #############################
+  # Add adjusted rug if have delta_r
+  if(delta_r_present) {
+    graphics::rug(adjusted_values$rc_determination,
+                  side = 2,
+                  col = delta_r_adjusted_colour)
+  }
+  ###############################
 
   plot_par <- graphics::par(no.readonly = TRUE)
 
@@ -344,7 +368,8 @@ PlotPredictiveCalendarAgeDensity <- function(
   legend_labels <- c(
     gsub("intcal", "IntCal",
          gsub("shcal", "SHCal",
-              output_data[[1]]$input_data$calibration_curve_name)), # Both IntCal and SHCal
+              gsub("marine", "Marine",
+              output_data[[1]]$input_data$calibration_curve_name))), # Capitalise IntCal, SHCal and MarineCal
     ci_label)
   lty <- c(1, 2)
   pch <- c(NA, NA)
