@@ -30,6 +30,6 @@ The corresponding \eqn{{}^{14}}C ages are then simulated based upon the Marine20
 (convolved with the 15 \eqn{{}^{14}}C yr measurement uncertainty):
 \deqn{X_i | \theta_i \sim N(m(\theta_i), \rho(\theta_i)^2 + 15^2),}
 where \eqn{m(\theta_i)} and \eqn{\rho(\theta_i)} are the calibration curve pointwise
-means and uncertainties.The simulated \eqn{\Delta R} of 100 \eqn{\pm} 20 \eqn{{}^{14}}C yr is then added.  \cr \cr
+means and uncertainties. The simulated \eqn{\Delta R} of 100 \eqn{\pm} 20 \eqn{{}^{14}}C yr is then added.  \cr \cr
 }
 \keyword{datasets}
