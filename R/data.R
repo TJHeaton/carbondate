@@ -522,7 +522,7 @@
 #' means and uncertainties. \cr \cr
 #' For the marine samples, we have incorporated into the simulation a \eqn{\Delta R} of 100 \eqn{\pm} 20 \eqn{{}^{14}}C yr.
 #'
-#' @format ## `pp_uniform_phase_mixed_samples`
+#' @format ## `pp_uniform_phase_mixed`
 #' A data frame with 40 rows and 7 columns:
 #' \describe{
 #'   \item{c14_age}{The simulated \eqn{{}^{14}}C age (in \eqn{{}^{14}}C yr BP)}
@@ -533,7 +533,7 @@
 #'   \item{f14c}{The corresponding simulated values of F\eqn{{}^{14}}C concentration}
 #'   \item{f14c_sig}{The (fixed) corresponding F\eqn{{}^{14}}C measurement uncertainty used in the simulation}
 #' }
-"pp_uniform_phase_mixed_samples"
+"pp_uniform_phase_mixed"
 
 
 #' Example real-life data - Irish Rath

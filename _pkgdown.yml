@@ -70,7 +70,7 @@ reference:
   - mammuthus
   - pp_uniform_phase
   - pp_uniform_phase_marine
-  - pp_uniform_phase_mixed_samples
+  - pp_uniform_phase_mixed
   - two_normals
   - two_normals_marine
 - title: Calibration curves
@@ -87,13 +87,13 @@ navbar:
       href: articles/Independent_calibration.html
     - text: Why Not to Use SPDs
       href: articles/Against_SPDs.html
-    - text: Non-Parametric Joint Density Estimation
+    - text: Non-Parametric Calendar Age Summarisation
       href: articles/Non-parametric-summed-density.html
-    - text: Poisson Process Modelling
+    - text: Poisson Process Modelling and Summarisation
       href: articles/Poisson-process-modelling.html
-    - text: Calibrating Marine 14C Samples
+    - text: Calibrating and Summarising Marine 14C Samples
       href: articles/Calibrating-marine-samples.html
-    - text: Calibrating Mixed Sets of 14C Samples
+    - text: Calibrating and Summarising Mixed Sets of 14C Samples
       href: articles/Calibrating-mixed-sets-of-samples.html
     - text: Determining Convergence
       href: articles/determining-convergence.html

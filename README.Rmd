@@ -25,7 +25,7 @@ An R package to analyse, and summarise, multiple radiocarbon (^14^C) determinati
 - Bayesian Non-Parametric Density Estimation (Modelling the joint, summary, calendar distribution as an unknown mixture of calendar age clusters) --- see "Non-parametric calibration of multiple related radiocarbon determinations and their calendar age summarisation" [(Heaton, 2022)](http://doi.org/10.1111/rssc.12599).
 - Variable-Rate Poisson Process Estimation (Modelling changes in the occurrence rate of the ^14^C samples over calendar time) --- see "A New Approach to Radiocarbon Summarisation: Rigorous Identification of Variations/Changepoints in the Occurrence Rate of Radiocarbon Samples using a Poisson Process" [(Heaton, Al-assam & Bard, 2025)](https://doi.org/10.1016/j.jas.2025.106237)      
 
-Both methods are implemented using Markov Chain Monte Carlo (MCMC). 
+Both methods are implemented using Markov Chain Monte Carlo (MCMC). In terms of which method, non-parametric density estimation or poisson process estimation, is more appropriate for a given problem we would suggest that users might apply both approaches and compare outputs as part of the research process.  
 
 ## Installation
 
@@ -50,10 +50,10 @@ library(carbondate)
 
 There are a few example datasets of radiocarbon determinations (e.g., `two_normals`, `kerr`, `pp_uniform_phase`, `buchanan`, `alces`, `equus`, `human`, ...) provided,
 which can be used to try out the calibration functions. `two_normals` is a small simulated  dataset for which the underlying calendar ages were drawn from a known mixture of two normals. It is included simply to give a quick-to-run example for the Bayesian Non-Parametric Density calibration functions.
-`pp_uniform_phase` is another small simulated dataset, for which the underlying calendar ages were drawn uniformly at random from a short calendar interval (equivalent to a single uniform phase). This is included to give a quick-to-run example for the Poisson Process modelling functions. There are analogous simulated datasets from marine environments `pp_uniform_phase_marine` and mixed environments `pp_uniform_phase)mixed`. 
+`pp_uniform_phase` is another small simulated dataset, for which the underlying calendar ages were drawn uniformly at random from a short calendar interval (equivalent to a single uniform phase). This is included to give a quick-to-run example for the Poisson Process modelling functions. There are analogous simulated datasets from marine environments `two_normals_marine` and `pp_uniform_phase_marine`; and also a dataset containing simulated data from SH, NH, and Marine environments `pp_uniform_phase_mixed`. 
 The remaining datasets are from real-life data. The Northern Hemisphere IntCalXX calibration curves, Southern Hemisphere SHCalXX calibration curves, and surface-ocean MarineXX calibration curves are also provided (the most recent curves, published in 2020, are `intcal20`,`shcal20`, and `marine20`).
 
-## Bayesian Non-Parametric Calibration: Quick-Start Example
+## Bayesian Non-Parametric Summarisation: Quick-Start Example
 
 The below example implements the Bayesian non-parametric calibration and summarisation approach on the simulated `two_normals` data using the IntCal20 curve via two (slightly) different MCMC methods.
 
@@ -95,4 +95,4 @@ Once the calibration has been run, the posterior estimate for the occurrence rat
 ```{r plot_mean_rate}
 PlotPosteriorMeanRate(output_data = pp_output)
 ```
-This estimated rate, and changes within it, can be interpreted equivalently to methods of calendar age summarisation. 
+This estimated sample occurrence rate, and changes within it, can be interpreted equivalently to methods of calendar age summarisation. 

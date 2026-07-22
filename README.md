@@ -27,7 +27,11 @@ and robust alternatives to summed probability distributions (SPDs):
   Radiocarbon Samples using a Poisson Process” [(Heaton, Al-assam &
   Bard, 2025)](https://doi.org/10.1016/j.jas.2025.106237)
 
-Both methods are implemented using Markov Chain Monte Carlo (MCMC).
+Both methods are implemented using Markov Chain Monte Carlo (MCMC). In
+terms of which method, non-parametric density estimation or poisson
+process estimation, is more appropriate for a given problem we would
+suggest that users might apply both approaches and compare outputs as
+part of the research process.
 
 ## Installation
 
@@ -66,17 +70,18 @@ were drawn uniformly at random from a short calendar interval
 (equivalent to a single uniform phase). This is included to give a
 quick-to-run example for the Poisson Process modelling functions. There
 are analogous simulated datasets from marine environments
-`pp_uniform_phase_marine` and mixed environments
-`pp_uniform_phase)mixed`. The remaining datasets are from real-life
+`two_normals_marine` and `pp_uniform_phase_marine`; and also a dataset
+containing simulated data from SH, NH, and Marine environments
+`pp_uniform_phase_mixed`. The remaining datasets are from real-life
 data. The Northern Hemisphere IntCalXX calibration curves, Southern
 Hemisphere SHCalXX calibration curves, and surface-ocean MarineXX
 calibration curves are also provided (the most recent curves, published
 in 2020, are `intcal20`,`shcal20`, and `marine20`).
 
-## Bayesian Non-Parametric Calibration: Quick-Start Example
+## Bayesian Non-Parametric Summarisation: Quick-Start Example
 
 The below example implements the Bayesian non-parametric calibration and
-summarisation approach on the simulated `two_normal` data using the
+summarisation approach on the simulated `two_normals` data using the
 IntCal20 curve via two (slightly) different MCMC methods.
 
 ``` r
@@ -126,5 +131,5 @@ PlotPosteriorMeanRate(output_data = pp_output)
 ```
 
 <img src="man/figures/README-plot_mean_rate-1.png" alt="" width="100%" />
-This estimated rate, and changes within it, can be interpreted
-equivalently to methods of calendar age summarisation.
+This estimated sample occurrence rate, and changes within it, can be
+interpreted equivalently to methods of calendar age summarisation.

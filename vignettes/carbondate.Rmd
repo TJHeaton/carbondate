@@ -25,7 +25,7 @@ library(carbondate)
 
 # Introduction
 
-The **carbondate** package contains functions for analysing sets of related radiocarbon (^14^C) determinations. Suppose we have a set of $N$ archaeological samples, each of which has a ^14^C determination $X_i$. Furthermore, suppose that these samples are known to be related to one another (for example, arising from a particular site, or set of sites, populated by a particular culture). We want to estimate the calendar ages of these samples **and** investigate changes/variations in the (calendar age) frequency at which the samples arose (as a potential proxy for activity, population size, ...):
+The **carbondate** package contains functions for analysing, and summarising the calendar age information provided by, sets of related radiocarbon (^14^C) determinations. Suppose we have a set of $N$ archaeological samples, each of which has a ^14^C determination $X_i$. Furthermore, suppose that these samples are known to be related to one another (for example, arising from a particular site, or set of sites, populated by a particular culture). We want to estimate the calendar ages of these samples **and** investigate changes/variations in the (calendar age) frequency at which the samples arose (as a potential proxy for activity, population size, ...):
 
 ```{r illustrate_set, out.width="100%", echo = FALSE, fig.cap = paste("_Illustration of our challenge. We observe a set of related samples, each with a ^14^C determination (shown here as the red ticks on the radiocarbon age axis). Can we jointly calibrate the samples, and summarise the combined calendar age information that they provide?_")}
 set.seed(13)
@@ -126,11 +126,11 @@ The (most-automated) version of the library only requires two vectors:
 
 All other model parameters will be adaptively chosen based upon these. More experienced users (with external independent information) may however wish to manually set some of the other parameters (see the help files for further information).   
 
-## Additional Information
+## Additional Data and Information
 
-The library also provides some joint data (which can be used by either method) as described below 
+The library also provides some data (which can be used by either method) as described below: 
 
-## Calibration Curve
+### Calibration Curve
 
 A calibration curve is a mapping providing, for an object of true calendar age $\theta$, the corresponding radiocarbon age $\mu(\theta)$. Estimates of such calibration curves are created using reference material for which we have both ^14^C measurements and independently-known (or estimated) calendar ages. The radiocarbon determination of any individual sample is assumed to be a noisy observation of the calibration curve, i.e., 
 $$
@@ -153,7 +153,7 @@ These products provides pointwise estimates of the mean $m(\theta)$ and sd $\rho
 
 The curve data `intcal20`, `shcal20` and `marine20` are provided in this package. However it is possible to load and use another calibration curve if you wish.
 
-## Example Data
+### Example Data
 
 There are some example ^14^C data sets provided in the package, each of which contain a number of radiocarbon determinations and uncertainties from real-life cases:
 

@@ -25,9 +25,9 @@ library(carbondate)
 
 # Introduction
 
-This package is primarily concerned with the calibration, and summarisation, of multiple related ^14^C determinations. With such a set of samples, which are believed to arise from a common calendar distribution related to the culture/context under study, calibration should be performed jointly. This will allow calendar age information to be shared between the samples during the calibration process leading to improved overall calibration accuracy. It also allows us to combine and summarise the calendar age information in the entire set. 
+This package is primarily concerned with the calibration, and summarisation, of multiple related ^14^C determinations. With such a set of samples, which are believed to arise from a common calendar distribution related to the culture/context under study, the calibration of those samples should be performed jointly. This will allow calendar age information to be shared between the samples during the calibration process leading to improved overall calibration accuracy. It also allows us to combine and summarise the calendar age information provided by the entire set. 
 
-However, our library also provides functions for calibrating a single ^14^C sample independently. This can be useful if one does only have a single sample, or to provide comparison with the joint calibration approaches. 
+However, our library also provides functions for calibrating a single ^14^C sample independently. This can be useful if one does only have a single ^14^C sample, or to provide comparison with the joint calibration approaches. 
 
 ## Independent Calibration of Single ^14^C Samples
 
@@ -60,7 +60,7 @@ calibration_result <- CalibrateSingleDetermination(
 
 ### Implementing Marine calibration
 
-To change to using the Marine20 calibration curve [@heaton2020], we can alter the argument to select that inbuilt `marine20` curve. To perform marine calibration, we must also provide an estimate for the localised $\Delta R$ (and its $1\sigma$-uncertainty by specifying `delta_r` and `delta_r_sig`: 
+To change to using the Marine20 calibration curve [@heaton2020], we can alter the argument to select the inbuilt `marine20` curve. To perform marine calibration, we must also provide an estimate for the localised $\Delta R$ (and its $1\sigma$-uncertainty) by specifying `delta_r` and `delta_r_sig`: 
 
 ```{r single_calibration_Marine, out.width="100%"}
 calibration_result <- CalibrateSingleDetermination(
@@ -75,12 +75,12 @@ calibration_result <- CalibrateSingleDetermination(
 
 Here the radiocarbon age axis shows the analytical ^14^C determination in red, while the adjusted determination (after applying a $\Delta R = 150 \pm 50$ ^14^C yrs) is shown in green. Intuitively, we calibrate the green (adjusted) value against the Marine20 curve. 
 
-**Note:** One can also use the `delta_r` and `delta_r_sig` arguments to specify a general offset to a calibration curve (i.e., these arguments can also be used when using the IntCal and SHCal curves if the samples is thought to be offset).    
+**Note:** One can also use the `delta_r` and `delta_r_sig` arguments to specify a general offset to a calibration curve (i.e., these arguments can also be used when using the IntCal and SHCal curves if the sample is thought to be offset).    
 
 
 ## Selecting the calendar age scale when plotting
 
-All the calibration curves, and the outputs from our functions, are provided on the cal yr BP scale (where 0 cal yr BP = 1950 cal AD). However, for the plots, the user can alter the calendar age scale shown through the `plot_cal_age_scale` variable. The default is to plot the calendar ages on the _cal yr BP_ scale (e.g., see above). To instead plot in _cal AD_, set `plot_cal_age_scale = "AD"`; while for _cal BC_ set `plot_cal_age_scale = "AD"`. For example, 
+All the calibration curves, and the outputs from our functions, are provided on the cal yr BP scale (where 0 cal yr BP = 1950 cal AD). However, for the plots, the user can alter the calendar age scale shown through the `plot_cal_age_scale` variable. The default is to plot the calendar ages on the _cal yr BP_ scale (e.g., see above). To instead plot in _cal AD_, set `plot_cal_age_scale = "AD"`; while for _cal BC_ set `plot_cal_age_scale = "BC"`. For example, 
 
 ```{r single_calibration_AD, out.width="100%"}
 calibration_result <- CalibrateSingleDetermination(
@@ -136,7 +136,7 @@ AddTextPlot(calibration_result_plot,
   x = 1250, y = 1220,
   labels = expression(paste("1220", " "^14, "C ", "yrs BP")),
   cex = 0.9,
-  pos = 3, # Places text above 
+  pos = 1, # Places text below 
   offset = 0.2,
   col = "darkorange")
 

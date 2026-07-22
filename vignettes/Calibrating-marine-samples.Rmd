@@ -1,8 +1,8 @@
 ---
-title: "Calibrating Marine 14C Samples"
+title: "Calibrating and Summarising Marine 14C Samples"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Calibrating Marine 14C Samples}
+  %\VignetteIndexEntry{Calibrating and Summarising Marine 14C Samples}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 bibliography: references.bib
@@ -24,7 +24,7 @@ library(carbondate)
 set.seed(15)
 ```
 
-# Calibrating marine ^14^C determinations 
+# Calibrating Marine ^14^C Determinations with a $\Delta R$
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -34,7 +34,7 @@ It is possible to calibrate and summarise marine $^{14}$C determinations within 
 *Note:* You must use the specific $\Delta R$ adjustment appropriate for the particular marine calibration curve you are using for calibration (as the estimates of $\Delta R$ change each time the marine calibration curve is updated). The most recent estimates  $\Delta R_{20}$, calculated based on the Marine20 calibration curve, can be found at http://calib.org/marine/ 
 
 
-## Calibrating a single marine ^14^C sample
+## Calibrating a Single Marine ^14^C Sample
 
 As described in the [independent calibration vignette](Independent-calibration.html), we can calibration an individual marine $^{14}$C sample in `CalibrateSingleDetermination()` by specifying the inbuilt `marine20` calibration curve [@heaton2020], and providing an estimate for the localised $\Delta R$ (and its $1\sigma$-uncertainty by specifying `delta_r` and `delta_r_sig`: 
 
@@ -53,15 +53,14 @@ Here the radiocarbon age axis shows the analytical ^14^C determination in red, w
 
 **Note:** One can also use the `delta_r` and `delta_r_sig` arguments to specify a general offset to a calibration curve (i.e., these arguments can also be used when using the IntCal and SHCal curves if the samples is thought to be offset).    
 
-## Non-Parametric Joint Density Estimation from a set of marine ^14^C samples
+## Non-parametric Calendar Age Summarisation from a Set of Marine ^14^C Samples
 If we have a set of marine ^14^C samples which share a common $\Delta R$ then we can use the `PolyaUrnBivarDirichlet()` or `WalkerBivarDirichlet()` functions to obtain a non-parametric DPMM summary of the joint (predictive) calendar age distribution. To do this we specify the value of $\Delta R$ and uncertainty as additional arguments, and state that we wish to use the marine radiocarbon calibration curve. 
 
-### Example - Two Normals Marine Data 
-We consider the artificial `two_normals_marine` dataset which contains 50 simulated ^14^C samples. This dataset was created by drawing 50 calendar ages from a mixture of two normal densities - one centred at 3500 cal yr BP (with a 1$\sigma$ standard deviation of 200 cal yrs); and another (more concentrated) centred at 5000 cal yr BP (with a 1$\sigma$ standard deviation of 100 cal yrs). 
+### Worked Example - A Marine Mixture of Two Normals 
+We consider the artificial `two_normals_marine` dataset which contains 50 simulated marine ^14^C samples. This dataset is analogous to the atmospheric `two_normals` but the ^14^C determinations are instead sampled from the marine environment.   
+Specifically, the `two_normals_marine` dataset was created by first drawing 50 calendar ages from a mixture of two normal densities - one centred at 3500 cal yr BP (with a 1$\sigma$ standard deviation of 200 cal yrs); and another (more concentrated) centred at 5000 cal yr BP (with a 1$\sigma$ standard deviation of 100 cal yrs). The corresponding 50 $^{14}$C determinations are then simulated using the Marine20 calibration curve [@heaton2020] with an assumed $\Delta R_{20}$ of $-50 \pm 30\,$ $^{14}$C yrs. The analytical measurement uncertainty of each determination is set to be 25 $^{14}$C yrs.
 
-The corresponding 50 $^{14}$C determinations are then simulated based upon the Marine20 calibration curve [@heaton2020] with an assumed $\Delta R_{20}$ of $-50 \pm 30$ $^{14}$C yrs. The analytical uncertainty of each determination is set to be 25 $^{14}$C yrs. Effectively, this example is analogous to the atmospheric dataset `two_normals` but the determinations are instead sampled from the marine environment.   
-
-We wish to investigate if we can reconstruct the underlying mixture of two normals calendar age distribution, from just the $^{14}$C values. For example, if we use the recommended Polya Urn approach:
+We wish to investigate if we can reconstruct the underlying mixture of two normals calendar age distribution, from just the $^{14}$C values. For example, if we use the _recommended_ Polya Urn approach:
 
 ```{r example_two_normals_code, eval = FALSE}
 polya_urn_output <- PolyaUrnBivarDirichlet(
@@ -145,7 +144,7 @@ par(oldpar)
 If we have a set of marine ^14^C samples which share a common $\Delta R$ then we can use the `PPcalibrate()` function, specifying the value of $\Delta R$ and its corresponding uncertainty as additional arguments, and stating we wish to use the marine radiocarbon calibration curve. 
 
 ### Example - Uniform Phase Marine Data 
-The dataset `pp_uniform_phase_marine` contains 40 simulated marine ^14^C samples with underlying calendar ages that have been sampled uniformly from the calendar period from [550, 500] cal yr BP. The corresponding $^{14}$C determinations are then simulated based upon the Marine20 calibration curve with an assumed $\Delta R_{20}$ of $100 \pm 20$ $^{14}$C yrs. The analytical uncertainty of each determination is set to be 15 $^{14}$C yrs. Effectively, this example is analogous to the amospheric dataset `pp_uniform_phase` but the determinations are instead sampled from the marine environment.   
+The dataset `pp_uniform_phase_marine` contains 40 simulated marine ^14^C samples with underlying calendar ages that have been sampled uniformly from the calendar period from [550, 500] cal yr BP. The corresponding $^{14}$C determinations are then simulated based upon the Marine20 calibration curve with an assumed $\Delta R_{20}$ of $100 \pm 20\,$ $^{14}$C yrs. The analytical measurement uncertainty of each determination is set to be 15 $^{14}$C yrs. Effectively, this example is analogous to the atmospheric dataset `pp_uniform_phase` but the determinations are instead sampled from the marine environment.   
 
 We wish to investigate if we can reconstruct the underlying uniform phase calendar age distribution, from just the $^{14}$C values.
 

@@ -1,8 +1,8 @@
 ---
-title: "Poisson Process Modelling"
+title: "Poisson Process Modelling and Summarisation"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Poisson Process Modelling}
+  %\VignetteIndexEntry{Poisson Process Modelling and Summarisation}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 bibliography: references.bib
@@ -180,18 +180,18 @@ $$
 where $T_A < s_1 < s_2 < \ldots < s_k < T_B$ are the calendar ages at which there are changes in the Poisson process rate, and $T_A$ and $T_B$ are bounding calendar ages. We use reversible jump MCMC (RJMCMC) to alternate between calibrating the samples and updating the estimate of the underlying rate lambda. 
 
 
-## Example
+## A Worked Example - Two Changepoints in a Uniform Phase Model
 
-This is a basic example which shows you how to solve a common problem. In this simulated example, we will assume that the events (samples) can must lie within the calendar period from [700, 300] cal yr BP. Within this period, we will 
-create 40 artificial samples with $^{14}$C determinations corresponding to the (narrower) calendar period from [550, 500] cal yr BP. Effectively, the underlying model is a Poisson process with a rate 
+This is a basic example which shows you how to solve a common problem. In this simulated example, we will assume that the events (samples) must lie within the calendar period from [700, 300] cal yr BP. Within this period, we will 
+create 40 artificial samples with $^{14}$C determinations corresponding to the (narrower) calendar period from [550, 500] cal yr BP. Effectively, the underlying model for the occurrence of the samples is then a Poisson process with a rate: 
 $$
-\lambda(t)  \left\{ \begin{array}{ll}
+\lambda(t) = \left\{ \begin{array}{ll}
   h_1 = 0 & \textrm{if } 300 \leq t < 500 \textrm{ cal yr BP} \\
   h_2 \qquad & \textrm{if } 500 \leq t < 550 \textrm{ cal yr BP}\\
   h_3 = 0 & \textrm{if } 550 \leq t < 700 \textrm{ cal yr BP} 
   \end{array} \right.
 $$
-We will then investigate if we can reconstruct this underlying information, from just the $^{14}$C values, if we only knew that the calendar ages of the samples lay between the bounding [700, 300] cal yr BP. 
+that has two changepoints (at 550 cal yr BP and at 500 cal yr BP). Equivalently, the model can be viewed as a uniform phase. We seek to investigate if we can reconstruct this underlying calendar age information, from just the $^{14}$C values and the initial knowledge that the samples lay between the much wider bounding interval from [700, 300] cal yr BP. 
 
 ```{r example, out.width="100%"}
 set.seed(15)
