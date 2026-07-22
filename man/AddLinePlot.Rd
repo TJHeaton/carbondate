@@ -85,7 +85,6 @@ AddTextPlot(posterior_mean_plot,
 
 # Add light gray grid lines
 AddLinePlot(posterior_mean_plot,
-     #' AddLinePlot(
      posterior_mean_plot,
      h = seq(250, 700, by = 25),
      v = seq(400, 650, by = 25),
