@@ -216,7 +216,7 @@ PlotPosteriorMeanRate <- function(
   calibration_curve_colour <- "blue"
   calibration_curve_bg <- grDevices::rgb(0, 0, 1, .3)
   output_colour <- "purple"
-  delta_r_adjusted_colour <- "red"
+  delta_r_adjusted_colour <- "green"
 
   start_age <- ceiling(min(output_data$rate_s[[1]]) / resolution) * resolution
   end_age <- floor(max(output_data$rate_s[[1]]) / resolution) * resolution

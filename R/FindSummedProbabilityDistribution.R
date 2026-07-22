@@ -215,7 +215,7 @@ FindSummedProbabilityDistribution <- function(
     calibration_curve <- .AddC14ageColumns(calibration_curve)
   }
 
-  delta_r_adjusted_colour <- "red"
+  delta_r_adjusted_colour <- "green"
 
   # Calculate calendar age plotting range
   xrange <- range(calibration_curve$calendar_age)
