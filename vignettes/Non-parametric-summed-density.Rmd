@@ -24,7 +24,7 @@ library(carbondate)
 set.seed(5)
 ```
 
-# Non-parametric calibration of multiple related ^14^C samples
+# Non-parametric calibration and summarisation of multiple related ^14^C samples
 
 ## Model details
 
@@ -296,7 +296,7 @@ AddLinePlot(DPMM_density_plot,
   lty = 3)
 
 ```
-
+See the [independent calibration vignette](Independent-calibration.html) for more examples of ways to annotate the summary plot. 
 
 ## When not to use this Bayesian non-parametric method 
 

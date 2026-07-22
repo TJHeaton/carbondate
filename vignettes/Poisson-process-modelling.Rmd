@@ -404,7 +404,7 @@ AddTextPlot(posterior_changepoint_plot,
     offset = 0.2,
     col = "purple")
 ```
-
+See the [independent calibration vignette](Independent-calibration.html) for more examples of ways to annotate the summary plot. 
 
 
 ## Additional Plotting Features

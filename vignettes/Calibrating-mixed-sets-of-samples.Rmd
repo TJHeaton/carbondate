@@ -30,7 +30,7 @@ set.seed(15)
 <!-- badges: end -->
 
 ## Poisson process calibration 
-To summarise sets of $^{14}$C determinations from multiple environments (i.e. calibrtion samples against  multiple calibration curves such as IntCal20, SHCal20, and Marine20) using a Poisson process, then you need to use the `PPcalibrateMixedCurves()` function. As well as providing the ^14^C determinations, this requires you to specify a number of additional variables:
+To summarise sets of $^{14}$C determinations from multiple environments (i.e. samples that require calibrating against multiple calibration curves such as IntCal20, SHCal20, and Marine20) using a Poisson process, then you need to use the `PPcalibrateMixedCurves()` function. As well as providing the ^14^C determinations, this requires you to specify a number of additional variables:
 
 * `sample_source` A character vector containing `"NH"`, `"SH"` and `"Marine"` dependent upon the environment of each sample in the set. This will determine if the sample will be calibrated against IntCalXX (`"NH"`), SHCalXX (`"NH"`), and MarineXX (`"Marine"`) where XX denotes the curve year. This vector must be the same length as the number of ^14^C determinations.
 * `curve_year` One of `"2020"`, `"2013"`, `"2009"` or `"2004"` specifying the calibration curve year to use. Make sure you use the $\Delta R$ that is appropriate to the calibration curve. The default is to choose `"2020"`.
@@ -42,9 +42,9 @@ See @reimer2020 for more information on the IntCal20 curve, @hogg2020 for the SH
 ### Example - Uniform Phase Mixed Data 
 The dataset `pp_uniform_phase_mixed_samples` contains 40 simulated ^14^C samples from a range of environments. All the samples have underlying calendar ages that have been sampled uniformly from the calendar period from [550, 500] cal yr BP but some are assumed to come from the Northern Hemisphere (NH - 14 samples), others from the Southern Hemisphere (SH - 14 samples) and others from a range of Marine surface-ocean environments (Marine - 12 samples).    
 
-The corresponding $^{14}$C determinations for each sample are simulated based upon the  relevant calibration curve; and the marine data have a range of different $\Delta R$ values (i.e. represent different ocean regions). The analytical uncertainty of each determination is set to be 15 $^{14}$C yrs. 
+The corresponding $^{14}$C determinations for each sample are simulated according to the relevant calibration curve for that environment (IntCal20, SHCal20 and Marine20); and the marine data have a range of different $\Delta R$ values (i.e. represent different ocean regions). The analytical measurement uncertainty of each determination is set to be 15 $^{14}$C yrs. 
 
-We wish to investigate if we can reconstruct the underlying uniform phase [550, 500] cal yr BP calendar age distribution, from just the set of $^{14}$C values.
+We wish to investigate if we can reconstruct the underlying calendar age distribution, a uniform phase [550, 500] cal yr BP, from which the samples were simulated based only on the set of 40 $^{14}$C values.
 
 ```{r example_uniform_mixed, out.width="100%"}
 # Fit the Poisson process model to a sert of data from different environments
@@ -85,13 +85,13 @@ The object `PP_fit_output_mixed` can also be accessed directly or used with the 
 PlotNumberOfInternalChanges(PP_fit_output_mixed)
 ```
 
-and the posterior estimate of the location of those changepoints (conditional on their number):
+and the posterior estimate of the locations of those changepoints (conditional on their number):
 
 ```{r example_uniform_mixed_changepoints, out.width="100%"}
 posterior_changepoint_mixed_plot <- PlotPosteriorChangePoints(PP_fit_output_mixed)
 
 # Add lines at 500 and 550 cal yr BP 
-# (the true changepoints in the simulation)
+# (the "true" changepoints in the simulation)
 AddLinePlot(
      posterior_changepoint_mixed_plot,
      v = 550,
@@ -127,5 +127,9 @@ We can also plot the heights (i.e. rates) in each interval
 ```{r example_uniform_mixed_heights, out.width="100%"}
 posterior_heights_mixed_plot <- PlotPosteriorHeights(PP_fit_output_mixed)
 ```
+
+## Non-Parametric (DPMM) Summarisation
+Still to be completed (watch this space) 
+
 
 ## References
