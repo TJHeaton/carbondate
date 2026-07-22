@@ -124,7 +124,7 @@ We use Markov Chain Monte Carlo (MCMC) to iterate, for $k = 1, \ldots, M$, betwe
 
 After running the sampler for a large number of iterations (until we are sufficiently confident that the MCMC has converged) we obtain estimates for the calendar age $\theta_i$ of each sample, and an estimate for the shared calendar age density $\hat{f}(\theta)$ from which they arose. These latter estimates of the shared calendar age density are called _predictive estimates_, i.e., they provide estimates of the calendar age of a hypothetical new sample (based on the set of $N$ samples that we have observed).     
 
-Critically, with our Bayesian non-parametric method, the number of calendar age clusters that are represented in the observed data is unknown (and is allowed to vary in each MCMC step). This flexibility is different, and offers a substantial advantage, from other methods that require the number of clusters to be known _a priori_. For full technical details of the models used, and explanation of the model parameters, see @heaton2021.
+Critically, with our Bayesian non-parametric method, the number of calendar age clusters that are represented in the observed data is unknown (and is allowed to vary in each MCMC step). This flexibility is different, and offers a substantial advantage, from other methods that require the number of clusters to be known _a priori_. For full technical details of the models used, and explanation of the model parameters, see @heaton2022.
 
 ## Running the sampler
 

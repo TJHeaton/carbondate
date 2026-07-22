@@ -60,7 +60,7 @@ calibration_result <- CalibrateSingleDetermination(
 
 ### Implementing Marine calibration
 
-To change to using the Marine calibration curve Marine20 [@heaton2020], we can alter the argument to select that curve. To perform marine calibration, we must also provide an estimate for the localised $\Delta R$ (and its $1\sigma$-uncertainty by specifying `delta_r` and `delta_r_sig`: 
+To change to using the Marine20 calibration curve [@heaton2020], we can alter the argument to select that inbuilt `marine20` curve. To perform marine calibration, we must also provide an estimate for the localised $\Delta R$ (and its $1\sigma$-uncertainty by specifying `delta_r` and `delta_r_sig`: 
 
 ```{r single_calibration_Marine, out.width="100%"}
 calibration_result <- CalibrateSingleDetermination(

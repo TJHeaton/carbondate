@@ -28,7 +28,7 @@ library(carbondate)
 <!-- badges: start -->
 <!-- badges: end -->
 
-This component  of the library allows you to model (and estimate) the occurrence of radiocarbon samples as a variable-rate (inhomogeneous) Poisson process. This is done using the function `PPcalibrate()`. The aim of this function is primarily to allow a user to estimate the variable (calendar year) rate at which a set of radiocarbon samples are observed, and identify changepoints in that rate. 
+This component  of the library allows you to model (and estimate) the occurrence of radiocarbon samples as a variable-rate (inhomogeneous) Poisson process. This is done using the function `PPcalibrate()`. The aim of this function is primarily to allow a user to estimate the variable (calendar year) rate at which a set of radiocarbon samples are observed, and identify changepoints in that rate. For full technical details of the models used, and explanation of the model parameters, see @heaton2025. 
 
 This Poisson process model can also be used in a _"dates-as-data"_ approach [@rick1987] to provide a proxy for changes in population or activity, dependent upon the representativeness of the underlying sampling. For this method, the estimated rate of the Poisson process provides the proxy.       
 
@@ -224,7 +224,7 @@ rc_determinations <- rnorm(
 PP_fit_output <- PPcalibrate(
     rc_determinations = rc_determinations,
     rc_sigmas = rc_sigmas,
-    calibration_curve = intcal20,
+    calibration_curve = intcal20, # can also choose e.g. shcal20
     calendar_age_range = calendar_age_range,
     calendar_grid_resolution = 1,
     n_iter = 1e5,

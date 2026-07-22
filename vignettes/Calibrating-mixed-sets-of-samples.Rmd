@@ -1,0 +1,131 @@
+---
+title: "Calibrating Mixed Sets of 14C Samples"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Calibrating Mixed Sets of 14C Samples}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: references.bib
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  dev='png',
+  fig.width=7, 
+  fig.height=5.5 # ,
+  # dev.args=list(antialias = "none")
+)
+```
+
+```{r setup}
+library(carbondate)
+set.seed(15)
+```
+
+# Calibrating sets of ^14^C samples from multiple environments 
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+## Poisson process calibration 
+To summarise sets of $^{14}$C determinations from multiple environments (i.e. calibrtion samples against  multiple calibration curves such as IntCal20, SHCal20, and Marine20) using a Poisson process, then you need to use the `PPcalibrateMixedCurves()` function. As well as providing the ^14^C determinations, this requires you to specify a number of additional variables:
+
+* `sample_source` A character vector containing `"NH"`, `"SH"` and `"Marine"` dependent upon the environment of each sample in the set. This will determine if the sample will be calibrated against IntCalXX (`"NH"`), SHCalXX (`"NH"`), and MarineXX (`"Marine"`) where XX denotes the curve year. This vector must be the same length as the number of ^14^C determinations.
+* `curve_year` One of `"2020"`, `"2013"`, `"2009"` or `"2004"` specifying the calibration curve year to use. Make sure you use the $\Delta R$ that is appropriate to the calibration curve. The default is to choose `"2020"`.
+* `delta_r` A vector of the $\Delta R$ offset for each specific ^14^C sample. For atmospheric samples (i.e. `"NH"` or `"SH"` samples) select `0` unless you want to model them as offset from the relevant IntCal or SHCal curve. 
+* `delta_r_sig` A vector of the and associated $1\sigma$ uncertainty on $\Delta R$ for each sample. Again, for atmospheric samples, select `0` unless you have modelled them as offset from the relevant curve.
+
+See @reimer2020 for more information on the IntCal20 curve, @hogg2020 fo the SHCal20 curve, and @heaton2020 for the Marine20 curve.
+
+### Example - Uniform Phase Mixed Data 
+The dataset `pp_uniform_phase_mixed_samples` contains 40 simulated ^14^C samples from a range of environments. All the samples have underlying calendar ages that have been sampled uniformly from the calendar period from [550, 500] cal yr BP but some are assumed to come from the Northern Hemisphere (NH - 14 samples), others from the Southern Hemisphere (SH - 14 samples) and others from a range of Marine surface-ocean environments (Marine - 12 samples).    
+
+The corresponding $^{14}$C determinations for each sample are simulated based upon the  relevant calibration curve; and the marine data have a range of different $\Delta R$ values (i.e. represent different ocean regions). The analytical uncertainty of each determination is set to be 15 $^{14}$C yrs. 
+
+We wish to investigate if we can reconstruct the underlying uniform phase [550, 500] cal yr BP calendar age distribution, from just the set of $^{14}$C values.
+
+```{r example_uniform_mixed, out.width="100%"}
+# Fit the Poisson process model to a sert of data from different environments
+PP_fit_output_mixed <- PPcalibrateMixedCurves(
+    rc_determinations = pp_uniform_phase_mixed_samples$c14_age,
+    rc_sigmas = pp_uniform_phase_mixed_samples$c14_sig,
+    sample_source = pp_uniform_phase_mixed_samples$sample_source,
+    curve_year = "2020",
+    delta_r = pp_uniform_phase_mixed_samples$delta_r,
+    delta_r_sig = pp_uniform_phase_mixed_samples$delta_r_sig,
+    show_progress = FALSE)
+
+# Plot the posterior mean rate
+posterior_mean_mixed_plot <- PlotPosteriorMeanRate(PP_fit_output_mixed)
+
+# Add shading to show the period from which the underlying data were sampled
+AddShadingPlot(posterior_mean_mixed_plot,
+    x_start = 550, x_end = 500,
+    col = "red")
+
+```
+
+Here, on the radiocarbon age axis, we show the observed $^{14}$C determinations in black, and the $\Delta R$ adjusted determinations in green. For many samples (i.e. those from the SH or NH they are the same and so only the green is shown). To keep the plot tidy, we only show the IntCal curve (even though some of the samples are calibrated against the SHCal or Marine curve).
+
+We can see that the Poisson process summarisation provides a posterior estimate for the sample occurrence rate that accurately reconstructs the true (simulated) uniform phase [550, 500] cal yr BP calendar age distribution. 
+
+We can also access the estimated posterior mean rate
+```{r example_uniform_mixed_post_mean, out.width="100%"}
+# Access the actual posterior
+posterior_mixed_rate <- posterior_mean_mixed_plot$posterior_rate
+head(posterior_mixed_rate)
+```
+
+### Plotting the number of changepoints and their locations
+The object `PP_fit_output_mixed` can also be accessed directly or used with the other in-built plotting functions just as with output from `PPcalibrate()`, for example, we can access the posterior estimate of the number of changepoints:
+
+```{r example_uniform_mixed_n_changes, out.width="100%"}
+PlotNumberOfInternalChanges(PP_fit_output_mixed)
+```
+
+and the posterior estimate of the location of those changepoints (conditional on their number):
+
+```{r example_uniform_mixed_changepoints, out.width="100%"}
+posterior_changepoint_mixed_plot <- PlotPosteriorChangePoints(PP_fit_output_mixed)
+
+# Add lines at 500 and 550 cal yr BP 
+# (the true changepoints in the simulation)
+AddLinePlot(
+     posterior_changepoint_mixed_plot,
+     v = 550,
+     col = "purple",
+     lwd = 2,
+     lty = 2)
+
+AddLinePlot(
+     posterior_changepoint_mixed_plot,
+     v = 500,
+     col = "purple",
+     lwd = 2,
+     lty = 2)
+
+AddTextPlot(posterior_changepoint_mixed_plot,
+    x = 550, y = 0.0165,
+    labels = expression(paste("550 cal yrs BP")),
+    cex = 0.7,
+    pos = 2,
+    offset = 0.2,
+    col = "purple")
+
+AddTextPlot(posterior_changepoint_mixed_plot,
+    x = 500, y = 0.0165,
+    labels = expression(paste("500 cal yrs BP")),
+    cex = 0.7,
+    pos = 4,
+    offset = 0.2,
+    col = "purple")
+
+```
+We can also plot the heights (i.e. rates) in each interval 
+```{r example_uniform_mixed_heights, out.width="100%"}
+posterior_heights_mixed_plot <- PlotPosteriorHeights(PP_fit_output_mixed)
+```
+
+## References
