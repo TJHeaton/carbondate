@@ -420,6 +420,32 @@
 #' }
 "pp_uniform_phase"
 
+
+#' Example artificial marine data - Uniform Phase
+#'
+#' 40 simulated marine radiocarbon determinations that are created as though they were marine samples (with a \eqn{\Delta R} offset of 100 \eqn{\pm} 20 \eqn{{}^{14}}C yr). As for [carbondate::pp_uniform_phase], the samples are simulated with underlying calendar ages drawn (uniformly at random) from the period  550--500 cal yr BP
+#' \deqn{f(\theta) = U[550, 500]}
+#' The corresponding \eqn{{}^{14}}C ages are then simulated based upon the Marine20 calibration curve with a \eqn{\Delta R} of 100 \eqn{\pm} 20 \eqn{{}^{14}}C yr. The observational uncertainty of each determination is set to be 15 \eqn{{}^{14}}C yrs. \cr \cr
+#' The corresponding \eqn{{}^{14}}C ages are then simulated based upon the Marine20 calibration curve
+#' (convolved with the 15 \eqn{{}^{14}}C yr measurement uncertainty):
+#' \deqn{X_i | \theta_i \sim N(m(\theta_i), \rho(\theta_i)^2 + 15^2),}
+#' where \eqn{m(\theta_i)} and \eqn{\rho(\theta_i)} are the calibration curve pointwise
+#' means and uncertainties.The simulated \eqn{\Delta R} of 100 \eqn{\pm} 20 \eqn{{}^{14}}C yr is then added.  \cr \cr
+#'
+#' @format ## `pp_uniform_phase_marine`
+#' A data frame with 40 rows and 7 columns:
+#' \describe{
+#'   \item{c14_age}{The simulated \eqn{{}^{14}}C age (in \eqn{{}^{14}}C yr BP)}
+#'   \item{c14_sig}{The (fixed) \eqn{{}^{14}}C age measurement uncertainty used in the simulation (set at 15 \eqn{{}^{14}}C yrs)}
+#'   \item{sample_source}{A character vector to clarify that the data were simultaed using the Marine20 calibration curve}
+#'   \item{delta_r}{The \eqn{\Delta R} offset, set at 100 \eqn{{}^{14}}C yrs for marine samples}
+#'   \item{delta_r_sig}{The (1\eqn{\sigma}) uncertainty in the \eqn{\Delta R} offset. Set at 20 \eqn{{}^{14}}C yrs}
+#'   \item{f14c}{The corresponding simulated values of F\eqn{{}^{14}}C concentration}
+#'   \item{f14c_sig}{The (fixed) corresponding F\eqn{{}^{14}}C measurement uncertainty used in the simulation}
+#' }
+"pp_uniform_phase_marine"
+
+
 #' Example artificial data requiring multiple calibration curves - Uniform Phase
 #'
 #' 40 simulated radiocarbon determinations that are set up to need calibration against multiple curves (and with \eqn{\Delta R} offsets for the marine samples). As for [carbondate::pp_uniform_phase], the samples are simulated with underlying calendar ages
@@ -439,7 +465,7 @@
 #'   \item{c14_age}{The simulated \eqn{{}^{14}}C age (in \eqn{{}^{14}}C yr BP)}
 #'   \item{c14_sig}{The (fixed) \eqn{{}^{14}}C age measurement uncertainty used in the simulation (set at 15 \eqn{{}^{14}}C yrs)}
 #'   \item{sample_source}{The environmental source of the sample (i.e., NH, SH, or Marine). This determines the calibration curve that needs to be used}
-#'   \item{delta_r}{The \eqn{\Delta R} offset to the relevant calibration curve, set at 0 \eqn{{}^{14}}C yrs for all atmospheric (NH or SH) samples and 200 \eqn{{}^{14}}C yrs for marine samples}
+#'   \item{delta_r}{The \eqn{\Delta R} offset to the relevant calibration curve, set at 0 \eqn{{}^{14}}C yrs for all atmospheric (NH or SH) samples and 100 \eqn{{}^{14}}C yrs for marine samples}
 #'   \item{delta_r_sig}{The (1\eqn{\sigma}) uncertainty in the \eqn{\Delta R} offset. Set at 20 \eqn{{}^{14}}C yrs for marine samples}
 #'   \item{f14c}{The corresponding simulated values of F\eqn{{}^{14}}C concentration}
 #'   \item{f14c_sig}{The (fixed) corresponding F\eqn{{}^{14}}C measurement uncertainty used in the simulation}

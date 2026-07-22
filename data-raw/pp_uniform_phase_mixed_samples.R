@@ -61,8 +61,9 @@ pp_uniform_phase_mixed_samples <- data.frame(c14_age = rc_determinations,
                                              sample_source = as.character(sample_source),
                                              delta_r = delta_r,
                                              delta_r_sig = delta_r_sig)
-pp_uniform_phase_mixed_samples$f14c <- exp(-pp_uniform_phase$c14_age / 8033)
-pp_uniform_phase_mixed_samples$f14c_sig <- pp_uniform_phase$f14c * pp_uniform_phase$c14_sig / 8033
+
+pp_uniform_phase_mixed_samples$f14c <- exp(-pp_uniform_phase_mixed_samples$c14_age / 8033)
+pp_uniform_phase_mixed_samples$f14c_sig <- pp_uniform_phase_mixed_samples$f14c * pp_uniform_phase_mixed_samples$c14_sig / 8033
 
 usethis::use_data(pp_uniform_phase_mixed_samples, overwrite = TRUE)
 

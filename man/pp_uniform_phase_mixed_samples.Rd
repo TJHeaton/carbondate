@@ -12,7 +12,7 @@ A data frame with 40 rows and 7 columns:
 \item{c14_age}{The simulated \eqn{{}^{14}}C age (in \eqn{{}^{14}}C yr BP)}
 \item{c14_sig}{The (fixed) \eqn{{}^{14}}C age measurement uncertainty used in the simulation (set at 15 \eqn{{}^{14}}C yrs)}
 \item{sample_source}{The environmental source of the sample (i.e., NH, SH, or Marine). This determines the calibration curve that needs to be used}
-\item{delta_r}{The \eqn{\Delta R} offset to the relevant calibration curve, set at 0 \eqn{{}^{14}}C yrs for all atmospheric (NH or SH) samples and 200 \eqn{{}^{14}}C yrs for marine samples}
+\item{delta_r}{The \eqn{\Delta R} offset to the relevant calibration curve, set at 0 \eqn{{}^{14}}C yrs for all atmospheric (NH or SH) samples and 100 \eqn{{}^{14}}C yrs for marine samples}
 \item{delta_r_sig}{The (1\eqn{\sigma}) uncertainty in the \eqn{\Delta R} offset. Set at 20 \eqn{{}^{14}}C yrs for marine samples}
 \item{f14c}{The corresponding simulated values of F\eqn{{}^{14}}C concentration}
 \item{f14c_sig}{The (fixed) corresponding F\eqn{{}^{14}}C measurement uncertainty used in the simulation}
