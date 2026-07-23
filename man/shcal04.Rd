@@ -12,9 +12,9 @@ calibration curve on a calendar grid spanning from 11,000--0 cal yr BP:
 \describe{
 \item{calendar_age}{The calendar age (in cal yr BP)}
 \item{c14_age}{The \eqn{{}^{14}}C age (in \eqn{{}^{14}}C yr BP)}
-\item{c14_sig}{The (1-\eqn{\sigma}) uncertainty in the \eqn{{}^{14}}C age}
+\item{c14_sig}{The (1\eqn{\sigma}) uncertainty in the \eqn{{}^{14}}C age}
 \item{f14c}{The \eqn{{}^{14}}C age expressed as F\eqn{{}^{14}}C concentration}
-\item{f14c_sig}{The (1-\eqn{\sigma}) uncertainty in the F\eqn{{}^{14}}C concentration}
+\item{f14c_sig}{The (1\eqn{\sigma}) uncertainty in the F\eqn{{}^{14}}C concentration}
 }
 }
 }
@@ -29,8 +29,8 @@ The SHCal04 Southern Hemisphere radiocarbon age calibration curve
 on a calendar grid spanning from 11,000--0 cal yr BP
 (Before Present, 0 cal yr BP corresponds to 1950 CE). \cr \cr
 \emph{Note:} This dataset provides \eqn{{}^{14}}C ages and F\eqn{{}^{14}}C values
-on a calendar age grid. This is different from the \eqn{{}^{14}}C ages
-and \eqn{{\Delta}^{14}}C values provided in oxcal .14c files.\cr \cr
+on a calendar age grid. This is a different format from oxcal/calib .14c files
+which give the \eqn{{}^{14}}C ages and \eqn{{\Delta}^{14}}C values.\cr \cr
 \strong{Reference:} \cr FG McCormac, AG Hogg, PG Blackwell, CE Buck, TFG Higham, and PJ Reimer
 2004.
 SHCal04 Southern Hemisphere Calibration 0--11.0 cal kyr BP.

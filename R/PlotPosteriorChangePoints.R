@@ -26,9 +26,12 @@
 #' @param kernel_bandwidth (Optional) The bandwidth used for the (Gaussian) kernel smoothing of
 #' the calendar age densities. If not given, then 1/50th of the overall calendar age range will be used.
 #'
-#' @return None
+#' @return A list with single element `plot_par` that contains the plotting/graphical parameters of the plot to allow for editing/annotation.
 #'
 #' @export
+#'
+#' @seealso For annotating the plot, see [carbondate::AddTextPlot], [carbondate::AddLinePlot] and [carbondate::AddShadingPlot]
+#'
 #'
 #' @examples
 #' # NOTE: This example is shown with a small n_iter to speed up execution.
@@ -47,6 +50,32 @@
 #' # Changing the calendar age plotting scale to cal AD
 #' PlotPosteriorChangePoints(pp_output, n_changes = c(2, 3),
 #'     plot_cal_age_scale = "AD")
+#'
+#'
+#' # Creating a changepoint plot and then adding annotations
+#' posterior_changepoint_plot <- PlotPosteriorChangePoints(pp_output, n_changes = c(2, 3))
+#' # Note: Assigning plot to a variable (with <-) is only needed for annotation.
+#'
+#' # Add annotations to plot
+#' AddShadingPlot(posterior_changepoint_plot,
+#'     x_start = 640, x_end = 620,
+#'     col = "red")
+#'
+#' AddLinePlot(
+#'      posterior_changepoint_plot,
+#'      v = 600,
+#'      col = "purple",
+#'      lwd = 1,
+#'      lty = 2)
+#'
+#' AddTextPlot(posterior_changepoint_plot,
+#'     x = 600, y = 0.04,
+#'     labels = expression(paste("600 cal yrs BP")),
+#'     cex = 0.7,
+#'     pos = 4,
+#'     offset = 0.2,
+#'     col = "purple")
+#'
 PlotPosteriorChangePoints <- function(
     output_data,
     n_changes = c(1, 2, 3),
@@ -130,4 +159,10 @@ PlotPosteriorChangePoints <- function(
     graphics::lines(cal_age_line_x, line$y, lty = line$n_change, col = colors[line$n_change], lwd = plot_lwd)
   }
   graphics::legend("topright", legend = legend, lty = n_changes, col = colors[n_changes])
+
+  plot_par <- graphics::par(no.readonly = TRUE)
+
+  return_list <- list(plot_par = plot_par )
+
+  invisible(return_list)
 }

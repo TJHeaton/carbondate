@@ -14,6 +14,8 @@
 #' determinations and the calibration curve. \cr \cr
 #'
 #' @inheritParams CalibrateSingleDetermination
+#' @param delta_r,delta_r_sig (Optional) The \eqn{\Delta R} offset and associated 1\eqn{\sigma} uncertainty
+#' if calibrating a set of marine samples.
 #' @param calendar_age_range_BP A vector of length 2 with the start and end
 #' calendar age BP to calculate the SPD over. These two values must be in order
 #' with start value less than end value, e.g., (600, 1700) cal yr BP.
@@ -85,6 +87,8 @@ FindSummedProbabilityDistribution <- function(
     rc_sigmas,
     calibration_curve,
     F14C_inputs = FALSE,
+    delta_r = NULL,
+    delta_r_sig = NULL,
     resolution = 1,
     plot_output = FALSE,
     plot_cal_age_scale = "BP",
@@ -93,9 +97,12 @@ FindSummedProbabilityDistribution <- function(
     denscale = 3,
     plot_pretty = TRUE) {
 
+  calibration_curve_name <- deparse(substitute(calibration_curve))
+
   arg_check <- .InitializeErrorList()
   .CheckNumberVector(arg_check, calendar_age_range_BP, len = 2)
   .CheckFlag(arg_check, F14C_inputs)
+  .CheckSingleDeltaR(arg_check, calibration_curve_name, delta_r, delta_r_sig)
   .CheckFlag(arg_check, plot_output)
   .CheckNumber(arg_check, denscale, lower = 0)
   .CheckChoice(arg_check, plot_cal_age_scale, c("BP", "AD", "BC"))
@@ -104,6 +111,22 @@ FindSummedProbabilityDistribution <- function(
   .CheckCalibrationCurve(arg_check, calibration_curve, NA)
   .ReportErrors(arg_check)
 
+  ##############################################################################
+  # Adjust rc_determinations and rc_sigmas by delta_r if needed
+  is_offset_needed <- !is.null(delta_r)
+  rc_determinations_original <- rc_determinations
+  rc_sigmas_original <- rc_sigmas
+
+  if(is_offset_needed) {
+    adjusted_values <- .AddOffset(
+      rc_determinations,
+      rc_sigmas,
+      delta_r,
+      delta_r_sig,
+      F14C_inputs)
+    rc_determinations <- adjusted_values$rc_determination
+    rc_sigmas <- adjusted_values$rc_sigma
+  }
 
   calibration_data_range <- range(calibration_curve$calendar_age)
   calendar_age_range_BP <- sort(calendar_age_range_BP)
@@ -147,7 +170,7 @@ FindSummedProbabilityDistribution <- function(
     }
 
     .PlotSPD(
-      rc_determinations = rc_determinations,
+      rc_determinations = rc_determinations_original,
       calendar_age_BP = new_calendar_ages,
       probabilities = probabilities_per_calendar_age,
       calibration_curve = interpolated_calibration_data,
@@ -156,7 +179,9 @@ FindSummedProbabilityDistribution <- function(
       plot_cal_age_scale = plot_cal_age_scale,
       interval_width = interval_width,
       bespoke_probability = bespoke_probability,
-      denscale = denscale)
+      denscale = denscale,
+      is_offset_needed = is_offset_needed,
+      adjusted_values = adjusted_values)
   }
 
   if (plot_output == TRUE) {
@@ -168,16 +193,18 @@ FindSummedProbabilityDistribution <- function(
 
 
 .PlotSPD <- function(
-  rc_determinations,
-  calendar_age_BP,
-  probabilities,
-  calibration_curve,
-  calibration_curve_name,
-  F14C_inputs,
-  plot_cal_age_scale,
-  interval_width = "2sigma",
-  bespoke_probability = NA,
-  denscale = NA) {
+    rc_determinations,
+    calendar_age_BP,
+    probabilities,
+    calibration_curve,
+    calibration_curve_name,
+    F14C_inputs,
+    plot_cal_age_scale,
+    interval_width = "2sigma",
+    bespoke_probability = NA,
+    denscale = NA,
+    is_offset_needed = FALSE,
+    adjusted_values = NULL) {
 
   # What domain to plot in
   plot_14C_age <- !F14C_inputs
@@ -187,6 +214,8 @@ FindSummedProbabilityDistribution <- function(
   } else {
     calibration_curve <- .AddC14ageColumns(calibration_curve)
   }
+
+  delta_r_adjusted_colour <- "green"
 
   # Calculate calendar age plotting range
   xrange <- range(calibration_curve$calendar_age)
@@ -204,6 +233,12 @@ FindSummedProbabilityDistribution <- function(
     interval_width = interval_width,
     bespoke_probability = bespoke_probability,
     title = title)
+
+  if(is_offset_needed) {
+    graphics::rug(adjusted_values$rc_determination,
+                  side = 2,
+                  col = delta_r_adjusted_colour)
+  }
 
   # Plot the posterior cal age on the x-axis
   .SetUpDensityPlot(
@@ -232,7 +267,10 @@ FindSummedProbabilityDistribution <- function(
     "bespoke" = paste0(round(100 * bespoke_probability), "% interval"))
 
   legend_labels <- c(
-    gsub("intcal", "IntCal", gsub("shcal", "SHCal", calcurve_name)), # Both IntCal and SHCal
+    gsub("intcal", "IntCal",
+         gsub("shcal", "SHCal",
+              gsub("marine", "Marine",
+                   calcurve_name))), # Capitalise IntCal, SHCal and Marine
     ci_label)
   lty <- c(1, 2, -1)
   lwd <- c(1, 1, -1)

@@ -8,6 +8,8 @@ CalibrateSingleDetermination(
   rc_determination,
   rc_sigma,
   calibration_curve,
+  delta_r = NULL,
+  delta_r_sig = NULL,
   F14C_inputs = FALSE,
   resolution = 1,
   plot_output = FALSE,
@@ -29,6 +31,8 @@ provided either as the radiocarbon age (in \eqn{{}^{14}}C yr BP) or the F\eqn{{}
 columns \code{c14_age} and \code{c14_sig} or \code{f14c} and \code{f14c_sig} (or both sets).
 This format matches the curves supplied with this package, e.g., \link{intcal20},
 \link{intcal13}, which contain all 5 columns.}
+
+\item{delta_r, delta_r_sig}{For marine curve calibration only. The \eqn{\Delta R} offset and associated 1\eqn{\sigma} uncertainty on the regional offset to the marine calibration curve (must be given in \eqn{{}^{14}}C yrs)}
 
 \item{F14C_inputs}{\code{TRUE} if the provided \code{rc_determination} is an F\eqn{{}^{14}}C
 concentration and \code{FALSE} if it is a radiocarbon age. Defaults to \code{FALSE}.}
@@ -60,9 +64,9 @@ margins (that create sufficient space for axis titles and rotates y-axis labels)
 implement current user values.}
 }
 \value{
-A data frame with one column \code{calendar_age_BP} containing the calendar
-ages, and the other column \code{probability} containing the probability at that
-calendar age.
+If \code{plot = FALSE} then a dataframe with with one column \code{calendar_age_BP} containing the calendar ages, and the other column \code{probability} containing the probability at that calendar age.
+
+If \code{plot = TRUE} then returns a list, the first element \code{posterior_cal_age} is as above. The second list element, \code{plot_par}, contains the plotting/graphical parameters of the plot to allow for editing/annotation.
 }
 \description{
 Uses the supplied calibration curve to calibrate a single radiocarbon
@@ -110,4 +114,25 @@ CalibrateSingleDetermination(
     interval_width = "bespoke",
     bespoke_probability = 0.8,
     denscale = 5)
+
+# Annotating a plot
+# Assign plot to a variable (with <-):
+individual_calibration_plot <- CalibrateSingleDetermination(860, 35, intcal20, plot_output = TRUE)
+
+AddLinePlot(individual_calibration_plot,
+    v = 850,
+    col = "purple",
+    lwd = 1,
+    lty = 2)
+
+AddTextPlot(individual_calibration_plot,
+    x = 850, y = 750,
+    labels = expression(paste("850 cal yrs BP")),
+    cex = 0.7,
+    pos = 2,
+    offset = 0.2,
+    col = "purple")
+}
+\seealso{
+For annotating the plot, see \link{AddTextPlot}, \link{AddLinePlot} and \link{AddShadingPlot}
 }

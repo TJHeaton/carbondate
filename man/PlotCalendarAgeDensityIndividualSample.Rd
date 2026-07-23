@@ -81,9 +81,11 @@ margins (that create sufficient space for axis titles and rotates y-axis labels)
 implement current user values.}
 }
 \value{
-A data frame with one column \code{calendar_age_BP} containing the calendar ages, and the other
+A list, the first list element, \code{posterior_density}, with one column \code{calendar_age_BP} containing the calendar ages, and the other
 column \code{probability} containing the (smoothed) kernel density estimate of the probability at that
 calendar age.
+
+The second list element, \code{plot_par}, contains the plotting/graphical parameters of the plot to allow for editing/annotation.
 }
 \description{
 Once a joint calibration function (any of \link{PolyaUrnBivarDirichlet}, \link{WalkerBivarDirichlet}
@@ -131,11 +133,31 @@ PlotCalendarAgeDensityIndividualSample(
     show_unmodelled_density = TRUE)
 
 # Plot and then assign the returned probability
-posterior_dens <- PlotCalendarAgeDensityIndividualSample(15, polya_urn_output)
+individual_post_density_plot <- PlotCalendarAgeDensityIndividualSample(15, polya_urn_output)
+posterior_dens <-  individual_post_density_plot$posterior_density
+
 # Use this to find the mean posterior calendar age
 weighted.mean(posterior_dens$calendar_age_BP, posterior_dens$probability)
+
+# Add annotation to the plot
+AddLinePlot(individual_post_density_plot,
+    v = 5050,
+    col = "darkorange",
+    lwd = 2,
+    lty = 2)
+
+AddTextPlot(individual_post_density_plot,
+    x = 5050, y = 4370,
+    labels = expression(paste("5050 cal yrs BP")),
+    cex = 0.7,
+    pos = 4,
+    offset = 0.2,
+    col = "darkorange")
+
 }
 \seealso{
 \link{CalibrateSingleDetermination} for independent calibration of a sample against
 a calibration curve.
+
+Also, to annotate the plot, see \link{AddTextPlot}, \link{AddLinePlot} and \link{AddShadingPlot}
 }

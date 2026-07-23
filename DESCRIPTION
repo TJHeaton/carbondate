@@ -8,7 +8,7 @@ Authors@R: c(
            comment = c(ORCID = "0000-0001-7280-6802")))       
 Description: 
   Performs Bayesian non-parametric calibration of multiple related radiocarbon determinations, and summarises the calendar age information to plot their joint calendar age density (see Heaton (2022) <doi:10.1111/rssc.12599>). 
-  Also models the occurrence of radiocarbon samples as a variable-rate (inhomogeneous) Poisson process, plotting the posterior estimate for the occurrence rate of the samples over calendar time, and providing information about potential change points.
+  Also models the occurrence of radiocarbon samples as a variable-rate (inhomogeneous) Poisson process, plotting the posterior estimate for the occurrence rate of the samples over calendar time, and providing information about potential change points (see Heaton, Al-assam & Bard (2025) <doi:10.1016/j.jas.2025.106237>).
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -30,4 +30,4 @@ BugReports: https://github.com/TJHeaton/carbondate/issues
 VignetteBuilder: knitr
 LinkingTo: 
     cpp11
-RoxygenNote: 7.3.2
+Config/roxygen2/version: 8.0.0

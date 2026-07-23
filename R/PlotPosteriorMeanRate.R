@@ -75,10 +75,11 @@
 #' Default is 2 (to add emphasis).
 #'
 #'
-#' @return A list, each item containing a data frame of the `calendar_age_BP`, the `rate_mean`
-#' and the confidence intervals for the rate - `rate_ci_lower` and `rate_ci_upper`.
+#' @return A list, the first list element, `posterior_rate`, containing a data frame of the `calendar_age_BP`, the `rate_mean` and the confidence intervals for the rate - `rate_ci_lower` and `rate_ci_upper`. The second list element, `plot_par`, contains the plotting/graphical parameters of the plot to allow for editing/annotation.
 #'
 #' @export
+#'
+#' @seealso For annotating the plot, see [carbondate::AddTextPlot], [carbondate::AddLinePlot] and [carbondate::AddShadingPlot]
 #'
 #' @examples
 #' # NOTE: All these examples are shown with a small n_iter and n_posterior_samples
@@ -98,12 +99,31 @@
 #' # Decrease the line width of the posterior mean
 #' PlotPosteriorMeanRate(pp_output, n_posterior_samples = 100, plot_lwd = 1)
 #'
-#' # Specify an 80% confidence interval
-#' PlotPosteriorMeanRate(
+#' # Specify an 80% confidence interval and add annotations
+#' posterior_mean_plot <- PlotPosteriorMeanRate(
 #'     pp_output,
 #'     interval_width = "bespoke",
 #'     bespoke_probability = 0.8,
 #'     n_posterior_samples = 100)
+#'
+#' AddShadingPlot(posterior_mean_plot,
+#'     x_start = 620, x_end = 600,
+#'     col = "red")
+#'
+#' AddLinePlot(
+#'      posterior_mean_plot,
+#'      h = 500,
+#'      col = "darkgreen",
+#'      lwd = 1,
+#'      lty = 2)
+#'
+#' AddTextPlot(posterior_mean_plot,
+#'     x = 575, y = 500,
+#'     labels = expression(paste("500", " "^14, "C ", "yrs BP")),
+#'     cex = 0.7,
+#'     pos = 3,
+#'     offset = 0.2,
+#'     col = "darkgreen")
 #'
 #' # Plot the posterior rate conditional on 2 internal changes
 #' PlotPosteriorMeanRate(
@@ -158,12 +178,24 @@ PlotPosteriorMeanRate <- function(
       las = 1)
   }
 
+
   if (is.null(calibration_curve)) {
     calibration_curve <- get(output_data$input_data$calibration_curve_name)
   }
+
   rc_determinations <- output_data$input_data$rc_determinations
   rc_sigmas <- output_data$input_data$rc_sigmas
   F14C_inputs <-output_data$input_data$F14C_inputs
+
+  delta_r_present <- !is.null(output_data$input_data$delta_r)
+  if(delta_r_present) {
+    adjusted_values <- .AddOffset(
+      rc_determinations,
+      rc_sigmas,
+      output_data$input_data$delta_r,
+      output_data$input_data$delta_r_sig,
+      F14C_inputs)
+  }
 
   if (plot_14C_age == TRUE) {
     calibration_curve <- .AddC14ageColumns(calibration_curve)
@@ -184,6 +216,7 @@ PlotPosteriorMeanRate <- function(
   calibration_curve_colour <- "blue"
   calibration_curve_bg <- grDevices::rgb(0, 0, 1, .3)
   output_colour <- "purple"
+  delta_r_adjusted_colour <- "green"
 
   start_age <- ceiling(min(output_data$rate_s[[1]]) / resolution) * resolution
   end_age <- floor(max(output_data$rate_s[[1]]) / resolution) * resolution
@@ -242,6 +275,14 @@ PlotPosteriorMeanRate <- function(
     bespoke_probability,
     title = plot_title)
 
+  if(delta_r_present) {
+    graphics::rug(adjusted_values$rc_determination,
+                  side = 2,
+                  col = delta_r_adjusted_colour)
+  }
+
+  plot_par <- graphics::par(no.readonly = TRUE)
+
   .SetUpDensityPlot(plot_cal_age_scale, xlim, ylim_rate)
 
   if (show_individual_means) {
@@ -258,7 +299,9 @@ PlotPosteriorMeanRate <- function(
     calibration_curve_colour,
     output_colour)
 
-  invisible(posterior_rate)
+  return_list <- list(posterior_rate = posterior_rate, plot_par = plot_par)
+
+  invisible(return_list)
 }
 
 
@@ -292,21 +335,22 @@ PlotPosteriorMeanRate <- function(
   legend_labels <- c(
     gsub("intcal", "IntCal",
          gsub("shcal", "SHCal",
-              output_data$input_data$calibration_curve_name)), # Both IntCal and SHCal
-    ci_label,
-    "Posterior mean rate")
-  lty <- c(1, 2, 1)
-  pch <- c(NA, NA, NA)
-  col <- c(calibration_curve_colour, calibration_curve_colour, output_colour)
+              gsub("marine", "Marine",
+                   output_data$input_data$calibration_curve_name))), # Capitalise IntCal, SHCal and Marine
+         ci_label,
+         "Posterior mean rate")
+    lty <- c(1, 2, 1)
+    pch <- c(NA, NA, NA)
+    col <- c(calibration_curve_colour, calibration_curve_colour, output_colour)
 
-  if (show_confidence_intervals) {
-    legend_labels <- c(legend_labels, ci_label)
-    lty <- c(lty, 2)
-    pch <- c(pch, NA)
-    col <- c(col, output_colour)
-  }
+    if (show_confidence_intervals) {
+      legend_labels <- c(legend_labels, ci_label)
+      lty <- c(lty, 2)
+      pch <- c(pch, NA)
+      col <- c(col, output_colour)
+    }
 
-  graphics::legend(
-    "topright", legend = legend_labels, lty = lty, pch = pch, col = col)
+    graphics::legend(
+      "topright", legend = legend_labels, lty = lty, pch = pch, col = col)
 }
 

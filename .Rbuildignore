@@ -15,3 +15,5 @@
 ^vignettes/Temporary-Text\.Rmd-in-progress$
 ^cran-comments\.md$
 ^CRAN-SUBMISSION$
+^\.positai$
+^\.claude$

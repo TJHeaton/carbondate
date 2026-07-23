@@ -10,6 +10,8 @@ PPcalibrate(
   rc_sigmas,
   calibration_curve,
   F14C_inputs = FALSE,
+  delta_r = NULL,
+  delta_r_sig = NULL,
   n_iter = 1e+05,
   n_thin = 10,
   use_F14C_space = TRUE,
@@ -43,6 +45,10 @@ This format matches the curves supplied with this package, e.g., \link{intcal20}
 
 \item{F14C_inputs}{\code{TRUE} if the provided \code{rc_determinations} are F\eqn{{}^{14}}C
 concentrations and \code{FALSE} if they are radiocarbon ages. Defaults to \code{FALSE}.}
+
+\item{delta_r, delta_r_sig}{(Optional) The \eqn{\Delta R} offset and associated 1\eqn{\sigma} uncertainty
+if calibrating a set of marine samples. This offset must be a single value that is shared by all the samples.
+If there are multiple different offsets then use \link{PPcalibrateMixedCurves}}
 
 \item{n_iter}{The number of MCMC iterations (optional). Default is 100,000.}
 
@@ -137,8 +143,8 @@ those calculated) and update_type
 
 \describe{
 \item{\code{update_type}}{A string that always has the value "RJPP".}
-\item{\code{input_data}}{A list containing the \eqn{{}^{14}}C data used, and the name of
-the calibration curve used.}
+\item{\code{input_data}}{A list containing the \eqn{{}^{14}}C data used, the name of
+the calibration curve used, and \code{delta_r} information (if specified).}
 \item{\code{input_parameters}}{A list containing the values of the fixed
 parameters \code{pp_cal_age_range}, \code{prior_n_internal_changepoints_lambda},
 \code{k_max_internal_changepoints}, \code{prior_h_shape}, \code{prior_h_rate}, \code{rescale_factor_rev_jump},
@@ -183,4 +189,11 @@ pp_output <- PPcalibrate(
     intcal20,
     n_iter = 100,
     show_progress = FALSE)
+}
+\seealso{
+See \link{PPcalibrateMixedCurves} for summarisation of a set of samples that need to
+be calibrated against multiple calibration curves (i.e., come from different environments).
+
+Also \link{PlotPosteriorMeanRate}, \link{PlotNumberOfInternalChanges}, \link{PlotPosteriorChangePoints} and
+\link{PlotPosteriorHeights} for plotting of the results; and \link{FindPosteriorMeanRate} if you just want the posterior mean rate without a plot.
 }

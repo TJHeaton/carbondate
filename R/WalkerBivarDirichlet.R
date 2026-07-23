@@ -36,6 +36,8 @@
 #' Statistics - Simulation and Computation} \strong{36} (1):45-54. https://doi.org/10.1080/03610910601096262.
 #'
 #' @inheritParams FindSummedProbabilityDistribution
+#' @param delta_r,delta_r_sig (Optional) The \eqn{\Delta R} offset and associated 1\eqn{\sigma} uncertainty
+#' if calibrating a set of marine samples. This offset must be a single value that is shared by all the samples.
 #' @param n_iter  The number of MCMC iterations (optional). Default is 100,000.
 #' @param n_thin  How much to thin the MCMC output (optional). Will store every
 #' `n_thin`\eqn{{}^\textrm{th}} iteration. 1 is no thinning, while a larger number will result
@@ -124,8 +126,8 @@
 #'
 #' \describe{
 #'  \item{`update_type`}{A string that always has the value "Walker".}
-#'  \item{`input_data`}{A list containing the \eqn{{}^{14}}C data used, and the name of
-#'  the calibration curve used.}
+#'  \item{`input_data`}{A list containing the \eqn{{}^{14}}C data used, the name of
+#'  the calibration curve used, and `delta_r` information (if specified).}
 #'  \item{`input_parameters`}{A list containing the values of the fixed
 #'  hyperparameters `lambda`, `nu1`, `nu2`, `A`, `B`, `alpha_shape`, and
 #'  `alpha_rate`, and the slice parameters `slice_width` and
@@ -167,6 +169,8 @@ WalkerBivarDirichlet <- function(
     rc_sigmas,
     calibration_curve,
     F14C_inputs = FALSE,
+    delta_r = NULL,
+    delta_r_sig = NULL,
     n_iter = 1e5,
     n_thin = 10,
     use_F14C_space = TRUE,
@@ -189,10 +193,13 @@ WalkerBivarDirichlet <- function(
   # Check input parameters
   num_observations <- length(rc_determinations)
 
+  calibration_curve_name <- deparse(substitute(calibration_curve))
+
   arg_check <- .InitializeErrorList()
 
   .CheckInputData(arg_check, rc_determinations, rc_sigmas, F14C_inputs)
   .CheckCalibrationCurve(arg_check, calibration_curve, NA)
+  .CheckSingleDeltaR(arg_check, calibration_curve_name, delta_r, delta_r_sig)
   .CheckDPMMParameters(
     arg_check,
     sensible_initialisation,
@@ -232,7 +239,26 @@ WalkerBivarDirichlet <- function(
     rc_determinations = rc_determinations,
     rc_sigmas = rc_sigmas,
     F14C_inputs = F14C_inputs,
-    calibration_curve_name = deparse(substitute(calibration_curve)))
+    calibration_curve_name = deparse(substitute(calibration_curve)),
+    delta_r = delta_r,
+    delta_r_sig = delta_r_sig)
+
+  ##############################################################################
+  # Adjust rc_determinations and rc_sigmas by delta_r if needed
+  is_offset_needed <- !is.null(delta_r)
+  rc_determinations_original <- rc_determinations
+  rc_sigmas_original <- rc_sigmas
+
+  if(is_offset_needed) {
+    adjusted_values <- .AddOffset(
+      rc_determinations,
+      rc_sigmas,
+      delta_r,
+      delta_r_sig,
+      F14C_inputs)
+    rc_determinations <- adjusted_values$rc_determination
+    rc_sigmas <- adjusted_values$rc_sigma
+  }
 
   ##############################################################################
   # Convert the scale of the initial determinations to F14C or C14_age as appropriate

@@ -70,15 +70,19 @@
 #' @param plot_lwd The line width to use when plotting the posterior mean (and confidence intervals).
 #' Default is 2 (to add emphasis).
 #'
-#' @return A list, each item containing a data frame of the `calendar_age_BP`, the
+#' @return A list, the first list element, `predictive_density`, is a data frame of the `calendar_age_BP`, the
 #' `density_mean` and the confidence intervals for the density
 #' `density_ci_lower` and `density_ci_upper` for each set of output data.
+#'
+#' The second list element, `plot_par`, contains the plotting/graphical parameters of the plot to allow for editing/annotation.
 #'
 #' @export
 #'
 #' @seealso [carbondate::FindPredictiveCalendarAgeDensity] if only interested in the estimated value of
 #' the predictive density on a grid; [carbondate::PlotNumberOfClusters] and
 #' [carbondate::PlotCalendarAgeDensityIndividualSample] for more plotting functions using DPMM output.
+#'
+#' Also, to annotate the plot, see [carbondate::AddTextPlot], [carbondate::AddLinePlot] and [carbondate::AddShadingPlot]
 #'
 #' @examples
 #' # NOTE: All these examples are shown with a small n_iter and n_posterior_samples
@@ -113,6 +117,26 @@
 #'     interval_width = "bespoke",
 #'     bespoke_probability = 0.8,
 #'     show_SPD = TRUE)
+#'
+#' # Annotating a plot
+#' # Assign plot to a variable (with <-):
+#' predictive_cal_age_plot <- PlotPredictiveCalendarAgeDensity(polya_urn_output,
+#'     n_posterior_samples = 50)
+#'
+#' AddLinePlot(predictive_cal_age_plot,
+#'     v = 5000,
+#'     col = "darkorange",
+#'     lwd = 2,
+#'     lty = 2)
+#'
+#' AddTextPlot(predictive_cal_age_plot,
+#'     x = 5000, y = 3700,
+#'     labels = expression(paste("5000 cal yrs BP")),
+#'     cex = 0.7,
+#'     pos = 4,
+#'     offset = 0.2,
+#'     col = "darkorange")
+#'
 PlotPredictiveCalendarAgeDensity <- function(
     output_data,
     n_posterior_samples = 5000,
@@ -177,6 +201,19 @@ PlotPredictiveCalendarAgeDensity <- function(
   rc_sigmas <- output_data[[1]]$input_data$rc_sigmas
   F14C_inputs <-output_data[[1]]$input_data$F14C_inputs
 
+  ##################################################
+  # Adjust if delta_r
+  delta_r_present <- !is.null(output_data[[1]]$input_data$delta_r)
+  if(delta_r_present) {
+    adjusted_values <- .AddOffset(
+      rc_determinations,
+      rc_sigmas,
+      output_data[[1]]$input_data$delta_r,
+      output_data[[1]]$input_data$delta_r_sig,
+      F14C_inputs)
+  }
+  ##################################################
+
   if (plot_14C_age == TRUE) {
     calibration_curve <- .AddC14ageColumns(calibration_curve)
     if (F14C_inputs == TRUE) {
@@ -199,6 +236,8 @@ PlotPredictiveCalendarAgeDensity <- function(
   calibration_curve_colour <- "blue"
   calibration_curve_bg <- grDevices::rgb(0, 0, 1, .3)
   output_colours <- c("purple", "darkgreen", "darkorange2", "deeppink3")
+  delta_r_adjusted_colour <- "green"
+
   if (num_data > 4) {
     output_colours <- c(output_colours, grDevices::hcl.colors(n=num_data-4, "Roma"))
   }
@@ -247,6 +286,17 @@ PlotPredictiveCalendarAgeDensity <- function(
     interval_width,
     bespoke_probability)
 
+  #############################
+  # Add adjusted rug if have delta_r
+  if(delta_r_present) {
+    graphics::rug(adjusted_values$rc_determination,
+                  side = 2,
+                  col = delta_r_adjusted_colour)
+  }
+  ###############################
+
+  plot_par <- graphics::par(no.readonly = TRUE)
+
   .SetUpDensityPlot(plot_cal_age_scale, xlim, ylim_density)
 
   if (show_SPD) {
@@ -267,7 +317,10 @@ PlotPredictiveCalendarAgeDensity <- function(
     calibration_curve_colour,
     output_colours)
 
-  invisible(predictive_density)
+  return_list <- list(predictive_density = predictive_density,
+                      plot_par = plot_par )
+
+  invisible(return_list)
 }
 
 
@@ -315,7 +368,8 @@ PlotPredictiveCalendarAgeDensity <- function(
   legend_labels <- c(
     gsub("intcal", "IntCal",
          gsub("shcal", "SHCal",
-              output_data[[1]]$input_data$calibration_curve_name)), # Both IntCal and SHCal
+              gsub("marine", "Marine",
+              output_data[[1]]$input_data$calibration_curve_name))), # Capitalise IntCal, SHCal and MarineCal
     ci_label)
   lty <- c(1, 2)
   pch <- c(NA, NA)

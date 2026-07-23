@@ -10,6 +10,8 @@ WalkerBivarDirichlet(
   rc_sigmas,
   calibration_curve,
   F14C_inputs = FALSE,
+  delta_r = NULL,
+  delta_r_sig = NULL,
   n_iter = 1e+05,
   n_thin = 10,
   use_F14C_space = TRUE,
@@ -44,6 +46,9 @@ This format matches the curves supplied with this package, e.g., \link{intcal20}
 
 \item{F14C_inputs}{\code{TRUE} if the provided \code{rc_determinations} are F\eqn{{}^{14}}C
 concentrations and \code{FALSE} if they are radiocarbon ages. Defaults to \code{FALSE}.}
+
+\item{delta_r, delta_r_sig}{(Optional) The \eqn{\Delta R} offset and associated 1\eqn{\sigma} uncertainty
+if calibrating a set of marine samples. This offset must be a single value that is shared by all the samples.}
 
 \item{n_iter}{The number of MCMC iterations (optional). Default is 100,000.}
 
@@ -146,8 +151,8 @@ those calculated using \code{sensible_initialisation}) and the update_type
 
 \describe{
 \item{\code{update_type}}{A string that always has the value "Walker".}
-\item{\code{input_data}}{A list containing the \eqn{{}^{14}}C data used, and the name of
-the calibration curve used.}
+\item{\code{input_data}}{A list containing the \eqn{{}^{14}}C data used, the name of
+the calibration curve used, and \code{delta_r} information (if specified).}
 \item{\code{input_parameters}}{A list containing the values of the fixed
 hyperparameters \code{lambda}, \code{nu1}, \code{nu2}, \code{A}, \code{B}, \code{alpha_shape}, and
 \code{alpha_rate}, and the slice parameters \code{slice_width} and

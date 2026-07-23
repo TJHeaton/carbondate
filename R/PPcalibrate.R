@@ -31,6 +31,10 @@
 #'
 #' @inheritParams WalkerBivarDirichlet
 #'
+#' @param delta_r,delta_r_sig (Optional) The \eqn{\Delta R} offset and associated 1\eqn{\sigma} uncertainty
+#' if calibrating a set of marine samples. This offset must be a single value that is shared by all the samples.
+#' If there are multiple different offsets then use [carbondate::PPcalibrateMixedCurves]
+#'
 #' @param calendar_age_range (Optional) Overall minimum and maximum calendar ages (in cal yr BP) permitted
 #' for the set of radiocarbon samples, i.e., `calendar_age_range[1]` < \eqn{\theta_1, \ldots, \theta_n} <
 #' `calendar_age_range[1]`. This is used to bound the start and end of the Poisson process (so no events
@@ -102,14 +106,20 @@
 #'
 #' \describe{
 #'  \item{`update_type`}{A string that always has the value "RJPP".}
-#'  \item{`input_data`}{A list containing the \eqn{{}^{14}}C data used, and the name of
-#'  the calibration curve used.}
+#'  \item{`input_data`}{A list containing the \eqn{{}^{14}}C data used, the name of
+#'  the calibration curve used, and `delta_r` information (if specified).}
 #'  \item{`input_parameters`}{A list containing the values of the fixed
 #'  parameters `pp_cal_age_range`, `prior_n_internal_changepoints_lambda`,
 #'  `k_max_internal_changepoints`, `prior_h_shape`, `prior_h_rate`, `rescale_factor_rev_jump`,
 #'   `calendar_age_grid`, `calendar_grid_resolution`, `n_iter` and `n_thin`.}
 #' }
 #' @export
+#'
+#' @seealso See [carbondate::PPcalibrateMixedCurves] for summarisation of a set of samples that need to
+#' be calibrated against multiple calibration curves (i.e., come from different environments).
+#'
+#' Also [carbondate::PlotPosteriorMeanRate], [carbondate::PlotNumberOfInternalChanges], [carbondate::PlotPosteriorChangePoints] and
+#' [carbondate::PlotPosteriorHeights] for plotting of the results; and [carbondate::FindPosteriorMeanRate] if you just want the posterior mean rate without a plot.
 #'
 #' @examples
 #' # NOTE: This example is shown with a small n_iter to speed up execution.
@@ -126,6 +136,8 @@ PPcalibrate <- function(
     rc_sigmas,
     calibration_curve,
     F14C_inputs = FALSE,
+    delta_r = NULL,
+    delta_r_sig = NULL,
     n_iter = 1e5,
     n_thin = 10,
     use_F14C_space = TRUE,
@@ -143,12 +155,15 @@ PPcalibrate <- function(
     use_fast = TRUE,
     fast_approx_prob_cutoff = 0.001) {
 
+  calibration_curve_name <- deparse(substitute(calibration_curve))
+
   arg_check <- .InitializeErrorList()
   .CheckInputData(arg_check, rc_determinations, rc_sigmas, F14C_inputs)
   .CheckCalibrationCurve(arg_check, calibration_curve, NA)
   .CheckIterationParameters(arg_check, n_iter, n_thin)
   .CheckFlag(arg_check, F14C_inputs)
   .CheckFlag(arg_check, use_F14C_space)
+  .CheckSingleDeltaR(arg_check, calibration_curve_name, delta_r, delta_r_sig)
   .CheckFlag(arg_check, show_progress)
   if (!any(is.na(calendar_age_range))) { .CheckNumberVector(arg_check, calendar_age_range, len = 2) }
   .CheckNumber(arg_check, calendar_grid_resolution, lower = 0)
@@ -168,7 +183,27 @@ PPcalibrate <- function(
     rc_determinations = rc_determinations,
     rc_sigmas = rc_sigmas,
     F14C_inputs = F14C_inputs,
-    calibration_curve_name = deparse(substitute(calibration_curve)))
+    calibration_curve_name = deparse(substitute(calibration_curve)),
+    delta_r = delta_r,
+    delta_r_sig = delta_r_sig)
+
+  ##############################################################################
+  # Adjust rc_determinations and rc_sigmas by delta_r if needed
+  is_offset_needed <- !is.null(delta_r)
+  rc_determinations_original <- rc_determinations
+  rc_sigmas_original <- rc_sigmas
+
+  if(is_offset_needed) {
+    adjusted_values <- .AddOffset(
+      rc_determinations,
+      rc_sigmas,
+      delta_r,
+      delta_r_sig,
+      F14C_inputs)
+    rc_determinations <- adjusted_values$rc_determination
+    rc_sigmas <- adjusted_values$rc_sigma
+  }
+
 
   ##############################################################################
   # Convert the scale of the initial determinations to F14C or C14_age as appropriate
@@ -276,8 +311,8 @@ PPcalibrate <- function(
     c(
       min_potential_calendar_age,
       stats::runif(initial_n_internal_changepoints,
-            min = min_potential_calendar_age,
-            max = max_potential_calendar_age),
+                   min = min_potential_calendar_age,
+                   max = max_potential_calendar_age),
       max_potential_calendar_age
     )
   )
@@ -446,13 +481,13 @@ PPcalibrate <- function(
 
 
 .UpdateCalendarAges <- function(
-  likelihood_calendar_ages_from_calibration_curve,
-  likelihood_values,
-  likelihood_offsets,
-  calendar_age_grid,
-  rate_s,
-  rate_h,
-  use_fast) {
+    likelihood_calendar_ages_from_calibration_curve,
+    likelihood_values,
+    likelihood_offsets,
+    calendar_age_grid,
+    rate_s,
+    rate_h,
+    use_fast) {
   if (use_fast) {
     calendar_ages <- .TrimmedUpdateCalendarAgesGibbs(
       calendar_age_grid = calendar_age_grid,

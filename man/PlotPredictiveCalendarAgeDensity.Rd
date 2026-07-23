@@ -91,9 +91,11 @@ implement current user values.}
 Default is 2 (to add emphasis).}
 }
 \value{
-A list, each item containing a data frame of the \code{calendar_age_BP}, the
+A list, the first list element, \code{predictive_density}, is a data frame of the \code{calendar_age_BP}, the
 \code{density_mean} and the confidence intervals for the density
 \code{density_ci_lower} and \code{density_ci_upper} for each set of output data.
+
+The second list element, \code{plot_par}, contains the plotting/graphical parameters of the plot to allow for editing/annotation.
 }
 \description{
 Given output from one of the Bayesian non-parametric summarisation functions (either
@@ -145,9 +147,31 @@ PlotPredictiveCalendarAgeDensity(
     interval_width = "bespoke",
     bespoke_probability = 0.8,
     show_SPD = TRUE)
+
+# Annotating a plot
+# Assign plot to a variable (with <-):
+predictive_cal_age_plot <- PlotPredictiveCalendarAgeDensity(polya_urn_output,
+    n_posterior_samples = 50)
+
+AddLinePlot(predictive_cal_age_plot,
+    v = 5000,
+    col = "darkorange",
+    lwd = 2,
+    lty = 2)
+
+AddTextPlot(predictive_cal_age_plot,
+    x = 5000, y = 3700,
+    labels = expression(paste("5000 cal yrs BP")),
+    cex = 0.7,
+    pos = 4,
+    offset = 0.2,
+    col = "darkorange")
+
 }
 \seealso{
 \link{FindPredictiveCalendarAgeDensity} if only interested in the estimated value of
 the predictive density on a grid; \link{PlotNumberOfClusters} and
 \link{PlotCalendarAgeDensityIndividualSample} for more plotting functions using DPMM output.
+
+Also, to annotate the plot, see \link{AddTextPlot}, \link{AddLinePlot} and \link{AddShadingPlot}
 }

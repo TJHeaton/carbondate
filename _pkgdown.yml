@@ -27,6 +27,7 @@ reference:
     radiocarbon samples.
   contents:
   - PPcalibrate
+  - PPcalibrateMixedCurves
   - FindPosteriorMeanRate
   - PlotPosteriorMeanRate
   - PlotNumberOfInternalChanges
@@ -34,6 +35,12 @@ reference:
   - PlotPosteriorHeights
   - PlotCalendarAgeDensityIndividualSample
   - PlotRateIndividualRealisation
+- title: Annotating the Summary Plots
+  desc: Functions that can be used to annotate the various summary plots.
+  contents:
+  - AddTextPlot
+  - AddLinePlot
+  - AddShadingPlot
 - title: Common convergence plotting functions
   desc: Functions that can be used to plot information on convergence of the MCMC for both the Bayesian
     non-parametric DPMM and the Poisson process approaches to calibration and summarisation.
@@ -62,11 +69,15 @@ reference:
   - kerr
   - mammuthus
   - pp_uniform_phase
+  - pp_uniform_phase_marine
+  - pp_uniform_phase_mixed
   - two_normals
+  - two_normals_marine
 - title: Calibration curves
   contents:
     - starts_with("intcal")
     - starts_with("shcal")
+    - starts_with("marine")
 navbar:
  components:
    articles:
@@ -76,10 +87,14 @@ navbar:
       href: articles/Independent_calibration.html
     - text: Why Not to Use SPDs
       href: articles/Against_SPDs.html
-    - text: Non-Parametric Joint Density Estimation
+    - text: Non-Parametric Calendar Age Summarisation
       href: articles/Non-parametric-summed-density.html
-    - text: Poisson Process Modelling
+    - text: Poisson Process Modelling and Summarisation
       href: articles/Poisson-process-modelling.html
+    - text: Calibrating and Summarising Marine 14C Samples
+      href: articles/Calibrating-marine-samples.html
+    - text: Calibrating and Summarising Mixed Sets of 14C Samples
+      href: articles/Calibrating-mixed-sets-of-samples.html
     - text: Determining Convergence
       href: articles/determining-convergence.html
 figures:
