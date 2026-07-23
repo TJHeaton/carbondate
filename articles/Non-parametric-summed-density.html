@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Non-Parametric Joint Density Estimation • carbondate</title>
+<title>Non-Parametric Calendar Age Summarisation • carbondate</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Non-Parametric Joint Density Estimation">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Non-Parametric Calendar Age Summarisation">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -36,8 +36,10 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/Independent_calibration.html">Independent and Joint Radiocarbon Calibration</a></li>
     <li><a class="dropdown-item" href="../articles/Against_SPDs.html">Why Not to Use SPDs</a></li>
-    <li><a class="dropdown-item" href="../articles/Non-parametric-summed-density.html">Non-Parametric Joint Density Estimation</a></li>
-    <li><a class="dropdown-item" href="../articles/Poisson-process-modelling.html">Poisson Process Modelling</a></li>
+    <li><a class="dropdown-item" href="../articles/Non-parametric-summed-density.html">Non-Parametric Calendar Age Summarisation</a></li>
+    <li><a class="dropdown-item" href="../articles/Poisson-process-modelling.html">Poisson Process Modelling and Summarisation</a></li>
+    <li><a class="dropdown-item" href="../articles/Calibrating-marine-samples.html">Calibrating and Summarising Marine 14C Samples</a></li>
+    <li><a class="dropdown-item" href="../articles/Calibrating-mixed-sets-of-samples.html">Calibrating and Summarising Mixed Sets of 14C Samples</a></li>
     <li><a class="dropdown-item" href="../articles/determining-convergence.html">Determining Convergence</a></li>
   </ul>
 </li>
@@ -61,7 +63,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Non-Parametric Joint Density Estimation</h1>
+      <h1>Non-Parametric Calendar Age Summarisation</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/TJHeaton/carbondate/blob/main/vignettes/Non-parametric-summed-density.Rmd" class="external-link"><code>vignettes/Non-parametric-summed-density.Rmd</code></a></small>
@@ -74,37 +76,44 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/TJHeaton/carbondate" class="external-link">carbondate</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
-<h2 id="non-parametric-calibration-of-multiple-related-14c-samples">Non-parametric calibration of multiple related <sup>14</sup>C
-samples<a class="anchor" aria-label="anchor" href="#non-parametric-calibration-of-multiple-related-14c-samples"></a>
+<h2 id="rigorous-non-parametric-summarisation-of-multiple-14c-samples">Rigorous non-parametric summarisation of multiple <sup>14</sup>C
+samples<a class="anchor" aria-label="anchor" href="#rigorous-non-parametric-summarisation-of-multiple-14c-samples"></a>
 </h2>
 <div class="section level3">
 <h3 id="model-details">Model details<a class="anchor" aria-label="anchor" href="#model-details"></a>
 </h3>
+<p>Suppose that we have a set of related <sup>14</sup>C samples that
+have calendar ages drawn from a shared, and unknown, calendar age
+density
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>.
+In summarising the calendar age information provided by that set of
+samples, we are effectively seeking to estimate this underlying density
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>.</p>
 <p>We model the underlying shared calendar age density
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>
 as an infinite and unknown mixture of individual calendar age
-<em>clusters/phases</em>:
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><msub><mi>w</mi><mn>1</mn></msub><msub><mtext mathvariant="normal">Cluster</mtext><mn>1</mn></msub><mo>+</mo><msub><mi>w</mi><mn>2</mn></msub><msub><mtext mathvariant="normal">Cluster</mtext><mn>2</mn></msub><mo>+</mo><msub><mi>w</mi><mn>3</mn></msub><msub><mtext mathvariant="normal">Cluster</mtext><mn>3</mn></msub><mo>+</mo><mi>…</mi></mrow><annotation encoding="application/x-tex">
+<em>clusters/phases</em>:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msub><mi>w</mi><mn>1</mn></msub><msub><mtext mathvariant="normal">Cluster</mtext><mn>1</mn></msub><mo>+</mo><msub><mi>w</mi><mn>2</mn></msub><msub><mtext mathvariant="normal">Cluster</mtext><mn>2</mn></msub><mo>+</mo><msub><mi>w</mi><mn>3</mn></msub><msub><mtext mathvariant="normal">Cluster</mtext><mn>3</mn></msub><mo>+</mo><mi>…</mi></mrow><annotation encoding="application/x-tex">
 f(\theta) = w_1 \textrm{Cluster}_1 + w_2 \textrm{Cluster}_2 + w_3 \textrm{Cluster}_3 + \ldots 
-</annotation></semantics></math> Each calendar age <em>cluster</em> in
-the mixture has a normal distribution with a different location and
-spread (i.e., an unknown mean
+</annotation></semantics></math></p>
+<p>Each calendar age <em>cluster</em> in the mixture has a normal
+distribution with a different location and spread (i.e., an unknown mean
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>μ</mi><mi>j</mi></msub><annotation encoding="application/x-tex">\mu_j</annotation></semantics></math>
 and precision
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>τ</mi><mi>j</mi><mn>2</mn></msubsup><annotation encoding="application/x-tex">\tau_j^2</annotation></semantics></math>).
 Each object is then considered to have been drawn from one of the
 (infinite) clusters that together constitute the overall
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>.</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>.</p>
 <p>Such a model allows considerable flexibility in the estimation of the
 joint calendar age density
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>
 — not only allowing us to build simple mixtures but also approximate
 more complex distributions (see illustration below). In some cases, this
 mix of normal densities may represent true and distinct underlying
 normal archaeological phases, in which case additional practical
 inference may be possible. However this is not required for the method
 to provide good estimation of a wide range of underlying
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>
 distributions.</p>
 <p>The probability that a particular sample is drawn from a particular
 cluster will depend upon the relative weight
@@ -118,16 +127,16 @@ and precision
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>τ</mi><mi>j</mi><mn>2</mn></msubsup><annotation encoding="application/x-tex">\tau_j^2</annotation></semantics></math>
 of that cluster.</p>
 <div class="figure">
-<img src="Non-parametric-summed-density_files/figure-html/illustrate_mixture-1.png" alt="_An illustration of building up a potentially complex distribution $f(\theta)$ using mixtures of normals. Left Panel: A simple mixture of three (predominantly disjoint) normal clusters (blue dashed lines) results in an overall $f(\theta)$ that is tri-modal (solid red). Right Panel: Overlapping normal clusters (blue dashed lines) can however create more complex $f(\theta)$ distributions (solid red)._" width="100%"><p class="caption">
+<img src="Non-parametric-summed-density_files/figure-html/illustrate_mixture-1.png" class="r-plt" alt="_An illustration of building up a potentially complex distribution $f(\theta)$ using mixtures of normals. Left Panel: A simple mixture of three (predominantly disjoint) normal clusters (blue dashed lines) results in an overall $f(\theta)$ that is tri-modal (solid red). Right Panel: Overlapping normal clusters (blue dashed lines) can however create more complex $f(\theta)$ distributions (solid red)._" width="100%"><p class="caption">
 <em>An illustration of building up a potentially complex distribution
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>
 using mixtures of normals. Left Panel: A simple mixture of three
 (predominantly disjoint) normal clusters (blue dashed lines) results in
 an overall
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>
 that is tri-modal (solid red). Right Panel: Overlapping normal clusters
 (blue dashed lines) can however create more complex
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>
 distributions (solid red).</em>
 </p>
 </div>
@@ -136,7 +145,7 @@ distributions (solid red).</em>
 <h3 id="estimation-of-the-shared-underlying-density">Estimation of the shared underlying density<a class="anchor" aria-label="anchor" href="#estimation-of-the-shared-underlying-density"></a>
 </h3>
 <p>To estimate the shared calendar age density
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>
 based upon our set of <sup>14</sup>C observations,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>X</mi><mi>N</mi></msub></mrow><annotation encoding="application/x-tex">X_1, \ldots, X_N</annotation></semantics></math>,
 we need to estimate:</p>
@@ -146,7 +155,7 @@ we need to estimate:</p>
 and precision
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>τ</mi><mi>j</mi><mn>2</mn></msubsup><annotation encoding="application/x-tex">\tau_j^2</annotation></semantics></math>
 of each individual normal cluster within the overall mixture
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>,</li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>,</li>
 <li>the weighting
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>w</mi><mi>j</mi></msub><annotation encoding="application/x-tex">w_j</annotation></semantics></math>
 associated to that cluster</li>
@@ -157,7 +166,7 @@ to obtain their calendar ages
 Since we assume that the calendar ages of each object arise from the
 shared density, this must be performed simultaneously to the estimation
 of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>.</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>.</p>
 <p>We use Markov Chain Monte Carlo (MCMC) to iterate, for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>M</mi></mrow><annotation encoding="application/x-tex">k = 1, \ldots, M</annotation></semantics></math>,
 between:</p>
@@ -167,10 +176,10 @@ between:</p>
 to obtain calendar age estimates
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>θ</mi><mn>1</mn><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msubsup><mo>,</mo><mi>…</mi><msubsup><mi>θ</mi><mi>N</mi><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msubsup></mrow><annotation encoding="application/x-tex">\theta_1^{k+1}, \ldots \theta_N^{k+1}</annotation></semantics></math>
 given current shared estimate that each
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>θ</mi><mi>i</mi></msub><mo>∼</mo><msup><mover><mi>f</mi><mo accent="true">̂</mo></mover><mi>k</mi></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\theta_i \sim \hat{f}^k(\theta)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>θ</mi><mi>i</mi></msub><mo>∼</mo><msup><mover><mi>f</mi><mo accent="true">̂</mo></mover><mi>k</mi></msup><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\theta_i \sim \hat{f}^k(\theta)</annotation></semantics></math>
 </li>
 <li>Update estimate of shared calendar age density (to obtain
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>f</mi><mo accent="true">̂</mo></mover><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\hat{f}_{k+1}(\theta)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>f</mi><mo accent="true">̂</mo></mover><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{f}_{k+1}(\theta)</annotation></semantics></math>
 given current set of calendar ages
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>θ</mi><mn>1</mn><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msubsup><mo>,</mo><mi>…</mi><msubsup><mi>θ</mi><mi>N</mi><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msubsup></mrow><annotation encoding="application/x-tex">\theta_1^{k+1}, \ldots \theta_N^{k+1}</annotation></semantics></math>
 </li>
@@ -180,7 +189,7 @@ are sufficiently confident that the MCMC has converged) we obtain
 estimates for the calendar age
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>θ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\theta_i</annotation></semantics></math>
 of each sample, and an estimate for the shared calendar age density
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>f</mi><mo accent="true">̂</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\hat{f}(\theta)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>f</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{f}(\theta)</annotation></semantics></math>
 from which they arose. These latter estimates of the shared calendar age
 density are called <em>predictive estimates</em>, i.e., they provide
 estimates of the calendar age of a hypothetical new sample (based on the
@@ -236,36 +245,44 @@ iteration, with the values of the model parameters and the calendar
 ages.</p>
 </div>
 <div class="section level3">
-<h3 id="post-processing">Post-processing<a class="anchor" aria-label="anchor" href="#post-processing"></a>
+<h3 id="obtaining-the-summarised-calendar-age-information">Obtaining the Summarised Calendar Age Information<a class="anchor" aria-label="anchor" href="#obtaining-the-summarised-calendar-age-information"></a>
 </h3>
 <p>Our sampler provides three outputs of particular interest.</p>
-<div class="section level5">
-<h5 id="density-estimate-to-summarise-objects">Density Estimate to Summarise Objects<a class="anchor" aria-label="anchor" href="#density-estimate-to-summarise-objects"></a>
-</h5>
-<p>The output data contains information to allow calculation of the
-predictive distribution for the calendar age of a new, as yet
-undiscovered, object. This density estimate summarises the calendar ages
-of all objects. It is generated using the posterior sampled values of
-the DPMM component of our MCMC sampler. This calendar age density can be
-calculated and plotted using
+<div class="section level4">
+<h4 id="summarised-calendar-age-density-estimate">Summarised Calendar Age Density Estimate<a class="anchor" aria-label="anchor" href="#summarised-calendar-age-density-estimate"></a>
+</h4>
+<p>The calendar age information provided by the set of <sup>14</sup>C
+samples is summarised by calculating the predictive distribution for the
+calendar age of a new, as yet undiscovered, object. This predictive
+density is generated using the posterior sampled values of the DPMM
+component of our MCMC sampler.</p>
+<p>This summary (predictive) density can be calculated and plotted using
 <code><a href="../reference/PlotPredictiveCalendarAgeDensity.html">PlotPredictiveCalendarAgeDensity()</a></code>. The pointwise mean of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>f</mi><mo accent="true">̂</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\hat{f}(\theta)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>f</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{f}(\theta)</annotation></semantics></math>
 will be plotted, together with a corresponding interval at (a
 user-specified) probability level. If you assign the function to a
 variable (as shown below) then the pointwise mean and corresponding
 interval will also be stored and can be accessed.</p>
 <p>The function allows calculation using multiple outputs so that their
-results can be compared. For example below we compare the results from
-the two sampler methods above.</p>
+results can be compared. For example, below we compare the results from
+the two methods of MCMC sampling (the Polya Urn and slice sampling
+approach).</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">densities</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PlotPredictiveCalendarAgeDensity.html">PlotPredictiveCalendarAgeDensity</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="co"># Run plotting function and assign output to DPMM_density_plot</span></span>
+<span><span class="va">DPMM_density_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PlotPredictiveCalendarAgeDensity.html">PlotPredictiveCalendarAgeDensity</a></span><span class="op">(</span></span>
 <span>  output_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">polya_urn_output</span>, <span class="va">walker_output</span><span class="op">)</span>,</span>
 <span>  denscale <span class="op">=</span> <span class="fl">2.5</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Non-parametric-summed-density_files/figure-html/plot_density-1.png" width="100%"></p>
+<p><img src="Non-parametric-summed-density_files/figure-html/plot_density-1.png" class="r-plt" alt="" width="100%"></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="co"># The mean (and default 2sigma intervals) are stored in densities</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">densities</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="co"># The Polya Urn estimate</span></span>
+<span><span class="co"># DPMM_density_plot creates a list containing:</span></span>
+<span><span class="co"># 1 - predictive_density which stores the mean (and default 2 sigma intervals) </span></span>
+<span><span class="co"># 2 - the plotting parameters (so you can edit/annotate the plot)</span></span>
+<span></span>
+<span><span class="co"># To access the predictive density mean (and default 2 sigma intervals) for the two methods</span></span>
+<span><span class="va">DPMM_densities</span> <span class="op">&lt;-</span> <span class="va">DPMM_density_plot</span><span class="op">$</span><span class="va">predictive_density</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DPMM_densities</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="co"># The Polya Urn estimate</span></span>
 <span><span class="co">#&gt;   calendar_age_BP density_mean density_ci_lower density_ci_upper</span></span>
 <span><span class="co">#&gt; 1             471 2.388155e-06     6.820028e-08     1.662975e-05</span></span>
 <span><span class="co">#&gt; 2             472 2.414024e-06     6.850713e-08     1.674722e-05</span></span>
@@ -274,7 +291,7 @@ the two sampler methods above.</p>
 <span><span class="co">#&gt; 5             475 2.493833e-06     7.155962e-08     1.700700e-05</span></span>
 <span><span class="co">#&gt; 6             476 2.521193e-06     7.237446e-08     1.711630e-05</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">densities</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="co"># The Walker estimate</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DPMM_densities</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="co"># The Walker estimate</span></span>
 <span><span class="co">#&gt;   calendar_age_BP density_mean density_ci_lower density_ci_upper</span></span>
 <span><span class="co">#&gt; 1             471 2.471499e-06     7.294953e-11     2.007406e-05</span></span>
 <span><span class="co">#&gt; 2             472 2.488287e-06     7.431770e-11     2.007812e-05</span></span>
@@ -286,17 +303,20 @@ the two sampler methods above.</p>
 F<sup>14</sup>C scale, and to change the confidence intervals on the
 plot.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">densities</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PlotPredictiveCalendarAgeDensity.html">PlotPredictiveCalendarAgeDensity</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="co"># Run plotting function and assign output to DPMM_density_plot</span></span>
+<span><span class="va">DPMM_density_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PlotPredictiveCalendarAgeDensity.html">PlotPredictiveCalendarAgeDensity</a></span><span class="op">(</span></span>
 <span>  output_data <span class="op">=</span> <span class="va">polya_urn_output</span>,</span>
 <span>  denscale <span class="op">=</span> <span class="fl">2.5</span>,</span>
 <span>  show_SPD <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  interval_width <span class="op">=</span> <span class="st">"bespoke"</span>,</span>
 <span>  bespoke_probability <span class="op">=</span> <span class="fl">0.8</span>,</span>
 <span>  plot_14C_age <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Non-parametric-summed-density_files/figure-html/plot_density_2-1.png" width="100%"></p>
+<p><img src="Non-parametric-summed-density_files/figure-html/plot_density_2-1.png" class="r-plt" alt="" width="100%"></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">densities</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co"># Again we can access the actual predictive density</span></span>
+<span><span class="va">DPMM_densities</span> <span class="op">&lt;-</span> <span class="va">DPMM_density_plot</span><span class="op">$</span><span class="va">predictive_density</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">DPMM_densities</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   calendar_age_BP density_mean density_ci_lower density_ci_upper</span></span>
 <span><span class="co">#&gt; 1             471 2.417808e-06     1.828800e-07     6.463847e-06</span></span>
 <span><span class="co">#&gt; 2             472 2.443581e-06     1.850626e-07     6.550466e-06</span></span>
@@ -315,7 +335,7 @@ output (in green) above is an accurate representation of the predictive
 distribution.</p>
 <p>Around 1176 cal yr BP, we see a substantial change between the 95%
 intervals for the summarised (predictive) estimate of the joint
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>
 (which have a large spike) and the 80% intervals (which do not and are
 smooth). This is not an error, but rather highlights a benefit of the
 DPMM method whereby the number of clusters needed to represent the data
@@ -336,9 +356,23 @@ is.</p>
 (ESPE) also known as a Miyake Event <span class="citation">(Miyake et
 al. 2012)</span>.</p>
 </div>
-<div class="section level5">
-<h5 id="posterior-calendar-age-estimates-of-individual-samples">Posterior Calendar Age Estimates of Individual Samples<a class="anchor" aria-label="anchor" href="#posterior-calendar-age-estimates-of-individual-samples"></a>
-</h5>
+<div class="section level4">
+<h4 id="number-of-clusters">Number of Clusters<a class="anchor" aria-label="anchor" href="#number-of-clusters"></a>
+</h4>
+<p>The output data also contains information about the cluster
+allocation of each sampled object, which we can use to build the
+probability for there being a given number of total clusters. If we
+believe the underlying individual clusters in the model have inherent
+meaning in terms of representing genuine and distinct periods of site
+usage, as opposed to simply providing a tool to enable a non-parametric
+density estimate, this information may be archaeologically useful.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotNumberOfClusters.html">PlotNumberOfClusters</a></span><span class="op">(</span>output_data <span class="op">=</span> <span class="va">polya_urn_output</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Non-parametric-summed-density_files/figure-html/plot_clusters-1.png" class="r-plt" alt="" width="50%"></p>
+</div>
+<div class="section level4">
+<h4 id="posterior-calendar-age-estimates-of-individual-samples">Posterior Calendar Age Estimates of Individual Samples<a class="anchor" aria-label="anchor" href="#posterior-calendar-age-estimates-of-individual-samples"></a>
+</h4>
 <p>The output data also includes the calendar age estimate for each
 <sup>14</sup>C sample. We can use this to determine the posterior
 distribution of the calendar age for each sample. Note that the calendar
@@ -351,31 +385,17 @@ calendar ages of the objects are related.</p>
 <code><a href="../reference/PlotCalendarAgeDensityIndividualSample.html">PlotCalendarAgeDensityIndividualSample()</a></code> - for example to
 calculate the posterior calendar age distribution for the 21st
 <sup>14</sup>C determination:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotCalendarAgeDensityIndividualSample.html">PlotCalendarAgeDensityIndividualSample</a></span><span class="op">(</span><span class="fl">21</span>, <span class="va">polya_urn_output</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Non-parametric-summed-density_files/figure-html/plot_individual-1.png" width="100%"></p>
+<p><img src="Non-parametric-summed-density_files/figure-html/plot_individual-1.png" class="r-plt" alt="" width="100%"></p>
 <p>The highest posterior density range for a given probability and the
 unmodelled density (i.e., the result of
 <code><a href="../reference/CalibrateSingleDetermination.html">CalibrateSingleDetermination()</a></code>) can also be shown on the
 plot by specifying this in the arguments, as shown below.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotCalendarAgeDensityIndividualSample.html">PlotCalendarAgeDensityIndividualSample</a></span><span class="op">(</span></span>
 <span>  <span class="fl">21</span>, <span class="va">polya_urn_output</span>, show_hpd_ranges <span class="op">=</span> <span class="cn">TRUE</span>, show_unmodelled_density <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Non-parametric-summed-density_files/figure-html/plot_individual_with_hpd-1.png" width="100%"></p>
-</div>
-<div class="section level5">
-<h5 id="number-of-clusters">Number of Clusters<a class="anchor" aria-label="anchor" href="#number-of-clusters"></a>
-</h5>
-<p>The output data also contains information about the cluster
-allocation of each sampled object, which we can use to build the
-probability for there being a given number of total clusters. If we
-believe the underlying individual clusters in the model have inherent
-meaning in terms of representing genuine and distinct periods of site
-usage, as opposed to simply providing a tool to enable a non-parametric
-density estimate, this information may be archaeologically useful.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotNumberOfClusters.html">PlotNumberOfClusters</a></span><span class="op">(</span>output_data <span class="op">=</span> <span class="va">polya_urn_output</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Non-parametric-summed-density_files/figure-html/plot_clusters-1.png" width="50%"></p>
+<p><img src="Non-parametric-summed-density_files/figure-html/plot_individual_with_hpd-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
 </div>
 <div class="section level3">
@@ -387,13 +407,75 @@ density estimate, this information may be archaeologically useful.</p>
 calendar age scale shown on the x-axis. The default is to plot on the
 <em>cal yr BP</em> scale (as in the examples above). To instead plot in
 <em>cal AD</em>, set <code>plot_cal_age_scale = "AD"</code>; while for
-<em>cal BC</em>, set <code>plot_cal_age_scale = "AD"</code>, e.g.,</p>
+<em>cal BC</em>, set <code>plot_cal_age_scale = "BC"</code>, e.g.,</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">densities</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PlotPredictiveCalendarAgeDensity.html">PlotPredictiveCalendarAgeDensity</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">DPMM_density_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PlotPredictiveCalendarAgeDensity.html">PlotPredictiveCalendarAgeDensity</a></span><span class="op">(</span></span>
 <span>  output_data <span class="op">=</span> <span class="va">polya_urn_output</span>,</span>
 <span>  show_SPD <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  plot_cal_age_scale <span class="op">=</span> <span class="st">"AD"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Non-parametric-summed-density_files/figure-html/plot_density_2_AD-1.png" width="100%"></p>
+<p><img src="Non-parametric-summed-density_files/figure-html/plot_density_2_AD-1.png" class="r-plt" alt="" width="100%"></p>
+</div>
+<div class="section level3">
+<h3 id="annotating-the-summary-density-plots-with-text-lines-and-shading">Annotating the summary density plots with text, lines and
+shading<a class="anchor" aria-label="anchor" href="#annotating-the-summary-density-plots-with-text-lines-and-shading"></a>
+</h3>
+<p>We have created three functions:</p>
+<ul>
+<li>
+<code><a href="../reference/AddLinePlot.html">AddLinePlot()</a></code> - adds lines (vertical or
+horizontal)</li>
+<li>
+<code><a href="../reference/AddTextPlot.html">AddTextPlot()</a></code> - adds text</li>
+<li>
+<code><a href="../reference/AddShadingPlot.html">AddShadingPlot()</a></code> - adds shading</li>
+</ul>
+<p>that allow you to annotate the plot showing the predictive (summary)
+calendar age distribution. For example:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Run the plotting function and assign output to DPMM_density_plot</span></span>
+<span><span class="va">DPMM_density_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PlotPredictiveCalendarAgeDensity.html">PlotPredictiveCalendarAgeDensity</a></span><span class="op">(</span></span>
+<span>  output_data <span class="op">=</span> <span class="va">polya_urn_output</span>,</span>
+<span>  show_SPD <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Add solid vertical line at 1550 cal yr BP</span></span>
+<span><span class="fu"><a href="../reference/AddLinePlot.html">AddLinePlot</a></span><span class="op">(</span><span class="va">DPMM_density_plot</span>,</span>
+<span>  v <span class="op">=</span> <span class="fl">1550</span>,</span>
+<span>  col <span class="op">=</span> <span class="st">"darkgreen"</span>,</span>
+<span>  lwd <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  lty <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/AddTextPlot.html">AddTextPlot</a></span><span class="op">(</span><span class="va">DPMM_density_plot</span>,</span>
+<span>  x <span class="op">=</span> <span class="fl">1550</span>, y <span class="op">=</span> <span class="fl">1200</span>,</span>
+<span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html" class="external-link">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"1550 cal yrs BP"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  cex <span class="op">=</span> <span class="fl">0.7</span>,</span>
+<span>  pos <span class="op">=</span> <span class="fl">4</span>, <span class="co"># Places the text to the right</span></span>
+<span>  offset <span class="op">=</span> <span class="fl">0.2</span>,</span>
+<span>  col <span class="op">=</span> <span class="st">"darkgreen"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Add a dashed horizontal line at 720 14C yrs BP</span></span>
+<span><span class="fu"><a href="../reference/AddLinePlot.html">AddLinePlot</a></span><span class="op">(</span><span class="va">DPMM_density_plot</span>,</span>
+<span>  h <span class="op">=</span> <span class="fl">720</span>,</span>
+<span>  col <span class="op">=</span> <span class="st">"darkorange"</span>,</span>
+<span>  lwd <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  lty <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<span>    </span>
+<span><span class="fu"><a href="../reference/AddTextPlot.html">AddTextPlot</a></span><span class="op">(</span><span class="va">DPMM_density_plot</span>,</span>
+<span>  x <span class="op">=</span> <span class="fl">950</span>, y <span class="op">=</span> <span class="fl">720</span>,</span>
+<span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html" class="external-link">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"720"</span>, <span class="st">" "</span><span class="op">^</span><span class="fl">14</span>, <span class="st">"C "</span>, <span class="st">"yrs BP"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  cex <span class="op">=</span> <span class="fl">0.9</span>,</span>
+<span>  pos <span class="op">=</span> <span class="fl">3</span>, <span class="co"># Places text above </span></span>
+<span>  offset <span class="op">=</span> <span class="fl">0.2</span>,</span>
+<span>  col <span class="op">=</span> <span class="st">"darkorange"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Add light gray grid lines to entire plot</span></span>
+<span><span class="fu"><a href="../reference/AddLinePlot.html">AddLinePlot</a></span><span class="op">(</span><span class="va">DPMM_density_plot</span>,</span>
+<span>  h <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">400</span>, <span class="fl">2000</span>, by <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>,</span>
+<span>  v <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">200</span>, <span class="fl">2000</span>, by <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>,</span>
+<span>  col <span class="op">=</span> <span class="st">"lightgray"</span>,</span>
+<span>  lty <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Non-parametric-summed-density_files/figure-html/annotate_plot_mean_rate-1.png" class="r-plt" alt="" width="100%">
+See the <a href="Independent-calibration.html">independent calibration
+vignette</a> for more examples of ways to annotate the summary plot.</p>
 </div>
 <div class="section level3">
 <h3 id="when-not-to-use-this-bayesian-non-parametric-method">When not to use this Bayesian non-parametric method<a class="anchor" aria-label="anchor" href="#when-not-to-use-this-bayesian-non-parametric-method"></a>
@@ -401,15 +483,15 @@ calendar age scale shown on the x-axis. The default is to plot on the
 <p>The current implementation of our Bayesian non-parametric approach
 <strong>only</strong> supports normally-distributed clusters as the
 components in the overall calendar age mixture distribution
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>.
 While this still allows a great deal of flexibility in the modelling, as
 many distributions can be well approximated by normals, there are
 certain distributions
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>
 for which they will struggle. In particular, you cannot approximate a
 uniform phase well with a mixture of normal distributions.</p>
 <p>If the underlying shared calendar age density
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>
 is close to a uniform phase, or a mixture of uniform phases, then the
 current (normally-distributed cluster component) Bayesian non-parametric
 method is unlikely to work optimally and provide reliable summaries. In
@@ -418,19 +500,22 @@ alternative approach is ideally suited to such situations.</p>
 <p>The inhomogeneous Poisson process/changepoint approach taken by
 <code><a href="../reference/PPcalibrate.html">PPcalibrate()</a></code> implicitly assumes a shared underlying
 calendar age model for
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">f(\theta)</annotation></semantics></math>
 that consists precisely of an unknown mixture of uniform phases.
 Implementing <code><a href="../reference/PPcalibrate.html">PPcalibrate()</a></code> and plotting the posterior rate
 of the Poisson process (<a href="Poisson-process-modelling.html">see
 vignette</a>) will provide an estimate of that shared calendar age
 density.</p>
+<p>In general, we would suggest that users might apply both this
+Bayesian non-parametric DPMM and the Poisson process approach and
+compare outputs as part of the research process.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
-<div id="ref-heaton2021" class="csl-entry">
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-heaton2022" class="csl-entry">
 Heaton, Timothy J. 2022. <span>“<span class="nocase">Non-parametric
 Calibration of Multiple Related Radiocarbon Determinations and their
 Calendar Age Summarisation</span>.”</span> <em>Journal of the Royal
@@ -466,7 +551,7 @@ Computation</em> 36 (1): 45–54. <a href="https://doi.org/10.1080/0361091060109
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

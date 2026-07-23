@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Poisson Process Modelling • carbondate</title>
+<title>Poisson Process Modelling and Summarisation • carbondate</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Poisson Process Modelling">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Poisson Process Modelling and Summarisation">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -36,8 +36,10 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/Independent_calibration.html">Independent and Joint Radiocarbon Calibration</a></li>
     <li><a class="dropdown-item" href="../articles/Against_SPDs.html">Why Not to Use SPDs</a></li>
-    <li><a class="dropdown-item" href="../articles/Non-parametric-summed-density.html">Non-Parametric Joint Density Estimation</a></li>
-    <li><a class="dropdown-item" href="../articles/Poisson-process-modelling.html">Poisson Process Modelling</a></li>
+    <li><a class="dropdown-item" href="../articles/Non-parametric-summed-density.html">Non-Parametric Calendar Age Summarisation</a></li>
+    <li><a class="dropdown-item" href="../articles/Poisson-process-modelling.html">Poisson Process Modelling and Summarisation</a></li>
+    <li><a class="dropdown-item" href="../articles/Calibrating-marine-samples.html">Calibrating and Summarising Marine 14C Samples</a></li>
+    <li><a class="dropdown-item" href="../articles/Calibrating-mixed-sets-of-samples.html">Calibrating and Summarising Mixed Sets of 14C Samples</a></li>
     <li><a class="dropdown-item" href="../articles/determining-convergence.html">Determining Convergence</a></li>
   </ul>
 </li>
@@ -61,7 +63,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Poisson Process Modelling</h1>
+      <h1>Poisson Process Modelling and Summarisation</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/TJHeaton/carbondate/blob/main/vignettes/Poisson-process-modelling.Rmd" class="external-link"><code>vignettes/Poisson-process-modelling.Rmd</code></a></small>
@@ -83,7 +85,9 @@ Poisson process. This is done using the function
 <code><a href="../reference/PPcalibrate.html">PPcalibrate()</a></code>. The aim of this function is primarily to
 allow a user to estimate the variable (calendar year) rate at which a
 set of radiocarbon samples are observed, and identify changepoints in
-that rate.</p>
+that rate. For full technical details of the models used, and
+explanation of the model parameters, see <span class="citation">Heaton
+et al. (2025)</span>.</p>
 <p>This Poisson process model can also be used in a
 <em>“dates-as-data”</em> approach <span class="citation">(Rick
 1987)</span> to provide a proxy for changes in population or activity,
@@ -120,25 +124,25 @@ investigate whether, and how, the rate at which they occur varies over
 calendar time.</p>
 <p>Specifically, we assume that the events occur according to a Poisson
 Process with a variable rate
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>.
 This rate
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
 is considered piecewise-constant, but changes an unknown number of times
 and at unknown calendar ages. We aim to estimate
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
 and hence infer how the rate at which the events occur changes over
 calendar time. Time periods where the rate
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
 is high will typically be expected to generate a greater number of
 events (perhaps since there is more activity, or a greater population,
 at the site/sites); while periods when the rate
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
 is lower (perhaps due to lower activity at the site/sites) will be
 expected to have fewer events.</p>
 <p>When the calendar ages of the events
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><msub><mi>θ</mi><mi>i</mi></msub><mo>,</mo><mi>i</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>n</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">\{\theta_i , i=1,\ldots,n\}</annotation></semantics></math>
 are known exactly, estimation of the variable rate
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
 can be tackled directly via reversible jump Markov Chain Monte Carlo
 (RJ-MCMC) <span class="citation">(Green 1995)</span>. However, when we
 only observe the radiocarbon ages of the samples
@@ -147,15 +151,15 @@ the underlying calendar ages
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>θ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\theta_i</annotation></semantics></math>
 are uncertain and must be estimated via radiocarbon calibration. This
 complicates the process of estimating
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
 especially as the calibration must be done simultaneously to its
 estimation (as the modelling will influence the set of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>θ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\theta_i</annotation></semantics></math>
 and vice versa). In this library, we provide a rigorous approach to the
 estimation of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>.</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>.</p>
 <div class="figure">
-<img src="Poisson-process-modelling_files/figure-html/illustrate_PP-1.png" alt="_Modelling sample occurence using a Poisson process with a latent occurence/activity rate.  Left Panel: An illustration of a Poisson process with two changepoints in the occurrence rate. The samples (shown as a rug in purple) occur at random calendar times, but proportional to the underlying occurrence rate. There are therefore more samples between (2700, 2300) cal yr BP  than other times. Right Panel: Each sample has a ^14^C age (shown as black ticks on the y-axis). We wish to reconstruct the underlying Poisson process rate given only these ^14^C determination._" width="100%"><p class="caption">
+<img src="Poisson-process-modelling_files/figure-html/illustrate_PP-1.png" class="r-plt" alt="_Modelling sample occurence using a Poisson process with a latent occurence/activity rate.  Left Panel: An illustration of a Poisson process with two changepoints in the occurrence rate. The samples (shown as a rug in purple) occur at random calendar times, but proportional to the underlying occurrence rate. There are therefore more samples between (2700, 2300) cal yr BP  than other times. Right Panel: Each sample has a ^14^C age (shown as black ticks on the y-axis). We wish to reconstruct the underlying Poisson process rate given only these ^14^C determination._" width="100%"><p class="caption">
 <em>Modelling sample occurence using a Poisson process with a latent
 occurence/activity rate. Left Panel: An illustration of a Poisson
 process with two changepoints in the occurrence rate. The samples (shown
@@ -174,19 +178,19 @@ reconstruct the underlying Poisson process rate given only these
 <p>A Poisson process is a common statistical process used to model the
 occurrence of random events. It is described by specifying the random
 variables
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">N(s,t)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo stretchy="false" form="prefix">(</mo><mi>s</mi><mo>,</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">N(s,t)</annotation></semantics></math>
 for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>≤</mo><mi>s</mi><mo>≤</mo><mi>t</mi></mrow><annotation encoding="application/x-tex">0 \leq s \leq t</annotation></semantics></math>,
 where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">N(s,t)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo stretchy="false" form="prefix">(</mo><mi>s</mi><mo>,</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">N(s,t)</annotation></semantics></math>
 represents the number of events that have occurred in the time interval
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>s</mi><mo>,</mo><mi>t</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">(s,t]</annotation></semantics></math>.
 Any Poisson process has a parameter
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>,
 known as the rate of the process. This controls the expected number of
 events in a particular time interval.</p>
 <p>In the case of an inhomogeneous Poisson process, the rate
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
 varies over time so that some time periods are expected to have a
 greater number of event than others. An (inhomogeneous) Poisson process
 is then defined by the following two properties:</p>
@@ -194,25 +198,25 @@ is then defined by the following two properties:</p>
 <li>For any
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>≤</mo><mi>s</mi><mo>≤</mo><mi>t</mi></mrow><annotation encoding="application/x-tex">0 \leq s \leq t</annotation></semantics></math>,
 the distribution of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo>,</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">N(s,t)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo stretchy="false" form="prefix">(</mo><mi>s</mi><mo>,</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">N(s,t)</annotation></semantics></math>
 is Poisson with parameter
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mo>∫</mo><mrow><mi>θ</mi><mo>=</mo><mi>s</mi></mrow><mi>t</mi></msubsup><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>d</mi><mi>θ</mi></mrow><annotation encoding="application/x-tex">\int_{\theta = s}^t \lambda(\theta) d\theta</annotation></semantics></math>.</li>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mo>∫</mo><mrow><mi>θ</mi><mo>=</mo><mi>s</mi></mrow><mi>t</mi></msubsup><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo><mi>d</mi><mi>θ</mi></mrow><annotation encoding="application/x-tex">\int_{\theta = s}^t \lambda(\theta) d\theta</annotation></semantics></math>.</li>
 <li>If
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>s</mi><mn>1</mn></msub><mo>,</mo><msub><mi>t</mi><mn>1</mn></msub><mo stretchy="false" form="postfix">]</mo><mo>,</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>s</mi><mn>2</mn></msub><mo>,</mo><msub><mi>t</mi><mn>2</mn></msub><mo stretchy="false" form="postfix">]</mo><mo>,</mo><mi>…</mi><mo>,</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>s</mi><mi>n</mi></msub><mo>,</mo><msub><mi>t</mi><mi>n</mi></msub><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">(s_1,t_1] , (s_2,t_2 ], \ldots ,(s_n,t_n]</annotation></semantics></math>
 are disjoint intervals (i.e., non-overlapping) then
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>s</mi><mn>1</mn></msub><mo>,</mo><msub><mi>t</mi><mn>1</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>s</mi><mn>2</mn></msub><mo>,</mo><msub><mi>t</mi><mn>2</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mi>…</mi><mo>,</mo><mi>N</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>s</mi><mi>n</mi></msub><mo>,</mo><msub><mi>t</mi><mi>n</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">N(s_1,t_1),N(s_2,t_2 ),\ldots ,N(s_n,t_n)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>s</mi><mn>1</mn></msub><mo>,</mo><msub><mi>t</mi><mn>1</mn></msub><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mi>N</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>s</mi><mn>2</mn></msub><mo>,</mo><msub><mi>t</mi><mn>2</mn></msub><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mi>…</mi><mo>,</mo><mi>N</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>s</mi><mi>n</mi></msub><mo>,</mo><msub><mi>t</mi><mi>n</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">N(s_1,t_1),N(s_2,t_2 ),\ldots ,N(s_n,t_n)</annotation></semantics></math>
 are independent random variables.</li>
 </ul>
 <p>In particular, the first of these properties implies that the
 expected number of events in a specific time interval
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mi>s</mi><mo>,</mo><mi>t</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">(s,t]</annotation></semantics></math>
 is
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mo>∫</mo><mrow><mi>θ</mi><mo>=</mo><mi>s</mi></mrow><mi>t</mi></msubsup><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>θ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>d</mi><mi>θ</mi></mrow><annotation encoding="application/x-tex">\int_{\theta = s}^t \lambda(\theta) d\theta</annotation></semantics></math>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mo>∫</mo><mrow><mi>θ</mi><mo>=</mo><mi>s</mi></mrow><mi>t</mi></msubsup><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo><mi>d</mi><mi>θ</mi></mrow><annotation encoding="application/x-tex">\int_{\theta = s}^t \lambda(\theta) d\theta</annotation></semantics></math>.
 Hence time periods with higher rates
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
 will be expected to have greater number of events. The second implies
 that, conditional on the rate
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>,
 the number of events that have occurred in one time period is not
 affected by the number of events in a different, and non-overlapping
 time period. It also implies that events are not clustered beyond the
@@ -236,21 +240,21 @@ the function <code><a href="../reference/PPcalibrate.html">PPcalibrate()</a></co
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>θ</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>θ</mi><mi>n</mi></msub></mrow><annotation encoding="application/x-tex">\theta_1, \ldots, \theta_n</annotation></semantics></math>
 </li>
 <li>estimate the rate
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
 of the underlying process. This estimate
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>λ</mi><mo accent="true">̂</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\hat{\lambda}(t)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>λ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{\lambda}(t)</annotation></semantics></math>
 may provide a useful proxy to make archaeological and/or environmental
 inference, e.g., to model changes in culture, or useage, or population
 size over time.</li>
 </ul>
 <p>The (calendar) rate at which the samples occur is modelled as a
 Poisson process with a variable rate
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>.
 Specifically,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
 is modelled as a piecewise constant function with an unknown number of
 changepoints:
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><msub><mi>h</mi><mi>i</mi></msub><mspace width="1.0em"></mspace></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><msub><mi>s</mi><mi>i</mi></msub><mo>≤</mo><mi>t</mi><mo>&lt;</mo><msub><mi>s</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mn>0</mn></mtd><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">otherwise</mtext></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><msub><mi>h</mi><mi>i</mi></msub><mspace width="1.0em"></mspace></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><msub><mi>s</mi><mi>i</mi></msub><mo>≤</mo><mi>t</mi><mo>&lt;</mo><msub><mi>s</mi><mrow><mi>i</mi><mo>+</mo><mn>1</mn></mrow></msub></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mn>0</mn></mtd><mtd columnalign="left" style="text-align: left"><mtext mathvariant="normal">otherwise</mtext></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
 \lambda(t) = \left\{ \begin{array}{ll} 
   h_i \quad &amp; \textrm{if } s_i \leq t &lt; s_{i+1} \\
   0 &amp; \textrm{otherwise}
@@ -267,27 +271,29 @@ alternate between calibrating the samples and updating the estimate of
 the underlying rate lambda.</p>
 </div>
 <div class="section level3">
-<h3 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+<h3 id="a-worked-example---two-changepoints-in-a-uniform-phase-model">A Worked Example - Two Changepoints in a Uniform Phase Model<a class="anchor" aria-label="anchor" href="#a-worked-example---two-changepoints-in-a-uniform-phase-model"></a>
 </h3>
 <p>This is a basic example which shows you how to solve a common
 problem. In this simulated example, we will assume that the events
-(samples) can must lie within the calendar period from [700, 300] cal yr
-BP. Within this period, we will create 40 artificial samples with
+(samples) must lie within the calendar period from [700, 300] cal yr BP.
+Within this period, we will create 40 artificial samples with
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi></mi><mn>14</mn></msup><annotation encoding="application/x-tex">^{14}</annotation></semantics></math>C
 determinations corresponding to the (narrower) calendar period from
-[550, 500] cal yr BP. Effectively, the underlying model is a Poisson
-process with a rate
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><msub><mi>h</mi><mn>1</mn></msub><mo>=</mo><mn>0</mn></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mn>300</mn><mo>≤</mo><mi>t</mi><mo>&lt;</mo><mn>500</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> cal yr BP</mtext></mrow></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><msub><mi>h</mi><mn>2</mn></msub><mspace width="2.0em"></mspace></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mn>500</mn><mo>≤</mo><mi>t</mi><mo>&lt;</mo><mn>550</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> cal yr BP</mtext></mrow></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><msub><mi>h</mi><mn>3</mn></msub><mo>=</mo><mn>0</mn></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mn>550</mn><mo>≤</mo><mi>t</mi><mo>&lt;</mo><mn>700</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> cal yr BP</mtext></mrow></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
-\lambda(t)  \left\{ \begin{array}{ll}
+[550, 500] cal yr BP. Effectively, the underlying model for the
+occurrence of the samples is then a Poisson process with a rate:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><msub><mi>h</mi><mn>1</mn></msub><mo>=</mo><mn>0</mn></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mn>300</mn><mo>≤</mo><mi>t</mi><mo>&lt;</mo><mn>500</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> cal yr BP</mtext></mrow></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><msub><mi>h</mi><mn>2</mn></msub><mspace width="2.0em"></mspace></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mn>500</mn><mo>≤</mo><mi>t</mi><mo>&lt;</mo><mn>550</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> cal yr BP</mtext></mrow></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><msub><mi>h</mi><mn>3</mn></msub><mo>=</mo><mn>0</mn></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">if </mtext><mspace width="0.333em"></mspace></mrow><mn>550</mn><mo>≤</mo><mi>t</mi><mo>&lt;</mo><mn>700</mn><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> cal yr BP</mtext></mrow></mtd></mtr></mtable></mrow></mrow><annotation encoding="application/x-tex">
+\lambda(t) = \left\{ \begin{array}{ll}
   h_1 = 0 &amp; \textrm{if } 300 \leq t &lt; 500 \textrm{ cal yr BP} \\
   h_2 \qquad &amp; \textrm{if } 500 \leq t &lt; 550 \textrm{ cal yr BP}\\
   h_3 = 0 &amp; \textrm{if } 550 \leq t &lt; 700 \textrm{ cal yr BP} 
   \end{array} \right.
-</annotation></semantics></math> We will then investigate if we can
-reconstruct this underlying information, from just the
+</annotation></semantics></math> that has two changepoints (at 550 cal
+yr BP and at 500 cal yr BP). Equivalently, the model can be viewed as a
+uniform phase. We seek to investigate if we can reconstruct this
+underlying calendar age information, from just the
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi></mi><mn>14</mn></msup><annotation encoding="application/x-tex">^{14}</annotation></semantics></math>C
-values, if we only knew that the calendar ages of the samples lay
-between the bounding [700, 300] cal yr BP.</p>
+values and the initial knowledge that the samples lay between the much
+wider bounding interval from [700, 300] cal yr BP.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">15</span><span class="op">)</span></span>
 <span></span>
@@ -319,7 +325,7 @@ between the bounding [700, 300] cal yr BP.</p>
 <span><span class="va">PP_fit_output</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PPcalibrate.html">PPcalibrate</a></span><span class="op">(</span></span>
 <span>    rc_determinations <span class="op">=</span> <span class="va">rc_determinations</span>,</span>
 <span>    rc_sigmas <span class="op">=</span> <span class="va">rc_sigmas</span>,</span>
-<span>    calibration_curve <span class="op">=</span> <span class="va">intcal20</span>,</span>
+<span>    calibration_curve <span class="op">=</span> <span class="va">intcal20</span>, <span class="co"># can also choose e.g. shcal20</span></span>
 <span>    calendar_age_range <span class="op">=</span> <span class="va">calendar_age_range</span>,</span>
 <span>    calendar_grid_resolution <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>    n_iter <span class="op">=</span> <span class="fl">1e5</span>,</span>
@@ -332,18 +338,21 @@ access directly or use the in-built plotting functions.</p>
 rate<a class="anchor" aria-label="anchor" href="#calculating-and-plotting-the-posterior-estimate-of-the-occurrence-rate"></a>
 </h4>
 <p>To calculate and plot the posterior estimate of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
 you should use the in-built <code><a href="../reference/PlotPosteriorMeanRate.html">PlotPosteriorMeanRate()</a></code>
 function. We recommend that you assign the function to a variable (as
 shown below). This means that it will not only create the plot, but also
 store the posterior mean rate (with associated probability intervals) on
 a regular calendar grid should you wish to access it:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Run plotting function and assign output to PP_posterior_mean_rate_2sigma</span></span>
-<span><span class="va">PP_posterior_mean_rate_2sigma</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PlotPosteriorMeanRate.html">PlotPosteriorMeanRate</a></span><span class="op">(</span><span class="va">PP_fit_output</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Poisson-process-modelling_files/figure-html/meanrate-1.png" width="100%"></p>
+<code class="sourceCode R"><span><span class="co"># Run plotting function and assign output to posterior_mean_plot</span></span>
+<span><span class="va">posterior_mean_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PlotPosteriorMeanRate.html">PlotPosteriorMeanRate</a></span><span class="op">(</span><span class="va">PP_fit_output</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Poisson-process-modelling_files/figure-html/meanrate-1.png" class="r-plt" alt="" width="100%"></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Note: You can change the PP line widths using the plot_lwd argument </span></span>
+<span></span>
+<span><span class="co"># The posterior mean rate is stored in the posterior_rate component of the plot</span></span>
+<span><span class="va">PP_posterior_mean_rate_2sigma</span> <span class="op">&lt;-</span> <span class="va">posterior_mean_plot</span><span class="op">$</span><span class="va">posterior_rate</span></span>
 <span></span>
 <span><span class="co"># Look at PP_posterior_mean_rate_2sigma (posterior mean and 2 sigma intervals) </span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">PP_posterior_mean_rate_2sigma</span><span class="op">)</span></span>
@@ -367,10 +376,10 @@ some cases (in particular when an individual calibrated age estimates
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>θ</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\theta_i</annotation></semantics></math>
 is bimodal) the posterior calendar mean will not be a good summary.</p>
 <p>As you can see, the posterior estimate of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
 identifies the calendar period from which the hypothetical samples have
 been created [550, 500] cal yr BP. Here,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>λ</mi><mo accent="true">̂</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\hat{\lambda}(t)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>λ</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\hat{\lambda}(t)</annotation></semantics></math>
 is non-zero, while for the other time periods the rate (correctly) drops
 to near zero.</p>
 <p><em>Aside:</em> You can also run the function without assigning the
@@ -388,13 +397,607 @@ PP_posterior_mean_rate_2sigma <- PlotPosteriorMeanRate(PP_fit_output)
 
 # Look at PP_posterior_mean_rate_2sigma (posterior mean and 2 sigma intervals) 
 head(PP_posterior_mean_rate_2sigma)
-#>   calendar_age_BP   rate_mean rate_ci_lower rate_ci_upper
-#> 1             300 0.008010208  0.0001862987    0.04248661
-#> 2             301 0.007985302  0.0001862987    0.04232088
-#> 3             302 0.007961553  0.0001862987    0.04211068
-#> 4             303 0.007912473  0.0001862987    0.04164114
-#> 5             304 0.007860014  0.0001862987    0.04094373
-#> 6             305 0.007701797  0.0001862987    0.03952506
+#> $posterior_rate
+#>     calendar_age_BP   rate_mean rate_ci_lower rate_ci_upper
+#> 1               300 0.008010208  0.0001862987    0.04248661
+#> 2               301 0.007985302  0.0001862987    0.04232088
+#> 3               302 0.007961553  0.0001862987    0.04211068
+#> 4               303 0.007912473  0.0001862987    0.04164114
+#> 5               304 0.007860014  0.0001862987    0.04094373
+#> 6               305 0.007701797  0.0001862987    0.03952506
+#> 7               306 0.007682914  0.0001862987    0.03945695
+#> 8               307 0.007319434  0.0001862987    0.03876549
+#> 9               308 0.007314243  0.0001862987    0.03876549
+#> 10              309 0.007175568  0.0001853894    0.03784054
+#> 11              310 0.007161424  0.0001853894    0.03774149
+#> 12              311 0.007158730  0.0001853894    0.03774149
+#> 13              312 0.007123762  0.0001853894    0.03693991
+#> 14              313 0.007115020  0.0001853894    0.03687767
+#> 15              314 0.007087499  0.0001853894    0.03677677
+#> 16              315 0.006996497  0.0001853894    0.03592056
+#> 17              316 0.006997919  0.0001853894    0.03592056
+#> 18              317 0.006913045  0.0001853894    0.03422748
+#> 19              318 0.006861517  0.0001853894    0.03341761
+#> 20              319 0.006827830  0.0001853894    0.03323843
+#> 21              320 0.006808026  0.0001853894    0.03323843
+#> 22              321 0.006793716  0.0001853894    0.03323843
+#> 23              322 0.006779581  0.0001853894    0.03323843
+#> 24              323 0.006709204  0.0001853894    0.03323843
+#> 25              324 0.006657640  0.0001853894    0.03316550
+#> 26              325 0.006624299  0.0001853894    0.03314021
+#> 27              326 0.006523690  0.0001853894    0.03284951
+#> 28              327 0.006469289  0.0001853894    0.03203527
+#> 29              328 0.006457242  0.0001853894    0.03203527
+#> 30              329 0.006418214  0.0001853894    0.03199478
+#> 31              330 0.006391890  0.0001853894    0.03199478
+#> 32              331 0.006356382  0.0001853894    0.03199478
+#> 33              332 0.006322936  0.0001853894    0.03199478
+#> 34              333 0.006319881  0.0001853894    0.03199478
+#> 35              334 0.006328428  0.0001853894    0.03199478
+#> 36              335 0.006322475  0.0001853894    0.03199478
+#> 37              336 0.006351587  0.0001853894    0.03199478
+#> 38              337 0.006348439  0.0001853894    0.03199478
+#> 39              338 0.006335996  0.0001853894    0.03199478
+#> 40              339 0.006197699  0.0001731994    0.02993886
+#> 41              340 0.006192680  0.0001731994    0.02993886
+#> 42              341 0.006172254  0.0001670934    0.02969170
+#> 43              342 0.006147460  0.0001670934    0.02898132
+#> 44              343 0.006122634  0.0001670934    0.02898132
+#> 45              344 0.006107140  0.0001670934    0.02915495
+#> 46              345 0.006125438  0.0001670934    0.02898132
+#> 47              346 0.006103464  0.0001670934    0.02867308
+#> 48              347 0.006052146  0.0001670934    0.02836853
+#> 49              348 0.006034828  0.0001670934    0.02826695
+#> 50              349 0.006034543  0.0001670934    0.02826695
+#> 51              350 0.006008416  0.0001670934    0.02821670
+#> 52              351 0.005898821  0.0001670934    0.02698790
+#> 53              352 0.005887460  0.0001670934    0.02693226
+#> 54              353 0.005841236  0.0001670934    0.02650454
+#> 55              354 0.005822991  0.0001670934    0.02649958
+#> 56              355 0.005779131  0.0001670934    0.02598168
+#> 57              356 0.005753961  0.0001670934    0.02584409
+#> 58              357 0.005719608  0.0001670934    0.02547109
+#> 59              358 0.005708420  0.0001670934    0.02543296
+#> 60              359 0.005710988  0.0001670934    0.02540543
+#> 61              360 0.005729210  0.0001670934    0.02540543
+#> 62              361 0.005729309  0.0001670934    0.02540543
+#> 63              362 0.005699373  0.0001670934    0.02539120
+#> 64              363 0.005691831  0.0001670934    0.02539120
+#> 65              364 0.005732306  0.0001670934    0.02547109
+#> 66              365 0.005700689  0.0001670934    0.02539120
+#> 67              366 0.005692406  0.0001670934    0.02486422
+#> 68              367 0.005658704  0.0001664041    0.02477477
+#> 69              368 0.005656153  0.0001664041    0.02476874
+#> 70              369 0.005642204  0.0001645602    0.02476874
+#> 71              370 0.005613968  0.0001645602    0.02475799
+#> 72              371 0.005564202  0.0001645602    0.02462135
+#> 73              372 0.005562841  0.0001645602    0.02462135
+#> 74              373 0.005564978  0.0001645602    0.02462135
+#> 75              374 0.005544598  0.0001645602    0.02462135
+#> 76              375 0.005524629  0.0001645602    0.02462135
+#> 77              376 0.005517538  0.0001645602    0.02462135
+#> 78              377 0.005516836  0.0001645602    0.02462135
+#> 79              378 0.005555803  0.0001645602    0.02476874
+#> 80              379 0.005568483  0.0001645602    0.02476874
+#> 81              380 0.005522077  0.0001645602    0.02476874
+#> 82              381 0.005512883  0.0001645602    0.02475799
+#> 83              382 0.005508980  0.0001645602    0.02475799
+#> 84              383 0.005561336  0.0001645602    0.02476874
+#> 85              384 0.005562978  0.0001664041    0.02476874
+#> 86              385 0.005609233  0.0001645602    0.02477477
+#> 87              386 0.005622966  0.0001645602    0.02479521
+#> 88              387 0.005576642  0.0001664041    0.02476874
+#> 89              388 0.005569697  0.0001664041    0.02476874
+#> 90              389 0.005581163  0.0001664041    0.02476874
+#> 91              390 0.005590297  0.0001664041    0.02476874
+#> 92              391 0.005586563  0.0001645602    0.02476874
+#> 93              392 0.005589018  0.0001664041    0.02476874
+#> 94              393 0.005591971  0.0001670934    0.02476874
+#> 95              394 0.005604705  0.0001670934    0.02476874
+#> 96              395 0.005605199  0.0001670934    0.02476874
+#> 97              396 0.005607399  0.0001670934    0.02476874
+#> 98              397 0.005598107  0.0001670934    0.02476874
+#> 99              398 0.005609463  0.0001670934    0.02479521
+#> 100             399 0.005599812  0.0001670934    0.02476874
+#> 101             400 0.005601327  0.0001670934    0.02476874
+#> 102             401 0.005597464  0.0001670934    0.02476874
+#> 103             402 0.005603695  0.0001670934    0.02476874
+#> 104             403 0.005606326  0.0001670934    0.02476874
+#> 105             404 0.005609874  0.0001670934    0.02476874
+#> 106             405 0.005592994  0.0001670934    0.02476874
+#> 107             406 0.005603169  0.0001670934    0.02476874
+#> 108             407 0.005628260  0.0001670934    0.02480677
+#> 109             408 0.005642192  0.0001670934    0.02480677
+#> 110             409 0.005654319  0.0001670934    0.02539395
+#> 111             410 0.005678173  0.0001670934    0.02540543
+#> 112             411 0.005692745  0.0001670934    0.02562738
+#> 113             412 0.005692168  0.0001670934    0.02562738
+#> 114             413 0.005717512  0.0001670934    0.02580199
+#> 115             414 0.005734194  0.0001670934    0.02596890
+#> 116             415 0.005768735  0.0001670934    0.02614367
+#> 117             416 0.005786035  0.0001670934    0.02625303
+#> 118             417 0.005825920  0.0001670934    0.02663425
+#> 119             418 0.005851720  0.0001670934    0.02698790
+#> 120             419 0.005855249  0.0001670934    0.02700982
+#> 121             420 0.005867338  0.0001670934    0.02704095
+#> 122             421 0.005868420  0.0001670934    0.02704095
+#> 123             422 0.005864084  0.0001670934    0.02700982
+#> 124             423 0.005868745  0.0001670934    0.02700982
+#> 125             424 0.005873288  0.0001670934    0.02704095
+#> 126             425 0.005864157  0.0001670934    0.02704095
+#> 127             426 0.005942287  0.0001670934    0.02715255
+#> 128             427 0.005952295  0.0001670934    0.02734639
+#> 129             428 0.005937736  0.0001670934    0.02706346
+#> 130             429 0.005937723  0.0001670934    0.02706346
+#> 131             430 0.005954735  0.0001670934    0.02715255
+#> 132             431 0.005963816  0.0001670934    0.02734639
+#> 133             432 0.005986578  0.0001746202    0.02773294
+#> 134             433 0.006002067  0.0001746202    0.02773294
+#> 135             434 0.006001346  0.0001725722    0.02773294
+#> 136             435 0.005994367  0.0001725722    0.02831803
+#> 137             436 0.005980703  0.0001670934    0.02816095
+#> 138             437 0.005992358  0.0001670934    0.02828451
+#> 139             438 0.005995772  0.0001670934    0.02828451
+#> 140             439 0.006007614  0.0001670934    0.02828451
+#> 141             440 0.006019478  0.0001670934    0.02828451
+#> 142             441 0.006101386  0.0001670934    0.02888066
+#> 143             442 0.006095823  0.0001670934    0.02888066
+#> 144             443 0.006130784  0.0001670934    0.02908463
+#> 145             444 0.006160350  0.0001670934    0.02911403
+#> 146             445 0.006196521  0.0001670934    0.02918146
+#> 147             446 0.006220531  0.0001670934    0.02918146
+#> 148             447 0.006223578  0.0001670934    0.02920648
+#> 149             448 0.006296823  0.0001670934    0.02972066
+#> 150             449 0.006317967  0.0001670934    0.03000345
+#> 151             450 0.006332824  0.0001670934    0.03000345
+#> 152             451 0.006421184  0.0001670934    0.03113385
+#> 153             452 0.006437098  0.0001670934    0.03154554
+#> 154             453 0.006451935  0.0001670934    0.03154726
+#> 155             454 0.006490455  0.0001670934    0.03187811
+#> 156             455 0.006494075  0.0001670934    0.03199478
+#> 157             456 0.006518545  0.0001670934    0.03199478
+#> 158             457 0.006562465  0.0001670934    0.03199478
+#> 159             458 0.006618756  0.0001670934    0.03199478
+#> 160             459 0.006627192  0.0001670934    0.03199478
+#> 161             460 0.006691471  0.0001670934    0.03200639
+#> 162             461 0.006753360  0.0001670934    0.03313101
+#> 163             462 0.006779378  0.0001725722    0.03317646
+#> 164             463 0.006786779  0.0001725722    0.03313101
+#> 165             464 0.006851301  0.0001725722    0.03457283
+#> 166             465 0.006848622  0.0001752473    0.03457283
+#> 167             466 0.006875575  0.0001752473    0.03573705
+#> 168             467 0.006885867  0.0001752473    0.03529344
+#> 169             468 0.007275588  0.0001754818    0.04235525
+#> 170             469 0.007328252  0.0001754818    0.04256505
+#> 171             470 0.007354379  0.0001754818    0.04263776
+#> 172             471 0.007382671  0.0001754818    0.04295240
+#> 173             472 0.007497308  0.0001769813    0.04478463
+#> 174             473 0.007590380  0.0001769813    0.04545386
+#> 175             474 0.007624065  0.0001769813    0.04579553
+#> 176             475 0.007789227  0.0001769813    0.04756098
+#> 177             476 0.007937915  0.0001769813    0.05039376
+#> 178             477 0.007965403  0.0001769813    0.05092161
+#> 179             478 0.008074730  0.0001769813    0.05271625
+#> 180             479 0.008131496  0.0001769813    0.05289599
+#> 181             480 0.008222089  0.0001769813    0.05367976
+#> 182             481 0.008294654  0.0001822614    0.05383239
+#> 183             482 0.008397341  0.0001822614    0.05420074
+#> 184             483 0.008429064  0.0001853894    0.05420074
+#> 185             484 0.008487121  0.0001853894    0.05456593
+#> 186             485 0.010216367  0.0001853894    0.05950912
+#> 187             486 0.010602924  0.0001853894    0.06189043
+#> 188             487 0.010764114  0.0001853894    0.06411957
+#> 189             488 0.011751525  0.0001853894    0.06826638
+#> 190             489 0.014367464  0.0001853894    0.08289271
+#> 191             490 0.014449538  0.0001853894    0.08289271
+#> 192             491 0.019601049  0.0001853894    0.12967085
+#> 193             492 0.022948046  0.0001853894    0.27401282
+#> 194             493 0.026739372  0.0001853894    0.46622364
+#> 195             494 0.034414799  0.0001853894    0.58051013
+#> 196             495 0.038921570  0.0001853894    0.58451810
+#> 197             496 0.083857228  0.0001853894    0.75383069
+#> 198             497 0.091907911  0.0001853894    0.75811391
+#> 199             498 0.126079159  0.0001853894    0.79328853
+#> 200             499 0.152773906  0.0001853894    0.82362036
+#> 201             500 0.348116209  0.0002656072    0.85616347
+#> 202             501 0.363565996  0.0002656072    0.85616347
+#> 203             502 0.445839415  0.0003017672    0.85616347
+#> 204             503 0.446593582  0.0003017672    0.85616347
+#> 205             504 0.508224926  0.0003315879    0.87795406
+#> 206             505 0.512849289  0.0003315879    0.87795406
+#> 207             506 0.586577367  0.0003315879    0.89785626
+#> 208             507 0.677511434  0.4447654594    0.92430608
+#> 209             508 0.677511434  0.4447654594    0.92430608
+#> 210             509 0.677511434  0.4447654594    0.92430608
+#> 211             510 0.677511434  0.4447654594    0.92430608
+#> 212             511 0.677511434  0.4447654594    0.92430608
+#> 213             512 0.677511434  0.4447654594    0.92430608
+#> 214             513 0.677563634  0.4447654594    0.92430608
+#> 215             514 0.677563634  0.4447654594    0.92430608
+#> 216             515 0.677563634  0.4447654594    0.92430608
+#> 217             516 0.677563634  0.4447654594    0.92430608
+#> 218             517 0.677563634  0.4447654594    0.92430608
+#> 219             518 0.677511161  0.4447654594    0.92430608
+#> 220             519 0.677528959  0.4447654594    0.92430608
+#> 221             520 0.677528959  0.4447654594    0.92430608
+#> 222             521 0.677528959  0.4447654594    0.92430608
+#> 223             522 0.677528959  0.4447654594    0.92430608
+#> 224             523 0.677528959  0.4447654594    0.92430608
+#> 225             524 0.677495187  0.4447654594    0.92430608
+#> 226             525 0.677495187  0.4447654594    0.92430608
+#> 227             526 0.677495187  0.4447654594    0.92430608
+#> 228             527 0.677441226  0.4447256384    0.92430608
+#> 229             528 0.677573571  0.4447654594    0.92430608
+#> 230             529 0.677573571  0.4447654594    0.92430608
+#> 231             530 0.677573571  0.4447654594    0.92430608
+#> 232             531 0.677573571  0.4447654594    0.92430608
+#> 233             532 0.677573571  0.4447654594    0.92430608
+#> 234             533 0.677838261  0.4447654594    0.92430608
+#> 235             534 0.677838261  0.4447654594    0.92430608
+#> 236             535 0.677838261  0.4447654594    0.92430608
+#> 237             536 0.677838261  0.4447654594    0.92430608
+#> 238             537 0.677838261  0.4447654594    0.92430608
+#> 239             538 0.677838261  0.4447654594    0.92430608
+#> 240             539 0.677809101  0.4447654594    0.92430608
+#> 241             540 0.677809101  0.4447654594    0.92430608
+#> 242             541 0.677809101  0.4447654594    0.92430608
+#> 243             542 0.655014062  0.0197968971    0.92430608
+#> 244             543 0.648954214  0.0143515140    0.92430608
+#> 245             544 0.643050889  0.0127642342    0.92430608
+#> 246             545 0.642908637  0.0127642342    0.92430608
+#> 247             546 0.626072028  0.0084203155    0.92430608
+#> 248             547 0.597658837  0.0039640728    0.92121133
+#> 249             548 0.540243626  0.0015613455    0.92038023
+#> 250             549 0.499349000  0.0014502456    0.89797759
+#> 251             550 0.463774564  0.0012278666    0.89469217
+#> 252             551 0.424403562  0.0010692414    0.89469217
+#> 253             552 0.234301463  0.0008231489    0.82892607
+#> 254             553 0.193081685  0.0007828625    0.80360315
+#> 255             554 0.130339189  0.0007624117    0.77862703
+#> 256             555 0.047833567  0.0007265996    0.58537124
+#> 257             556 0.041734729  0.0007265996    0.53697574
+#> 258             557 0.033593447  0.0007265996    0.48056675
+#> 259             558 0.029126521  0.0007265996    0.47319030
+#> 260             559 0.022651723  0.0007255410    0.11547732
+#> 261             560 0.014824013  0.0007255410    0.06297253
+#> 262             561 0.014770694  0.0007255410    0.06289349
+#> 263             562 0.013626837  0.0007255410    0.05860759
+#> 264             563 0.013575693  0.0007255410    0.05837959
+#> 265             564 0.013403604  0.0007255410    0.05535160
+#> 266             565 0.013360394  0.0007255410    0.05514314
+#> 267             566 0.013310910  0.0007255410    0.05440075
+#> 268             567 0.013215656  0.0007255410    0.05391747
+#> 269             568 0.013138736  0.0007255410    0.05375119
+#> 270             569 0.013087821  0.0007255410    0.05309679
+#> 271             570 0.012879940  0.0007255410    0.05157737
+#> 272             571 0.012668502  0.0007255410    0.05046878
+#> 273             572 0.012433854  0.0007255410    0.04926042
+#> 274             573 0.012451489  0.0007255410    0.04926042
+#> 275             574 0.012397336  0.0007255410    0.04908938
+#> 276             575 0.012296539  0.0007255410    0.04892895
+#> 277             576 0.012265579  0.0007255410    0.04892895
+#> 278             577 0.012034930  0.0007247417    0.04700354
+#> 279             578 0.011971788  0.0007247417    0.04687044
+#> 280             579 0.011981109  0.0007247417    0.04697582
+#> 281             580 0.011961571  0.0007247417    0.04697582
+#> 282             581 0.011933079  0.0007247417    0.04693778
+#> 283             582 0.011773219  0.0007255410    0.04533625
+#> 284             583 0.011743792  0.0007255410    0.04464218
+#> 285             584 0.011681428  0.0007255410    0.04432350
+#> 286             585 0.011594224  0.0007255410    0.04392979
+#> 287             586 0.011569410  0.0007255410    0.04392979
+#> 288             587 0.011597597  0.0007255410    0.04392979
+#> 289             588 0.011577112  0.0007255410    0.04381197
+#> 290             589 0.011571808  0.0007255410    0.04354825
+#> 291             590 0.011556753  0.0007255410    0.04360803
+#> 292             591 0.011561143  0.0007255410    0.04360803
+#> 293             592 0.011546858  0.0007255410    0.04354825
+#> 294             593 0.011499101  0.0007255410    0.04349355
+#> 295             594 0.011491062  0.0007255410    0.04329759
+#> 296             595 0.011501129  0.0007255410    0.04347310
+#> 297             596 0.011534104  0.0007324199    0.04349355
+#> 298             597 0.011478208  0.0007487094    0.04329759
+#> 299             598 0.011444436  0.0007487094    0.04304824
+#> 300             599 0.011404733  0.0007487094    0.04295839
+#> 301             600 0.011532528  0.0007487094    0.04347310
+#> 302             601 0.011499565  0.0007540404    0.04347310
+#> 303             602 0.011496051  0.0007487094    0.04347310
+#> 304             603 0.011487577  0.0007487094    0.04347290
+#> 305             604 0.011462582  0.0007266749    0.04347290
+#> 306             605 0.011414182  0.0007257425    0.04329759
+#> 307             606 0.011293171  0.0007257425    0.04254330
+#> 308             607 0.011269030  0.0007266749    0.04254330
+#> 309             608 0.011298139  0.0007255410    0.04295839
+#> 310             609 0.011298229  0.0007255410    0.04329759
+#> 311             610 0.011306738  0.0007255410    0.04329759
+#> 312             611 0.011296763  0.0007255410    0.04329759
+#> 313             612 0.011282245  0.0007255410    0.04319563
+#> 314             613 0.011333600  0.0007255410    0.04329759
+#> 315             614 0.011272710  0.0007255410    0.04296414
+#> 316             615 0.011247048  0.0007255410    0.04295839
+#> 317             616 0.011267871  0.0007255410    0.04296414
+#> 318             617 0.011246953  0.0007255410    0.04274947
+#> 319             618 0.011244639  0.0007255410    0.04274947
+#> 320             619 0.011156547  0.0007255410    0.04235069
+#> 321             620 0.011155024  0.0007255410    0.04248549
+#> 322             621 0.011153835  0.0007247417    0.04235069
+#> 323             622 0.011140783  0.0007226032    0.04274947
+#> 324             623 0.011135100  0.0007226032    0.04226867
+#> 325             624 0.011171167  0.0007226032    0.04214977
+#> 326             625 0.011192100  0.0007247417    0.04253337
+#> 327             626 0.011148973  0.0007247417    0.04156329
+#> 328             627 0.011149328  0.0007247417    0.04171888
+#> 329             628 0.011144544  0.0007247417    0.04136930
+#> 330             629 0.011138074  0.0007226032    0.04117921
+#> 331             630 0.011022853  0.0007226032    0.04011978
+#> 332             631 0.010971600  0.0007226032    0.03931460
+#> 333             632 0.010958572  0.0007226032    0.03918073
+#> 334             633 0.010950476  0.0007226032    0.03913069
+#> 335             634 0.010947698  0.0007226032    0.03880807
+#> 336             635 0.010894128  0.0007255410    0.03837500
+#> 337             636 0.010852227  0.0007255410    0.03837500
+#> 338             637 0.010826054  0.0007255410    0.03822179
+#> 339             638 0.010832654  0.0007255410    0.03822179
+#> 340             639 0.010799999  0.0007255410    0.03822179
+#> 341             640 0.010808342  0.0007255410    0.03822179
+#> 342             641 0.010785586  0.0007255410    0.03822179
+#> 343             642 0.010751166  0.0007255410    0.03821842
+#> 344             643 0.010759259  0.0007255410    0.03821842
+#> 345             644 0.010800487  0.0007255410    0.03822179
+#> 346             645 0.010806991  0.0007247417    0.03822179
+#> 347             646 0.010831394  0.0007226032    0.03837500
+#> 348             647 0.010885539  0.0007226032    0.03855007
+#> 349             648 0.010896895  0.0007226032    0.03855007
+#> 350             649 0.010885898  0.0007226032    0.03859640
+#> 351             650 0.010900516  0.0007226032    0.03880807
+#> 352             651 0.010889526  0.0007247417    0.03905311
+#> 353             652 0.010918456  0.0007226032    0.03929932
+#> 354             653 0.010888466  0.0007226032    0.03909183
+#> 355             654 0.010905693  0.0007226032    0.03909183
+#> 356             655 0.010937902  0.0007226032    0.03929932
+#> 357             656 0.010943289  0.0007226032    0.03929932
+#> 358             657 0.010949468  0.0007226032    0.03929932
+#> 359             658 0.010901658  0.0007226032    0.03905311
+#> 360             659 0.010911552  0.0007226032    0.03872035
+#> 361             660 0.010940514  0.0007226032    0.03880807
+#> 362             661 0.010993864  0.0007226032    0.04000706
+#> 363             662 0.010995816  0.0007226032    0.04012982
+#> 364             663 0.010991559  0.0007226032    0.04004049
+#> 365             664 0.011031148  0.0007226032    0.04014033
+#> 366             665 0.011089003  0.0007226032    0.04092414
+#> 367             666 0.011103022  0.0007226032    0.04152488
+#> 368             667 0.011164716  0.0007226032    0.04285279
+#> 369             668 0.011257505  0.0007226032    0.04340081
+#> 370             669 0.011283667  0.0007226032    0.04392979
+#> 371             670 0.011282682  0.0007226032    0.04392979
+#> 372             671 0.011315368  0.0007226032    0.04392979
+#> 373             672 0.011368850  0.0007226032    0.04392979
+#> 374             673 0.011423258  0.0007226032    0.04426441
+#> 375             674 0.011470608  0.0007226032    0.04490220
+#> 376             675 0.011506925  0.0007226032    0.04490220
+#> 377             676 0.011506158  0.0007226032    0.04473164
+#> 378             677 0.011515790  0.0007185020    0.04510904
+#> 379             678 0.011614351  0.0007185020    0.04651431
+#> 380             679 0.011659293  0.0007185020    0.04662719
+#> 381             680 0.011713610  0.0007185020    0.04680809
+#> 382             681 0.011740156  0.0007185020    0.04681965
+#> 383             682 0.011740792  0.0007185020    0.04681965
+#> 384             683 0.011760003  0.0007185020    0.04704094
+#> 385             684 0.011811904  0.0007185020    0.04733019
+#> 386             685 0.011845103  0.0007185020    0.04736398
+#> 387             686 0.011919395  0.0007185020    0.04791129
+#> 388             687 0.012011063  0.0007185020    0.04819857
+#> 389             688 0.012080778  0.0007185020    0.04858151
+#> 390             689 0.012141559  0.0007185020    0.04883989
+#> 391             690 0.012169259  0.0007185020    0.04888562
+#> 392             691 0.012220131  0.0007185020    0.04995888
+#> 393             692 0.012271263  0.0007185020    0.05002259
+#> 394             693 0.012330299  0.0007185020    0.05016777
+#> 395             694 0.012430934  0.0007185020    0.05119373
+#> 396             695 0.012498145  0.0007185020    0.05157737
+#> 397             696 0.012629613  0.0007185020    0.05216855
+#> 398             697 0.012749972  0.0007185020    0.05465106
+#> 399             698 0.012767852  0.0007185020    0.05467615
+#> 400             699 0.012903387  0.0007185020    0.05515244
+#> 
+#> $plot_par
+#> $plot_par$xlog
+#> [1] FALSE
+#> 
+#> $plot_par$ylog
+#> [1] FALSE
+#> 
+#> $plot_par$adj
+#> [1] 0.5
+#> 
+#> $plot_par$ann
+#> [1] TRUE
+#> 
+#> $plot_par$ask
+#> [1] FALSE
+#> 
+#> $plot_par$bg
+#> [1] "transparent"
+#> 
+#> $plot_par$bty
+#> [1] "o"
+#> 
+#> $plot_par$cex
+#> [1] 1
+#> 
+#> $plot_par$cex.axis
+#> [1] 1
+#> 
+#> $plot_par$cex.lab
+#> [1] 1
+#> 
+#> $plot_par$cex.main
+#> [1] 1.2
+#> 
+#> $plot_par$cex.sub
+#> [1] 1
+#> 
+#> $plot_par$col
+#> [1] "black"
+#> 
+#> $plot_par$col.axis
+#> [1] "black"
+#> 
+#> $plot_par$col.lab
+#> [1] "black"
+#> 
+#> $plot_par$col.main
+#> [1] "black"
+#> 
+#> $plot_par$col.sub
+#> [1] "black"
+#> 
+#> $plot_par$crt
+#> [1] 0
+#> 
+#> $plot_par$err
+#> [1] 0
+#> 
+#> $plot_par$family
+#> [1] ""
+#> 
+#> $plot_par$fg
+#> [1] "black"
+#> 
+#> $plot_par$fig
+#> [1] 0 1 0 1
+#> 
+#> $plot_par$fin
+#> [1] 7.0 5.5
+#> 
+#> $plot_par$font
+#> [1] 1
+#> 
+#> $plot_par$font.axis
+#> [1] 1
+#> 
+#> $plot_par$font.lab
+#> [1] 1
+#> 
+#> $plot_par$font.main
+#> [1] 2
+#> 
+#> $plot_par$font.sub
+#> [1] 1
+#> 
+#> $plot_par$lab
+#> [1] 5 5 7
+#> 
+#> $plot_par$las
+#> [1] 1
+#> 
+#> $plot_par$lend
+#> [1] "round"
+#> 
+#> $plot_par$lheight
+#> [1] 1
+#> 
+#> $plot_par$ljoin
+#> [1] "round"
+#> 
+#> $plot_par$lmitre
+#> [1] 10
+#> 
+#> $plot_par$lty
+#> [1] "solid"
+#> 
+#> $plot_par$lwd
+#> [1] 1
+#> 
+#> $plot_par$mai
+#> [1] 1.02 0.92 0.82 0.42
+#> 
+#> $plot_par$mar
+#> [1] 5.1 4.6 4.1 2.1
+#> 
+#> $plot_par$mex
+#> [1] 1
+#> 
+#> $plot_par$mfcol
+#> [1] 1 1
+#> 
+#> $plot_par$mfg
+#> [1] 1 1 1 1
+#> 
+#> $plot_par$mfrow
+#> [1] 1 1
+#> 
+#> $plot_par$mgp
+#> [1] 3.0 0.7 0.0
+#> 
+#> $plot_par$mkh
+#> [1] 0.001
+#> 
+#> $plot_par$new
+#> [1] FALSE
+#> 
+#> $plot_par$oma
+#> [1] 0 0 0 0
+#> 
+#> $plot_par$omd
+#> [1] 0 1 0 1
+#> 
+#> $plot_par$omi
+#> [1] 0 0 0 0
+#> 
+#> $plot_par$pch
+#> [1] 1
+#> 
+#> $plot_par$pin
+#> [1] 5.66 3.66
+#> 
+#> $plot_par$plt
+#> [1] 0.1314286 0.9400000 0.1854545 0.8509091
+#> 
+#> $plot_par$ps
+#> [1] 12
+#> 
+#> $plot_par$pty
+#> [1] "m"
+#> 
+#> $plot_par$smo
+#> [1] 1
+#> 
+#> $plot_par$srt
+#> [1] 0
+#> 
+#> $plot_par$tck
+#> [1] NA
+#> 
+#> $plot_par$tcl
+#> [1] -0.5
+#> 
+#> $plot_par$usr
+#> [1] 699.00 300.00 142.15 860.95
+#> 
+#> $plot_par$xaxp
+#> [1] 600 300   3
+#> 
+#> $plot_par$xaxs
+#> [1] "i"
+#> 
+#> $plot_par$xaxt
+#> [1] "s"
+#> 
+#> $plot_par$xpd
+#> [1] FALSE
+#> 
+#> $plot_par$yaxp
+#> [1] 200 800   6
+#> 
+#> $plot_par$yaxs
+#> [1] "i"
+#> 
+#> $plot_par$yaxt
+#> [1] "s"
+#> 
+#> $plot_par$ylbias
+#> [1] 0.2
 ```
 --->
 </div>
@@ -403,11 +1006,11 @@ head(PP_posterior_mean_rate_2sigma)
 </h4>
 <p>You can plot the posterior estimate for the number of internal
 changes in the rate
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
 using the command:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotNumberOfInternalChanges.html">PlotNumberOfInternalChanges</a></span><span class="op">(</span><span class="va">PP_fit_output</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Poisson-process-modelling_files/figure-html/changepoint_number-1.png" width="100%"></p>
+<p><img src="Poisson-process-modelling_files/figure-html/changepoint_number-1.png" class="r-plt" alt="" width="100%"></p>
 <p>Here, we can see that the method estimates that there are most likely
 to be two changes. Again, this corresponds to the underlying (simulated)
 data, where there is a step up from a occurrence rate of zero
@@ -420,7 +1023,7 @@ of zero at 500 cal yr BP.</p>
 </h4>
 <p>You can plot density estimates for the locations (calendar times) of
 the changepoints in
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>,
 conditional on the number of such changes, using the
 <code><a href="../reference/PlotPosteriorChangePoints.html">PlotPosteriorChangePoints()</a></code> function. The default shows the
 density estimates for the calendar times at which there are changes in
@@ -429,14 +1032,14 @@ the occurrence rate, conditional on their being
 and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
 such changes in
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
 over the time period under study. This can however be changed by
 specifying <code>n_changes</code> in the function:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotPosteriorChangePoints.html">PlotPosteriorChangePoints</a></span><span class="op">(</span><span class="va">PP_fit_output</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in PlotPosteriorChangePoints(PP_fit_output): No posterior samples with</span></span>
 <span><span class="co">#&gt; 1 internal changes</span></span></code></pre></div>
-<p><img src="Poisson-process-modelling_files/figure-html/changepoint_locations-1.png" width="100%"></p>
+<p><img src="Poisson-process-modelling_files/figure-html/changepoint_locations-1.png" class="r-plt" alt="" width="100%"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Can add an n_changes argument, e.g., n_changes = c(2, 3, 4)</span></span>
 <span><span class="co"># if want to condition on a different number of changes </span></span></code></pre></div>
@@ -465,7 +1068,7 @@ the absence of a solid blue density in the plot.</p>
 </h4>
 <p>You can also plot, conditional on the number of changes in the rate
 step function
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>,
 the posterior density estimates for the heights in each of the
 individual segments (i.e., the rates of sample occurrence in those
 constant periods)</p>
@@ -473,12 +1076,12 @@ constant periods)</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotPosteriorHeights.html">PlotPosteriorHeights</a></span><span class="op">(</span><span class="va">PP_fit_output</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in PlotPosteriorHeights(PP_fit_output): No posterior samples with 1</span></span>
 <span><span class="co">#&gt; internal changes</span></span></code></pre></div>
-<p><img src="Poisson-process-modelling_files/figure-html/changepoint_rates-1.png" width="100%"></p>
+<p><img src="Poisson-process-modelling_files/figure-html/changepoint_rates-1.png" class="r-plt" alt="" width="100%"></p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># As above can add an n_changes argument, e.g., n_changes = c(2, 3, 4)</span></span>
 <span><span class="co"># if want to condition on a different number of changes </span></span></code></pre></div>
 <p>Here, conditional on there being two changes in
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
 between 700–300 cal yr BP (so three different values for the rates) we
 have two rates of <em>ca.</em> 0 events per cal yr (these correspond to
 the periods 700–550 and 500–300 cal yr BP), and a period with rate
@@ -495,7 +1098,7 @@ estimates of and individual samples using the
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/PlotCalendarAgeDensityIndividualSample.html">PlotCalendarAgeDensityIndividualSample</a></span><span class="op">(</span></span>
 <span>  <span class="fl">9</span>, <span class="va">PP_fit_output</span>, show_hpd_ranges <span class="op">=</span> <span class="cn">TRUE</span>, show_unmodelled_density <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Poisson-process-modelling_files/figure-html/PP_plot_individual-1.png" width="100%"></p>
+<p><img src="Poisson-process-modelling_files/figure-html/PP_plot_individual-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
 </div>
 <div class="section level3">
@@ -512,13 +1115,13 @@ be set in <code><a href="../reference/PlotPosteriorMeanRate.html">PlotPosteriorM
 <span>                          plot_cal_age_scale <span class="op">=</span> <span class="st">"AD"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in PlotPosteriorChangePoints(PP_fit_output, plot_cal_age_scale = "AD"):</span></span>
 <span><span class="co">#&gt; No posterior samples with 1 internal changes</span></span></code></pre></div>
-<p><img src="Poisson-process-modelling_files/figure-html/changepoint_locations_AD-1.png" width="100%"></p>
+<p><img src="Poisson-process-modelling_files/figure-html/changepoint_locations_AD-1.png" class="r-plt" alt="" width="100%"></p>
 <div class="section level4">
 <h4 id="calculating-the-posterior-estimate-of-the-occurrence-rate-on-a-bespoke-grid">Calculating the posterior estimate of the occurrence rate on a
 bespoke grid<a class="anchor" aria-label="anchor" href="#calculating-the-posterior-estimate-of-the-occurrence-rate-on-a-bespoke-grid"></a>
 </h4>
 <p>To calculate the posterior estimate of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>λ</mi><mo stretchy="false" form="prefix">(</mo><mi>t</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\lambda(t)</annotation></semantics></math>
 on a user-specified calendar age grid and with user-specified
 probability intervals (the default is
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mi>σ</mi></mrow><annotation encoding="application/x-tex">2\sigma</annotation></semantics></math>)
@@ -526,21 +1129,102 @@ you can also use the in-built <code><a href="../reference/FindPosteriorMeanRate.
 function:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Calculating 2 sigma (95.4%) intervals on posterior mean occurrence rate </span></span>
-<span><span class="va">PP_posterior_mean_rate_2sigma</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/FindPosteriorMeanRate.html">FindPosteriorMeanRate</a></span><span class="op">(</span></span>
+<span><span class="va">PP_posterior_mean_rate_1sigma</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/FindPosteriorMeanRate.html">FindPosteriorMeanRate</a></span><span class="op">(</span></span>
 <span>  <span class="va">PP_fit_output</span>,</span>
 <span>  calendar_age_sequence <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">300</span>, <span class="fl">500</span>, by <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
-<span>  interval_width <span class="op">=</span> <span class="st">"2sigma"</span><span class="op">)</span></span>
+<span>  interval_width <span class="op">=</span> <span class="st">"1sigma"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Look at posterior mean with 2 sigma probability interval</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">PP_posterior_mean_rate_2sigma</span><span class="op">)</span></span>
+<span><span class="co"># Look at posterior mean with 1 sigma probability interval</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">PP_posterior_mean_rate_1sigma</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   calendar_age_BP   rate_mean rate_ci_lower rate_ci_upper</span></span>
-<span><span class="co">#&gt; 1             300 0.008010096  0.0001862987    0.04248661</span></span>
-<span><span class="co">#&gt; 2             301 0.007985190  0.0001862987    0.04232088</span></span>
-<span><span class="co">#&gt; 3             302 0.007961441  0.0001862987    0.04211068</span></span>
-<span><span class="co">#&gt; 4             303 0.007912361  0.0001862987    0.04164114</span></span>
-<span><span class="co">#&gt; 5             304 0.007859902  0.0001862987    0.04094373</span></span>
-<span><span class="co">#&gt; 6             305 0.007701685  0.0001862987    0.03952506</span></span></code></pre></div>
+<span><span class="co">#&gt; 1             300 0.008010096  0.0007889443    0.01226652</span></span>
+<span><span class="co">#&gt; 2             301 0.007985190  0.0007889443    0.01226396</span></span>
+<span><span class="co">#&gt; 3             302 0.007961441  0.0007889443    0.01225506</span></span>
+<span><span class="co">#&gt; 4             303 0.007912361  0.0007889443    0.01219521</span></span>
+<span><span class="co">#&gt; 5             304 0.007859902  0.0007889443    0.01219521</span></span>
+<span><span class="co">#&gt; 6             305 0.007701685  0.0007886834    0.01219521</span></span></code></pre></div>
 </div>
+</div>
+<div class="section level3">
+<h3 id="annotating-the-various-summary-plots-with-text-lines-and-shading">Annotating the various summary plots with text, lines and
+shading<a class="anchor" aria-label="anchor" href="#annotating-the-various-summary-plots-with-text-lines-and-shading"></a>
+</h3>
+<p>We have created three functions:</p>
+<ul>
+<li>
+<code><a href="../reference/AddLinePlot.html">AddLinePlot()</a></code> - adds lines (vertical or
+horizontal)</li>
+<li>
+<code><a href="../reference/AddTextPlot.html">AddTextPlot()</a></code> - adds text</li>
+<li>
+<code><a href="../reference/AddShadingPlot.html">AddShadingPlot()</a></code> - adds shading</li>
+</ul>
+<p>that allow you to annotate the summary plots showing the posterior
+mean rate and the changepoint locations. Suppose for our simulated
+example we want to highlight the underlying [550, 500] cal yr BP
+interval in the plots:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Run plotting function and assign output to posterior_mean_plot</span></span>
+<span><span class="va">posterior_mean_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PlotPosteriorMeanRate.html">PlotPosteriorMeanRate</a></span><span class="op">(</span><span class="va">PP_fit_output</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># This creates the base plot that we can then annotate</span></span>
+<span></span>
+<span><span class="co"># Adding shading to highlight the time period from 500 to 550 cal yr BP</span></span>
+<span><span class="fu"><a href="../reference/AddShadingPlot.html">AddShadingPlot</a></span><span class="op">(</span><span class="va">posterior_mean_plot</span>,</span>
+<span>    x_start <span class="op">=</span> <span class="fl">550</span>, x_end <span class="op">=</span> <span class="fl">500</span>,</span>
+<span>    col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Add text to the plot</span></span>
+<span><span class="fu"><a href="../reference/AddTextPlot.html">AddTextPlot</a></span><span class="op">(</span><span class="va">posterior_mean_plot</span>,</span>
+<span>    x <span class="op">=</span> <span class="fl">550</span>, y <span class="op">=</span> <span class="fl">750</span>,</span>
+<span>    labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html" class="external-link">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"550 cal yrs BP"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    cex <span class="op">=</span> <span class="fl">0.7</span>,</span>
+<span>    pos <span class="op">=</span> <span class="fl">2</span>, <span class="co"># This places the text to the left</span></span>
+<span>    offset <span class="op">=</span> <span class="fl">0.2</span>,</span>
+<span>    col <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Poisson-process-modelling_files/figure-html/annotate_plot_mean_rate-1.png" class="r-plt" alt="" width="100%">
+We can similarly annotate the plot showing the posterior location of the
+changepoints:</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Run changepoint plotting function and assign output to posterior_changepoint_plot</span></span>
+<span><span class="va">posterior_changepoint_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PlotPosteriorChangePoints.html">PlotPosteriorChangePoints</a></span><span class="op">(</span><span class="va">PP_fit_output</span>, </span>
+<span>                                                        n_changes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co"># Note: Assigning plot to a variable (with &lt;-) is only needed for annotation.</span></span>
+<span></span>
+<span><span class="co"># Add lines at 550 and 500 cal yr BP that indicate the ends of </span></span>
+<span><span class="co"># the true underlying distribution used to simulate the data  </span></span>
+<span><span class="fu"><a href="../reference/AddLinePlot.html">AddLinePlot</a></span><span class="op">(</span></span>
+<span>     <span class="va">posterior_changepoint_plot</span>,</span>
+<span>     v <span class="op">=</span> <span class="fl">550</span>, <span class="co"># v = gives vertical, h = gives horizontal</span></span>
+<span>     col <span class="op">=</span> <span class="st">"purple"</span>,</span>
+<span>     lwd <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>     lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/AddLinePlot.html">AddLinePlot</a></span><span class="op">(</span></span>
+<span>     <span class="va">posterior_changepoint_plot</span>,</span>
+<span>     v <span class="op">=</span> <span class="fl">500</span>,</span>
+<span>     col <span class="op">=</span> <span class="st">"purple"</span>,</span>
+<span>     lwd <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>     lty <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/AddTextPlot.html">AddTextPlot</a></span><span class="op">(</span><span class="va">posterior_changepoint_plot</span>,</span>
+<span>    x <span class="op">=</span> <span class="fl">550</span>, y <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>    labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html" class="external-link">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"550 cal yrs BP"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    cex <span class="op">=</span> <span class="fl">0.7</span>,</span>
+<span>    pos <span class="op">=</span> <span class="fl">2</span>, <span class="co"># places text to the left</span></span>
+<span>    offset <span class="op">=</span> <span class="fl">0.2</span>,</span>
+<span>    col <span class="op">=</span> <span class="st">"purple"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/AddTextPlot.html">AddTextPlot</a></span><span class="op">(</span><span class="va">posterior_changepoint_plot</span>,</span>
+<span>    x <span class="op">=</span> <span class="fl">500</span>, y <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>    labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html" class="external-link">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"500 cal yrs BP"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    cex <span class="op">=</span> <span class="fl">0.7</span>,</span>
+<span>    pos <span class="op">=</span> <span class="fl">4</span>, <span class="co"># places text to right </span></span>
+<span>    offset <span class="op">=</span> <span class="fl">0.2</span>,</span>
+<span>    col <span class="op">=</span> <span class="st">"purple"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Poisson-process-modelling_files/figure-html/annotate_plot_changepoints-1.png" class="r-plt" alt="" width="100%">
+See the <a href="Independent-calibration.html">independent calibration
+vignette</a> for more examples of ways to annotate the summary plot.</p>
 </div>
 <div class="section level3">
 <h3 id="additional-plotting-features">Additional Plotting Features<a class="anchor" aria-label="anchor" href="#additional-plotting-features"></a>
@@ -555,25 +1239,26 @@ posterior mean estimate of the occurrence rate over time
 done by specifying the optional <code>n_changes</code> argument in
 either the <code><a href="../reference/PlotPosteriorMeanRate.html">PlotPosteriorMeanRate()</a></code> or
 <code><a href="../reference/FindPosteriorMeanRate.html">FindPosteriorMeanRate()</a></code> functions:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Conditional on TWO internal changes in the occurrence rate, </span></span>
 <span><span class="co"># Calculate and plot the posterior mean rate over time </span></span>
 <span><span class="co"># (with its 2 sigma intervals)</span></span>
-<span><span class="va">conditional_2_changes_posterior_mean_rate</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PlotPosteriorMeanRate.html">PlotPosteriorMeanRate</a></span><span class="op">(</span></span>
+<span><span class="va">conditional_2_changes_mean_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/PlotPosteriorMeanRate.html">PlotPosteriorMeanRate</a></span><span class="op">(</span></span>
 <span>  <span class="va">PP_fit_output</span>,</span>
 <span>  n_changes <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="co"># here n_changes must have length one (i.e., a single number)</span></span></code></pre></div>
-<p><img src="Poisson-process-modelling_files/figure-html/plot_conditionalmeanrate-1.png" width="100%"></p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<p><img src="Poisson-process-modelling_files/figure-html/plot_conditionalmeanrate-1.png" class="r-plt" alt="" width="100%"></p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Look at conditional posterior mean with 2 sigma probability interval</span></span>
+<span><span class="va">conditional_2_changes_posterior_mean_rate</span> <span class="op">&lt;-</span> <span class="va">conditional_2_changes_mean_plot</span><span class="op">$</span><span class="va">posterior_rate</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">conditional_2_changes_posterior_mean_rate</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   calendar_age_BP   rate_mean rate_ci_lower rate_ci_upper</span></span>
-<span><span class="co">#&gt; 1             300 0.007879740  1.942084e-05    0.04850640</span></span>
-<span><span class="co">#&gt; 2             301 0.007879740  1.942084e-05    0.04850640</span></span>
-<span><span class="co">#&gt; 3             302 0.007879740  1.942084e-05    0.04850640</span></span>
-<span><span class="co">#&gt; 4             303 0.007774786  1.942084e-05    0.04810404</span></span>
-<span><span class="co">#&gt; 5             304 0.007692820  1.942084e-05    0.04684532</span></span>
-<span><span class="co">#&gt; 6             305 0.007679320  1.942084e-05    0.04684532</span></span></code></pre></div>
+<span><span class="co">#&gt; 1             300 0.007599119  2.040982e-05    0.04620030</span></span>
+<span><span class="co">#&gt; 2             301 0.007599119  2.040982e-05    0.04620030</span></span>
+<span><span class="co">#&gt; 3             302 0.007599119  2.040982e-05    0.04620030</span></span>
+<span><span class="co">#&gt; 4             303 0.007546642  2.040982e-05    0.04489127</span></span>
+<span><span class="co">#&gt; 5             304 0.007420696  2.040982e-05    0.04381199</span></span>
+<span><span class="co">#&gt; 6             305 0.007413946  2.040982e-05    0.04381199</span></span></code></pre></div>
 <p><strong>Note:</strong> We do not expect this functionality will be
 particularly relevant for most users unless they known, in advance, how
 many changes in the rate there are in the time period. We instead advise
@@ -595,7 +1280,7 @@ allows users to plot individual realisations of the occurrence rate
 drawn from the MCMC. One can specify the number of realisations to plot,
 whether those realisations should be randomly chosen or correspond to
 specific iterations of the MCMC, as well as the plotting colours:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Choose some nice plotting colours (from Okabe-Ito)</span></span>
 <span><span class="va">realisation_colours</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#000000"</span>, <span class="st">"#E69F00"</span>, <span class="st">"#56B4E9"</span>, <span class="st">"#009E73"</span>, <span class="st">"#F0E442"</span> <span class="op">)</span></span>
 <span></span>
@@ -604,17 +1289,23 @@ specific iterations of the MCMC, as well as the plotting colours:</p>
 <span>     <span class="va">PP_fit_output</span>,</span>
 <span>     n_realisations <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>     plot_realisations_colour <span class="op">=</span> <span class="va">realisation_colours</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Poisson-process-modelling_files/figure-html/plot_ind_realisation-1.png" width="100%"></p>
+<p><img src="Poisson-process-modelling_files/figure-html/plot_ind_realisation-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
 </div>
 <div class="section level3">
 <h3 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h3>
-<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-green1995" class="csl-entry">
 Green, Peter J. 1995. <span>“Reversible Jump Markov Chain Monte Carlo
 Computation and Bayesian Model Determination.”</span>
 <em>Biometrika</em> 82 (4): 711–32. <a href="https://doi.org/10.2307/2337340" class="external-link">https://doi.org/10.2307/2337340</a>.
+</div>
+<div id="ref-heaton2025" class="csl-entry">
+Heaton, Timothy J., Sara Al-assam, and Edouard Bard. 2025. <span>“<span class="nocase">A new approach to radiocarbon summarisation: Rigorous
+identification of variations/changepoints in the occurrence rate of
+radiocarbon samples using a Poisson process</span>.”</span> <em>Journal
+of Archaeological Science</em> 182: 106237. https://doi.org/<a href="https://doi.org/10.1016/j.jas.2025.106237" class="external-link">https://doi.org/10.1016/j.jas.2025.106237</a>.
 </div>
 <div id="ref-rick1987" class="csl-entry">
 Rick, John W. 1987. <span>“Dates as Data: An Examination of the Peruvian
@@ -635,7 +1326,7 @@ Preceramic Radiocarbon Record.”</span> <em>American Antiquity</em> 52
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

@@ -7,12 +7,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Calibration and Summarisation of Radiocarbon Dates • carbondate</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Calibration and Summarisation of Radiocarbon Dates">
-<meta name="description" content="Performs Bayesian non-parametric calibration of multiple related radiocarbon determinations, and summarises the calendar age information to plot their joint calendar age density (see Heaton (2022) &lt;doi:10.1111/rssc.12599&gt;). Also models the occurrence of radiocarbon samples as a variable-rate (inhomogeneous) Poisson process, plotting the posterior estimate for the occurrence rate of the samples over calendar time, and providing information about potential change points.">
-<meta property="og:description" content="Performs Bayesian non-parametric calibration of multiple related radiocarbon determinations, and summarises the calendar age information to plot their joint calendar age density (see Heaton (2022) &lt;doi:10.1111/rssc.12599&gt;). Also models the occurrence of radiocarbon samples as a variable-rate (inhomogeneous) Poisson process, plotting the posterior estimate for the occurrence rate of the samples over calendar time, and providing information about potential change points.">
+<meta name="description" content="Performs Bayesian non-parametric calibration of multiple related radiocarbon determinations, and summarises the calendar age information to plot their joint calendar age density (see Heaton (2022) &lt;doi:10.1111/rssc.12599&gt;). Also models the occurrence of radiocarbon samples as a variable-rate (inhomogeneous) Poisson process, plotting the posterior estimate for the occurrence rate of the samples over calendar time, and providing information about potential change points (see Heaton, Al-assam &amp; Bard (2025) &lt;doi:10.1016/j.jas.2025.106237&gt;).">
+<meta property="og:description" content="Performs Bayesian non-parametric calibration of multiple related radiocarbon determinations, and summarises the calendar age information to plot their joint calendar age density (see Heaton (2022) &lt;doi:10.1111/rssc.12599&gt;). Also models the occurrence of radiocarbon samples as a variable-rate (inhomogeneous) Poisson process, plotting the posterior estimate for the occurrence rate of the samples over calendar time, and providing information about potential change points (see Heaton, Al-assam &amp; Bard (2025) &lt;doi:10.1016/j.jas.2025.106237&gt;).">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -38,8 +38,10 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="articles/Independent_calibration.html">Independent and Joint Radiocarbon Calibration</a></li>
     <li><a class="dropdown-item" href="articles/Against_SPDs.html">Why Not to Use SPDs</a></li>
-    <li><a class="dropdown-item" href="articles/Non-parametric-summed-density.html">Non-Parametric Joint Density Estimation</a></li>
-    <li><a class="dropdown-item" href="articles/Poisson-process-modelling.html">Poisson Process Modelling</a></li>
+    <li><a class="dropdown-item" href="articles/Non-parametric-summed-density.html">Non-Parametric Calendar Age Summarisation</a></li>
+    <li><a class="dropdown-item" href="articles/Poisson-process-modelling.html">Poisson Process Modelling and Summarisation</a></li>
+    <li><a class="dropdown-item" href="articles/Calibrating-marine-samples.html">Calibrating and Summarising Marine 14C Samples</a></li>
+    <li><a class="dropdown-item" href="articles/Calibrating-mixed-sets-of-samples.html">Calibrating and Summarising Mixed Sets of 14C Samples</a></li>
     <li><a class="dropdown-item" href="articles/determining-convergence.html">Determining Convergence</a></li>
   </ul>
 </li>
@@ -65,10 +67,10 @@
 <p>An R package to analyse, and summarise, multiple radiocarbon (<sup>14</sup>C) determinations. The package provides two linked (but distinct) Bayesian approaches that can both be used to obtain rigorous and robust alternatives to summed probability distributions (SPDs):</p>
 <ul>
 <li>Bayesian Non-Parametric Density Estimation (Modelling the joint, summary, calendar distribution as an unknown mixture of calendar age clusters) — see “Non-parametric calibration of multiple related radiocarbon determinations and their calendar age summarisation” <a href="http://doi.org/10.1111/rssc.12599" class="external-link">(Heaton, 2022)</a>.</li>
-<li>Variable-Rate Poisson Process Estimation (Modelling changes in the occurrence rate of the <sup>14</sup>C samples over calendar time) — see “A New Approach to Radiocarbon Summarisation: Rigorous Identification of Variations/Changepoints in the Occurrence Rate of Radiocarbon Samples using a Poisson Process” <a href="https://arxiv.org/abs/2501.15980" class="external-link">(Heaton et al., to appear)</a>
+<li>Variable-Rate Poisson Process Estimation (Modelling changes in the occurrence rate of the <sup>14</sup>C samples over calendar time) — see “A New Approach to Radiocarbon Summarisation: Rigorous Identification of Variations/Changepoints in the Occurrence Rate of Radiocarbon Samples using a Poisson Process” <a href="https://doi.org/10.1016/j.jas.2025.106237" class="external-link">(Heaton, Al-assam &amp; Bard, 2025)</a>
 </li>
 </ul>
-<p>Both methods are implemented using Markov Chain Monte Carlo (MCMC).</p>
+<p>Both methods are implemented using Markov Chain Monte Carlo (MCMC). In terms of which method, non-parametric density estimation or poisson process estimation, is more appropriate for a given problem we would suggest that users might apply both approaches and compare outputs as part of the research process.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -85,28 +87,28 @@
 <div class="section level2">
 <h2 id="data">Data<a class="anchor" aria-label="anchor" href="#data"></a>
 </h2>
-<p>There are a few example datasets of radiocarbon determinations (e.g., <code>two_normals</code>, <code>kerr</code>, <code>pp_uniform_phase</code>, <code>buchanan</code>, <code>alces</code>, <code>equus</code>, <code>human</code>, …) provided, which can be used to try out the calibration functions. <code>two_normals</code> is a small simulated dataset for which the underlying calendar ages were drawn from a known mixture of two normals. It is included simply to give a quick-to-run example for the Bayesian Non-Parametric Density calibration functions. <code>pp_uniform_phase</code> is another small simulated dataset, for which the underlying calendar ages were drawn uniformly at random from a short calendar interval (equivalent to a single uniform phase). This is included to give a quick-to-run example for the Poisson Process modelling functions. The remaining datasets are from real-life data. The Northern Hemisphere IntCal calibration curves and Southern Hemisphere SHCal calibration curves are also provided.</p>
+<p>There are a few example datasets of radiocarbon determinations (e.g., <code>two_normals</code>, <code>kerr</code>, <code>pp_uniform_phase</code>, <code>buchanan</code>, <code>alces</code>, <code>equus</code>, <code>human</code>, …) provided, which can be used to try out the calibration functions. <code>two_normals</code> is a small simulated dataset for which the underlying calendar ages were drawn from a known mixture of two normals. It is included simply to give a quick-to-run example for the Bayesian Non-Parametric Density calibration functions. <code>pp_uniform_phase</code> is another small simulated dataset, for which the underlying calendar ages were drawn uniformly at random from a short calendar interval (equivalent to a single uniform phase). This is included to give a quick-to-run example for the Poisson Process modelling functions. There are analogous simulated datasets from marine environments <code>two_normals_marine</code> and <code>pp_uniform_phase_marine</code>; and also a dataset containing simulated data from SH, NH, and Marine environments <code>pp_uniform_phase_mixed</code>. The remaining datasets are from real-life data. The Northern Hemisphere IntCalXX calibration curves, Southern Hemisphere SHCalXX calibration curves, and surface-ocean MarineXX calibration curves are also provided (the most recent curves, published in 2020, are <code>intcal20</code>,<code>shcal20</code>, and <code>marine20</code>).</p>
 </div>
 <div class="section level2">
-<h2 id="bayesian-non-parametric-calibration-quick-start-example">Bayesian Non-Parametric Calibration: Quick-Start Example<a class="anchor" aria-label="anchor" href="#bayesian-non-parametric-calibration-quick-start-example"></a>
+<h2 id="bayesian-non-parametric-summarisation-quick-start-example">Bayesian Non-Parametric Summarisation: Quick-Start Example<a class="anchor" aria-label="anchor" href="#bayesian-non-parametric-summarisation-quick-start-example"></a>
 </h2>
-<p>The below example implements the Bayesian non-parametric calibration and summarisation approach on the simulated <code>two_normal</code> data using the IntCal20 curve via two (slightly) different MCMC methods.</p>
+<p>The below example implements the Bayesian non-parametric calibration and summarisation approach on the simulated <code>two_normals</code> data using the IntCal20 curve via two (slightly) different MCMC methods.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">polya_urn_output</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/PolyaUrnBivarDirichlet.html">PolyaUrnBivarDirichlet</a></span><span class="op">(</span></span>
 <span>  rc_determinations <span class="op">=</span> <span class="va">two_normals</span><span class="op">$</span><span class="va">c14_age</span>,</span>
 <span>  rc_sigmas <span class="op">=</span> <span class="va">two_normals</span><span class="op">$</span><span class="va">c14_sig</span>,</span>
-<span>  calibration_curve<span class="op">=</span><span class="va">intcal20</span><span class="op">)</span></span>
+<span>  calibration_curve <span class="op">=</span> <span class="va">intcal20</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">walker_output</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/WalkerBivarDirichlet.html">WalkerBivarDirichlet</a></span><span class="op">(</span></span>
 <span>  rc_determinations <span class="op">=</span> <span class="va">two_normals</span><span class="op">$</span><span class="va">c14_age</span>,</span>
 <span>  rc_sigmas <span class="op">=</span> <span class="va">two_normals</span><span class="op">$</span><span class="va">c14_sig</span>,</span>
-<span>  calibration_curve<span class="op">=</span><span class="va">intcal20</span><span class="op">)</span></span></code></pre></div>
+<span>  calibration_curve <span class="op">=</span> <span class="va">intcal20</span><span class="op">)</span></span></code></pre></div>
 <p>Once the calibration has been run, the resultant estimate for the joint (summary) calendar age density can be plotted.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/PlotPredictiveCalendarAgeDensity.html">PlotPredictiveCalendarAgeDensity</a></span><span class="op">(</span></span>
 <span>  output_data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">polya_urn_output</span>, <span class="va">walker_output</span><span class="op">)</span>,</span>
 <span>  show_SPD <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-plot_density-1.png" width="100%"> The summary estimates generated by the Bayesian non-parametric approach (shown in purple and green) are called predictive densities. They aim to predict the calendar age of a future (new) sample based upon the set of <sup>14</sup>C samples that you have summarised.</p>
+<p><img src="reference/figures/README-plot_density-1.png" alt="" width="100%"> The summary estimates generated by the Bayesian non-parametric approach (shown in purple and green) are called predictive densities. They aim to predict the calendar age of a future (new) sample based upon the set of <sup>14</sup>C samples that you have summarised.</p>
 </div>
 <div class="section level2">
 <h2 id="poisson-process-modelling-quick-start-example">Poisson Process Modelling: Quick-Start Example<a class="anchor" aria-label="anchor" href="#poisson-process-modelling-quick-start-example"></a>
@@ -116,11 +118,11 @@
 <code class="sourceCode R"><span><span class="va">pp_output</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/PPcalibrate.html">PPcalibrate</a></span><span class="op">(</span></span>
 <span>  rc_determinations <span class="op">=</span> <span class="va">pp_uniform_phase</span><span class="op">$</span><span class="va">c14_age</span>,</span>
 <span>  rc_sigmas <span class="op">=</span> <span class="va">pp_uniform_phase</span><span class="op">$</span><span class="va">c14_sig</span>,</span>
-<span>  calibration_curve<span class="op">=</span><span class="va">intcal20</span><span class="op">)</span></span></code></pre></div>
+<span>  calibration_curve <span class="op">=</span> <span class="va">intcal20</span><span class="op">)</span></span></code></pre></div>
 <p>Once the calibration has been run, the posterior estimate for the occurrence rate of the samples can be plotted.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/PlotPosteriorMeanRate.html">PlotPosteriorMeanRate</a></span><span class="op">(</span>output_data <span class="op">=</span> <span class="va">pp_output</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-plot_mean_rate-1.png" width="100%"> This estimated rate, and changes within it, can be interpreted equivalently to methods of calendar age summarisation.</p>
+<p><img src="reference/figures/README-plot_mean_rate-1.png" alt="" width="100%"> This estimated sample occurrence rate, and changes within it, can be interpreted equivalently to methods of calendar age summarisation.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
@@ -151,8 +153,8 @@
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Timothy J Heaton <br><small class="roles"> Author, maintainer, copyright holder </small> <a href="https://orcid.org/0000-0002-9994-142X" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
-<li>Sara Al-assam <br><small class="roles"> Author, copyright holder </small> <a href="https://orcid.org/0000-0001-7280-6802" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Timothy J Heaton <br><small class="roles"> Author, maintainer, copyright holder </small> <a href="https://orcid.org/0000-0002-9994-142X" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
+<li>Sara Al-assam <br><small class="roles"> Author, copyright holder </small> <a href="https://orcid.org/0000-0001-7280-6802" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 </ul>
 </div>
 
@@ -173,7 +175,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

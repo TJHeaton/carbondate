@@ -2,6 +2,8 @@
 <url><loc>https://tjheaton.github.io/carbondate/404.html</loc></url>
 <url><loc>https://tjheaton.github.io/carbondate/LICENSE.html</loc></url>
 <url><loc>https://tjheaton.github.io/carbondate/articles/Against_SPDs.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/articles/Calibrating-marine-samples.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/articles/Calibrating-mixed-sets-of-samples.html</loc></url>
 <url><loc>https://tjheaton.github.io/carbondate/articles/Independent_calibration.html</loc></url>
 <url><loc>https://tjheaton.github.io/carbondate/articles/Non-parametric-summed-density.html</loc></url>
 <url><loc>https://tjheaton.github.io/carbondate/articles/Poisson-process-modelling.html</loc></url>
@@ -11,6 +13,9 @@
 <url><loc>https://tjheaton.github.io/carbondate/authors.html</loc></url>
 <url><loc>https://tjheaton.github.io/carbondate/index.html</loc></url>
 <url><loc>https://tjheaton.github.io/carbondate/news/index.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/AddLinePlot.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/AddShadingPlot.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/AddTextPlot.html</loc></url>
 <url><loc>https://tjheaton.github.io/carbondate/reference/CalibrateSingleDetermination.html</loc></url>
 <url><loc>https://tjheaton.github.io/carbondate/reference/FindPosteriorMeanRate.html</loc></url>
 <url><loc>https://tjheaton.github.io/carbondate/reference/FindPredictiveCalendarAgeDensity.html</loc></url>
@@ -18,6 +23,7 @@
 <url><loc>https://tjheaton.github.io/carbondate/reference/GenerateOxcalCode.html</loc></url>
 <url><loc>https://tjheaton.github.io/carbondate/reference/InterpolateCalibrationCurve.html</loc></url>
 <url><loc>https://tjheaton.github.io/carbondate/reference/PPcalibrate.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/PPcalibrateMixedCurves.html</loc></url>
 <url><loc>https://tjheaton.github.io/carbondate/reference/PlotCalendarAgeDensityIndividualSample.html</loc></url>
 <url><loc>https://tjheaton.github.io/carbondate/reference/PlotConvergenceData.html</loc></url>
 <url><loc>https://tjheaton.github.io/carbondate/reference/PlotGelmanRubinDiagnosticMultiChain.html</loc></url>
@@ -46,10 +52,17 @@
 <url><loc>https://tjheaton.github.io/carbondate/reference/intcal98.html</loc></url>
 <url><loc>https://tjheaton.github.io/carbondate/reference/kerr.html</loc></url>
 <url><loc>https://tjheaton.github.io/carbondate/reference/mammuthus.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/marine04.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/marine09.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/marine13.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/marine20.html</loc></url>
 <url><loc>https://tjheaton.github.io/carbondate/reference/pp_uniform_phase.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/pp_uniform_phase_marine.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/pp_uniform_phase_mixed.html</loc></url>
 <url><loc>https://tjheaton.github.io/carbondate/reference/shcal04.html</loc></url>
 <url><loc>https://tjheaton.github.io/carbondate/reference/shcal13.html</loc></url>
 <url><loc>https://tjheaton.github.io/carbondate/reference/shcal20.html</loc></url>
 <url><loc>https://tjheaton.github.io/carbondate/reference/two_normals.html</loc></url>
+<url><loc>https://tjheaton.github.io/carbondate/reference/two_normals_marine.html</loc></url>
 </urlset>
 

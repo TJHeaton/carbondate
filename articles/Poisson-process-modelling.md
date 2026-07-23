@@ -1,0 +1,614 @@
+# Poisson Process Modelling and Summarisation
+
+``` r
+
+library(carbondate)
+```
+
+## Introduction
+
+This component of the library allows you to model (and estimate) the
+occurrence of radiocarbon samples as a variable-rate (inhomogeneous)
+Poisson process. This is done using the function
+[`PPcalibrate()`](https://tjheaton.github.io/carbondate/reference/PPcalibrate.md).
+The aim of this function is primarily to allow a user to estimate the
+variable (calendar year) rate at which a set of radiocarbon samples are
+observed, and identify changepoints in that rate. For full technical
+details of the models used, and explanation of the model parameters, see
+Heaton et al. (2025).
+
+This Poisson process model can also be used in a *“dates-as-data”*
+approach (Rick 1987) to provide a proxy for changes in population or
+activity, dependent upon the representativeness of the underlying
+sampling. For this method, the estimated rate of the Poisson process
+provides the proxy.
+
+### Modelling Ideas
+
+Suppose we have a series of $`n`$ events, which occur at calendar times
+$`\{\theta_i, i= 1,\ldots,n \}`$ cal yr BP. Each event is assumed to
+result in the generation of a radiocarbon sample,
+$`\{ X_i, i= 1,\ldots,n \}`$. Examples of events might be:
+
+- death of an animal (which leaves a bone)
+- creation of a cave painting (which leaves a painting)
+- construction of a settlement (which leaves a farmstead)
+- a palaeofire (which leaves behind charcoal)
+
+We model the occurrence of these events as random and aim to investigate
+whether, and how, the rate at which they occur varies over calendar
+time.
+
+Specifically, we assume that the events occur according to a Poisson
+Process with a variable rate $`\lambda(t)`$. This rate $`\lambda(t)`$ is
+considered piecewise-constant, but changes an unknown number of times
+and at unknown calendar ages. We aim to estimate $`\lambda(t)`$ and
+hence infer how the rate at which the events occur changes over calendar
+time. Time periods where the rate $`\lambda(t)`$ is high will typically
+be expected to generate a greater number of events (perhaps since there
+is more activity, or a greater population, at the site/sites); while
+periods when the rate $`\lambda(t)`$ is lower (perhaps due to lower
+activity at the site/sites) will be expected to have fewer events.
+
+When the calendar ages of the events $`\{\theta_i , i=1,\ldots,n\}`$ are
+known exactly, estimation of the variable rate $`\lambda(t)`$ can be
+tackled directly via reversible jump Markov Chain Monte Carlo (RJ-MCMC)
+(Green 1995). However, when we only observe the radiocarbon ages of the
+samples ($`\{ X_i, i= 1,\ldots,n \}`$) the underlying calendar ages
+$`\theta_i`$ are uncertain and must be estimated via radiocarbon
+calibration. This complicates the process of estimating $`\lambda(t)`$
+especially as the calibration must be done simultaneously to its
+estimation (as the modelling will influence the set of $`\theta_i`$ and
+vice versa). In this library, we provide a rigorous approach to the
+estimation of $`\lambda(t)`$.
+
+![\_Modelling sample occurence using a Poisson process with a latent
+occurence/activity rate. Left Panel: An illustration of a Poisson
+process with two changepoints in the occurrence rate. The samples (shown
+as a rug in purple) occur at random calendar times, but proportional to
+the underlying occurrence rate. There are therefore more samples between
+(2700, 2300) cal yr BP than other times. Right Panel: Each sample has a
+^14^C age (shown as black ticks on the y-axis). We wish to reconstruct
+the underlying Poisson process rate given only these ^14^C
+determination.\_](Poisson-process-modelling_files/figure-html/illustrate_PP-1.png)
+
+*Modelling sample occurence using a Poisson process with a latent
+occurence/activity rate. Left Panel: An illustration of a Poisson
+process with two changepoints in the occurrence rate. The samples (shown
+as a rug in purple) occur at random calendar times, but proportional to
+the underlying occurrence rate. There are therefore more samples between
+(2700, 2300) cal yr BP than other times. Right Panel: Each sample has a
+¹⁴C age (shown as black ticks on the y-axis). We wish to reconstruct the
+underlying Poisson process rate given only these ¹⁴C determination.*
+
+### An Inhomogeneous Poisson process
+
+A Poisson process is a common statistical process used to model the
+occurrence of random events. It is described by specifying the random
+variables $`N(s,t)`$ for $`0 \leq s \leq t`$, where $`N(s,t)`$
+represents the number of events that have occurred in the time interval
+$`(s,t]`$. Any Poisson process has a parameter $`\lambda(t)`$, known as
+the rate of the process. This controls the expected number of events in
+a particular time interval.
+
+In the case of an inhomogeneous Poisson process, the rate $`\lambda(t)`$
+varies over time so that some time periods are expected to have a
+greater number of event than others. An (inhomogeneous) Poisson process
+is then defined by the following two properties:
+
+- For any $`0 \leq s \leq t`$, the distribution of $`N(s,t)`$ is Poisson
+  with parameter $`\int_{\theta = s}^t \lambda(\theta) d\theta`$.
+- If $`(s_1,t_1] , (s_2,t_2 ], \ldots ,(s_n,t_n]`$ are disjoint
+  intervals (i.e., non-overlapping) then
+  $`N(s_1,t_1),N(s_2,t_2 ),\ldots ,N(s_n,t_n)`$ are independent random
+  variables.
+
+In particular, the first of these properties implies that the expected
+number of events in a specific time interval $`(s,t]`$ is
+$`\int_{\theta = s}^t \lambda(\theta) d\theta`$. Hence time periods with
+higher rates $`\lambda(t)`$ will be expected to have greater number of
+events. The second implies that, conditional on the rate $`\lambda(t)`$,
+the number of events that have occurred in one time period is not
+affected by the number of events in a different, and non-overlapping
+time period. It also implies that events are not clustered beyond the
+effect of the variable rate, e.g., the occurrence of one event does not
+increase/decrease the probability that another event occurs shortly
+afterwards. Note that this last assumption is quite strong as clustering
+might occur in many instances, for example if the animal bones you date
+all result from the hunting of a single (short-lived) group of
+individuals, or you date multiple buildings in a settlement.
+
+### Final Radiocarbon Model
+
+Given a set of multiple $`^{14}`$C samples,
+``` math
+X_1, \ldots, X_n
+```
+the function
+[`PPcalibrate()`](https://tjheaton.github.io/carbondate/reference/PPcalibrate.md)
+will simultaneously:
+
+- calibrate them to provide posterior calendar ages estimates
+  $`\theta_1, \ldots, \theta_n`$
+- estimate the rate $`\lambda(t)`$ of the underlying process. This
+  estimate $`\hat{\lambda}(t)`$ may provide a useful proxy to make
+  archaeological and/or environmental inference, e.g., to model changes
+  in culture, or useage, or population size over time.
+
+The (calendar) rate at which the samples occur is modelled as a Poisson
+process with a variable rate $`\lambda(t)`$. Specifically,
+$`\lambda(t)`$ is modelled as a piecewise constant function with an
+unknown number of changepoints:
+``` math
+\lambda(t) = \left\{ \begin{array}{ll} 
+  h_i \quad & \textrm{if } s_i \leq t < s_{i+1} \\
+  0 & \textrm{otherwise}
+  \end{array} \right.
+```
+where $`T_A < s_1 < s_2 < \ldots < s_k < T_B`$ are the calendar ages at
+which there are changes in the Poisson process rate, and $`T_A`$ and
+$`T_B`$ are bounding calendar ages. We use reversible jump MCMC (RJMCMC)
+to alternate between calibrating the samples and updating the estimate
+of the underlying rate lambda.
+
+### A Worked Example - Two Changepoints in a Uniform Phase Model
+
+This is a basic example which shows you how to solve a common problem.
+In this simulated example, we will assume that the events (samples) must
+lie within the calendar period from \[700, 300\] cal yr BP. Within this
+period, we will create 40 artificial samples with $`^{14}`$C
+determinations corresponding to the (narrower) calendar period from
+\[550, 500\] cal yr BP. Effectively, the underlying model for the
+occurrence of the samples is then a Poisson process with a rate:
+``` math
+\lambda(t) = \left\{ \begin{array}{ll}
+  h_1 = 0 & \textrm{if } 300 \leq t < 500 \textrm{ cal yr BP} \\
+  h_2 \qquad & \textrm{if } 500 \leq t < 550 \textrm{ cal yr BP}\\
+  h_3 = 0 & \textrm{if } 550 \leq t < 700 \textrm{ cal yr BP} 
+  \end{array} \right.
+```
+that has two changepoints (at 550 cal yr BP and at 500 cal yr BP).
+Equivalently, the model can be viewed as a uniform phase. We seek to
+investigate if we can reconstruct this underlying calendar age
+information, from just the $`^{14}`$C values and the initial knowledge
+that the samples lay between the much wider bounding interval from
+\[700, 300\] cal yr BP.
+
+``` r
+
+set.seed(15)
+
+# Set initial values 
+n_observed <- 40
+rc_sigmas <- rep(15, n_observed)
+
+# Create artificial rc_determinations
+calendar_age_range <- c(300, 700) 
+observed_age_range <- c(500, 550) 
+true_theta <- seq(
+      from = observed_age_range[1],
+      to = observed_age_range[2],
+      length = n_observed)
+intcal_mean <- approx(
+      x = intcal20$calendar_age_BP,
+      y = intcal20$c14_age,
+      xout = true_theta)$y
+intcal_sd <- approx(
+      x = intcal20$calendar_age_BP,
+      y = intcal20$c14_sig,
+      xout = true_theta)$y
+rc_determinations <- rnorm(
+      n = n_observed,
+      mean = intcal_mean,
+      sd = sqrt(rc_sigmas^2 + intcal_sd^2))
+
+# Fit the model
+PP_fit_output <- PPcalibrate(
+    rc_determinations = rc_determinations,
+    rc_sigmas = rc_sigmas,
+    calibration_curve = intcal20, # can also choose e.g. shcal20
+    calendar_age_range = calendar_age_range,
+    calendar_grid_resolution = 1,
+    n_iter = 1e5,
+    n_thin = 10,
+    show_progress = FALSE)
+```
+
+This creates an object `PP_fit_output` which you can access directly or
+use the in-built plotting functions.
+
+#### Calculating and plotting the posterior estimate of the occurrence rate
+
+To calculate and plot the posterior estimate of $`\lambda(t)`$ you
+should use the in-built
+[`PlotPosteriorMeanRate()`](https://tjheaton.github.io/carbondate/reference/PlotPosteriorMeanRate.md)
+function. We recommend that you assign the function to a variable (as
+shown below). This means that it will not only create the plot, but also
+store the posterior mean rate (with associated probability intervals) on
+a regular calendar grid should you wish to access it:
+
+``` r
+
+# Run plotting function and assign output to posterior_mean_plot
+posterior_mean_plot <- PlotPosteriorMeanRate(PP_fit_output)
+```
+
+![](Poisson-process-modelling_files/figure-html/meanrate-1.png)
+
+``` r
+
+# Note: You can change the PP line widths using the plot_lwd argument 
+
+# The posterior mean rate is stored in the posterior_rate component of the plot
+PP_posterior_mean_rate_2sigma <- posterior_mean_plot$posterior_rate
+
+# Look at PP_posterior_mean_rate_2sigma (posterior mean and 2 sigma intervals) 
+head(PP_posterior_mean_rate_2sigma)
+#>   calendar_age_BP   rate_mean rate_ci_lower rate_ci_upper
+#> 1             300 0.008011871  0.0001862987    0.04248661
+#> 2             301 0.007986965  0.0001862987    0.04232088
+#> 3             302 0.007963215  0.0001862987    0.04211068
+#> 4             303 0.007914135  0.0001862987    0.04164114
+#> 5             304 0.007861676  0.0001862987    0.04094373
+#> 6             305 0.007703460  0.0001862987    0.03952506
+```
+
+This plots the posterior mean rate of sample occurrence (shown in
+purple). The $`^{14}`$C determinations ($`X_1, \ldots, X_n`$) are shown
+on the y-axis as a rug. The rug on the x-axis plots the posterior mean
+of the corresponding calendar ages (i.e.,
+$`\theta_1, \ldots, \theta_n`$) after calibration for illustration
+purposes. **Note**: In some cases (in particular when an individual
+calibrated age estimates $`\theta_i`$ is bimodal) the posterior calendar
+mean will not be a good summary.
+
+As you can see, the posterior estimate of $`\lambda(t)`$ identifies the
+calendar period from which the hypothetical samples have been created
+\[550, 500\] cal yr BP. Here, $`\hat{\lambda}(t)`$ is non-zero, while
+for the other time periods the rate (correctly) drops to near zero.
+
+*Aside:* You can also run the function without assigning the output,
+this will just create the plot, without storing the mean:
+
+``` r
+
+# Run plotting function
+PlotPosteriorMeanRate(PP_fit_output)
+```
+
+#### Plotting the estimated number of changepoints
+
+You can plot the posterior estimate for the number of internal changes
+in the rate $`\lambda(t)`$ using the command:
+
+``` r
+
+PlotNumberOfInternalChanges(PP_fit_output)
+```
+
+![](Poisson-process-modelling_files/figure-html/changepoint_number-1.png)
+
+Here, we can see that the method estimates that there are most likely to
+be two changes. Again, this corresponds to the underlying (simulated)
+data, where there is a step up from a occurrence rate of zero
+samples/cal yr to a rate of *ca.* 0.8 samples/cal yr at 550 cal yr BP,
+and then a step back down to return to a sample occurrence rate of zero
+at 500 cal yr BP.
+
+#### Plotting estimates of changepoint locations
+
+You can plot density estimates for the locations (calendar times) of the
+changepoints in $`\lambda(t)`$, conditional on the number of such
+changes, using the
+[`PlotPosteriorChangePoints()`](https://tjheaton.github.io/carbondate/reference/PlotPosteriorChangePoints.md)
+function. The default shows the density estimates for the calendar times
+at which there are changes in the occurrence rate, conditional on their
+being $`n_{\textrm{internal changes}} = 1, 2,`$ and $`3`$ such changes
+in $`\lambda(t)`$ over the time period under study. This can however be
+changed by specifying `n_changes` in the function:
+
+``` r
+
+PlotPosteriorChangePoints(PP_fit_output)
+#> Warning in PlotPosteriorChangePoints(PP_fit_output): No posterior samples with
+#> 1 internal changes
+```
+
+![](Poisson-process-modelling_files/figure-html/changepoint_locations-1.png)
+
+``` r
+
+# Can add an n_changes argument, e.g., n_changes = c(2, 3, 4)
+# if want to condition on a different number of changes 
+```
+
+This figure can be interpreted as follows. For example, if the model
+thinks there are only two changepoints in the underlying occurrence rate
+of the samples, then these changepoints should be located around 500 cal
+yr BP and 550 cal yr BP (the two distinct dashed density estimates shown
+in dark green). If the model thinks there are three changepoints in the
+rate, then these should be located according to the location shown by
+the dotted red densities (note that here these three locations overlay
+one another, effectively adding a double changepoint at either 500 or
+550 cal yr BP).
+
+The information contained in this plot should be combined with that in
+[`PlotNumberOfInternalChanges()`](https://tjheaton.github.io/carbondate/reference/PlotNumberOfInternalChanges.md)
+which indicates that the most likely number of changepoints is two. We
+may therefore wish to focus our interpretation on the locations/times of
+changepoints conditional on their being this number (i.e., when
+$`n_{\textrm{internal changes}} = 2`$).
+
+**Note the R warning here:** For this simulated data, the posterior
+model (correctly) never thinks there should be only one changepoint.
+This is indicated by the warning message returned by R and the absence
+of a solid blue density in the plot.
+
+#### Plotting estimates of occurrence rate
+
+You can also plot, conditional on the number of changes in the rate step
+function $`\lambda(t)`$, the posterior density estimates for the heights
+in each of the individual segments (i.e., the rates of sample occurrence
+in those constant periods)
+
+``` r
+
+PlotPosteriorHeights(PP_fit_output)
+#> Warning in PlotPosteriorHeights(PP_fit_output): No posterior samples with 1
+#> internal changes
+```
+
+![](Poisson-process-modelling_files/figure-html/changepoint_rates-1.png)
+
+``` r
+
+# As above can add an n_changes argument, e.g., n_changes = c(2, 3, 4)
+# if want to condition on a different number of changes 
+```
+
+Here, conditional on there being two changes in $`\lambda(t)`$ between
+700–300 cal yr BP (so three different values for the rates) we have two
+rates of *ca.* 0 events per cal yr (these correspond to the periods
+700–550 and 500–300 cal yr BP), and a period with rate *ca.* 0.6-0.8
+events per cal yr (corresponding to the period from 550–500 cal yr BP).
+
+#### Plotting the posterior calendar age estimates of individual samples
+
+Finally, it is again possible to plot the posterior calendar age
+estimates of and individual samples using the
+[`PlotCalendarAgeDensityIndividualSample()`](https://tjheaton.github.io/carbondate/reference/PlotCalendarAgeDensityIndividualSample.md)
+function:
+
+``` r
+
+PlotCalendarAgeDensityIndividualSample(
+  9, PP_fit_output, show_hpd_ranges = TRUE, show_unmodelled_density = TRUE)
+```
+
+![](Poisson-process-modelling_files/figure-html/PP_plot_individual-1.png)
+
+### Changing the calendar age plotting scale
+
+As elsewhere in the library, the calendar age scale (cal yr BP, cal AD,
+or cal BC) shown when plotting can be selected via the
+`plot_cal_age_scale` variable within the relevant functions. In the case
+of the Poisson process modelling, the calendar age scale can be set in
+[`PlotPosteriorMeanRate()`](https://tjheaton.github.io/carbondate/reference/PlotPosteriorMeanRate.md)
+and
+[`PlotPosteriorChangePoints()`](https://tjheaton.github.io/carbondate/reference/PlotPosteriorChangePoints.md),
+e.g.,
+
+``` r
+
+PlotPosteriorChangePoints(PP_fit_output, 
+                          plot_cal_age_scale = "AD")
+#> Warning in PlotPosteriorChangePoints(PP_fit_output, plot_cal_age_scale = "AD"):
+#> No posterior samples with 1 internal changes
+```
+
+![](Poisson-process-modelling_files/figure-html/changepoint_locations_AD-1.png)
+
+#### Calculating the posterior estimate of the occurrence rate on a bespoke grid
+
+To calculate the posterior estimate of $`\lambda(t)`$ on a
+user-specified calendar age grid and with user-specified probability
+intervals (the default is $`2\sigma`$) you can also use the in-built
+[`FindPosteriorMeanRate()`](https://tjheaton.github.io/carbondate/reference/FindPosteriorMeanRate.md)
+function:
+
+``` r
+
+# Calculating 2 sigma (95.4%) intervals on posterior mean occurrence rate 
+PP_posterior_mean_rate_1sigma <- FindPosteriorMeanRate(
+  PP_fit_output,
+  calendar_age_sequence = seq(300, 500, by = 1),
+  interval_width = "1sigma")
+
+# Look at posterior mean with 1 sigma probability interval
+head(PP_posterior_mean_rate_1sigma)
+#>   calendar_age_BP   rate_mean rate_ci_lower rate_ci_upper
+#> 1             300 0.008010096  0.0007889443    0.01226652
+#> 2             301 0.007985190  0.0007889443    0.01226396
+#> 3             302 0.007961441  0.0007889443    0.01225506
+#> 4             303 0.007912361  0.0007889443    0.01219521
+#> 5             304 0.007859902  0.0007889443    0.01219521
+#> 6             305 0.007701685  0.0007886834    0.01219521
+```
+
+### Annotating the various summary plots with text, lines and shading
+
+We have created three functions:
+
+- [`AddLinePlot()`](https://tjheaton.github.io/carbondate/reference/AddLinePlot.md) -
+  adds lines (vertical or horizontal)
+- [`AddTextPlot()`](https://tjheaton.github.io/carbondate/reference/AddTextPlot.md) -
+  adds text
+- [`AddShadingPlot()`](https://tjheaton.github.io/carbondate/reference/AddShadingPlot.md) -
+  adds shading
+
+that allow you to annotate the summary plots showing the posterior mean
+rate and the changepoint locations. Suppose for our simulated example we
+want to highlight the underlying \[550, 500\] cal yr BP interval in the
+plots:
+
+``` r
+
+# Run plotting function and assign output to posterior_mean_plot
+posterior_mean_plot <- PlotPosteriorMeanRate(PP_fit_output)
+
+# This creates the base plot that we can then annotate
+
+# Adding shading to highlight the time period from 500 to 550 cal yr BP
+AddShadingPlot(posterior_mean_plot,
+    x_start = 550, x_end = 500,
+    col = "red")
+
+# Add text to the plot
+AddTextPlot(posterior_mean_plot,
+    x = 550, y = 750,
+    labels = expression(paste("550 cal yrs BP")),
+    cex = 0.7,
+    pos = 2, # This places the text to the left
+    offset = 0.2,
+    col = "black")
+```
+
+![](Poisson-process-modelling_files/figure-html/annotate_plot_mean_rate-1.png)
+We can similarly annotate the plot showing the posterior location of the
+changepoints:
+
+``` r
+
+# Run changepoint plotting function and assign output to posterior_changepoint_plot
+posterior_changepoint_plot <- PlotPosteriorChangePoints(PP_fit_output, 
+                                                        n_changes = c(2,3))
+# Note: Assigning plot to a variable (with <-) is only needed for annotation.
+
+# Add lines at 550 and 500 cal yr BP that indicate the ends of 
+# the true underlying distribution used to simulate the data  
+AddLinePlot(
+     posterior_changepoint_plot,
+     v = 550, # v = gives vertical, h = gives horizontal
+     col = "purple",
+     lwd = 2,
+     lty = 2)
+
+AddLinePlot(
+     posterior_changepoint_plot,
+     v = 500,
+     col = "purple",
+     lwd = 2,
+     lty = 2)
+
+AddTextPlot(posterior_changepoint_plot,
+    x = 550, y = 0.05,
+    labels = expression(paste("550 cal yrs BP")),
+    cex = 0.7,
+    pos = 2, # places text to the left
+    offset = 0.2,
+    col = "purple")
+
+AddTextPlot(posterior_changepoint_plot,
+    x = 500, y = 0.05,
+    labels = expression(paste("500 cal yrs BP")),
+    cex = 0.7,
+    pos = 4, # places text to right 
+    offset = 0.2,
+    col = "purple")
+```
+
+![](Poisson-process-modelling_files/figure-html/annotate_plot_changepoints-1.png)
+See the [independent calibration
+vignette](https://tjheaton.github.io/carbondate/articles/Independent-calibration.md)
+for more examples of ways to annotate the summary plot.
+
+### Additional Plotting Features
+
+#### Calculating and plotting the posterior estimate of the occurrence rate over time conditioned on a specific number of changes
+
+Should the user wish, it is possible to calculate and plot the posterior
+mean estimate of the occurrence rate over time *conditioned* on a
+user-specified number of changes. This can be done by specifying the
+optional `n_changes` argument in either the
+[`PlotPosteriorMeanRate()`](https://tjheaton.github.io/carbondate/reference/PlotPosteriorMeanRate.md)
+or
+[`FindPosteriorMeanRate()`](https://tjheaton.github.io/carbondate/reference/FindPosteriorMeanRate.md)
+functions:
+
+``` r
+
+# Conditional on TWO internal changes in the occurrence rate, 
+# Calculate and plot the posterior mean rate over time 
+# (with its 2 sigma intervals)
+conditional_2_changes_mean_plot <- PlotPosteriorMeanRate(
+  PP_fit_output,
+  n_changes = 2) # here n_changes must have length one (i.e., a single number)
+```
+
+![](Poisson-process-modelling_files/figure-html/plot_conditionalmeanrate-1.png)
+
+``` r
+
+
+# Look at conditional posterior mean with 2 sigma probability interval
+conditional_2_changes_posterior_mean_rate <- conditional_2_changes_mean_plot$posterior_rate
+head(conditional_2_changes_posterior_mean_rate)
+#>   calendar_age_BP   rate_mean rate_ci_lower rate_ci_upper
+#> 1             300 0.007599119  2.040982e-05    0.04620030
+#> 2             301 0.007599119  2.040982e-05    0.04620030
+#> 3             302 0.007599119  2.040982e-05    0.04620030
+#> 4             303 0.007546642  2.040982e-05    0.04489127
+#> 5             304 0.007420696  2.040982e-05    0.04381199
+#> 6             305 0.007413946  2.040982e-05    0.04381199
+```
+
+**Note:** We do not expect this functionality will be particularly
+relevant for most users unless they known, in advance, how many changes
+in the rate there are in the time period. We instead advise users to
+consider the number of changes in the rate as unknown and allow the MCMC
+to determine the appropriate number of rate changes itself (averaging
+over the possible values). Even when one conditions on a specific number
+of rate changes, since the locations of those changes remain unknown and
+are different for each realisation, the conditioned posterior mean will
+not necessarily reflect that number of sharp discontinuities (as we can
+see above where the jumps in the posterior mean remain somewhat
+smoothed).
+
+#### Plotting individual posterior MCMC realistions of the occurrence rate
+
+Finally, the
+[`PlotRateIndividualRealisation()`](https://tjheaton.github.io/carbondate/reference/PlotRateIndividualRealisation.md)
+function allows users to plot individual realisations of the occurrence
+rate drawn from the MCMC. One can specify the number of realisations to
+plot, whether those realisations should be randomly chosen or correspond
+to specific iterations of the MCMC, as well as the plotting colours:
+
+``` r
+
+# Choose some nice plotting colours (from Okabe-Ito)
+realisation_colours <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442" )
+
+# Plot 5 random realisations from posterior
+PlotRateIndividualRealisation(
+     PP_fit_output,
+     n_realisations = 5,
+     plot_realisations_colour = realisation_colours)
+```
+
+![](Poisson-process-modelling_files/figure-html/plot_ind_realisation-1.png)
+
+### References
+
+Green, Peter J. 1995. “Reversible Jump Markov Chain Monte Carlo
+Computation and Bayesian Model Determination.” *Biometrika* 82 (4):
+711–32. <https://doi.org/10.2307/2337340>.
+
+Heaton, Timothy J., Sara Al-assam, and Edouard Bard. 2025. “A new
+approach to radiocarbon summarisation: Rigorous identification of
+variations/changepoints in the occurrence rate of radiocarbon samples
+using a Poisson process.” *Journal of Archaeological Science* 182:
+106237. https://doi.org/<https://doi.org/10.1016/j.jas.2025.106237>.
+
+Rick, John W. 1987. “Dates as Data: An Examination of the Peruvian
+Preceramic Radiocarbon Record.” *American Antiquity* 52 (1): 55–73.
+<https://www.cambridge.org/core/journals/american-antiquity/article/abs/dates-as-data-an-examination-of-the-peruvian-preceramic-radiocarbon-record/01A2247C02E83426761D922297442C36>.

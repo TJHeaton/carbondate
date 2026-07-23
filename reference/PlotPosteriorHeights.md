@@ -1,0 +1,102 @@
+# Plot Heights of Segments in Rate of Sample Occurrence for Poisson Process Model
+
+Given output from the Poisson process fitting function
+[PPcalibrate](https://tjheaton.github.io/carbondate/reference/PPcalibrate.md),
+plot the posterior density estimates for the heights (i.e., values) of
+the piecewise-constant rate \\\lambda(t)\\ used to model sample
+occurrence. These density estimates are calculated **conditional** upon
+the number of internal changepoints within the period under study (which
+is specified as an input to the function).
+
+Having conditioned on the number of changes, `n_change`, the code will
+extract all realisations from the the posterior of the MCMC sampler
+which have that number of internal changepoints in the estimate of
+\\\lambda(t)\\. It will then provide density estimates for the heights
+(i.e., the value) of the rate function between each of the determined
+(ordered) changepoints. These density estimates are obtained using a
+Gaussian kernel.
+
+**Note: These graphs will become harder to interpret as the specified
+number of changepoints increases**
+
+For more information read the vignette:  
+[`vignette("Poisson-process-modelling", package = "carbondate")`](https://tjheaton.github.io/carbondate/articles/Poisson-process-modelling.md)
+
+## Usage
+
+``` r
+PlotPosteriorHeights(
+  output_data,
+  n_changes = c(1, 2, 3),
+  n_burn = NA,
+  n_end = NA,
+  kernel_bandwidth = NA,
+  plot_lwd = 2
+)
+```
+
+## Arguments
+
+- output_data:
+
+  The return value from the updating function
+  [PPcalibrate](https://tjheaton.github.io/carbondate/reference/PPcalibrate.md).
+  Optionally, the output data can have an extra list item named `label`
+  which is used to set the label on the plot legend.
+
+- n_changes:
+
+  Number of internal changepoints to condition on, and plot for. A
+  vector which can contain at most 4 elements, with values in the range
+  1 to 6. If not given, then `c(1, 2, 3)` will be used.
+
+- n_burn:
+
+  The number of MCMC iterations that should be discarded as burn-in
+  (i.e., considered to be occurring before the MCMC has converged). This
+  relates to the number of iterations (`n_iter`) when running the
+  original update functions (not the thinned `output_data`). Any MCMC
+  iterations before this are not used in the calculations. If not given,
+  the first half of the MCMC chain is discarded. Note: The maximum value
+  that the function will allow is `n_iter - 100 * n_thin` (where
+  `n_iter` and `n_thin` are the arguments that were given to
+  [PPcalibrate](https://tjheaton.github.io/carbondate/reference/PPcalibrate.md))
+  which would leave only 100 of the (thinned) values in `output_data`.
+
+- n_end:
+
+  The last iteration in the original MCMC chain to use in the
+  calculations. Assumed to be the total number of iterations performed,
+  i.e. `n_iter`, if not given.
+
+- kernel_bandwidth:
+
+  (Optional) The bandwidth used for the (Gaussian) kernel smoothing of
+  the calendar age densities. If not given, 1/50th of the maximum height
+  will be used.
+
+- plot_lwd:
+
+  The line width to use when plotting the posterior mean (and confidence
+  intervals). Default is 2 (to add emphasis).
+
+## Value
+
+None
+
+## Examples
+
+``` r
+# NOTE: This example is shown with a small n_iter to speed up execution.
+# Try n_iter and n_posterior_samples as the function defaults.
+
+pp_output <- PPcalibrate(
+    pp_uniform_phase$c14_age,
+    pp_uniform_phase$c14_sig,
+    intcal20,
+    n_iter = 1000,
+    show_progress = FALSE)
+
+# Plot the posterior heights for only 2 or 3 internal changes
+PlotPosteriorHeights(pp_output, n_changes = c(2, 3))
+```

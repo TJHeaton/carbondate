@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Why Not to Use SPDs • carbondate</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Why Not to Use SPDs">
 </head>
@@ -36,8 +36,10 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/Independent_calibration.html">Independent and Joint Radiocarbon Calibration</a></li>
     <li><a class="dropdown-item" href="../articles/Against_SPDs.html">Why Not to Use SPDs</a></li>
-    <li><a class="dropdown-item" href="../articles/Non-parametric-summed-density.html">Non-Parametric Joint Density Estimation</a></li>
-    <li><a class="dropdown-item" href="../articles/Poisson-process-modelling.html">Poisson Process Modelling</a></li>
+    <li><a class="dropdown-item" href="../articles/Non-parametric-summed-density.html">Non-Parametric Calendar Age Summarisation</a></li>
+    <li><a class="dropdown-item" href="../articles/Poisson-process-modelling.html">Poisson Process Modelling and Summarisation</a></li>
+    <li><a class="dropdown-item" href="../articles/Calibrating-marine-samples.html">Calibrating and Summarising Marine 14C Samples</a></li>
+    <li><a class="dropdown-item" href="../articles/Calibrating-mixed-sets-of-samples.html">Calibrating and Summarising Mixed Sets of 14C Samples</a></li>
     <li><a class="dropdown-item" href="../articles/determining-convergence.html">Determining Convergence</a></li>
   </ul>
 </li>
@@ -72,22 +74,29 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/TJHeaton/carbondate" class="external-link">carbondate</a></span><span class="op">)</span></span></code></pre></div>
-<div class="section level3">
-<h3 id="summed-probability-distributions">Summed Probability Distributions<a class="anchor" aria-label="anchor" href="#summed-probability-distributions"></a>
-</h3>
+<div class="section level2">
+<h2 id="summed-probability-distributions">Summed Probability Distributions<a class="anchor" aria-label="anchor" href="#summed-probability-distributions"></a>
+</h2>
 <p>Currently, the most commonly-used approach to summarise calendar age
-information from multiple <sup>14</sup>C determinations is via summed
-probability distributions (SPD). These are <strong>not statistically
-valid</strong> estimators of the calendar age of a potential future
-sample. It is our view that they should not be used in any dates-as-data
-approach to provide a population proxy.</p>
-<p>For an SPD, the posterior calendar age density of each object is
-first calculated independently) from the others as using the function
-above. These individual densities are then summed/averaged to give an
-SPD estimate. The independence assumed in the separate calibration of
-each sample, followed by subsequent summarisation, generates a
-contradiction.</p>
-<p>Additionally, the SPDs approach fundamentally does not model the
+information from multiple <sup>14</sup>C determinations is to calculate
+the summed probability distribution (SPD). However, SPDs provide
+<strong>neither reliable nor statistically valid</strong> estimation of
+the summarised calendar age information. It is our view that they should
+not be used in any dates-as-data approach to provide a population proxy.
+For complete details, with comprehensive illustrative examples, on why
+SPDs should not be used for summarisation and how they can provide
+highly misleading inference, see <span class="citation">(Heaton et al.
+2025)</span>).</p>
+<div class="section level3">
+<h3 id="the-problems-with-using-spds">The Problems with using SPDs<a class="anchor" aria-label="anchor" href="#the-problems-with-using-spds"></a>
+</h3>
+<p>When creating an SPD, the posterior calendar age density of each
+object is first calculated independently from the others. These
+individual densities are then summed/averaged to give an SPD estimate.
+The independence assumed in the initial calibration of each sample, is
+fundamentally contradictory to the subsequent summarisation and results
+in a calendar age summary that is both unreliable and inconsistent.</p>
+<p>Additionally, the SPD approach fundamentally does not model the
 samples in the calendar age domain. Consequently, it is also not able to
 deal with inversions in the calibration curve where there are multiple
 disjoint calendar periods which are consistent with the observed
@@ -105,58 +114,78 @@ see the example below, where we also plot the results.</p>
 <span>  F14C_inputs <span class="op">=</span> <span class="cn">FALSE</span>, </span>
 <span>  calibration_curve <span class="op">=</span> <span class="va">intcal20</span>,</span>
 <span>  plot_output <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Against_SPDs_files/figure-html/find_spd-1.png" width="100%"></p>
-<p><strong>Note:</strong> The summary functions for plotting the
-predictive joint calendar age density using the rigorous Bayesian
-non-parametric alternative to SPDs (described in the vignette <a href="Non-parametric-summed-density.html">Non-parametric Summed
-Density</a>) can also optionally plot the SPD without having to
-calculate it separately first.</p>
+<p><img src="Against_SPDs_files/figure-html/find_spd-1.png" class="r-plt" alt="" width="100%"></p>
+<p><strong>Note:</strong> The functions we provide to plot the rigorous
+calendar age summary provided by our Bayesian non-parametric DPMM
+alternative to SPDs can also optionally plot the SPD - see the vignette
+<a href="Non-parametric-summed-density.html">Non-parametric Calendar Age
+Summarisation</a> for details.</p>
 </div>
 <div class="section level3">
 <h3 id="illustration-of-why-not-to-use-spds">Illustration of why not to use SPDs<a class="anchor" aria-label="anchor" href="#illustration-of-why-not-to-use-spds"></a>
 </h3>
 <div class="section level4">
-<h4 id="fitting-to-two-normals">Fitting to two Normals<a class="anchor" aria-label="anchor" href="#fitting-to-two-normals"></a>
+<h4 id="fitting-to-a-mixture-of-two-normal-distributions">Fitting to a mixture of two normal distributions<a class="anchor" aria-label="anchor" href="#fitting-to-a-mixture-of-two-normal-distributions"></a>
 </h4>
-<p>Consider the simulated <code>two_normals</code> dataset. We know that
-the calendar age density that underlies these <sup>14</sup>C value is a
-mixture of two normal densities - one centred at 3500 cal yr BP (with a
+<p>The <code>two_normals</code> dataset contains 50 simulated
+<sup>14</sup>C determinations. These were created by first drawing a set
+of 50 calendar ages from a mixture of two normal calendar age densities
+- one centred at 3500 cal yr BP (with a
 1<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>
 standard deviation of 200 cal yrs); and another (more concentrated)
 centred at 5000 cal yr BP (with a
 1<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>
-standard deviation of 100 cal yrs). However, when we calculate the SPD
-we obtain:</p>
-<p><img src="Against_SPDs_files/figure-html/two_normals_spd-1.png" width="100%"></p>
-<p>Here we have manually overlain the true (known) shared calendar age
-density in red. As we can see, the SPD captures does capture some broad
-features but does not reconstruct the truth well, and is hard to
-interpret. In particular, the SPD is highly variable, showing multiple
-peaks, due to the wiggliness of the calibration curve. The SPD peak
-shown around 5300 cal yr BP is entirely spurious, yet almost of the same
-magnitude as its peak around 3500 cal yr BP (which is a part of the
-genuine density).</p>
+standard deviation of 100 cal yrs). Having simulated these calendar
+ages, a corresponding <sup>14</sup>C determination for each sample were
+created using the IntCal20 curve <span class="citation">(Reimer et al.
+2020)</span>.</p>
+<p>When we summarise the calendar age information provided by the 50
+simulated <sup>14</sup>C determinations, we would aim to reconstruct the
+underying mixture of two normals that were used to generate the data.
+However, when we calculate the SPD we obtain:</p>
+<p><img src="Against_SPDs_files/figure-html/two_normals_spd-1.png" class="r-plt" alt="" width="100%"></p>
+<p>Here we have manually overlain the true (in this case, known) shared
+calendar age density in red. As we can see, the SPD captures does
+capture some broad features of that underlying calendar age distribution
+but does not reconstruct the truth well, and is hard to interpret. In
+particular, the SPD is highly variable, showing multiple peaks, due to
+the wiggliness of the calibration curve. The SPD peak shown around 5300
+cal yr BP is entirely spurious, yet almost of the same magnitude as its
+peak around 3500 cal yr BP (which is a part of the genuine density).</p>
 </div>
-<div class="section level4">
-<h4 id="an-improvement-using-our-library-approaches">An improvement using our library approaches<a class="anchor" aria-label="anchor" href="#an-improvement-using-our-library-approaches"></a>
-</h4>
+</div>
+<div class="section level3">
+<h3 id="an-improvement-using-our-library-approaches">An improvement using our library approaches<a class="anchor" aria-label="anchor" href="#an-improvement-using-our-library-approaches"></a>
+</h3>
 <p>While this is jumping forward somewhat, to evidence that our methods
 provide better reconstructions, we run the same example using our
 Bayesian non-parametric summarisation approach (shown in purple as
 <em>Polya Urn</em>) and obtain:</p>
-<p><img src="Against_SPDs_files/figure-html/two_normals_compare-1.png" width="100%"></p>
+<p><img src="Against_SPDs_files/figure-html/two_normals_compare-1.png" class="r-plt" alt="" width="100%"></p>
 </div>
 </div>
 <div class="section level2">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-armit2014" class="csl-entry">
 Armit, Ian, Graeme T. Swindles, Katharina Becker, Gill Plunkett, and
 Maarten Blaauw. 2014. <span>“Rapid Climate Change Did Not Cause
 Population Collapse at the End of the European Bronze Age.”</span>
 <em>Proceedings of the National Academy of Sciences</em> 111 (48):
 17045–49. <a href="https://doi.org/10.1073/pnas.1408028111" class="external-link">https://doi.org/10.1073/pnas.1408028111</a>.
+</div>
+<div id="ref-heaton2025" class="csl-entry">
+Heaton, Timothy J., Sara Al-assam, and Edouard Bard. 2025. <span>“<span class="nocase">A new approach to radiocarbon summarisation: Rigorous
+identification of variations/changepoints in the occurrence rate of
+radiocarbon samples using a Poisson process</span>.”</span> <em>Journal
+of Archaeological Science</em> 182: 106237. https://doi.org/<a href="https://doi.org/10.1016/j.jas.2025.106237" class="external-link">https://doi.org/10.1016/j.jas.2025.106237</a>.
+</div>
+<div id="ref-reimer2020" class="csl-entry">
+Reimer, Paula J, William E N Austin, Edouard Bard, et al. 2020.
+<span>“<span class="nocase">The IntCal20 Northern Hemisphere Radiocarbon
+Age Calibration Curve (0–55 cal kBP)</span>.”</span>
+<em>Radiocarbon</em> 62 (4): 725–57. <a href="https://doi.org/10.1017/rdc.2020.41" class="external-link">https://doi.org/10.1017/rdc.2020.41</a>.
 </div>
 </div>
 </div>
@@ -171,7 +200,7 @@ Population Collapse at the End of the European Bronze Age.”</span>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>
