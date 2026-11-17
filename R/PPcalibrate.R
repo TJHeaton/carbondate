@@ -31,6 +31,11 @@
 #'
 #' @inheritParams WalkerBivarDirichlet
 #'
+#' @param calibration_curve Either a single calibration curve data frame (applied to all samples),
+#' or a list of calibration curve data frames with one entry per sample in
+#' `rc_determinations`. This enables different samples to use different curves
+#' within one model fit.
+#'
 #' @param delta_r,delta_r_sig (Optional) The \eqn{\Delta R} offset and associated 1\eqn{\sigma} uncertainty
 #' if calibrating a set of marine samples. This offset must be a single value that is shared by all the samples.
 #' If there are multiple different offsets then use [carbondate::PPcalibrateMixedCurves]
@@ -155,11 +160,25 @@ PPcalibrate <- function(
     use_fast = TRUE,
     fast_approx_prob_cutoff = 0.001) {
 
+  use_multiple_curves <- is.list(calibration_curve) && !is.data.frame(calibration_curve)
   calibration_curve_name <- deparse(substitute(calibration_curve))
 
   arg_check <- .InitializeErrorList()
   .CheckInputData(arg_check, rc_determinations, rc_sigmas, F14C_inputs)
-  .CheckCalibrationCurve(arg_check, calibration_curve, NA)
+  if (use_multiple_curves) {
+    if (length(calibration_curve) != length(rc_determinations)) {
+      arg_check$push(
+        paste(
+          "If calibration_curve is a list, it must have exactly",
+          length(rc_determinations), "elements"))
+    } else {
+      for (i in seq_along(calibration_curve)) {
+        .CheckCalibrationCurve(arg_check, calibration_curve[[i]], NA)
+      }
+    }
+  } else {
+    .CheckCalibrationCurve(arg_check, calibration_curve, NA)
+  }
   .CheckIterationParameters(arg_check, n_iter, n_thin)
   .CheckFlag(arg_check, F14C_inputs)
   .CheckFlag(arg_check, use_F14C_space)
@@ -223,12 +242,28 @@ PPcalibrate <- function(
 
   # Find initial calendar_age_range for Poisson Process
   # Have converted rc_determinations to use_F14C_space already
-  bounds_calendar_range <- .FindBoundingCalendarRange(
-    rc_determinations = rc_determinations,
-    rc_sigmas = rc_sigmas,
-    calibration_curve = calibration_curve,
-    F14C_inputs = use_F14C_space,
-    prob_cutoff = bounding_range_prob_cutoff)
+  if (use_multiple_curves) {
+    individual_possible_calendar_ranges <- mapply(
+      .FindBoundingCalendarRange,
+      rc_determinations = rc_determinations,
+      rc_sigmas = rc_sigmas,
+      calibration_curve = calibration_curve,
+      MoreArgs = list(
+        F14C_inputs = use_F14C_space,
+        prob_cutoff = bounding_range_prob_cutoff
+      ))
+    bounds_calendar_range <- c(
+      min(individual_possible_calendar_ranges[1, ]),
+      max(individual_possible_calendar_ranges[2, ])
+    )
+  } else {
+    bounds_calendar_range <- .FindBoundingCalendarRange(
+      rc_determinations = rc_determinations,
+      rc_sigmas = rc_sigmas,
+      calibration_curve = calibration_curve,
+      F14C_inputs = use_F14C_space,
+      prob_cutoff = bounding_range_prob_cutoff)
+  }
 
   if (any(is.na(calendar_age_range))) {
     min_potential_calendar_age <- min(bounds_calendar_range)
@@ -258,10 +293,17 @@ PPcalibrate <- function(
     )
 
     # Do not extend beyond calibration curve calendar limits
-    min_potential_calendar_age <- max(min_potential_calendar_age,
-                                      min(calibration_curve$calendar_age_BP))
-    max_potential_calendar_age <- min(max_potential_calendar_age,
-                                      max(calibration_curve$calendar_age_BP))
+    if (use_multiple_curves) {
+      max_min_cal_age_curves <- max(sapply(calibration_curve, function(x) min(x$calendar_age_BP)))
+      min_max_cal_age_curves <- min(sapply(calibration_curve, function(x) max(x$calendar_age_BP)))
+      min_potential_calendar_age <- max(min_potential_calendar_age, max_min_cal_age_curves)
+      max_potential_calendar_age <- min(max_potential_calendar_age, min_max_cal_age_curves)
+    } else {
+      min_potential_calendar_age <- max(min_potential_calendar_age,
+                                        min(calibration_curve$calendar_age_BP))
+      max_potential_calendar_age <- min(max_potential_calendar_age,
+                                        max(calibration_curve$calendar_age_BP))
+    }
   } else {
     ## Create calendar_age_grid covering potential calendar ages
     min_potential_calendar_age <- min(calendar_age_range)
@@ -355,10 +397,10 @@ PPcalibrate <- function(
     .CalendarAgeLikelihoodGivenCurve,
     rc_determinations,
     rc_sigmas,
+    calibration_curve = if (use_multiple_curves) calibration_curve else list(calibration_curve),
     MoreArgs = list(
       theta = calendar_age_grid,
-      F14C_inputs = use_F14C_space,
-      calibration_curve = calibration_curve))
+      F14C_inputs = use_F14C_space))
 
   if (use_fast) {
     likelihood_values <- list()
