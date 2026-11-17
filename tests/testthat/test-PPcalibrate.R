@@ -50,3 +50,61 @@ test_that("PPcalibrate gives expected outcomes", {
   expect_lt(lower_rate_s[1], min_theta)
   expect_gt(upper_rate_s[1], max_theta)
 })
+
+test_that("PPcalibrate supports one calibration curve per sample", {
+  skip_on_cran()
+
+  set.seed(15)
+  n_observed <- 20
+  calendar_grid_resolution <- 10
+  test_rc_sigma <- 15
+  rc_sigmas <- rep(test_rc_sigma, n_observed)
+  calendar_age_range <- c(1800, 2150)
+  true_theta <- seq(from = 1900, to = 2000, length = n_observed)
+
+  sample_curves <- c(rep(list(intcal20), n_observed / 2), rep(list(shcal20), n_observed / 2))
+  rc_determinations <- mapply(
+    function(curve, theta) {
+      approx(
+        x = curve$calendar_age_BP,
+        y = curve$c14_age,
+        xout = theta
+      )$y
+    },
+    sample_curves,
+    true_theta
+  )
+
+  PP_fit_output <- PPcalibrate(
+    rc_determinations = rc_determinations,
+    rc_sigmas = rc_sigmas,
+    calibration_curve = sample_curves,
+    calendar_age_range = calendar_age_range,
+    calendar_grid_resolution = calendar_grid_resolution,
+    n_iter = 1000,
+    show_progress = FALSE
+  )
+
+  expect_identical(PP_fit_output$update_type, "RJPP")
+  expect_equal(ncol(PP_fit_output$calendar_ages), n_observed)
+  expect_true(all(PP_fit_output$calendar_ages >= min(calendar_age_range)))
+  expect_true(all(PP_fit_output$calendar_ages <= max(calendar_age_range)))
+})
+
+test_that("PPcalibrate validates per-sample calibration_curve length", {
+  skip_on_cran()
+
+  rc_determinations <- c(3000, 3050)
+  rc_sigmas <- c(20, 20)
+
+  expect_error(
+    PPcalibrate(
+      rc_determinations = rc_determinations,
+      rc_sigmas = rc_sigmas,
+      calibration_curve = list(intcal20),
+      n_iter = 100,
+      show_progress = FALSE
+    ),
+    "If calibration_curve is a list, it must have exactly 2 elements"
+  )
+})

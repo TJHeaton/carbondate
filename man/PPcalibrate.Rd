@@ -38,10 +38,11 @@ PPcalibrate(
 radiocarbon determinations. Must be the same length as \code{rc_determinations} and
 given in the same units.}
 
-\item{calibration_curve}{A dataframe which must contain one column \code{calendar_age_BP}, and also
-columns \code{c14_age} and \code{c14_sig} or \code{f14c} and \code{f14c_sig} (or both sets).
-This format matches the curves supplied with this package, e.g., \link{intcal20},
-\link{intcal13}, which contain all 5 columns.}
+\item{calibration_curve}{Either a single calibration curve dataframe which must contain one column
+\code{calendar_age_BP}, and also columns \code{c14_age} and \code{c14_sig} or \code{f14c} and
+\code{f14c_sig} (or both sets); or a list of such dataframes with one entry per sample in
+\code{rc_determinations}. This format matches the curves supplied with this package, e.g.,
+\link{intcal20}, \link{intcal13}, which contain all 5 columns.}
 
 \item{F14C_inputs}{\code{TRUE} if the provided \code{rc_determinations} are F\eqn{{}^{14}}C
 concentrations and \code{FALSE} if they are radiocarbon ages. Defaults to \code{FALSE}.}
